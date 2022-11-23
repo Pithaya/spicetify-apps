@@ -5,7 +5,9 @@
   "scripts": {
     "build": "spicetify-creator",
     "build-local": "spicetify-creator --out=dist --minify",
-    "watch": "spicetify-creator --watch"
+    "watch": "spicetify-creator --watch",
+    "launch-watch": "spicetify watch -le",
+    "apply": "spicetify config extensions kuroshiro.js && spicetify apply"
   },
   "license": "MIT",
   "devDependencies": {
