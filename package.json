@@ -7,7 +7,8 @@
     "build-local": "spicetify-creator --out=dist --minify",
     "watch": "spicetify-creator --watch",
     "launch-watch": "spicetify enable-devtools && spicetify watch -le",
-    "apply": "spicetify config extensions kuroshiro.js && spicetify apply"
+    "apply": "spicetify config extensions kuroshiro.js && spicetify apply",
+    "lint": "npx eslint --ext .tsx,.ts src/"
   },
   "license": "MIT",
   "devDependencies": {
