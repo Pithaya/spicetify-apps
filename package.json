@@ -6,13 +6,25 @@
     "build": "spicetify-creator",
     "build-local": "spicetify-creator --out=dist --minify",
     "watch": "spicetify-creator --watch",
-    "launch-watch": "spicetify watch -le",
+    "launch-watch": "spicetify enable-devtools && spicetify watch -le",
     "apply": "spicetify config extensions kuroshiro.js && spicetify apply"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
-    "spicetify-creator": "^1.0.11"
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "eslint": "^8.28.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.11",
+    "spicetify-creator": "^1.0.11",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0"
   }
 }
