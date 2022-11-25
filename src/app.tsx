@@ -1,98 +1,58 @@
-import KuroshiroModule from '../node_modules/kuroshiro/dist/kuroshiro.min.js';
-import KuromojiAnalyzerModule from '../node_modules/kuroshiro-analyzer-kuromoji/dist/kuroshiro-analyzer-kuromoji.min.js';
-import { registerExtensions } from './spicetify-extensions.js';
+// Note: Kuroshiro intellisense is broken...
+// see: https://stackoverflow.com/questions/71541240/mapping-a-relative-path-import-to-the-right-types-in-typescript
+import Kuroshiro from '../node_modules/kuroshiro/dist/kuroshiro.min.js';
+import KuromojiAnalyzer from '../node_modules/kuroshiro-analyzer-kuromoji/dist/kuroshiro-analyzer-kuromoji.min.js';
+import SpotifyWebApi from 'spotify-web-api-js';
 
-const kuroshiro: Kuroshiro = new KuroshiroModule();
-const analyzer: KuromojiAnalyzer = new KuromojiAnalyzerModule({
+const kuroshiro: Kuroshiro = new Kuroshiro();
+const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
     dictPath: 'extensions/node_modules/kuromoji/dict',
 });
-
-const fetchAlbum = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `hm://album/v1/album-app/album/${uri.split(':')[2]}/desktop`
-    );
-    return res.name;
-};
-
-const fetchShow = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `sp://core-show/v1/shows/${
-            uri.split(':')[2]
-        }?responseFormat=protobufJson`,
-        {
-            policy: { list: { index: true } },
-        }
-    );
-    return res.header.showMetadata.name;
-};
-
-const fetchArtist = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `hm://artist/v1/${uri.split(':')[2]}/desktop?format=json`
-    );
-    return res.info.name;
-};
-
-const fetchTrack = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/tracks/${uri.split(':')[2]}`
-    );
-    return res.name;
-};
-
-const fetchEpisode = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/episodes/${uri.split(':')[2]}`
-    );
-    return res.name;
-};
-
-const fetchPlaylist = async (uri: string): Promise<any> => {
-    const res = await Spicetify.CosmosAsync.get(
-        `sp://core-playlist/v1/playlist/${uri}/metadata`,
-        {
-            policy: { name: true },
-        }
-    );
-    return res.metadata.name;
-};
+const spotifyApi = new SpotifyWebApi();
 
 async function getName(uri: string): Promise<string> {
-    const type = uri.split(':')[1];
-    let name;
+    console.log(uri);
+
+    // string format will be "spotify:{type}:{id}"
+    const split = uri.split(':');
+    const type = split[1];
+    const id = split[2];
+
+    let name = '';
     switch (type) {
         case Spicetify.URI.Type.TRACK:
-            name = await fetchTrack(uri);
+            name = (await spotifyApi.getTrack(id)).name;
             break;
         case Spicetify.URI.Type.ALBUM:
-            name = await fetchAlbum(uri);
+            name = (await spotifyApi.getAlbum(id)).name;
             break;
         case Spicetify.URI.Type.ARTIST:
-            name = await fetchArtist(uri);
+            name = (await spotifyApi.getArtist(id)).name;
             break;
         case Spicetify.URI.Type.SHOW:
-            name = await fetchShow(uri);
+            name = (await spotifyApi.getShow(id)).name;
             break;
         case Spicetify.URI.Type.EPISODE:
-            name = await fetchEpisode(uri);
+            name = (await spotifyApi.getEpisode(id)).name;
             break;
         case Spicetify.URI.Type.PLAYLIST:
         case Spicetify.URI.Type.PLAYLIST_V2:
-            name = await fetchPlaylist(uri);
+            name = (await spotifyApi.getPlaylist(id)).name;
             break;
     }
 
     return name;
 }
 
-async function convert(uris: string[]): Promise<void> {
+async function convert(
+    uris: string[],
+    to: 'hiragana' | 'katakana' | 'romaji'
+): Promise<void> {
     let name = await getName(uris[0]);
 
-    // TODO: Fix type definitions
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (KuroshiroModule.Util.hasJapanese(name)) {
+    if (Kuroshiro.Util.hasJapanese(name)) {
         name = await kuroshiro.convert(name, {
-            to: 'romaji',
+            to: to,
             mode: 'spaced',
             romajiSystem: 'passport',
         });
@@ -103,19 +63,23 @@ async function convert(uris: string[]): Promise<void> {
 }
 
 async function main(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
+    // Init dependencies
     await kuroshiro.init(analyzer);
+    spotifyApi.setAccessToken(
+        (Spicetify.Platform.Session as Spicetify.Platform.Session).accessToken
+    );
 
-    registerExtensions();
-    Spicetify.CosmosAsync.registerProxy();
+    // Register menu item
+    new Spicetify.ContextMenu.Item('Show Romaji', (uris) =>
+        convert(uris, 'romaji')
+    ).register();
 
-    new Spicetify.ContextMenu.Item(
-        'Show Romaji',
-        convert as Spicetify.ContextMenu.OnClickCallback
+    new Spicetify.ContextMenu.Item('Show Hiragana', (uris) =>
+        convert(uris, 'hiragana')
     ).register();
 }
 

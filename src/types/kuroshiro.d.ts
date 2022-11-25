@@ -14,7 +14,7 @@ declare class Kuroshiro {
      * @instance
      * @returns {Promise} Promise object represents the result of initialization
      */
-    async init(analyzer): Promise<void>
+    init(analyzer): Promise<void>
 
     /**
      * Convert given string to target syllabary with options available
@@ -29,152 +29,150 @@ declare class Kuroshiro {
      * @param {string} [options.delimiter_end=")"] Delimiter(End)
      * @returns {Promise} Promise object represents the result of conversion
      */
-    async convert(str: string, options: {
+    convert(str: string, options: {
         to?: 'hiragana' | 'katakana' | 'romaji'
         mode?: 'normal' | 'spaced' | 'okurigana' | 'furigana'
-        romajiSystem?: 'nippon' | 'passport' | 'hepburn'
+        romajiSystem?: RomanizationSystem
         delimiter_start?: string
         delimiter_end?: string
     }): Promise<string>
+}
 
-    Util: {
-        ROMANIZATION_SYSTEM: {
-            NIPPON: 'nippon'
-            PASSPORT: 'passport'
-            HEPBURN: 'hepburn'
-        }
-        /**
-        * Get the type of given string
-        *
-        * @param {string} str Given string
-        * @return {number} Type number. 0 for pure kanji, 1 for kanji-kana-mixed, 2 for pure kana, 3 for others
-        */
-        getStrType: (str: string) => number
+declare namespace Kuroshiro {
+    export { Util };
+}
 
-        /**
-        * Patch tokens for conversion
-        * @param {Object} tokens Given tokens
-        * @return {Object} Patched tokens
-        */
-        patchTokens: (tokens: Object) => Object
-        /**
-        * Check if given char is a hiragana
-        *
-        * @param {string} ch Given char
-        * @return {boolean} if given char is a hiragana
-        */
-        isHiragana: (ch: string) => boolean
-        /**
-        * Check if given char is a katakana
-        *
-        * @param {string} ch Given char
-        * @return {boolean} if given char is a katakana
-        */
-        isKatakana: (ch: string) => boolean
-        /**
-        * Check if given char is a kana
-        *
-        * @param {string} ch Given char
-        * @return {boolean} if given char is a kana
-        */
-        isKana: (ch: string) => boolean
-        /**
-        * Check if given char is a kanji
-        *
-        * @param {string} ch Given char
-        * @return {boolean} if given char is a kanji
-        */
-        isKanji: (ch: string) => boolean
-        /**
-        * Check if given char is a Japanese
-        *
-        * @param {string} ch Given char
-        * @return {boolean} if given char is a Japanese
-        */
-        isJapanese: (ch: string) => boolean
-        /**
-        * Check if given string has hiragana
-        *
-        * @param {string} str Given string
-        * @return {boolean} if given string has hiragana
-        */
-        hasHiragana: (str: string) => boolean
-        /**
-        * Check if given string has katakana
-        *
-        * @param {string} str Given string
-        * @return {boolean} if given string has katakana
-        */
-        hasKatakana: (str: string) => boolean
-        /**
-        * Check if given string has kana
-        *
-        * @param {string} str Given string
-        * @return {boolean} if given string has kana
-        */
-        hasKana: (str: string) => boolean
-        /**
-        * Check if given string has kanji
-        *
-        * @param {string} str Given string
-        * @return {boolean} if given string has kanji
-        */
-        hasKanji: (str: string) => boolean
-        /**
-        * Check if given string has Japanese
-        *
-        * @param {string} str Given string
-        * @return {boolean} if given string has Japanese
-        */
-        hasJapanese: (str: string) => boolean
+declare namespace Util {
 
-        /**
-        * Convert kana to hiragana
-        *
-        * @param {string} str Given string
-        * @return {string} Hiragana string
-        */
-        toRawHiragana: (str: string) => string
+    export type RomanizationSystem = "nippon" | "passport" | "hepburn";
 
-        /**
-        * Convert kana to katakana
-        *
-        * @param {string} str Given string
-        * @return {string} Katakana string
-        */
-        toRawKatakana: (str: string) => string
-
-        /**
-        * Convert kana to romaji
-        *
-        * @param {string} str Given string
-        * @param {string} system To which romanization system the given string is converted
-        * @return {string} Romaji string
-        */
-        toRawRomaji: (str: string, system: 'nippon' | 'passport' | 'hepburn') => string
-        /**
-        * Convert kana to hiragana
-        *
-        * @param {string} str Given string
-        * @return {string} Hiragana string
-        */
-        kanaToHiragna: (str: string) => string
-        /**
-        * Convert kana to katakana
-        *
-        * @param {string} str Given string
-        * @return {string} Katakana string
-        */
-        kanaToKatakana: (str: string) => string
-        /**
-        * Convert kana to romaji
-        *
-        * @param {string} str Given string
-        * @param {string} system To which romanization system the given string is converted. ["nippon"|"passport"|"hepburn"]
-        * @return {string} Romaji string
-        */
-        kanaToRomaji: (str: string, system: 'nippon' | 'passport' | 'hepburn') => string
-    }
+    /**
+     * Get the type of given string
+     *
+     * @param {string} str Given string
+     * @return {number} Type number. 0 for pure kanji, 1 for kanji-kana-mixed, 2 for pure kana, 3 for others
+     */
+    export function getStrType(str: string): number;
+    /**
+     * Patch tokens for conversion
+     * @param {Object} tokens Given tokens
+     * @return {Object} Patched tokens
+     */
+    export function patchTokens(tokens: any): any;
+    /**
+     * Check if given char is a hiragana
+     *
+     * @param {string} ch Given char
+     * @return {boolean} if given char is a hiragana
+     */
+    export function isHiragana(ch: string): boolean;
+    /**
+     * Check if given char is a katakana
+     *
+     * @param {string} ch Given char
+     * @return {boolean} if given char is a katakana
+     */
+    export function isKatakana(ch: string): boolean;
+    /**
+     * Check if given char is a kana
+     *
+     * @param {string} ch Given char
+     * @return {boolean} if given char is a kana
+     */
+    export function isKana(ch: string): boolean;
+    /**
+     * Check if given char is a kanji
+     *
+     * @param {string} ch Given char
+     * @return {boolean} if given char is a kanji
+     */
+    export function isKanji(ch: string): boolean;
+    /**
+     * Check if given char is a Japanese
+     *
+     * @param {string} ch Given char
+     * @return {boolean} if given char is a Japanese
+     */
+    export function isJapanese(ch: string): boolean;
+    /**
+     * Check if given string has hiragana
+     *
+     * @param {string} str Given string
+     * @return {boolean} if given string has hiragana
+     */
+    export function hasHiragana(str: string): boolean;
+    /**
+     * Check if given string has katakana
+     *
+     * @param {string} str Given string
+     * @return {boolean} if given string has katakana
+     */
+    export function hasKatakana(str: string): boolean;
+    /**
+     * Check if given string has kana
+     *
+     * @param {string} str Given string
+     * @return {boolean} if given string has kana
+     */
+    export function hasKana(str: string): boolean;
+    /**
+     * Check if given string has kanji
+     *
+     * @param {string} str Given string
+     * @return {boolean} if given string has kanji
+     */
+    export function hasKanji(str: string): boolean;
+    /**
+     * Check if given string has Japanese
+     *
+     * @param {string} str Given string
+     * @return {boolean} if given string has Japanese
+     */
+    export function hasJapanese(str: string): boolean;
+    /**
+     * Convert kana to hiragana
+     *
+     * @param {string} str Given string
+     * @return {string} Hiragana string
+     */
+    export function toRawHiragana(str: string): string;
+    /**
+     * Convert kana to katakana
+     *
+     * @param {string} str Given string
+     * @return {string} Katakana string
+     */
+    export function toRawKatakana(str: string): string;
+    /**
+     * Convert kana to romaji
+     *
+     * @param {string} str Given string
+     * @param {string} system To which romanization system the given string is converted
+     * @return {string} Romaji string
+     */
+    export function toRawRomaji(str: string, system: RomanizationSystem): string;
+    /**
+     * Convert kana to hiragana
+     *
+     * @param {string} str Given string
+     * @return {string} Hiragana string
+     */
+    export function kanaToHiragna(str: string): string;
+    /**
+     * Convert kana to katakana
+     *
+     * @param {string} str Given string
+     * @return {string} Katakana string
+     */
+    export function kanaToKatakana(str: string): string;
+    /**
+     * Convert kana to romaji
+     *
+     * @param {string} str Given string
+     * @param {string} system To which romanization system the given string is converted. ["nippon"|"passport"|"hepburn"]
+     * @return {string} Romaji string
+     */
+    export function kanaToRomaji(str: string, system: RomanizationSystem): string;
 }
 
 declare module 'kuroshiro' {
