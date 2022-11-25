@@ -5,6 +5,7 @@ import KuromojiAnalyzer from '../node_modules/kuroshiro-analyzer-kuromoji/dist/k
 import SpotifyWebApi from 'spotify-web-api-js';
 
 import { SettingsSection } from 'spcr-settings';
+import { KuroshiroSettings } from './kuroshiro-settings.js';
 
 const kuroshiro: Kuroshiro = new Kuroshiro();
 const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
@@ -13,11 +14,9 @@ const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
 
 const spotifyApi = new SpotifyWebApi();
 
-const settings = new SettingsSection(
-    'Kuroshiro Settings',
-    'settings-kuroshiro'
-);
+let settings: KuroshiroSettings;
 let contextMenuItem: Spicetify.ContextMenu.Item | null = null;
+
 // 'languages' icon from Lucide
 const menuIcon: string = `<svg xmlns="http://www.w3.org/2000/svg" role="img" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>`;
 
@@ -56,17 +55,14 @@ async function getName(uri: string): Promise<string> {
     return name;
 }
 
-async function convert(
-    uris: string[],
-    to: 'hiragana' | 'katakana' | 'romaji'
-): Promise<void> {
+async function convert(uris: string[]): Promise<void> {
     let name = await getName(uris[0]);
 
     if (Kuroshiro.Util.hasJapanese(name)) {
         name = await kuroshiro.convert(name, {
-            to: to,
-            mode: 'spaced',
-            romajiSystem: 'passport',
+            to: settings.targetSyllabary,
+            mode: settings.conversionMode,
+            romajiSystem: settings.romajiSystem,
         });
         name = name.replace(/(^|\s)\S/g, (t) => t.toUpperCase());
     }
@@ -79,19 +75,13 @@ function updateContextMenuItem(): void {
         contextMenuItem.deregister();
     }
 
-    const to: string =
-        settings.getFieldValue('kuroshiro-to-dropdown') ?? 'Romaji';
-
     contextMenuItem = new Spicetify.ContextMenu.Item(
-        `Show ${to}`,
-        (uris) =>
-            convert(
-                uris,
-                to.toLowerCase() as 'hiragana' | 'katakana' | 'romaji'
-            ),
+        `Show ${settings.targetSyllabaryLabel}`,
+        (uris) => convert(uris),
         () => true,
         menuIcon as any
     );
+
     contextMenuItem.register();
 }
 
@@ -106,22 +96,10 @@ async function main(): Promise<void> {
         (Spicetify.Platform.Session as Spicetify.Platform.Session).accessToken
     );
 
-    // Setup settings
-    settings.addDropDown(
-        'kuroshiro-to-dropdown',
-        'Conversion type',
-        ['Hiragana', 'Katakana', 'Romaji'],
-        2,
-        () => {},
-        {
-            onChange: () => {
-                updateContextMenuItem();
-            },
-        }
-    );
-    settings.pushSettings();
+    // Init settings and context menu
+    settings = new KuroshiroSettings();
+    settings.onTargetSyllabaryChange = updateContextMenuItem;
 
-    // Register menu item
     updateContextMenuItem();
 }
 
