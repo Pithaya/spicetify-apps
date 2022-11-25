@@ -3,12 +3,18 @@
 import Kuroshiro from '../node_modules/kuroshiro/dist/kuroshiro.min.js';
 import KuromojiAnalyzer from '../node_modules/kuroshiro-analyzer-kuromoji/dist/kuroshiro-analyzer-kuromoji.min.js';
 import SpotifyWebApi from 'spotify-web-api-js';
+import { SettingsSection } from 'spcr-settings';
 
 const kuroshiro: Kuroshiro = new Kuroshiro();
 const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
     dictPath: 'extensions/node_modules/kuromoji/dict',
 });
 const spotifyApi = new SpotifyWebApi();
+const settings = new SettingsSection(
+    'Kuroshiro Settings',
+    'settings-kuroshiro'
+);
+let contextMenuItem: Spicetify.ContextMenu.Item | null = null;
 
 async function getName(uri: string): Promise<string> {
     console.log(uri);
@@ -62,6 +68,21 @@ async function convert(
     Spicetify.showNotification(name);
 }
 
+function updateContextMenuItem(): void {
+    //console.log('on select');
+    if (contextMenuItem != null) {
+        contextMenuItem.deregister();
+    }
+
+    const to: string =
+        settings.getFieldValue('kuroshiro-to-dropdown') ?? 'Romaji';
+
+    contextMenuItem = new Spicetify.ContextMenu.Item(`Show ${to}`, (uris) =>
+        convert(uris, to.toLowerCase() as 'hiragana' | 'katakana' | 'romaji')
+    );
+    contextMenuItem.register();
+}
+
 async function main(): Promise<void> {
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -73,14 +94,23 @@ async function main(): Promise<void> {
         (Spicetify.Platform.Session as Spicetify.Platform.Session).accessToken
     );
 
-    // Register menu item
-    new Spicetify.ContextMenu.Item('Show Romaji', (uris) =>
-        convert(uris, 'romaji')
-    ).register();
+    // Setup settings
+    settings.addDropDown(
+        'kuroshiro-to-dropdown',
+        'Conversion type',
+        ['Hiragana', 'Katakana', 'Romaji'],
+        2,
+        () => {},
+        {
+            onChange: () => {
+                updateContextMenuItem();
+            },
+        }
+    );
+    settings.pushSettings();
 
-    new Spicetify.ContextMenu.Item('Show Hiragana', (uris) =>
-        convert(uris, 'hiragana')
-    ).register();
+    // Register menu item
+    updateContextMenuItem();
 }
 
 export default main;
