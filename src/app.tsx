@@ -6,6 +6,8 @@ import SpotifyWebApi from 'spotify-web-api-js';
 
 import { SettingsSection } from 'spcr-settings';
 import { KuroshiroSettings } from './kuroshiro-settings.js';
+import { registerProxy } from './helpers/register-proxy.js';
+import { SpotifyArtistWebApi } from './api/artists/artist-api.js';
 
 const kuroshiro: Kuroshiro = new Kuroshiro();
 const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
@@ -22,6 +24,9 @@ const menuIcon: string = `<svg xmlns="http://www.w3.org/2000/svg" role="img" wid
 
 async function getName(uri: string): Promise<string> {
     console.log(uri);
+    const parsedUri = Spicetify.URI.fromString(uri);
+
+    console.log(parsedUri);
 
     // string format will be "spotify:{type}:{id}"
     const split = uri.split(':');
@@ -99,6 +104,9 @@ async function main(): Promise<void> {
     // Init settings and context menu
     settings = new KuroshiroSettings();
     settings.onTargetSyllabaryChange = updateContextMenuItem;
+
+    console.log(await SpotifyArtistWebApi.getArtist('43ZHCT0cAZBISjO8DG9PnE'));
+    console.log(await SpotifyArtistWebApi.getArtist('43ZHCT0cAZBISjO8DG9Pn'));
 
     updateContextMenuItem();
 }
