@@ -1,13 +1,14 @@
-import { SettingsSection } from "spcr-settings";
+import { SettingsSection } from 'spcr-settings';
 
 export type TargetSyllabary = 'hiragana' | 'katakana' | 'romaji';
 export type ConversionMode = 'normal' | 'spaced' | 'okurigana' | 'furigana';
 export type RomajiSystem = 'nippon' | 'passport' | 'hepburn';
 
 export class KuroshiroSettings {
-    private readonly targetSyllabarySettingId: string = 'kuroshiro-to-dropdown';
-    private readonly conversionModeSettingId: string = 'kuroshiro-mode-dropdown';
-    private readonly romajiSystemSettingId: string = 'kuroshiro-system-dropdown';
+    private readonly targetSyllabarySettingId: string = 'kuroshiro:syllabary';
+    private readonly conversionModeSettingId: string =
+        'kuroshiro:conversion-mode';
+    private readonly romajiSystemSettingId: string = 'kuroshiro:romaji-system';
 
     private readonly settingsSection: SettingsSection;
 
@@ -24,7 +25,7 @@ export class KuroshiroSettings {
             'Target syllabary',
             ['Hiragana', 'Katakana', 'Romaji'],
             2,
-            () => { },
+            () => {},
             {
                 onChange: () => {
                     if (!!this.onTargetSyllabaryChange) {
@@ -52,7 +53,10 @@ export class KuroshiroSettings {
     }
 
     public get targetSyllabaryLabel(): string {
-        return this.settingsSection.getFieldValue(this.targetSyllabarySettingId) ?? 'Romaji';
+        return (
+            this.settingsSection.getFieldValue(this.targetSyllabarySettingId) ??
+            'Romaji'
+        );
     }
 
     public get targetSyllabary(): TargetSyllabary {
@@ -60,7 +64,10 @@ export class KuroshiroSettings {
     }
 
     public get conversionModeLabel(): string {
-        return this.settingsSection.getFieldValue(this.conversionModeSettingId) ?? 'Spaced';
+        return (
+            this.settingsSection.getFieldValue(this.conversionModeSettingId) ??
+            'Spaced'
+        );
     }
 
     public get conversionMode(): ConversionMode {
@@ -68,7 +75,10 @@ export class KuroshiroSettings {
     }
 
     public get romajiSystemLabel(): string {
-        return this.settingsSection.getFieldValue(this.romajiSystemSettingId) ?? 'Passport';
+        return (
+            this.settingsSection.getFieldValue(this.romajiSystemSettingId) ??
+            'Passport'
+        );
     }
 
     public get romajiSystem(): RomajiSystem {
