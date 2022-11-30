@@ -1,21 +1,8 @@
-// Note: Kuroshiro intellisense is broken...
-// see: https://stackoverflow.com/questions/71541240/mapping-a-relative-path-import-to-the-right-types-in-typescript
-import Kuroshiro from '../node_modules/kuroshiro/dist/kuroshiro.min.js';
-import KuromojiAnalyzer from '../node_modules/kuroshiro-analyzer-kuromoji/dist/kuroshiro-analyzer-kuromoji.min.js';
-import SpotifyWebApi from 'spotify-web-api-js';
-
-import { SettingsSection } from 'spcr-settings';
+import Kuroshiro from 'kuroshiro';
+import { createKuroshiro } from './helpers/kuroshiro-helpers.js';
 import { KuroshiroSettings } from './kuroshiro-settings.js';
-import { registerProxy } from './helpers/register-proxy.js';
-import { SpotifyArtistWebApi } from './api/artists/artist-api.js';
 
-const kuroshiro: Kuroshiro = new Kuroshiro();
-const analyzer: KuromojiAnalyzer = new KuromojiAnalyzer({
-    dictPath: 'extensions/node_modules/kuromoji/dict',
-});
-
-const spotifyApi = new SpotifyWebApi();
-
+let kuroshiro: Kuroshiro;
 let settings: KuroshiroSettings;
 let contextMenuItem: Spicetify.ContextMenu.Item | null = null;
 
@@ -96,17 +83,11 @@ async function main(): Promise<void> {
     }
 
     // Init dependencies
-    await kuroshiro.init(analyzer);
-    spotifyApi.setAccessToken(
-        (Spicetify.Platform.Session as Spicetify.Platform.Session).accessToken
-    );
+    kuroshiro = await createKuroshiro();
 
     // Init settings and context menu
     settings = new KuroshiroSettings();
     settings.onTargetSyllabaryChange = updateContextMenuItem;
-
-    console.log(await SpotifyArtistWebApi.getArtist('43ZHCT0cAZBISjO8DG9PnE'));
-    console.log(await SpotifyArtistWebApi.getArtist('43ZHCT0cAZBISjO8DG9Pn'));
 
     updateContextMenuItem();
 }
