@@ -1,1 +1,0 @@
-export const spotifyWebApiBaseUrl: string = "https://api.spotify.com/v1";

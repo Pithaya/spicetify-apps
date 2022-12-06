@@ -1,16 +1,7 @@
-# Spicetify Creator
+# Spicetify extensions & custom apps
 
-Spicetify Creator is a tool to compile modern Typescript/Javascript code to Spicetify extensions and custom apps.
+A collection of Spicetify extensions and custom apps.  
+See each app's readme for more details.
 
-## Features
-- Typescript and React syntax
-- Import node packages
-- CSS/SCSS with PostCSS support
-- Extremely fast compile time with esbuild.
-- Plugins
-
-## Docs
-Check out [Spicetify's docs](https://spicetify.app/docs/development/spicetify-creator/the-basics)!
-
-## Made with Spicetify Creator
-- https://github.com/spicetify/spicetify-creator
+-   [japanese-convert-tooltip](./extensions/japanese-convert-tooltip/README.md): Convert a selected element's name to romaji, hiragana or katakana.
+-   [extended-copy](./extensions/extended-copy/README.md): Copy a selected element's name, URI or raw data to the clipboard.
