@@ -1,5 +1,7 @@
-import { Artist } from './artist';
+import { Artist, SimplifiedArtist } from './artist';
 import { Image } from './image';
+import { ReleaseDatePrecision } from './release-date';
+import { Restrictions } from './restrictions';
 
 export type AlbumType = 'album' | 'single' | 'compilation';
 
@@ -62,19 +64,12 @@ export type Album = {
     /**
      * The precision with which release_date value is known.
      */
-    release_date_precision: 'year' | 'month' | 'day';
+    release_date_precision: ReleaseDatePrecision;
 
     /**
      * Included in the response when a content restriction is applied.
      */
-    restrictions: {
-        /**
-         * The reason for the restriction.
-         * Albums may be restricted if the content is not available in a given market, to the user's subscription type, or when the user's account is set to not play explicit content.
-         * Additional reasons may be added in the future.
-         */
-        reason: 'market' | 'product' | 'explicit';
-    };
+    restrictions?: Restrictions;
 
     /**
      * The object type.
@@ -90,4 +85,21 @@ export type Album = {
      * The artists of the album. Each artist object includes a link in href to more detailed information about the artist.
      */
     artists: Artist[];
+};
+
+export type SimplifiedAlbum = Pick<
+    Album,
+    | 'album_type'
+    | 'external_urls'
+    | 'href'
+    | 'id'
+    | 'images'
+    | 'name'
+    | 'release_date'
+    | 'release_date_precision'
+    | 'total_tracks'
+    | 'type'
+    | 'uri'
+> & {
+    artists: SimplifiedArtist[];
 };

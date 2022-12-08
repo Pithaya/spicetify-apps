@@ -68,3 +68,8 @@ export type Artist = {
      */
     uri: string;
 };
+
+export type SimplifiedArtist = Pick<
+    Artist,
+    'external_urls' | 'href' | 'id' | 'name' | 'type' | 'uri'
+>;
