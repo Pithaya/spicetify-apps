@@ -68,15 +68,12 @@ export namespace Platform {
 
     export type ReportAPI = {};
 
-    // Manage playlists and folders
     export type RootlistAPI = {};
 
     export type SEOExperiments = {};
 
-    // Get artists and segments via request ?
     export type SegmentsAPI = {};
 
-    // session infos
     export type Session = {
         accessToken: string;
         accessTokenExpirationTimestampMs: number;
@@ -88,10 +85,7 @@ export namespace Platform {
 
     export type ShowAPI = {};
 
-    // karaoke
     export type SingAlongAPI = {
-        karaokeServiceClient: {};
-
         getCapabilities: () => {
             isSupported: boolean;
         };
@@ -102,7 +96,6 @@ export namespace Platform {
 
     export type SoundtrapAPI = {};
 
-    // translation keys and values
     export type Translations = {
         [translationKey: string]: string;
     };
