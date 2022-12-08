@@ -10,6 +10,7 @@ import {
     Show,
 } from '@shared';
 import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
+import i18next from 'i18next';
 
 const locale: Locale = (Spicetify as any).Locale;
 const supportedTypes = [
@@ -111,11 +112,33 @@ async function main() {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
+    await i18next.init({
+        lng: locale.getLocale(),
+        fallbackLng: 'en',
+        debug: false,
+        resources: {
+            en: {
+                translation: {
+                    copy: 'Copy',
+                    name: 'Name',
+                    data: 'Data',
+                },
+            },
+            fr: {
+                translation: {
+                    copy: 'Copier',
+                    name: 'Nom',
+                    data: 'Données',
+                },
+            },
+        },
+    });
+
     new Spicetify.ContextMenu.SubMenu(
-        'Copy',
+        i18next.t('copy'),
         [
             new Spicetify.ContextMenu.Item(
-                'Name',
+                i18next.t('name'),
                 async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;
@@ -166,7 +189,7 @@ async function main() {
                 () => true
             ),
             new Spicetify.ContextMenu.Item(
-                'Data',
+                i18next.t('data'),
                 async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;

@@ -1,16 +1,29 @@
-# Spicetify Creator
+# Extended copy
 
-Spicetify Creator is a tool to compile modern Typescript/Javascript code to Spicetify extensions and custom apps.
+Copy the name, ID, URI or raw data of the selected element(s) to the clipboard.
 
-## Features
-- Typescript and React syntax
-- Import node packages
-- CSS/SCSS with PostCSS support
-- Extremely fast compile time with esbuild.
-- Plugins
+![preview](preview.png)
 
-## Docs
-Check out [Spicetify's docs](https://spicetify.app/docs/development/spicetify-creator/the-basics)!
+**Note:** If you're only interested in copying names, check out [this extension](https://github.com/pnthach95/spicetify-extensions) instead.
 
-## Made with Spicetify Creator
-- https://github.com/spicetify/spicetify-creator
+## Installation
+
+You can install the extension from the [marketplace](https://github.com/spicetify/spicetify-marketplace).
+
+## Usage
+
+Simply right click on an element to open the context menu.
+
+Supported elements:
+
+-   Tracks
+-   Playlists
+-   Albums
+-   Artists
+-   Podcasts
+-   Podcast episodes
+
+Supported languages:
+
+-   English
+-   French
