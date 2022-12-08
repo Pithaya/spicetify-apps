@@ -12,6 +12,15 @@ import {
 import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
 
 const locale: Locale = (Spicetify as any).Locale;
+const supportedTypes = [
+    Spicetify.URI.Type.TRACK,
+    Spicetify.URI.Type.ALBUM,
+    Spicetify.URI.Type.ARTIST,
+    Spicetify.URI.Type.PLAYLIST,
+    Spicetify.URI.Type.PLAYLIST_V2,
+    Spicetify.URI.Type.SHOW,
+    Spicetify.URI.Type.EPISODE,
+];
 
 async function getData(
     uriString: string
@@ -89,90 +98,102 @@ function checkUriLength(uris: string[]): boolean {
     return true;
 }
 
+function shouldAdd(uris: string[]): boolean {
+    return uris
+        .map((u) => Spicetify.URI.fromString(u))
+        .some((u) => !supportedTypes.includes(u.type))
+        ? false
+        : true;
+}
+
 async function main() {
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    new Spicetify.ContextMenu.SubMenu('Copy', [
-        new Spicetify.ContextMenu.Item(
-            'Name',
-            async (uris) => {
-                if (!checkUriLength(uris)) {
-                    return;
-                }
-
-                const names: string[] = [];
-
-                for (let uri of uris) {
-                    const name = await getName(uri);
-                    if (name === null) {
-                        Spicetify.showNotification(
-                            `Couldn't get name for URI '${uri}'`,
-                            true
-                        );
+    new Spicetify.ContextMenu.SubMenu(
+        'Copy',
+        [
+            new Spicetify.ContextMenu.Item(
+                'Name',
+                async (uris) => {
+                    if (!checkUriLength(uris)) {
                         return;
-                    } else {
-                        names.push(name);
                     }
-                }
 
-                copy(names.join(locale.getSeparator()));
-            },
-            () => true
-        ),
-        new Spicetify.ContextMenu.Item(
-            'ID',
-            (uris) => {
-                if (!checkUriLength(uris)) {
-                    return;
-                }
+                    const names: string[] = [];
 
-                const ids = uris.map((uri) =>
-                    Spicetify.URI.fromString(uri).getBase62Id()
-                );
-                copy(ids.join(locale.getSeparator()));
-            },
-            () => true
-        ),
-        new Spicetify.ContextMenu.Item(
-            'URI',
-            (uris) => {
-                if (!checkUriLength(uris)) {
-                    return;
-                }
+                    for (let uri of uris) {
+                        const name = await getName(uri);
+                        if (name === null) {
+                            Spicetify.showNotification(
+                                `Couldn't get name for URI '${uri}'`,
+                                true
+                            );
+                            return;
+                        } else {
+                            names.push(name);
+                        }
+                    }
 
-                copy(uris.join(locale.getSeparator()));
-            },
-            () => true
-        ),
-        new Spicetify.ContextMenu.Item(
-            'Data',
-            async (uris) => {
-                if (!checkUriLength(uris)) {
-                    return;
-                }
-
-                const result: any[] = [];
-
-                for (let uri of uris) {
-                    const data = await getData(uri);
-                    if (data === null) {
-                        Spicetify.showNotification(
-                            `Couldn't get data for URI '${uri}'`,
-                            true
-                        );
+                    copy(names.join(locale.getSeparator()));
+                },
+                () => true
+            ),
+            new Spicetify.ContextMenu.Item(
+                'ID',
+                (uris) => {
+                    if (!checkUriLength(uris)) {
                         return;
-                    } else {
-                        result.push(data);
                     }
-                }
 
-                copy(result);
-            },
-            () => true
-        ),
-    ]).register();
+                    const ids = uris.map((uri) =>
+                        Spicetify.URI.fromString(uri).getBase62Id()
+                    );
+                    copy(ids.join(locale.getSeparator()));
+                },
+                () => true
+            ),
+            new Spicetify.ContextMenu.Item(
+                'URI',
+                (uris) => {
+                    if (!checkUriLength(uris)) {
+                        return;
+                    }
+
+                    copy(uris.join(locale.getSeparator()));
+                },
+                () => true
+            ),
+            new Spicetify.ContextMenu.Item(
+                'Data',
+                async (uris) => {
+                    if (!checkUriLength(uris)) {
+                        return;
+                    }
+
+                    const result: any[] = [];
+
+                    for (let uri of uris) {
+                        const data = await getData(uri);
+                        if (data === null) {
+                            Spicetify.showNotification(
+                                `Couldn't get data for URI '${uri}'`,
+                                true
+                            );
+                            return;
+                        } else {
+                            result.push(data);
+                        }
+                    }
+
+                    copy(result);
+                },
+                () => true
+            ),
+        ],
+        (uris) => shouldAdd(uris)
+    ).register();
 }
 
 export default main;
