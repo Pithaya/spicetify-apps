@@ -1,0 +1,35 @@
+{
+    "name": "romaji-convert",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "init": "npm run build && npm run apply",
+        "build": "spicetify-creator",
+        "build-local": "spicetify-creator --out=dist --minify",
+        "watch": "spicetify-creator --watch",
+        "launch-watch": "spicetify enable-devtools && spicetify watch -le",
+        "apply": "spicetify config extensions romaji-convert.js && spicetify apply",
+        "lint": "npx eslint --ext .tsx,.ts src/"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/react": "^18.0.25",
+        "@types/react-dom": "^18.0.9",
+        "@typescript-eslint/eslint-plugin": "^5.44.0",
+        "eslint": "^8.28.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-config-standard-with-typescript": "^23.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-n": "^15.5.1",
+        "eslint-plugin-promise": "^6.1.1",
+        "eslint-plugin-react": "^7.31.11",
+        "prettier": "2.8.0",
+        "spicetify-creator": "^1.0.11",
+        "typescript": "^4.9.3"
+    },
+    "dependencies": {
+        "kuroshiro": "^1.2.0",
+        "kuroshiro-analyzer-kuromoji": "^1.1.0",
+        "spcr-settings": "^1.1.0"
+    }
+}
