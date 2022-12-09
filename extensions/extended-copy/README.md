@@ -2,7 +2,7 @@
 
 Copy the name, ID, URI or raw data of the selected element(s) to the clipboard.
 
-![preview](preview.png)
+![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/extended-copy/preview.png)
 
 **Note:** If you're only interested in copying names, check out [this extension](https://github.com/pnthach95/spicetify-extensions) instead.
 

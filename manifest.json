@@ -1,0 +1,15 @@
+[
+    {
+        "name": "extended-copy",
+        "description": "Copy names, IDs, URIs or data to the clipboard.",
+        "preview": "extensions/extended-copy/preview.png",
+        "main": "extensions/extended-copy/dist/extended-copy.js",
+        "readme": "extensions/extended-copy/README.md",
+        "authors": [
+            {
+                "name": "Pithaya",
+                "url": "https://github.com/Pithaya"
+            }
+        ]
+    }
+]
