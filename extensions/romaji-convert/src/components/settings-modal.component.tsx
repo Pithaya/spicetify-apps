@@ -15,6 +15,8 @@ interface IState {
     romajiSystem: RomajiSystem;
 }
 
+// TODO: Switch to a function component
+
 export class SettingsModal extends React.Component<IProps, IState> {
     private readonly settingsService: KuroshiroSettingsService;
     private readonly contextMenuService: ContextMenuService;

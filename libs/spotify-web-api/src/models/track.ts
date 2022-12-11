@@ -43,17 +43,17 @@ export type Track = {
         /**
          * International Standard Recording Code
          */
-        isrc: string;
+        isrc?: string;
 
         /**
          * International Article Number
          */
-        ean: string;
+        ean?: string;
 
         /**
          * Universal Product Code
          */
-        upc: string;
+        upc?: string;
     };
 
     /**

@@ -100,6 +100,7 @@ export type SimplifiedAlbum = Pick<
     | 'total_tracks'
     | 'type'
     | 'uri'
+    | 'available_markets'
 > & {
     artists: SimplifiedArtist[];
 };
