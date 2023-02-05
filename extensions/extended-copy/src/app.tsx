@@ -86,13 +86,13 @@ async function getName(uriString: string): Promise<string | null> {
 }
 
 function copy(text: string | any): void {
-    Spicetify.showNotification(`Copied to clipboard`);
+    Spicetify.showNotification(i18next.t('copied'));
     Spicetify.Platform.ClipboardAPI.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
     if (uris.length === 0) {
-        Spicetify.showNotification('No element selected.', true);
+        Spicetify.showNotification(i18next.t('noElements'), true);
         return false;
     }
 
@@ -122,6 +122,8 @@ async function main() {
                     copy: 'Copy',
                     name: 'Name',
                     data: 'Data',
+                    noElements: 'No element selected.',
+                    copied: 'Copied to clipboard',
                 },
             },
             fr: {
@@ -129,6 +131,8 @@ async function main() {
                     copy: 'Copier',
                     name: 'Nom',
                     data: 'Données',
+                    noElements: 'Aucun élément sélectionné.',
+                    copied: 'Copié dans le presse-papier',
                 },
             },
         },
