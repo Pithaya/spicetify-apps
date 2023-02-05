@@ -81,20 +81,39 @@ declare namespace Spicetify {
          *  - `onprogress` type when track progress changes.
          *  - `appchange` type when user changes page.
          */
-        function addEventListener(type: string, callback: (event?: Event) => void): void;
-        function addEventListener(type: "songchange", callback: (event?: Event & { data: PlayerState }) => void): void;
-        function addEventListener(type: "onplaypause", callback: (event?: Event & { data: PlayerState }) => void): void;
-        function addEventListener(type: "onprogress", callback: (event?: Event & { data: number }) => void): void;
-        function addEventListener(type: "appchange", callback: (event?: Event & { data: {
-            /**
-             * App href path
-             */
-            path: string;
-            /**
-             * App container
-             */
-             container: HTMLElement;
-        } }) => void): void;
+        function addEventListener(
+            type: string,
+            callback: (event?: Event) => void
+        ): void;
+        function addEventListener(
+            type: 'songchange',
+            callback: (event?: Event & { data: PlayerState }) => void
+        ): void;
+        function addEventListener(
+            type: 'onplaypause',
+            callback: (event?: Event & { data: PlayerState }) => void
+        ): void;
+        function addEventListener(
+            type: 'onprogress',
+            callback: (event?: Event & { data: number }) => void
+        ): void;
+        function addEventListener(
+            type: 'appchange',
+            callback: (
+                event?: Event & {
+                    data: {
+                        /**
+                         * App href path
+                         */
+                        path: string;
+                        /**
+                         * App container
+                         */
+                        container: HTMLElement;
+                    };
+                }
+            ) => void
+        ): void;
         /**
          * Skip to previous track.
          */
@@ -118,7 +137,7 @@ declare namespace Spicetify {
          */
         function dispatchEvent(event: Event): void;
         const eventListeners: {
-            [key: string]: Array<(event?: Event) => void>
+            [key: string]: Array<(event?: Event) => void>;
         };
         /**
          * Convert milisecond to `mm:ss` format
@@ -183,13 +202,20 @@ declare namespace Spicetify {
          * @param context
          * @param options
          */
-        function playUri(uri: string, context?: any, options?: any): Promise<void>;
+        function playUri(
+            uri: string,
+            context?: any,
+            options?: any
+        ): Promise<void>;
         /**
          * Unregister added event listener `type`.
          * @param type
          * @param callback
          */
-        function removeEventListener(type: string, callback: (event?: Event) => void): void;
+        function removeEventListener(
+            type: string,
+            callback: (event?: Event) => void
+        ): void;
         /**
          * Seek track to position.
          * @param position can be in percentage (0 to 1) or in milisecond.
@@ -226,8 +252,8 @@ declare namespace Spicetify {
          */
         function skipForward(amount?: number): void;
         /**
-        * Toggle Heart (Favourite) track state.
-        */
+         * Toggle Heart (Favourite) track state.
+         */
         function toggleHeart(): void;
         /**
          * Toggle Mute/No mute.
@@ -262,7 +288,14 @@ declare namespace Spicetify {
      * Async wrappers of CosmosAPI
      */
     namespace CosmosAsync {
-        type Method = "DELETE" | "GET" | "HEAD" | "PATCH" | "POST" | "PUT" | "SUB";
+        type Method =
+            | 'DELETE'
+            | 'GET'
+            | 'HEAD'
+            | 'PATCH'
+            | 'POST'
+            | 'PUT'
+            | 'SUB';
         interface Error {
             code: number;
             error: string;
@@ -282,15 +315,56 @@ declare namespace Spicetify {
         }
 
         function head(url: string, headers?: Headers): Promise<Headers>;
-        function get(url: string, body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function post(url: string, body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function put(url: string, body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function del(url: string, body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function patch(url: string, body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function sub(url: string, callback: ((b: Response["body"]) => void), onError?: ((e: Error) => void), body?: Body, headers?: Headers): Promise<Response["body"]>;
-        function postSub(url: string, body: Body | null, callback: ((b: Response["body"]) => void), onError?: ((e: Error) => void)): Promise<Response["body"]>;
-        function request(method: Method, url: string, body?: Body, headers?: Headers): Promise<Response>;
-        function resolve(method: Method, url: string, body?: Body, headers?: Headers): Promise<Response>;
+        function get(
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function post(
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function put(
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function del(
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function patch(
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function sub(
+            url: string,
+            callback: (b: Response['body']) => void,
+            onError?: (e: Error) => void,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response['body']>;
+        function postSub(
+            url: string,
+            body: Body | null,
+            callback: (b: Response['body']) => void,
+            onError?: (e: Error) => void
+        ): Promise<Response['body']>;
+        function request(
+            method: Method,
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response>;
+        function resolve(
+            method: Method,
+            url: string,
+            body?: Body,
+            headers?: Headers
+        ): Promise<Response>;
     }
     /**
      * Fetch interesting colors from URI.
@@ -318,22 +392,137 @@ declare namespace Spicetify {
      * Set of APIs method to register, deregister hotkeys/shortcuts
      */
     namespace Keyboard {
-        type ValidKey = "BACKSPACE" | "TAB" | "ENTER" | "SHIFT" | "CTRL" | "ALT" | "CAPS" | "ESCAPE" | "SPACE" | "PAGE_UP" | "PAGE_DOWN" | "END" | "HOME" | "ARROW_LEFT" | "ARROW_UP" | "ARROW_RIGHT" | "ARROW_DOWN" | "INSERT" | "DELETE" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "WINDOW_LEFT" | "WINDOW_RIGHT" | "SELECT" | "NUMPAD_0" | "NUMPAD_1" | "NUMPAD_2" | "NUMPAD_3" | "NUMPAD_4" | "NUMPAD_5" | "NUMPAD_6" | "NUMPAD_7" | "NUMPAD_8" | "NUMPAD_9" | "MULTIPLY" | "ADD" | "SUBTRACT" | "DECIMAL_POINT" | "DIVIDE" | "F1" | "F2" | "F3" | "F4" | "F5" | "F6" | "F7" | "F8" | "F9" | "F10" | "F11" | "F12" | ";" | "=" | " | " | "-" | "." | "/" | "`" | "[" | "\\" | "]" | "\"" | "~" | "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "_" | "+" | ":" | "<" | ">" | "?" | "|";
-        type KeysDefine = string | {
-            key: string;
-            ctrl?: boolean;
-            shift?: boolean;
-            alt?: boolean;
-            meta?: boolean;
-        };
+        type ValidKey =
+            | 'BACKSPACE'
+            | 'TAB'
+            | 'ENTER'
+            | 'SHIFT'
+            | 'CTRL'
+            | 'ALT'
+            | 'CAPS'
+            | 'ESCAPE'
+            | 'SPACE'
+            | 'PAGE_UP'
+            | 'PAGE_DOWN'
+            | 'END'
+            | 'HOME'
+            | 'ARROW_LEFT'
+            | 'ARROW_UP'
+            | 'ARROW_RIGHT'
+            | 'ARROW_DOWN'
+            | 'INSERT'
+            | 'DELETE'
+            | 'A'
+            | 'B'
+            | 'C'
+            | 'D'
+            | 'E'
+            | 'F'
+            | 'G'
+            | 'H'
+            | 'I'
+            | 'J'
+            | 'K'
+            | 'L'
+            | 'M'
+            | 'N'
+            | 'O'
+            | 'P'
+            | 'Q'
+            | 'R'
+            | 'S'
+            | 'T'
+            | 'U'
+            | 'V'
+            | 'W'
+            | 'X'
+            | 'Y'
+            | 'Z'
+            | 'WINDOW_LEFT'
+            | 'WINDOW_RIGHT'
+            | 'SELECT'
+            | 'NUMPAD_0'
+            | 'NUMPAD_1'
+            | 'NUMPAD_2'
+            | 'NUMPAD_3'
+            | 'NUMPAD_4'
+            | 'NUMPAD_5'
+            | 'NUMPAD_6'
+            | 'NUMPAD_7'
+            | 'NUMPAD_8'
+            | 'NUMPAD_9'
+            | 'MULTIPLY'
+            | 'ADD'
+            | 'SUBTRACT'
+            | 'DECIMAL_POINT'
+            | 'DIVIDE'
+            | 'F1'
+            | 'F2'
+            | 'F3'
+            | 'F4'
+            | 'F5'
+            | 'F6'
+            | 'F7'
+            | 'F8'
+            | 'F9'
+            | 'F10'
+            | 'F11'
+            | 'F12'
+            | ';'
+            | '='
+            | ' | '
+            | '-'
+            | '.'
+            | '/'
+            | '`'
+            | '['
+            | '\\'
+            | ']'
+            | '"'
+            | '~'
+            | '!'
+            | '@'
+            | '#'
+            | '$'
+            | '%'
+            | '^'
+            | '&'
+            | '*'
+            | '('
+            | ')'
+            | '_'
+            | '+'
+            | ':'
+            | '<'
+            | '>'
+            | '?'
+            | '|';
+        type KeysDefine =
+            | string
+            | {
+                  key: string;
+                  ctrl?: boolean;
+                  shift?: boolean;
+                  alt?: boolean;
+                  meta?: boolean;
+              };
         const KEYS: Record<ValidKey, string>;
-        function registerShortcut(keys: KeysDefine, callback: (event: KeyboardEvent) => void): void;
-        function registerIsolatedShortcut(keys: KeysDefine, callback: (event: KeyboardEvent) => void): void;
-        function registerImportantShortcut(keys: KeysDefine, callback: (event: KeyboardEvent) => void): void;
+        function registerShortcut(
+            keys: KeysDefine,
+            callback: (event: KeyboardEvent) => void
+        ): void;
+        function registerIsolatedShortcut(
+            keys: KeysDefine,
+            callback: (event: KeyboardEvent) => void
+        ): void;
+        function registerImportantShortcut(
+            keys: KeysDefine,
+            callback: (event: KeyboardEvent) => void
+        ): void;
         function _deregisterShortcut(keys: KeysDefine): void;
         function deregisterImportantShortcut(keys: KeysDefine): void;
         function changeShortcut(keys: KeysDefine, newKeys: KeysDefine): void;
-    };
+    }
 
     /**
      * @deprecated
@@ -366,7 +555,11 @@ declare namespace Spicetify {
          * Create a single toggle.
          */
         class Item {
-            constructor(name: string, isEnabled: boolean, onClick: (self: Item) => void);
+            constructor(
+                name: string,
+                isEnabled: boolean,
+                onClick: (self: Item) => void
+            );
             name: string;
             isEnabled: boolean;
             /**
@@ -426,7 +619,7 @@ declare namespace Spicetify {
      * Spicetify.Keyboard is wrapper of this library to be compatible with legacy Spotify,
      * so new extension should use this library instead.
      */
-     function Mousetrap(element?: any): void;
+    function Mousetrap(element?: any): void;
 
     /**
      * Contains vast array of internal APIs.
@@ -449,10 +642,15 @@ declare namespace Spicetify {
     function removeFromQueue(uri: string | string[]): Promise<void>;
     /**
      * Display a bubble of notification. Useful for a visual feedback.
-     * @param message Message to display
+     * @param message Message to display. Can use inline HTML for styling.
      * @param isError If true, bubble will be red. Defaults to false.
+     * @param msTimeout Time in milliseconds to display the bubble. Defaults to Spotify's value.
      */
-    function showNotification(text: string, isError?: boolean): void;
+    function showNotification(
+        text: string,
+        isError?: boolean,
+        msTimeout?: number
+    ): void;
     /**
      * Set of APIs method to parse and validate URIs.
      */
@@ -546,17 +744,17 @@ declare namespace Spicetify {
         getBase62Id(): string;
 
         /**
-        * Checks whether two URI:s refer to the same thing even though they might
-        * not necessarily be equal.
-        *
-        * These two Playlist URIs, for example, refer to the same playlist:
-        *
-        *   spotify:user:napstersean:playlist:3vxotOnOGDlZXyzJPLFnm2
-        *   spotify:playlist:3vxotOnOGDlZXyzJPLFnm2
-        *
-        * @param uri The uri to compare identity for.
-        * @return Whether they shared idenitity
-        */
+         * Checks whether two URI:s refer to the same thing even though they might
+         * not necessarily be equal.
+         *
+         * These two Playlist URIs, for example, refer to the same playlist:
+         *
+         *   spotify:user:napstersean:playlist:3vxotOnOGDlZXyzJPLFnm2
+         *   spotify:playlist:3vxotOnOGDlZXyzJPLFnm2
+         *
+         * @param uri The uri to compare identity for.
+         * @return Whether they shared idenitity
+         */
         isSameIdentity(uri: any): boolean;
 
         /**
@@ -608,7 +806,7 @@ declare namespace Spicetify {
             COLLECTION_TRACK_LIST: string;
             SEARCH: string;
             SHOW: string;
-            SOCIAL_SESSION: string,
+            SOCIAL_SESSION: string;
             CONCERT: string;
             SPECIAL: string;
             STARRED: string;
@@ -652,14 +850,18 @@ declare namespace Spicetify {
         static from(value: any): URI | null;
 
         /**
-        * Creates a new URI from a bytestring.
-        *
-        * @param type The type of the URI.
-        * @param idByteString The ID of the URI as a bytestring.
-        * @param opt_args Optional arguments to the URI constructor.
-        * @return The URI object created.
-        */
-        static fromByteString(type: string, idByteString: string, opt_args?: any): URI;
+         * Creates a new URI from a bytestring.
+         *
+         * @param type The type of the URI.
+         * @param idByteString The ID of the URI as a bytestring.
+         * @param opt_args Optional arguments to the URI constructor.
+         * @return The URI object created.
+         */
+        static fromByteString(
+            type: string,
+            idByteString: string,
+            opt_args?: any
+        ): URI;
 
         /**
          * Clones a given SpotifyURI instance.
@@ -776,7 +978,12 @@ declare namespace Spicetify {
          * @param play Toggles autoplay
          * @return The track URI.
          */
-        static trackURI(id: string, anchor: string, context: string, play: boolean): URI;
+        static trackURI(
+            id: string,
+            anchor: string,
+            context: string,
+            play: boolean
+        ): URI;
 
         /**
          * Creates a new 'trackset' type URI.
@@ -881,7 +1088,11 @@ declare namespace Spicetify {
          * @param global True if this is a global rather than a country list.
          * @return The toplist URI.
          */
-        static toplistURI(toplist: string, country: string, global: boolean): URI;
+        static toplistURI(
+            toplist: string,
+            country: string,
+            global: boolean
+        ): URI;
 
         /**
          * Creates a new 'inbox' type URI.
@@ -933,7 +1144,12 @@ declare namespace Spicetify {
          * @param duration The track duration in ms.
          * @return The local URI.
          */
-        static localURI(artist: string, album: string, track: string, duration: number): URI;
+        static localURI(
+            artist: string,
+            album: string,
+            track: string,
+            duration: number
+        ): URI;
 
         /**
          * Creates a new 'library' type URI.
@@ -988,7 +1204,6 @@ declare namespace Spicetify {
          * @return The image URI.
          */
         static imageURI(id: string): URI;
-
 
         /**
          * Creates a new 'mosaic' type URI.
@@ -1090,9 +1305,9 @@ declare namespace Spicetify {
          * @param id The token needed to join a social session.
          * @return The socialsession URI.
          */
-         static socialSessionURI(id: string): URI;
+        static socialSessionURI(id: string): URI;
 
-         /**
+        /**
          * Creates a new 'interruption' type URI.
          *
          * @param id The id of the interruption.
@@ -1134,9 +1349,94 @@ declare namespace Spicetify {
      * Create custom menu item and prepend to right click context menu
      */
     namespace ContextMenu {
-        type Icon = "album" | "artist" | "block" | "chart-down" | "chart-up" | "check" | "check-alt-fill" | "chevron-left" | "chevron-right" | "chromecast-disconnected" | "copy" | "download" | "downloaded" | "edit" | "exclamation-circle" | "external-link" | "facebook" | "follow" | "fullscreen" | "grid-view" | "heart" | "heart-active" | "instagram" | "list-view" | "locked" | "locked-active" | "lyrics" | "minimize" | "more" | "new-spotify-connect" | "offline" | "pause" | "play" | "playlist" | "playlist-folder" | "plus2px" | "plus-alt" | "podcasts" | "repeat" | "repeat-once" | "search" | "search-active" | "shuffle" | "skip-back" | "skip-back15" | "skip-forward" | "skip-forward15" | "soundbetter" | "subtitles" | "twitter" | "volume" | "volume-off" | "volume-one-wave" | "volume-two-wave" | "x";
-        type OnClickCallback = (uris: string[], uids?: string[], contextUri?: string) => void;
-        type ShouldAddCallback = (uris: string[], uids?: string[], contextUri?: string) => boolean;
+        type Icon =
+            | 'album'
+            | 'artist'
+            | 'block'
+            | 'brightness'
+            | 'car'
+            | 'chart-down'
+            | 'chart-up'
+            | 'check'
+            | 'check-alt-fill'
+            | 'chevron-left'
+            | 'chevron-right'
+            | 'chromecast-disconnected'
+            | 'clock'
+            | 'collaborative'
+            | 'computer'
+            | 'copy'
+            | 'download'
+            | 'downloaded'
+            | 'edit'
+            | 'enhance'
+            | 'exclamation-circle'
+            | 'external-link'
+            | 'facebook'
+            | 'follow'
+            | 'fullscreen'
+            | 'gamepad'
+            | 'grid-view'
+            | 'heart'
+            | 'heart-active'
+            | 'instagram'
+            | 'laptop'
+            | 'library'
+            | 'list-view'
+            | 'location'
+            | 'locked'
+            | 'locked-active'
+            | 'lyrics'
+            | 'menu'
+            | 'minimize'
+            | 'minus'
+            | 'more'
+            | 'new-spotify-connect'
+            | 'offline'
+            | 'pause'
+            | 'phone'
+            | 'play'
+            | 'playlist'
+            | 'playlist-folder'
+            | 'plus-alt'
+            | 'plus2px'
+            | 'podcasts'
+            | 'projector'
+            | 'queue'
+            | 'repeat'
+            | 'repeat-once'
+            | 'search'
+            | 'search-active'
+            | 'shuffle'
+            | 'skip-back'
+            | 'skip-back15'
+            | 'skip-forward'
+            | 'skip-forward15'
+            | 'soundbetter'
+            | 'speaker'
+            | 'spotify'
+            | 'subtitles'
+            | 'tablet'
+            | 'ticket'
+            | 'twitter'
+            | 'visualizer'
+            | 'voice'
+            | 'volume'
+            | 'volume-off'
+            | 'volume-one-wave'
+            | 'volume-two-wave'
+            | 'watch'
+            | 'x';
+        type OnClickCallback = (
+            uris: string[],
+            uids?: string[],
+            contextUri?: string
+        ) => void;
+        type ShouldAddCallback = (
+            uris: string[],
+            uids?: string[],
+            contextUri?: string
+        ) => boolean;
 
         // Single context menu item
         class Item {
@@ -1144,7 +1444,13 @@ declare namespace Spicetify {
              * List of valid icons to use.
              */
             static readonly iconList: Icon[];
-            constructor(name: string, onClick: OnClickCallback, shouldAdd?: ShouldAddCallback, icon?: Icon, disabled?: boolean);
+            constructor(
+                name: string,
+                onClick: OnClickCallback,
+                shouldAdd?: ShouldAddCallback,
+                icon?: Icon,
+                disabled?: boolean
+            );
             name: string;
             icon: Icon | string;
             disabled: boolean;
@@ -1171,7 +1477,12 @@ declare namespace Spicetify {
          * `Item`s in `subItems` array shouldn't be registered.
          */
         class SubMenu {
-            constructor(name: string, subItems: Iterable<Item>, shouldAdd?: ShouldAddCallback, disabled?: boolean);
+            constructor(
+                name: string,
+                subItems: Iterable<Item>,
+                shouldAdd?: ShouldAddCallback,
+                disabled?: boolean
+            );
             name: string;
             disabled: boolean;
             /**
@@ -1238,7 +1549,19 @@ declare namespace Spicetify {
              * The preferred placement of the context menu when it opens.
              * Relative to trigger element.
              */
-            placement?: 'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end';
+            placement?:
+                | 'top'
+                | 'top-start'
+                | 'top-end'
+                | 'right'
+                | 'right-start'
+                | 'right-end'
+                | 'bottom'
+                | 'bottom-start'
+                | 'bottom-end'
+                | 'left'
+                | 'left-start'
+                | 'left-end';
             /**
              * The x and y offset distances at which the context menu should open.
              * Relative to trigger element and `position`.
@@ -1251,18 +1574,25 @@ declare namespace Spicetify {
             /**
              * The menu UI to render inside of the context menu.
              */
-            menu: typeof Spicetify.ReactComponent.Menu |
-                typeof Spicetify.ReactComponent.AlbumMenu |
-                typeof Spicetify.ReactComponent.PodcastShowMenu |
-                typeof Spicetify.ReactComponent.ArtistMenu |
-                typeof Spicetify.ReactComponent.PlaylistMenu;
+            menu:
+                | typeof Spicetify.ReactComponent.Menu
+                | typeof Spicetify.ReactComponent.AlbumMenu
+                | typeof Spicetify.ReactComponent.PodcastShowMenu
+                | typeof Spicetify.ReactComponent.ArtistMenu
+                | typeof Spicetify.ReactComponent.PlaylistMenu;
             /**
              * A child of the context menu. Should be `<button>`, `<a>`,
              * a custom react component that forwards a ref to a `<button>` or `<a>`,
              * or a function. If a function is passed it will be called with
              * (`isOpen`, `handleContextMenu`, `ref`) as arguments.
              */
-            children: Element | ((isOpen?: boolean, handleContextMenu?: (e: MouseEvent) => void, ref?: (e: Element) => void) => Element);
+            children:
+                | Element
+                | ((
+                      isOpen?: boolean,
+                      handleContextMenu?: (e: MouseEvent) => void,
+                      ref?: (e: Element) => void
+                  ) => Element);
         };
         type MenuProps = {
             /**
@@ -1273,8 +1603,10 @@ declare namespace Spicetify {
              * Function that provides the element that focus should jump to when the menu
              * is opened
              */
-            getInitialFocusElement?: (el: HTMLElement | null) => HTMLElement | undefined | null;
-        }
+            getInitialFocusElement?: (
+                el: HTMLElement | null
+            ) => HTMLElement | undefined | null;
+        };
         type MenuItemProps = {
             /**
              * Function that runs when `MenuItem` is clicked
@@ -1324,11 +1656,166 @@ declare namespace Spicetify {
              * Relative to trigger element.
              * @default 'top'
              */
-            placement?: 'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end';
+            placement?:
+                | 'top'
+                | 'top-start'
+                | 'top-end'
+                | 'right'
+                | 'right-start'
+                | 'right-end'
+                | 'bottom'
+                | 'bottom-start'
+                | 'bottom-end'
+                | 'left'
+                | 'left-start'
+                | 'left-end';
             /**
              * Class name to apply to the tooltip
              */
             labelClassName?: string;
+        };
+        type IconComponentProps = {
+            /**
+             * Icon size
+             * @default 24
+             */
+            iconSize?: number;
+            /**
+             * Icon color
+             * Might not be used by component
+             * @default 'currentColor'
+             */
+            color?: string;
+            /**
+             * Semantic color name
+             * Matches color variables used in xpui
+             * @default Inherit from parent
+             */
+            semanticColor?:
+                | 'textBase'
+                | 'textSubdued'
+                | 'textBrightAccent'
+                | 'textNegative'
+                | 'textWarning'
+                | 'textPositive'
+                | 'textAnnouncement'
+                | 'essentialBase'
+                | 'essentialSubdued'
+                | 'essentialBrightAccent'
+                | 'essentialNegative'
+                | 'essentialWarning'
+                | 'essentialPositive'
+                | 'essentialAnnouncement'
+                | 'decorativeBase'
+                | 'decorativeSubdued'
+                | 'backgroundBase'
+                | 'backgroundHighlight'
+                | 'backgroundPress'
+                | 'backgroundElevatedBase'
+                | 'backgroundElevatedHighlight'
+                | 'backgroundElevatedPress'
+                | 'backgroundTintedBase'
+                | 'backgroundTintedHighlight'
+                | 'backgroundTintedPress'
+                | 'backgroundUnsafeForSmallTextBase'
+                | 'backgroundUnsafeForSmallTextHighlight'
+                | 'backgroundUnsafeForSmallTextPress';
+            /**
+             * Icon title
+             * @default ''
+             */
+            title?: string;
+            /**
+             * Title ID (internal)
+             */
+            titleId?: string;
+            /**
+             * Icon description
+             */
+            desc?: string;
+            /**
+             * Description ID (internal)
+             */
+            descId?: string;
+            /**
+             * Auto mirror icon
+             * @default false
+             */
+            autoMirror?: boolean;
+        };
+        type TextComponentProps = {
+            /**
+             * Text color
+             * Might not be used by component
+             * @default 'currentColor'
+             */
+            color?: string;
+            /**
+             * Semantic color name
+             * Matches color variables used in xpui
+             * @default Inherit from parent
+             */
+            semanticColor?:
+                | 'textBase'
+                | 'textSubdued'
+                | 'textBrightAccent'
+                | 'textNegative'
+                | 'textWarning'
+                | 'textPositive'
+                | 'textAnnouncement'
+                | 'essentialBase'
+                | 'essentialSubdued'
+                | 'essentialBrightAccent'
+                | 'essentialNegative'
+                | 'essentialWarning'
+                | 'essentialPositive'
+                | 'essentialAnnouncement'
+                | 'decorativeBase'
+                | 'decorativeSubdued'
+                | 'backgroundBase'
+                | 'backgroundHighlight'
+                | 'backgroundPress'
+                | 'backgroundElevatedBase'
+                | 'backgroundElevatedHighlight'
+                | 'backgroundElevatedPress'
+                | 'backgroundTintedBase'
+                | 'backgroundTintedHighlight'
+                | 'backgroundTintedPress'
+                | 'backgroundUnsafeForSmallTextBase'
+                | 'backgroundUnsafeForSmallTextHighlight'
+                | 'backgroundUnsafeForSmallTextPress';
+            /**
+             * Text style variant
+             * @default 'viola'
+             */
+            variant?:
+                | 'bass'
+                | 'forte'
+                | 'brio'
+                | 'altoBrio'
+                | 'alto'
+                | 'canon'
+                | 'celloCanon'
+                | 'cello'
+                | 'ballad'
+                | 'balladBold'
+                | 'viola'
+                | 'violaBold'
+                | 'mesto'
+                | 'mestoBold'
+                | 'metronome'
+                | 'finale'
+                | 'finaleBold'
+                | 'minuet'
+                | 'minuetBold';
+            /**
+             * Bottom padding size
+             */
+            paddingBottom?: string;
+            /**
+             * Font weight
+             */
+            weight?: 'book' | 'bold' | 'black';
         };
         /**
          * Generic context menu provider
@@ -1379,14 +1866,35 @@ declare namespace Spicetify {
          * @see Spicetify.ReactComponent.TooltipProps
          */
         const TooltipWrapper: any;
-    };
+        /**
+         * Component to render Spotify-style icon
+         * @since Spotify `1.1.95`
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.IconComponentProps
+         */
+        const IconComponent: any;
+        /**
+         * Component to render Spotify-style text
+         * @since Spotify `1.1.95`
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.TextComponentProps
+         */
+        const TextComponent: any;
+    }
 
     /**
      * Add button in top bar next to navigation buttons
      */
     namespace Topbar {
         class Button {
-            constructor(label: string, icon: string, onClick: (self: Button) => void, disabled?: boolean);
+            constructor(
+                label: string,
+                icon: string,
+                onClick: (self: Button) => void,
+                disabled?: boolean
+            );
             label: string;
             icon: string;
             onClick: (self: Button) => void;

@@ -7,6 +7,6 @@ import { Show } from '../models/show';
  */
 export async function getShow(uri: Spicetify.URI): Promise<Show> {
     return Spicetify.CosmosAsync.get(
-        `sp://core-show/v1/shows/${uri.getBase62Id()}?responseFormat=protobufJson`
+        `sp://core-show/v1/shows/${uri.id}?responseFormat=protobufJson`
     );
 }

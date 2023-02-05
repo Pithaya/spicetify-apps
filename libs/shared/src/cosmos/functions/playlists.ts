@@ -12,7 +12,7 @@ export function getPlaylist(
     parameters?: QueryParameter<PlaylistItem>
 ): Promise<Playlist> {
     const url = buildUrl(
-        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.getBase62Id()}`,
+        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.id}`,
         parameters
     );
 
@@ -31,6 +31,6 @@ export function getPlaylistItems(uri: Spicetify.URI): Promise<
     }
 > {
     return Spicetify.CosmosAsync.get(
-        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.getBase62Id()}/rows`
+        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.id}/rows`
     );
 }

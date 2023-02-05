@@ -29,7 +29,7 @@ async function getData(
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(uri.getBase62Id());
+        return await getTrack(uri.id);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
@@ -49,7 +49,7 @@ async function getData(
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(uri.getBase62Id());
+        return await getEpisode(uri.id);
     }
 
     return null;
@@ -59,7 +59,7 @@ async function getName(uriString: string): Promise<string | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return (await getTrack(uri.getBase62Id()))?.name ?? null;
+        return (await getTrack(uri.id))?.name ?? null;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
@@ -79,7 +79,7 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await getEpisode(uri.getBase62Id()))?.name ?? null;
+        return (await getEpisode(uri.id))?.name ?? null;
     }
 
     return null;
@@ -170,8 +170,8 @@ async function main() {
                         return;
                     }
 
-                    const ids = uris.map((uri) =>
-                        Spicetify.URI.fromString(uri).getBase62Id()
+                    const ids = uris.map(
+                        (uri) => Spicetify.URI.fromString(uri).id
                     );
                     copy(ids.join(locale.getSeparator()));
                 },
