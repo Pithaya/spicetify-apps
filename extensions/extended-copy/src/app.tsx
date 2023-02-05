@@ -29,7 +29,7 @@ async function getData(
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(uri.getBase62Id());
+        return await getTrack(uri.id);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
@@ -49,7 +49,7 @@ async function getData(
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(uri.getBase62Id());
+        return await getEpisode(uri.id);
     }
 
     return null;
@@ -59,7 +59,7 @@ async function getName(uriString: string): Promise<string | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return (await getTrack(uri.getBase62Id()))?.name ?? null;
+        return (await getTrack(uri.id))?.name ?? null;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
@@ -79,20 +79,20 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await getEpisode(uri.getBase62Id()))?.name ?? null;
+        return (await getEpisode(uri.id))?.name ?? null;
     }
 
     return null;
 }
 
 function copy(text: string | any): void {
-    Spicetify.showNotification(`Copied to clipboard`);
+    Spicetify.showNotification(i18next.t('copied'));
     Spicetify.Platform.ClipboardAPI.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
     if (uris.length === 0) {
-        Spicetify.showNotification('No element selected.', true);
+        Spicetify.showNotification(i18next.t('noElements'), true);
         return false;
     }
 
@@ -122,6 +122,8 @@ async function main() {
                     copy: 'Copy',
                     name: 'Name',
                     data: 'Data',
+                    noElements: 'No element selected.',
+                    copied: 'Copied to clipboard',
                 },
             },
             fr: {
@@ -129,6 +131,8 @@ async function main() {
                     copy: 'Copier',
                     name: 'Nom',
                     data: 'Données',
+                    noElements: 'Aucun élément sélectionné.',
+                    copied: 'Copié dans le presse-papier',
                 },
             },
         },
@@ -170,8 +174,8 @@ async function main() {
                         return;
                     }
 
-                    const ids = uris.map((uri) =>
-                        Spicetify.URI.fromString(uri).getBase62Id()
+                    const ids = uris.map(
+                        (uri) => Spicetify.URI.fromString(uri).id
                     );
                     copy(ids.join(locale.getSeparator()));
                 },

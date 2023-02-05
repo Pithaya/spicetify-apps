@@ -7,6 +7,6 @@ import { Artist } from '../models';
  */
 export async function getArtist(uri: Spicetify.URI): Promise<Artist> {
     return Spicetify.CosmosAsync.get(
-        `wg://artist/v1/${uri.getBase62Id()}/desktop?format=json`
+        `wg://artist/v1/${uri.id}/desktop?format=json`
     );
 }
