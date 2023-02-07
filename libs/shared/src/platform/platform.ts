@@ -7,11 +7,6 @@ export namespace Platform {
 
     export type BuddyFeedAPI = {};
 
-    export type ClipboardAPI = {
-        copy(value: any): Promise<void>;
-        paste(): Promise<string>;
-    };
-
     export type CollectionPlatformAPI = {};
 
     export type ConnectAPI = {};
@@ -73,15 +68,6 @@ export namespace Platform {
     export type SEOExperiments = {};
 
     export type SegmentsAPI = {};
-
-    export type Session = {
-        accessToken: string;
-        accessTokenExpirationTimestampMs: number;
-        isAnonymous: boolean;
-        locale: string;
-        market: string;
-        valid: boolean;
-    };
 
     export type ShowAPI = {};
 

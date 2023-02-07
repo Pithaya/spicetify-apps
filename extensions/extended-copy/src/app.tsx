@@ -1,6 +1,7 @@
 import {
     Album,
     Artist,
+    ClipboardAPI,
     getAlbum,
     getArtist,
     getId,
@@ -90,7 +91,7 @@ async function getName(uriString: string): Promise<string | null> {
 
 function copy(text: string | any): void {
     Spicetify.showNotification(i18next.t('copied'));
-    Spicetify.Platform.ClipboardAPI.copy(text);
+    (Spicetify.Platform.ClipboardAPI as ClipboardAPI).copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {

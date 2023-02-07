@@ -1,6 +1,7 @@
 import { handleError } from '../helpers';
 import { Track } from '../models/track';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
+import { get } from '../utils';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/tracks`;
 
@@ -11,7 +12,7 @@ const baseUrl = `${spotifyWebApiBaseUrl}/tracks`;
  */
 export async function getTrack(id: string): Promise<Track | null> {
     try {
-        return await Spicetify.CosmosAsync.get(`${baseUrl}/${id}`);
+        return await get(`${baseUrl}/${id}`);
     } catch (error: any) {
         handleError(error);
         return null;

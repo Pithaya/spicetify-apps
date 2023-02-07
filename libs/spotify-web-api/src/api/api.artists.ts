@@ -7,6 +7,7 @@ import {
     EmptyPage,
     Page,
 } from '../models';
+import { get } from '../utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/artists`;
@@ -18,7 +19,7 @@ const baseUrl = `${spotifyWebApiBaseUrl}/artists`;
  */
 export async function getArtist(id: string): Promise<Artist | null> {
     try {
-        return await Spicetify.CosmosAsync.get(`${baseUrl}/${id}`);
+        return await get(`${baseUrl}/${id}`);
     } catch (error: any) {
         handleError(error);
         return null;
@@ -36,9 +37,7 @@ export async function getArtists(...ids: string[]): Promise<Artist[]> {
             throw new ArgumentError('The maximum number of IDs is 50.');
         }
 
-        return await Spicetify.CosmosAsync.get(
-            `${baseUrl}?ids=${ids.join(',')}`
-        );
+        return await get(`${baseUrl}?ids=${ids.join(',')}`);
     } catch (error: any) {
         handleError(error);
         return [];
@@ -56,7 +55,7 @@ export async function getArtistAlbums(
     parameters: AlbumPageParameters
 ): Promise<Page<Album>> {
     try {
-        return await Spicetify.CosmosAsync.get(
+        return await get(
             `${baseUrl}/${id}/albums?${parameters.toQueryString()}`
         );
     } catch (error: any) {

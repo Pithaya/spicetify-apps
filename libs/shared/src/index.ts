@@ -1,5 +1,4 @@
 export * from './debug';
-export * from './platform/platform';
-export * from './platform/locale';
+export * from './platform';
 export * from './utils';
 export * from './cosmos';
