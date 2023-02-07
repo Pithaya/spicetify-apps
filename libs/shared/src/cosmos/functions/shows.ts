@@ -2,11 +2,11 @@ import { Show } from '../models/show';
 
 /**
  * Get a show.
- * @param uri The show's uri.
+ * @param id The show's id.
  * @returns The show.
  */
-export async function getShow(uri: Spicetify.URI): Promise<Show> {
+export async function getShow(id: string): Promise<Show> {
     return Spicetify.CosmosAsync.get(
-        `sp://core-show/v1/shows/${uri.id}?responseFormat=protobufJson`
+        `sp://core-show/v1/shows/${id}?responseFormat=protobufJson`
     );
 }
