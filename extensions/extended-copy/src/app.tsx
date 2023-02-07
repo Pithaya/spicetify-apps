@@ -3,6 +3,7 @@ import {
     Artist,
     getAlbum,
     getArtist,
+    getId,
     getPlaylist,
     getShow,
     Locale,
@@ -27,29 +28,30 @@ async function getData(
     uriString: string
 ): Promise<Track | Album | Artist | Playlist | Show | Episode | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
+    const id = getId(uri);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(uri.id);
+        return await getTrack(id);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return await getAlbum(uri);
+        return await getAlbum(id);
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return await getArtist(uri);
+        return await getArtist(id);
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await getPlaylist(uri);
+        return await getPlaylist(id);
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return await getShow(uri);
+        return await getShow(id);
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(uri.id);
+        return await getEpisode(id);
     }
 
     return null;
@@ -57,29 +59,30 @@ async function getData(
 
 async function getName(uriString: string): Promise<string | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
+    const id = getId(uri);
 
     if (Spicetify.URI.isTrack(uri)) {
-        return (await getTrack(uri.id))?.name ?? null;
+        return (await getTrack(id))?.name ?? null;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return (await getAlbum(uri)).name;
+        return (await getAlbum(id)).name;
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return (await getArtist(uri)).info.name;
+        return (await getArtist(id)).info.name;
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return (await getPlaylist(uri)).playlist.name;
+        return (await getPlaylist(id)).playlist.name;
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return (await getShow(uri)).header.showMetadata.name;
+        return (await getShow(id)).header.showMetadata.name;
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await getEpisode(uri.id))?.name ?? null;
+        return (await getEpisode(id))?.name ?? null;
     }
 
     return null;
@@ -174,8 +177,8 @@ async function main() {
                         return;
                     }
 
-                    const ids = uris.map(
-                        (uri) => Spicetify.URI.fromString(uri).id
+                    const ids = uris.map((uri) =>
+                        getId(Spicetify.URI.fromString(uri))
                     );
                     copy(ids.join(locale.getSeparator()));
                 },

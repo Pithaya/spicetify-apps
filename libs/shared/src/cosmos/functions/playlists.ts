@@ -4,15 +4,15 @@ import { buildUrl } from '../utils/build-url';
 
 /**
  * Get a playlist.
- * @param uri The playlist's uri.
+ * @param id The playlist's id.
  * @returns The playlist.
  */
 export function getPlaylist(
-    uri: Spicetify.URI,
+    id: string,
     parameters?: QueryParameter<PlaylistItem>
 ): Promise<Playlist> {
     const url = buildUrl(
-        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.id}`,
+        `sp://core-playlist/v1/playlist/spotify:playlist:${id}`,
         parameters
     );
 
@@ -21,16 +21,16 @@ export function getPlaylist(
 
 /**
  * Get a playlist with only items.
- * @param uri The playlist's uri.
+ * @param id The playlist's id.
  * @returns The playlist.
  */
-export function getPlaylistItems(uri: Spicetify.URI): Promise<
+export function getPlaylistItems(id: string): Promise<
     Pick<Playlist, 'unfilteredLength' | 'unrangedLength'> & {
         playlist: {}; // Always empty;
         rows: PlaylistItem[];
     }
 > {
     return Spicetify.CosmosAsync.get(
-        `sp://core-playlist/v1/playlist/spotify:playlist:${uri.id}/rows`
+        `sp://core-playlist/v1/playlist/spotify:playlist:${id}/rows`
     );
 }
