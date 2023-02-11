@@ -1,4 +1,4 @@
-# Romaji convert
+# Convert japanese
 
 Convert japanese text to romaji, hiragana or katakana.
 
