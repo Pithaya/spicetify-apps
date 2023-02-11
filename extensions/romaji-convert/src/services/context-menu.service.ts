@@ -3,6 +3,7 @@ import { KuroshiroSettingsService } from './kuroshiro-settings.service';
 import { KuroshiroService } from './kuroshiro.service';
 import { ServicesContainer } from './services-container';
 import Kuroshiro from 'kuroshiro';
+import i18next from 'i18next';
 
 /**
  * The "convert to" context menu.
@@ -40,7 +41,9 @@ export class ContextMenuService {
         }
 
         this.contextMenuItem = new Spicetify.ContextMenu.Item(
-            `Convert to ${this.settingsService.targetSyllabary}`,
+            i18next.t('contextMenu.name', {
+                syllabary: this.settingsService.targetSyllabary,
+            }),
             () => this.convert(),
             () => {
                 const selectedName = getSelectedElementName();
@@ -58,10 +61,7 @@ export class ContextMenuService {
      */
     private async convert(): Promise<void> {
         if (this.selectedElementName === '') {
-            Spicetify.showNotification(
-                `Couldn't get the selected element's name.`,
-                true
-            );
+            Spicetify.showNotification(i18next.t('contextMenu.error'), true);
         }
 
         let result = await this.kuroshiroService.convert(

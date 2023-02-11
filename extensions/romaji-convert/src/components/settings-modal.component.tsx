@@ -5,6 +5,7 @@ import { KuroshiroSettingsService } from '../services/kuroshiro-settings.service
 import { ServicesContainer } from '../services/services-container';
 import { ContextMenuService } from '../services/context-menu.service';
 import React from 'react';
+import i18next from 'i18next';
 
 interface IProps {}
 
@@ -44,7 +45,7 @@ export class SettingsModal extends React.Component<IProps, IState> {
                     htmlFor="kuroshiro.settings.target-syllabary"
                     style={labelStyle}
                 >
-                    Target syllabary
+                    {i18next.t('settings.targetSyllabary.label')}
                 </label>
                 <select
                     className="main-dropDown-dropDown"
@@ -57,16 +58,22 @@ export class SettingsModal extends React.Component<IProps, IState> {
                         )
                     }
                 >
-                    <option value={TargetSyllabary.Hiragana}>Hiragana</option>
-                    <option value={TargetSyllabary.Katakana}>Katakana</option>
-                    <option value={TargetSyllabary.Romaji}>Romaji</option>
+                    <option value={TargetSyllabary.Hiragana}>
+                        {i18next.t('settings.targetSyllabary.values.hiragana')}
+                    </option>
+                    <option value={TargetSyllabary.Katakana}>
+                        {i18next.t('settings.targetSyllabary.values.katakana')}
+                    </option>
+                    <option value={TargetSyllabary.Romaji}>
+                        {i18next.t('settings.targetSyllabary.values.romaji')}
+                    </option>
                 </select>
 
                 <label
                     htmlFor="kuroshiro.settings.conversion-mode"
                     style={labelStyle}
                 >
-                    Conversion mode
+                    {i18next.t('settings.conversionMode.label')}
                 </label>
                 <select
                     className="main-dropDown-dropDown"
@@ -79,33 +86,57 @@ export class SettingsModal extends React.Component<IProps, IState> {
                         )
                     }
                 >
-                    <option value={ConversionMode.Normal}>Normal</option>
-                    <option value={ConversionMode.Spaced}>Spaced</option>
-                    <option value={ConversionMode.Okurigana}>Okurigana</option>
-                    <option value={ConversionMode.Furigana}>Furigana</option>
+                    <option value={ConversionMode.Normal}>
+                        {i18next.t('settings.conversionMode.values.normal')}
+                    </option>
+                    <option value={ConversionMode.Spaced}>
+                        {i18next.t('settings.conversionMode.values.spaced')}
+                    </option>
+                    <option value={ConversionMode.Okurigana}>
+                        {i18next.t('settings.conversionMode.values.okurigana')}
+                    </option>
+                    <option value={ConversionMode.Furigana}>
+                        {i18next.t('settings.conversionMode.values.furigana')}
+                    </option>
                 </select>
 
-                <label
-                    htmlFor="kuroshiro.settings.romaji-system"
-                    style={labelStyle}
-                >
-                    Romaji system
-                </label>
-                <select
-                    className="main-dropDown-dropDown"
-                    id="kuroshiro.settings.romaji-system"
-                    dir="auto"
-                    value={this.state.romajiSystem}
-                    onChange={(e) =>
-                        this.onRomajiSystemChange(
-                            e.target.value as RomajiSystem
-                        )
-                    }
-                >
-                    <option value={RomajiSystem.Nippon}>Nippon</option>
-                    <option value={RomajiSystem.Passport}>Passport</option>
-                    <option value={RomajiSystem.Hepburn}>Hepburn</option>
-                </select>
+                {this.state.targetSyllabary === TargetSyllabary.Romaji && (
+                    <div>
+                        <label
+                            htmlFor="kuroshiro.settings.romaji-system"
+                            style={labelStyle}
+                        >
+                            {i18next.t('settings.romajiSystem.label')}
+                        </label>
+                        <select
+                            className="main-dropDown-dropDown"
+                            id="kuroshiro.settings.romaji-system"
+                            dir="auto"
+                            value={this.state.romajiSystem}
+                            onChange={(e) =>
+                                this.onRomajiSystemChange(
+                                    e.target.value as RomajiSystem
+                                )
+                            }
+                        >
+                            <option value={RomajiSystem.Nippon}>
+                                {i18next.t(
+                                    'settings.romajiSystem.values.nippon'
+                                )}
+                            </option>
+                            <option value={RomajiSystem.Passport}>
+                                {i18next.t(
+                                    'settings.romajiSystem.values.passport'
+                                )}
+                            </option>
+                            <option value={RomajiSystem.Hepburn}>
+                                {i18next.t(
+                                    'settings.romajiSystem.values.hepburn'
+                                )}
+                            </option>
+                        </select>
+                    </div>
+                )}
             </div>
         );
     }
