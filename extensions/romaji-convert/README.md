@@ -1,19 +1,25 @@
-# Spicetify Creator
+# Romaji convert
 
-Spicetify Creator is a tool to compile modern Typescript/Javascript code to Spicetify extensions and custom apps.
+Convert japanese text to romaji, hiragana or katakana.
 
-## Features
-- Typescript and React syntax
-- Import node packages
-- CSS/SCSS with PostCSS support
-- Extremely fast compile time with esbuild.
-- Plugins
+![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/romaji-convert/preview.png)
 
-## Docs
-Check out [Spicetify's docs](https://spicetify.app/docs/development/spicetify-creator/the-basics)!
+## Installation
 
-## Made with Spicetify Creator
-- https://github.com/spicetify/spicetify-creator
+You can install the extension from the [marketplace](https://github.com/spicetify/spicetify-marketplace).
 
+## Usage
 
-OpenApi file downloaded from: https://developer.spotify.com/_data/documentation/web-api/reference/open-api-schema.yml
+Right click on an element to open the context menu, and select 'Convert to (your chosen syllabary)'. The result will be displayed in a notification.
+
+![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/romaji-convert/docs/conversion.png)
+
+### Changing the conversion settings
+
+The conversion settings can be changed from the top right menu.
+
+![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/romaji-convert/docs/settings-button.png)
+
+You can then select the syllabary you want to convert to (hiragana, katakana, or romaji) and the conversion mode (normal, okurigana, furigana...).
+
+![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/romaji-convert/docs/settings-menu.png)
