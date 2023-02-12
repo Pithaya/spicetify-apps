@@ -11,5 +11,18 @@
                 "url": "https://github.com/Pithaya"
             }
         ]
+    },
+    {
+        "name": "Convert japanese",
+        "description": "Convert japanese text to romaji, hiragana or katakana.",
+        "preview": "extensions/romaji-convert/preview.png",
+        "main": "extensions/romaji-convert/dist/romaji-convert.js",
+        "readme": "extensions/romaji-convert/README.md",
+        "authors": [
+            {
+                "name": "Pithaya",
+                "url": "https://github.com/Pithaya"
+            }
+        ]
     }
 ]

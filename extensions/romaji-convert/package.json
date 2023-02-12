@@ -9,6 +9,7 @@
         "watch": "spicetify-creator --watch",
         "launch-watch": "spicetify enable-devtools && spicetify watch -le",
         "apply": "spicetify config extensions romaji-convert.js && spicetify apply",
+        "unapply": "spicetify config extensions romaji-convert.js- && spicetify apply",
         "lint": "npx eslint --ext .tsx,.ts src/"
     },
     "license": "MIT",
@@ -28,8 +29,8 @@
         "typescript": "^4.9.3"
     },
     "dependencies": {
+        "i18next": "^22.4.9",
         "kuroshiro": "^1.2.0",
-        "kuroshiro-analyzer-kuromoji": "^1.1.0",
-        "spcr-settings": "^1.1.0"
+        "kuroshiro-analyzer-kuromoji": "^1.1.0"
     }
 }
