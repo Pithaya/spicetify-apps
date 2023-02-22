@@ -1,5 +1,6 @@
-export * from './artist';
 export * from './album';
+export * from './artist';
+export * from './audio-analysis';
 export * from './cover';
 export * from './disc';
 export * from './message';

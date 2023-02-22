@@ -24,5 +24,21 @@
                 "url": "https://github.com/Pithaya"
             }
         ]
+    },
+    {
+        "name": "The Eternal Jukebox (Beta)",
+        "description": "Loop a song infinitely and (almost) seamlessly.",
+        "preview": "custom-apps/eternal-jukebox/preview.png",
+        "readme": "custom-apps/eternal-jukebox/README.md",
+        "branch": "dist/eternal-jukebox",
+        "authors": [
+            {
+                "name": "Pithaya",
+                "url": "https://github.com/Pithaya"
+            }
+        ],
+        "tags": [
+            "beta"
+        ]
     }
 ]
