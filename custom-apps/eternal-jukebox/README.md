@@ -11,11 +11,11 @@ It finds pathways through similar segments of the song and plays a never-ending 
 
 A new "infinity" button allows you to enable and disable the jukebox. As long as the jukebox is enabled, the current song will play endlessly.
 
-![button](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/button.JPG)
+![button](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/docs/button.JPG)
 
 Changing the current song will automatically play it through the jukebox.
 
-![sidebar](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/sidebar.JPG)
+![sidebar](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/docs/sidebar.JPG)
 
 The custom app allows you to see a visualization of the jukebox's progress through the song.
 
