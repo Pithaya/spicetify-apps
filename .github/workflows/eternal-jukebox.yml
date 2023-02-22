@@ -36,6 +36,6 @@ jobs:
       env:
         REPO: self
         BRANCH: dist/eternal-jukebox
-        FOLDER: dist
+        FOLDER: ./custom-apps/eternal-jukebox/dist
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
