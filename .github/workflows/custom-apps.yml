@@ -1,0 +1,26 @@
+# Copy the custom apps folder to a separate repo
+
+name: Custom apps copy
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "custom-apps/**" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: git@github.com:Pithaya/spicetify-apps-dist.git
+        BRANCH: main
+        FOLDER: ./custom-apps
+        SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+      
