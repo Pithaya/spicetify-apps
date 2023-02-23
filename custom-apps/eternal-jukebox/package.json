@@ -9,6 +9,7 @@
         "watch": "spicetify-creator --watch",
         "launch-watch": "spicetify enable-devtools && spicetify watch -le",
         "apply": "spicetify config custom_apps eternal-jukebox && spicetify apply",
+        "unapply": "spicetify config custom_apps eternal-jukebox- && spicetify apply",
         "lint": "npx eslint --ext .tsx,.ts src/"
     },
     "license": "MIT",
