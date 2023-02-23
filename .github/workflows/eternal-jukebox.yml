@@ -34,8 +34,8 @@ jobs:
     - name: Deploy
       uses: s0/git-publish-subdir-action@develop
       env:
-        REPO: self
+        REPO: git@github.com:Pithaya/spicetify-apps-dist.git
         BRANCH: dist/eternal-jukebox
         FOLDER: ./custom-apps/eternal-jukebox/dist
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
       
