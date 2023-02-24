@@ -24,5 +24,18 @@
                 "url": "https://github.com/Pithaya"
             }
         ]
+    },
+    {
+        "name": "\"Made for you\" shortcut",
+        "description": "Add a shortcut to the \"For you\" to the sidebar.",
+        "preview": "extensions/made-for-you-shortcut/preview.png",
+        "main": "extensions/made-for-you-shortcut/dist/made-for-you-shortcut.js",
+        "readme": "extensions/made-for-you-shortcut/README.md",
+        "authors": [
+            {
+                "name": "Pithaya",
+                "url": "https://github.com/Pithaya"
+            }
+        ]
     }
 ]
