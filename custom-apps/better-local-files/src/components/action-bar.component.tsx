@@ -1,14 +1,39 @@
 import styles from '../css/app.module.scss';
 import React from 'react';
 import { Play, Search } from 'lucide-react';
+import { LocalTrack } from '@shared';
 
-export interface IProps {}
+export interface IProps {
+    tracks: LocalTrack[];
+}
 
 export function ActionBar(props: IProps) {
+    function play() {
+        (Spicetify.Player as any).origin.play(
+            {
+                uri: 'spotify:internal:local-files',
+                pages: [{ items: props.tracks }],
+            },
+            {},
+            {
+                /*
+                skipTo: {
+                    uid: '1',
+                    uri: 'spotify:local:Kuroneko+%3B+96neko::Kagerou+Days:232',
+                    index: 1,
+                },*/
+            }
+        );
+    }
+
     return (
         <>
             <div className={`${styles['action-bar']} ${styles.padded}`}>
-                <button className={styles['play-button']} aria-label="Lecture">
+                <button
+                    className={styles['play-button']}
+                    aria-label="Lecture"
+                    onClick={play}
+                >
                     <Play
                         fill="var(--spice-main)"
                         stroke="var(--spice-main)"

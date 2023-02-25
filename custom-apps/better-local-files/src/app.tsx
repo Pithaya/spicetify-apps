@@ -22,7 +22,7 @@ function App() {
         <>
             <div className={styles.container}>
                 <Header tracksCount={tracks.length} />
-                <ActionBar />
+                <ActionBar tracks={tracks} />
                 <TrackList tracks={tracks} />
             </div>
         </>

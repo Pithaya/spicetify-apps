@@ -32,7 +32,11 @@ export function TrackList(props: IProps) {
                             role="presentation"
                         >
                             {props.tracks.map((track, index) => (
-                                <TrackListRow track={track} index={index} />
+                                <TrackListRow
+                                    key={track.uri}
+                                    track={track}
+                                    index={index}
+                                />
                             ))}
                         </div>
                     </div>

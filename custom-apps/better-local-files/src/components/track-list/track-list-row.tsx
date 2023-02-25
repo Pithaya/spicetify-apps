@@ -1,5 +1,6 @@
 import { Locale, LocalTrack } from '@shared';
 import React, { useState } from 'react';
+import { RowMenu } from '../menus/row-menu';
 
 const locale: Locale = (Spicetify as any).Locale;
 
@@ -12,20 +13,23 @@ export function TrackListRow(props: IProps) {
     const [active, setActive] = useState(false);
     const [selected, setSelected] = useState(false);
 
+    function play() {
+        /*
+        Spicetify.Player.playUri({
+            pages: [ {items: props.track }]
+        });*/
+    }
+
     return (
         <Spicetify.ReactComponent.RightClickMenu
-            menu={
-                <Spicetify.ReactComponent.Menu>
-                    <Spicetify.ReactComponent.MenuItem>
-                        <span>Row menu</span>
-                    </Spicetify.ReactComponent.MenuItem>
-                </Spicetify.ReactComponent.Menu>
-            }
+            menu={<RowMenu track={props.track} />}
         >
             <div
                 role="row"
                 aria-rowindex={props.index + 2}
                 aria-selected={selected}
+                onClick={() => setSelected((prev) => !prev)}
+                onDoubleClick={play}
             >
                 <div
                     className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${

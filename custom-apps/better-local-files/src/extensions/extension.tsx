@@ -1,8 +1,9 @@
-(async () => {
-  while (!Spicetify?.showNotification) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+import { registerProxy } from '@shared';
 
-  // Show message on start.
-  Spicetify.showNotification("Welcome!");
-})()
+(async () => {
+    while (!Spicetify?.showNotification) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    //registerProxy(Spicetify.Player.origin, 'origin');
+})();
