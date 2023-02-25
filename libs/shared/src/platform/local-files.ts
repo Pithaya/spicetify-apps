@@ -59,5 +59,5 @@ export type LocalTrack = {
 };
 
 export type LocalFilesApi = {
-    getTracks(): Promise<LocalTrack>;
+    getTracks(): Promise<LocalTrack[]>;
 };
