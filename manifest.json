@@ -27,7 +27,7 @@
     },
     {
         "name": "\"Made for you\" shortcut",
-        "description": "Add a shortcut to the \"For you\" page to the sidebar.",
+        "description": "Add a shortcut to the \"Made for you\" page to the sidebar.",
         "preview": "extensions/made-for-you-shortcut/preview.png",
         "main": "extensions/made-for-you-shortcut/dist/made-for-you-shortcut.js",
         "readme": "extensions/made-for-you-shortcut/README.md",
