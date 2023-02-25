@@ -1,0 +1,21 @@
+{
+    "name": "list-icons",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "init": "npm run build && npm run apply",
+        "build": "spicetify-creator",
+        "build-local": "spicetify-creator --out=dist --minify",
+        "watch": "spicetify-creator --watch",
+        "launch-watch": "spicetify enable-devtools && spicetify watch -le",
+        "apply": "spicetify config extensions list-icons.js && spicetify apply",
+        "unapply": "spicetify config extensions list-icons.js- && spicetify apply",
+        "lint": "npx eslint --ext .tsx,.ts src/"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/react": "^18.0.28",
+        "@types/react-dom": "^18.0.11",
+        "spicetify-creator": "^1.0.12"
+    }
+}
