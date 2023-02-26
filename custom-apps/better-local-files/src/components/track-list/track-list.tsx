@@ -1,5 +1,5 @@
 import { LocalTrack } from '@shared';
-import React from 'react';
+import React, { useState } from 'react';
 import { TrackListHeader } from './track-list-header';
 import { TrackListRow } from './track-list-row';
 
@@ -8,6 +8,25 @@ export interface IProps {
 }
 
 export function TrackList(props: IProps) {
+    const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
+        null
+    );
+
+    function playURI(uri: string) {
+        (Spicetify.Player as any).origin.play(
+            {
+                uri: 'spotify:internal:local-files',
+                pages: [{ items: props.tracks }],
+            },
+            {},
+            {
+                skipTo: {
+                    uri: uri,
+                },
+            }
+        );
+    }
+
     // TODO: aria from props
     return (
         <>
@@ -36,6 +55,11 @@ export function TrackList(props: IProps) {
                                     key={track.uri}
                                     track={track}
                                     index={index}
+                                    selected={selectedTrackUri === track.uri}
+                                    onClick={() =>
+                                        setSelectedTrackUri(track.uri)
+                                    }
+                                    onDoubleClick={() => playURI(track.uri)}
                                 />
                             ))}
                         </div>

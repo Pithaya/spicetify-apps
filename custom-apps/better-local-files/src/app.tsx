@@ -4,6 +4,8 @@ import { LocalFilesApi, LocalTrack } from '@shared';
 import { Header } from './components/header.component';
 import { ActionBar } from './components/action-bar.component';
 import { TrackList } from './components/track-list/track-list';
+import { History } from '@shared';
+import { CUSTOM_APP_PATH } from './constants/constants';
 
 function App() {
     const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
@@ -12,21 +14,25 @@ function App() {
     useEffect(() => {
         async function getTracks() {
             const tracks = await api.getTracks();
-            setTracks(tracks.slice(0, 40));
+            setTracks(tracks);
         }
 
         getTracks();
     }, []);
 
-    return (
-        <>
+    const location = (Spicetify.Platform.History as History).location;
+
+    if (location.pathname.startsWith(`${CUSTOM_APP_PATH}/albums`)) {
+        return <h1>Albums</h1>;
+    } else {
+        return (
             <div className={styles.container}>
                 <Header tracksCount={tracks.length} />
                 <ActionBar tracks={tracks} />
                 <TrackList tracks={tracks} />
             </div>
-        </>
-    );
+        );
+    }
 }
 
 export default App;

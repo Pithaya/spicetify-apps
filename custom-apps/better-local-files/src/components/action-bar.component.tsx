@@ -18,9 +18,9 @@ export function ActionBar(props: IProps) {
             {
                 /*
                 skipTo: {
-                    uid: '1',
-                    uri: 'spotify:local:Kuroneko+%3B+96neko::Kagerou+Days:232',
-                    index: 1,
+                    //uid: 1,
+                    uri: 'spotify:local:Melodic+Taste:Anime+Song+Orchestra+I:Moon+Signal:267',
+                    //index: 1,
                 },*/
             }
         );
