@@ -1,3 +1,4 @@
+import styles from '../../../css/app.module.scss';
 import React from 'react';
 
 export interface IProps {}
@@ -7,7 +8,10 @@ export interface IProps {}
 
 export function TrackListHeader(props: IProps) {
     return (
-        <div className="main-trackList-trackListHeader" role="presentation">
+        <div
+            className={`${styles.upper} main-trackList-trackListHeader`}
+            role="presentation"
+        >
             <div
                 className="main-trackList-trackListHeaderRow main-trackList-trackListRowGrid"
                 role="row"
