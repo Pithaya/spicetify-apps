@@ -21,7 +21,7 @@ export function TrackListRow(props: IProps) {
     useEffect(() => {
         let options = {
             rootMargin: '0px',
-            threshold: 1.0,
+            threshold: 0,
         };
 
         let observer = new IntersectionObserver(

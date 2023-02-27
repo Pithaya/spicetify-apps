@@ -55,7 +55,9 @@ export function AlbumsPage() {
 
     return (
         <>
-            <h1>Albums</h1>
+            <div className={styles['album-header']}>
+                <h1>Albums</h1>
+            </div>
 
             <div
                 className={`${styles['album-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}

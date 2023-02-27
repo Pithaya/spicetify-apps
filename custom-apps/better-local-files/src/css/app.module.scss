@@ -1,9 +1,15 @@
+// TODO: Separate in multiple files
+
+// Root
+
 .container {
     display: flex;
     justify-content: stretch;
     align-items: stretch;
     flex-direction: column;
 }
+
+// Shared
 
 .padded {
     padding: var(--content-spacing);
@@ -112,6 +118,8 @@
     }
 }
 
+// Albums
+
 .album-grid {
     --minimumColumnWidth: 180px;
     --column-width: minmax(var(--minimumColumnWidth), 1fr);
@@ -141,4 +149,17 @@
 
 .text-subdued {
     color: var(--text-subdued);
+}
+
+.album-header {
+    align-items: center;
+    color: var(--spice-text);
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
 }
