@@ -1,9 +1,7 @@
 import { Locale, LocalTrack } from '@shared';
-import { Routes } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import React, { useRef, useState } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { RowMenu } from '../menus/row-menu';
+import { AlbumRowMenu } from '../menus/album-row-menu';
 
 const locale: Locale = (Spicetify as any).Locale;
 
@@ -15,18 +13,21 @@ export interface IProps {
     onDoubleClick: () => void;
 }
 
-export function TrackListRow(props: IProps) {
+export function AlbumTrackListRow(props: IProps) {
     const [active, setActive] = useState(false);
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
+    // TODO: Disks
+    // TODO: order by track number (rowindex != track number)
+
     return (
         <div ref={rowRef}>
             {visible ? (
                 <Spicetify.ReactComponent.RightClickMenu
-                    menu={<RowMenu track={props.track} />}
+                    menu={<AlbumRowMenu track={props.track} />}
                 >
                     <div
                         role="row"
@@ -82,16 +83,6 @@ export function TrackListRow(props: IProps) {
                                 aria-colindex={2}
                                 tabIndex={-1}
                             >
-                                <img
-                                    aria-hidden="false"
-                                    draggable="false"
-                                    loading="eager"
-                                    src={props.track.album.images[0].url}
-                                    alt=""
-                                    className="main-image-image main-trackList-rowImage main-image-loaded"
-                                    width="40"
-                                    height="40"
-                                />
                                 <div className="main-trackList-rowMainContent">
                                     <div
                                         dir="auto"
@@ -116,49 +107,6 @@ export function TrackListRow(props: IProps) {
                                         ))}
                                     </span>
                                 </div>
-                            </div>
-                            <div
-                                className="main-trackList-rowSectionVariable"
-                                role="gridcell"
-                                aria-colindex={3}
-                                tabIndex={-1}
-                            >
-                                <span data-encore-id="type">
-                                    <Spicetify.ReactComponent.RightClickMenu
-                                        menu={
-                                            <Spicetify.ReactComponent.Menu>
-                                                <Spicetify.ReactComponent.MenuItem>
-                                                    <span>Album menu</span>
-                                                </Spicetify.ReactComponent.MenuItem>
-                                            </Spicetify.ReactComponent.Menu>
-                                        }
-                                    >
-                                        <a
-                                            draggable="true"
-                                            className="standalone-ellipsis-one-line"
-                                            dir="auto"
-                                            href="#"
-                                            tabIndex={-1}
-                                            onClick={() =>
-                                                navigateTo(Routes.album, {
-                                                    uri: props.track.album.uri,
-                                                })
-                                            }
-                                        >
-                                            {props.track.album.name}
-                                        </a>
-                                    </Spicetify.ReactComponent.RightClickMenu>
-                                </span>
-                            </div>
-                            <div
-                                className="main-trackList-rowSectionVariable"
-                                role="gridcell"
-                                aria-colindex={4}
-                                tabIndex={-1}
-                            >
-                                <span data-encore-id="type">
-                                    {props.track.addedAt.toLocaleDateString()}
-                                </span>
                             </div>
                             <div
                                 className="main-trackList-rowSectionEnd"

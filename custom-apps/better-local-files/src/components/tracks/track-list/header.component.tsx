@@ -1,4 +1,4 @@
-import styles from '../css/app.module.scss';
+import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { Folder } from 'lucide-react';
 

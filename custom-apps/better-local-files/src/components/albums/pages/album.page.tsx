@@ -2,9 +2,9 @@ import { History, LocalFilesApi } from '@shared';
 import React, { useEffect, useState } from 'react';
 import { Routes } from '../../../constants/constants';
 import { AlbumItem } from '../../../models/album-item';
-import { AlbumHeader } from '../../album-header.component';
+import { AlbumHeader } from '../track-list/album-header.component';
 import { navigateTo } from '../../../helpers/history-helper';
-import { TrackList } from '../../tracks/track-list/track-list';
+import { AlbumTrackList } from '../track-list/album-track-list';
 
 export function AlbumPage() {
     const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
@@ -61,7 +61,7 @@ export function AlbumPage() {
             {album !== null && (
                 <>
                     <AlbumHeader album={album} />
-                    <TrackList tracks={album.tracks} />
+                    <AlbumTrackList tracks={album.tracks} />
                 </>
             )}
         </>

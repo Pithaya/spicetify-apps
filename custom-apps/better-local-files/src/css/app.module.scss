@@ -57,6 +57,13 @@
     padding-bottom: var(--content-spacing);
 }
 
+.album__action-bar {
+    display: flex;
+    direction: row;
+    padding-top: var(--content-spacing);
+    padding-bottom: var(--content-spacing);
+}
+
 .tabBar {
     ul {
         display: flex;

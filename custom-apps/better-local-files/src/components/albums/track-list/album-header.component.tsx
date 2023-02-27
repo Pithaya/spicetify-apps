@@ -1,8 +1,8 @@
-import styles from '../css/app.module.scss';
+import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { AlbumItem } from '../models/album-item';
-import { navigateTo } from '../helpers/history-helper';
-import { Routes } from '../constants/constants';
+import { AlbumItem } from '../../../models/album-item';
+import { navigateTo } from '../../../helpers/history-helper';
+import { Routes } from '../../../constants/constants';
 
 export interface IProps {
     album: AlbumItem;
