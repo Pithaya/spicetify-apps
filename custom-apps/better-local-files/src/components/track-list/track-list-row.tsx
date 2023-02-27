@@ -1,5 +1,6 @@
 import { Locale, LocalTrack } from '@shared';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useIntersectionObserver } from '../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
 
 const locale: Locale = (Spicetify as any).Locale;
@@ -14,26 +15,8 @@ export interface IProps {
 
 export function TrackListRow(props: IProps) {
     const [active, setActive] = useState(false);
-    const [visible, setVisible] = useState(false);
-
     const rowRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        let options = {
-            rootMargin: '0px',
-            threshold: 0,
-        };
-
-        let observer = new IntersectionObserver(
-            (entries, observer) => setVisible(entries[0].isIntersecting),
-            options
-        );
-        observer.observe(rowRef.current!);
-
-        return () => {
-            observer.disconnect();
-        };
-    }, []);
+    const visible = useIntersectionObserver(rowRef);
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
