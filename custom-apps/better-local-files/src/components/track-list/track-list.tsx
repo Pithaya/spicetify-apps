@@ -34,7 +34,12 @@ export function TrackList(props: IProps) {
             return tracks;
         }
 
-        return tracks.filter((t) => t.name.includes(search));
+        return tracks.filter(
+            (t) =>
+                t.name.includes(search) ||
+                t.album.name.includes(search) ||
+                t.artists.some((a) => a.name.includes(search))
+        );
     }
 
     const filteredTracks = useMemo(

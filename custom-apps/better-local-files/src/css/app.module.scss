@@ -111,3 +111,34 @@
         }
     }
 }
+
+.album-grid {
+    --minimumColumnWidth: 180px;
+    --column-width: minmax(var(--minimumColumnWidth), 1fr);
+    --column-count: auto-fill;
+    --grid-gap: 24px;
+
+    .main-card-card {
+        cursor: pointer;
+    }
+
+    .play-button {
+        background-color: var(--spice-button-active);
+        border-radius: 21px;
+        border-style: none;
+        height: 42px;
+        width: 42px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            transform: scale(1.04);
+        }
+    }
+}
+
+.text-subdued {
+    color: var(--text-subdued);
+}
