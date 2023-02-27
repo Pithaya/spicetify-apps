@@ -5,6 +5,7 @@ import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
 import { SearchInput } from '../../shared/filters/search-input';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
+import { CaretDown } from '../../shared/icons/caret-down';
 
 // TODO: Sort by name or artist
 
@@ -94,17 +95,7 @@ export function AlbumsPage() {
                         aria-expanded="false"
                     >
                         <span data-encore-id="type">Date d'ajout</span>
-                        <svg
-                            role="img"
-                            height="16"
-                            width="16"
-                            aria-hidden="true"
-                            className="Svg-sc-ytk21e-0 uPxdw SbDHY3fVADNJ4l9qOLQ2"
-                            viewBox="0 0 16 16"
-                            data-encore-id="icon"
-                        >
-                            <path d="M14 6l-6 6-6-6h12z"></path>
-                        </svg>
+                        <CaretDown />
                     </button>
                 </div>
             </div>

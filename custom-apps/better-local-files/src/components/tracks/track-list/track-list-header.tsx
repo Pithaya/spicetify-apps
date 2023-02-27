@@ -1,5 +1,6 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
+import { CaretDown } from '../../shared/icons/caret-down';
 
 export interface IProps {}
 
@@ -81,17 +82,7 @@ export function TrackListHeader(props: IProps) {
                         >
                             Ajouté le
                         </span>
-                        <svg
-                            role="img"
-                            height="16"
-                            width="16"
-                            aria-hidden="true"
-                            className="main-trackList-arrow"
-                            viewBox="0 0 16 16"
-                            data-encore-id="icon"
-                        >
-                            <path d="M14 6l-6 6-6-6h12z"></path>
-                        </svg>
+                        <CaretDown className="main-trackList-arrow" />
                     </button>
                 </div>
                 <div
