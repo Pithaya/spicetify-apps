@@ -5,6 +5,7 @@ import {
     IProps as SearchProps,
     SearchInput,
 } from '../../shared/filters/search-input';
+import { PlayButton } from '../../shared/buttons/play-button';
 
 export interface IProps extends SearchProps {
     onPlayClicked: () => void;
@@ -14,16 +15,11 @@ export function ActionBar(props: IProps) {
     return (
         <>
             <div className={`${styles['action-bar']}`}>
-                <button
-                    className={styles['play-button']}
-                    aria-label="Lecture"
+                <PlayButton
+                    size={60}
+                    iconSize={24}
                     onClick={props.onPlayClicked}
-                >
-                    <Play
-                        fill="var(--spice-main)"
-                        stroke="var(--spice-main)"
-                    ></Play>
-                </button>
+                />
 
                 <div className={styles['controls']}>
                     <SearchInput

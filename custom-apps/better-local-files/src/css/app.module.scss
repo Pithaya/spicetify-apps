@@ -55,21 +55,6 @@
     justify-content: space-between;
     padding-top: var(--content-spacing);
     padding-bottom: var(--content-spacing);
-
-    .play-button {
-        background-color: var(--spice-button-active);
-        border-radius: 30px;
-        height: 60px;
-        width: 60px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        &:hover {
-            transform: scale(1.04);
-        }
-    }
 }
 
 .tabBar {
@@ -110,21 +95,18 @@
         cursor: pointer;
         height: 100%;
     }
+}
 
-    .play-button {
-        background-color: var(--spice-button-active);
-        border-radius: 21px;
-        border-style: none;
-        height: 42px;
-        width: 42px;
+.play-button {
+    background-color: var(--spice-button-active);
+    border-style: none;
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-        &:hover {
-            transform: scale(1.04);
-        }
+    &:hover {
+        transform: scale(1.04);
     }
 }
 
@@ -143,10 +125,6 @@
         margin-top: 0;
         font-size: 1.5rem;
         font-weight: 700;
-    }
-
-    img {
-        //width: 100%;
     }
 }
 

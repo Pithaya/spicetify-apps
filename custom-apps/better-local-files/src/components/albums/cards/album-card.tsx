@@ -5,6 +5,7 @@ import { Play } from 'lucide-react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { navigateTo } from '../../../helpers/history-helper';
 import { Routes } from '../../../constants/constants';
+import { PlayButton } from '../../shared/buttons/play-button';
 
 export interface IProps {
     album: AlbumItem;
@@ -42,19 +43,14 @@ export function AlbumCard(props: IProps) {
                             </div>
                             <div className="main-card-PlayButtonContainer">
                                 <div className="main-playButton-PlayButton">
-                                    <button
-                                        className={styles['play-button']}
+                                    <PlayButton
                                         aria-label="Lire XXX par XXX"
+                                        size={42}
+                                        iconSize={20}
                                         onClick={() =>
                                             props.onPlayClicked(props.album)
                                         }
-                                    >
-                                        <Play
-                                            fill="var(--spice-main)"
-                                            stroke="var(--spice-main)"
-                                            size={20}
-                                        ></Play>
-                                    </button>
+                                    />
                                 </div>
                             </div>
                         </div>

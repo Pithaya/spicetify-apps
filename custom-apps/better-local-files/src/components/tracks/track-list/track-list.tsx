@@ -1,10 +1,8 @@
-import styles from './css/app.module.scss';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { LocalTrack } from '@shared';
 import { ActionBar } from './action-bar.component';
 import { TrackListGrid } from './track-list-grid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 export interface IProps {
     tracks: LocalTrack[];
