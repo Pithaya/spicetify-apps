@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
-import { AlbumItem } from '../../models/album-item';
-import styles from '../../css/app.module.scss';
+import { AlbumItem } from '../../../models/album-item';
+import styles from '../../../css/app.module.scss';
 import { Play } from 'lucide-react';
-import { useIntersectionObserver } from '../../hooks/use-intersection-observer';
-import { navigateTo } from '../helpers/history-helper';
-import { Routes } from '../../constants/constants';
+import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
+import { navigateTo } from '../../../helpers/history-helper';
+import { Routes } from '../../../constants/constants';
 
 export interface IProps {
     album: AlbumItem;

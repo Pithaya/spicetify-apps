@@ -1,7 +1,7 @@
 // Adapted from the marketplace: spicetify/spicetify-marketplace/src/components/TabBar.tsx
 
 import React, { useState, useEffect } from 'react';
-import { TopBarItem } from '../../models/top-bar-item';
+import { TopBarItem } from '../../../models/top-bar-item';
 import { TabBar } from './tab-bar.component';
 
 export interface IProps {

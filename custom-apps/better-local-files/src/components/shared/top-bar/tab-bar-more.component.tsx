@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from '../../css/app.module.scss';
-import { TopBarItem } from '../../models/top-bar-item';
+import styles from '../../../css/app.module.scss';
+import { TopBarItem } from '../../../models/top-bar-item';
 
 export interface IProps {
     items: TopBarItem[];

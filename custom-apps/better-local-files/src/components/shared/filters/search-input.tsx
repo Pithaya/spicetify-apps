@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { Search } from 'lucide-react';
-import styles from '../../css/app.module.scss';
+import styles from '../../../css/app.module.scss';
 
 export interface IProps {
     search: string;

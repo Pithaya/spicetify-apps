@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { TopBarItem } from '../../models/top-bar-item';
+import { TopBarItem } from '../../../models/top-bar-item';
 import { TabBarItem } from './tab-bar-item.component';
 import { TabBarMore } from './tab-bar-more.component';
-import styles from '../../css/app.module.scss';
+import styles from '../../../css/app.module.scss';
 
 export interface IProps {
     items: TopBarItem[];

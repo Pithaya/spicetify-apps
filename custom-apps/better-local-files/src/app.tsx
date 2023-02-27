@@ -3,12 +3,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { History } from '@shared';
 import { Routes, topBarItems } from './constants/constants';
-import { TopBarContent } from './components/top-bar/top-bar-content.component';
-import { TracksPage } from './components/pages/tracks.page';
-import { AlbumPage } from './components/pages/album.page';
-import { AlbumsPage } from './components/pages/albums.page';
-import { ArtistPage } from './components/pages/artist.page';
-import { ArtistsPage } from './components/pages/artists.page';
+import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
+import { TracksPage } from './components/tracks/pages/tracks.page';
+import { AlbumPage } from './components/albums/pages/album.page';
+import { ArtistsPage } from './components/artists/pages/artists.page';
+import { AlbumsPage } from './components/albums/pages/albums.page';
+import { ArtistPage } from './components/artists/pages/artist.page';
 
 function App() {
     const history = Spicetify.Platform.History as History;

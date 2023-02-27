@@ -1,6 +1,6 @@
 import { LocalFilesApi, LocalTrack } from '@shared';
 import React, { useEffect, useState } from 'react';
-import { Header } from '../header.component';
+import { Header } from '../../header.component';
 import { TrackList } from '../track-list/track-list';
 
 export function TracksPage() {

@@ -1,7 +1,10 @@
-import styles from '../../css/app.module.scss';
+import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { Play, Search } from 'lucide-react';
-import { IProps as SearchProps, SearchInput } from '../filters/search-input';
+import {
+    IProps as SearchProps,
+    SearchInput,
+} from '../../shared/filters/search-input';
 
 export interface IProps extends SearchProps {
     onPlayClicked: () => void;

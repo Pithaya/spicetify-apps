@@ -1,10 +1,10 @@
 import { LocalFilesApi } from '@shared';
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlbumItem } from '../../models/album-item';
-import styles from '../../css/app.module.scss';
+import { AlbumItem } from '../../../models/album-item';
+import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
-import { playContext } from '../helpers/player-helpers';
-import { SearchInput } from '../filters/search-input';
+import { SearchInput } from '../../shared/filters/search-input';
+import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 
 // TODO: Sort by name or artist
 

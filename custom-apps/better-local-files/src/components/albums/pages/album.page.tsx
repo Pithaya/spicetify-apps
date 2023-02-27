@@ -1,10 +1,10 @@
 import { History, LocalFilesApi } from '@shared';
 import React, { useEffect, useState } from 'react';
-import { Routes } from '../../constants/constants';
-import { AlbumItem } from '../../models/album-item';
-import { AlbumHeader } from '../album-header.component';
-import { navigateTo } from '../helpers/history-helper';
-import { TrackList } from '../track-list/track-list';
+import { Routes } from '../../../constants/constants';
+import { AlbumItem } from '../../../models/album-item';
+import { AlbumHeader } from '../../album-header.component';
+import { navigateTo } from '../../../helpers/history-helper';
+import { TrackList } from '../../tracks/track-list/track-list';
 
 export function AlbumPage() {
     const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
