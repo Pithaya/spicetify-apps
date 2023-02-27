@@ -70,26 +70,6 @@
             transform: scale(1.04);
         }
     }
-
-    .controls {
-        display: flex;
-        align-items: center;
-
-        .search-container {
-            input {
-                border-style: none;
-            }
-
-            .search-icon {
-                color: var(--spice-text);
-                background-color: transparent;
-                position: relative;
-                left: 30px;
-                top: 4px;
-                display: inline-block;
-            }
-        }
-    }
 }
 
 .tabBar {
@@ -128,6 +108,7 @@
 
     .main-card-card {
         cursor: pointer;
+        height: 100%;
     }
 
     .play-button {
@@ -156,10 +137,35 @@
     color: var(--spice-text);
     display: flex;
     justify-content: space-between;
-    margin: 16px 0;
+    margin-bottom: 16px;
 
     h1 {
+        margin-top: 0;
         font-size: 1.5rem;
         font-weight: 700;
     }
+
+    img {
+        //width: 100%;
+    }
+}
+
+.search-container {
+    input {
+        border-style: none;
+    }
+
+    .search-icon {
+        color: var(--spice-text);
+        background-color: transparent;
+        position: relative;
+        left: 30px;
+        top: 4px;
+        display: inline-block;
+    }
+}
+
+.controls {
+    display: flex;
+    align-items: center;
 }

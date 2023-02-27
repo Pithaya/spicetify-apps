@@ -10,24 +10,11 @@ export interface IProps {
     tracks: LocalTrack[];
 }
 
+// TODO: Sort by date, title, artist and album
+
 export function TrackList(props: IProps) {
-    const [onSearchSubject] = useState<Subject<string>>(new Subject<string>());
     const [search, setSearch] = useState('');
-    const [debounceSearch, setDebounceSearch] = useState('');
-
-    useEffect(() => {
-        const subscription = onSearchSubject
-            .asObservable()
-            .pipe(debounceTime(600), distinctUntilChanged())
-            .subscribe((debounced) => setDebounceSearch(debounced));
-
-        return () => subscription.unsubscribe();
-    }, [onSearchSubject]);
-
-    function onSearchChange(value: string) {
-        onSearchSubject.next(value);
-        setSearch(value);
-    }
+    const [debouncedSearch, setDebouncedSearch] = useState('');
 
     function filterTracks(tracks: LocalTrack[], search: string) {
         if (search === '') {
@@ -36,15 +23,17 @@ export function TrackList(props: IProps) {
 
         return tracks.filter(
             (t) =>
-                t.name.includes(search) ||
-                t.album.name.includes(search) ||
-                t.artists.some((a) => a.name.includes(search))
+                t.name.toLowerCase().includes(search.toLowerCase()) ||
+                t.album.name.toLowerCase().includes(search.toLowerCase()) ||
+                t.artists.some((a) =>
+                    a.name.toLowerCase().includes(search.toLowerCase())
+                )
         );
     }
 
     const filteredTracks = useMemo(
-        () => filterTracks(props.tracks, debounceSearch),
-        [props.tracks, debounceSearch]
+        () => filterTracks(props.tracks, debouncedSearch),
+        [props.tracks, debouncedSearch]
     );
 
     function playUri(uri: string) {
@@ -63,8 +52,10 @@ export function TrackList(props: IProps) {
         <>
             <ActionBar
                 onPlayClicked={playTracks}
-                searchText={search}
-                onSearchChanged={onSearchChange}
+                search={search}
+                setSearch={setSearch}
+                debouncedSearch={debouncedSearch}
+                setDebouncedSearch={setDebouncedSearch}
             />
             <TrackListGrid tracks={filteredTracks} onPlayTrack={playUri} />
         </>

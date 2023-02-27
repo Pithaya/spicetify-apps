@@ -51,8 +51,8 @@ function App() {
                         onItemClicked={(item) => history.push(item.href)}
                         items={topBarItems}
                         activeItem={
-                            topBarItems.find(
-                                (i) => i.href === location.pathname
+                            topBarItems.find((i) =>
+                                i.href.startsWith(location.pathname)
                             ) ?? topBarItems[0]
                         }
                     />,

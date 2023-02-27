@@ -1,11 +1,10 @@
 import styles from '../../css/app.module.scss';
 import React from 'react';
 import { Play, Search } from 'lucide-react';
+import { IProps as SearchProps, SearchInput } from '../filters/search-input';
 
-export interface IProps {
+export interface IProps extends SearchProps {
     onPlayClicked: () => void;
-    searchText: string;
-    onSearchChanged: (value: string) => void;
 }
 
 export function ActionBar(props: IProps) {
@@ -24,30 +23,12 @@ export function ActionBar(props: IProps) {
                 </button>
 
                 <div className={styles['controls']}>
-                    <div
-                        className={styles['search-container']}
-                        role="search"
-                        aria-expanded="false"
-                    >
-                        <div className={styles['search-icon']}>
-                            <Search size={18}></Search>
-                        </div>
-
-                        <input
-                            role="searchbox"
-                            maxLength={80}
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            placeholder="Rechercher"
-                            aria-hidden="true"
-                            tabIndex={-1}
-                            value={props.searchText}
-                            onChange={(e) =>
-                                props.onSearchChanged(e.target.value)
-                            }
-                        />
-                    </div>
+                    <SearchInput
+                        search={props.search}
+                        setSearch={props.setSearch}
+                        debouncedSearch={props.debouncedSearch}
+                        setDebouncedSearch={props.setDebouncedSearch}
+                    />
 
                     <button
                         className="x-sortBox-sortDropdown"

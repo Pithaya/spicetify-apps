@@ -3,6 +3,8 @@ import { AlbumItem } from '../../models/album-item';
 import styles from '../../css/app.module.scss';
 import { Play } from 'lucide-react';
 import { useIntersectionObserver } from '../../hooks/use-intersection-observer';
+import { navigateTo } from '../helpers/history-helper';
+import { Routes } from '../../constants/constants';
 
 export interface IProps {
     album: AlbumItem;
@@ -18,7 +20,12 @@ export function AlbumCard(props: IProps) {
     return (
         <div ref={ref}>
             {visible ? (
-                <div className={`${styles['main-card-card']} main-card-card`}>
+                <div
+                    className={`${styles['main-card-card']} main-card-card`}
+                    onClick={() =>
+                        navigateTo(Routes.album, { uri: props.album.uri })
+                    }
+                >
                     <div draggable="true" className="main-card-draggable">
                         <div className="main-card-imageContainer">
                             <div className="main-cardImage-imageWrapper">
