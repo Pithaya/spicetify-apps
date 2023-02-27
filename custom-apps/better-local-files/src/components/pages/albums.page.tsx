@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AlbumItem } from '../../models/album-item';
 import styles from '../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
+import { playContext } from '../helpers/player-helpers';
 
 // TODO: intersection observer
 
@@ -10,6 +11,10 @@ export function AlbumsPage() {
     const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
 
     const [albums, setAlbums] = useState<AlbumItem[]>([]);
+
+    function playAlbum(album: AlbumItem) {
+        playContext(album.tracks);
+    }
 
     useEffect(() => {
         async function getTracks() {
@@ -23,10 +28,11 @@ export function AlbumsPage() {
 
                 if (!albumMap.has(key)) {
                     albumMap.set(key, {
-                        name: track.album.name,
+                        name: key,
                         uri: track.album.uri,
                         artists: track.artists,
                         image: track.album.images[0].url,
+                        tracks: [track],
                     } as AlbumItem);
                 } else {
                     const album = albumMap.get(key)!;
@@ -36,6 +42,8 @@ export function AlbumsPage() {
                             album.artists.push(artist);
                         }
                     }
+
+                    album.tracks.push(track);
                 }
             }
 
@@ -53,7 +61,11 @@ export function AlbumsPage() {
                 className={`${styles['album-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
                 {albums.map((a) => (
-                    <AlbumCard key={a.uri} album={a} />
+                    <AlbumCard
+                        key={a.uri}
+                        album={a}
+                        onPlayClicked={playAlbum}
+                    />
                 ))}
             </div>
         </>

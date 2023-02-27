@@ -1,3 +1,5 @@
+import { LocalTrack } from '@shared';
+
 export interface AlbumItem {
     name: string;
     uri: string;
@@ -6,4 +8,5 @@ export interface AlbumItem {
         name: string;
         uri: string;
     }[];
+    tracks: LocalTrack[];
 }

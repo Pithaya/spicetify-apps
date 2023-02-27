@@ -5,6 +5,7 @@ import { Play } from 'lucide-react';
 
 export interface IProps {
     album: AlbumItem;
+    onPlayClicked: (a: AlbumItem) => void;
 }
 
 export function AlbumCard(props: IProps) {
@@ -30,6 +31,9 @@ export function AlbumCard(props: IProps) {
                                 <button
                                     className={styles['play-button']}
                                     aria-label="Lire XXX par XXX"
+                                    onClick={() =>
+                                        props.onPlayClicked(props.album)
+                                    }
                                 >
                                     <Play
                                         fill="var(--spice-main)"
