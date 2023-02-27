@@ -47,6 +47,8 @@
     display: flex;
     direction: row;
     justify-content: space-between;
+    padding-top: var(--content-spacing);
+    padding-bottom: var(--content-spacing);
 
     .play-button {
         background-color: var(--spice-button-active);
@@ -63,26 +65,22 @@
         }
     }
 
-    .search-container {
-        input {
-            border-style: none;
-        }
+    .controls {
+        display: flex;
+        align-items: center;
 
-        .search-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .search-container {
+            input {
+                border-style: none;
+            }
 
-            color: var(--spice-text);
-            background-color: transparent;
-
-            padding: 8px;
-            border-radius: 8px;
-            border-style: none;
-
-            &:hover {
-                background-color: var(--spice-main-secondary);
-                cursor: pointer;
+            .search-icon {
+                color: var(--spice-text);
+                background-color: transparent;
+                position: relative;
+                left: 30px;
+                top: 4px;
+                display: inline-block;
             }
         }
     }

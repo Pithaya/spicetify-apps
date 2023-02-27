@@ -1,38 +1,21 @@
-import styles from '../css/app.module.scss';
+import styles from '../../css/app.module.scss';
 import React from 'react';
 import { Play, Search } from 'lucide-react';
-import { LocalTrack } from '@shared';
 
 export interface IProps {
-    tracks: LocalTrack[];
+    onPlayClicked: () => void;
+    searchText: string;
+    onSearchChanged: (value: string) => void;
 }
 
 export function ActionBar(props: IProps) {
-    function play() {
-        (Spicetify.Player as any).origin.play(
-            {
-                uri: 'spotify:internal:local-files',
-                pages: [{ items: props.tracks }],
-            },
-            {},
-            {
-                /*
-                skipTo: {
-                    //uid: 1,
-                    uri: 'spotify:local:Melodic+Taste:Anime+Song+Orchestra+I:Moon+Signal:267',
-                    //index: 1,
-                },*/
-            }
-        );
-    }
-
     return (
         <>
             <div className={`${styles['action-bar']}`}>
                 <button
                     className={styles['play-button']}
                     aria-label="Lecture"
-                    onClick={play}
+                    onClick={props.onPlayClicked}
                 >
                     <Play
                         fill="var(--spice-main)"
@@ -40,20 +23,16 @@ export function ActionBar(props: IProps) {
                     ></Play>
                 </button>
 
-                <div>
+                <div className={styles['controls']}>
                     <div
                         className={styles['search-container']}
                         role="search"
                         aria-expanded="false"
                     >
-                        <Spicetify.ReactComponent.TooltipWrapper
-                            label="Rechercher"
-                            showDelay={200}
-                        >
-                            <button className={styles['search-button']}>
-                                <Search size={18}></Search>
-                            </button>
-                        </Spicetify.ReactComponent.TooltipWrapper>
+                        <div className={styles['search-icon']}>
+                            <Search size={18}></Search>
+                        </div>
+
                         <input
                             role="searchbox"
                             maxLength={80}
@@ -63,7 +42,10 @@ export function ActionBar(props: IProps) {
                             placeholder="Rechercher"
                             aria-hidden="true"
                             tabIndex={-1}
-                            value=""
+                            value={props.searchText}
+                            onChange={(e) =>
+                                props.onSearchChanged(e.target.value)
+                            }
                         />
                     </div>
 

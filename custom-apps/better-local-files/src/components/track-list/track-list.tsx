@@ -1,60 +1,67 @@
+import styles from './css/app.module.scss';
+import React, { useEffect, useMemo, useState } from 'react';
 import { LocalTrack } from '@shared';
-import React, { useState } from 'react';
-import { TrackListHeader } from './track-list-header';
-import { TrackListRow } from './track-list-row';
+import { ActionBar } from './action-bar.component';
+import { TrackListGrid } from './track-list-grid';
+import { playContext, playTrack } from '../helpers/player-helpers';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 export interface IProps {
     tracks: LocalTrack[];
 }
 
 export function TrackList(props: IProps) {
-    const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
-        null
-    );
+    const [onSearchSubject] = useState<Subject<string>>(new Subject<string>());
+    const [search, setSearch] = useState('');
+    const [debounceSearch, setDebounceSearch] = useState('');
 
-    function playURI(uri: string) {
-        (Spicetify.Player as any).origin.play(
-            {
-                uri: 'spotify:internal:local-files',
-                pages: [{ items: props.tracks }],
-            },
-            {},
-            {
-                skipTo: {
-                    uri: uri,
-                },
-            }
-        );
+    useEffect(() => {
+        const subscription = onSearchSubject
+            .asObservable()
+            .pipe(debounceTime(600), distinctUntilChanged())
+            .subscribe((debounced) => setDebounceSearch(debounced));
+
+        return () => subscription.unsubscribe();
+    }, [onSearchSubject]);
+
+    function onSearchChange(value: string) {
+        onSearchSubject.next(value);
+        setSearch(value);
     }
 
-    // TODO: aria from props
+    function filterTracks(tracks: LocalTrack[], search: string) {
+        if (search === '') {
+            return tracks;
+        }
+
+        return tracks.filter((t) => t.name.includes(search));
+    }
+
+    const filteredTracks = useMemo(
+        () => filterTracks(props.tracks, debounceSearch),
+        [props.tracks, debounceSearch]
+    );
+
+    function playUri(uri: string) {
+        playTrack(uri, filteredTracks);
+    }
+
+    function playTracks() {
+        if (filteredTracks.length === 0) {
+            return;
+        }
+
+        playContext(filteredTracks);
+    }
+
     return (
         <>
-            <div
-                role="grid"
-                aria-rowcount={props.tracks.length}
-                aria-colcount={5}
-                aria-label="Titres likés"
-                className="main-trackList-trackList main-trackList-indexable"
-                tabIndex={0}
-            >
-                <TrackListHeader></TrackListHeader>
-
-                <div role="presentation">
-                    <div role="presentation">
-                        {props.tracks.map((track, index) => (
-                            <TrackListRow
-                                key={track.uri}
-                                track={track}
-                                index={index}
-                                selected={selectedTrackUri === track.uri}
-                                onClick={() => setSelectedTrackUri(track.uri)}
-                                onDoubleClick={() => playURI(track.uri)}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <ActionBar
+                onPlayClicked={playTracks}
+                searchText={search}
+                onSearchChanged={onSearchChange}
+            />
+            <TrackListGrid tracks={filteredTracks} onPlayTrack={playUri} />
         </>
     );
 }

@@ -1,4 +1,6 @@
-export const CUSTOM_APP_PATH = '/better-local-files';
+import { TopBarItem } from '../models/top-bar-item';
+
+const CUSTOM_APP_PATH = '/better-local-files';
 
 export class Routes {
     static album = `${CUSTOM_APP_PATH}/album`;
@@ -9,3 +11,21 @@ export class Routes {
 
     static tracks = `${CUSTOM_APP_PATH}`;
 }
+
+export const topBarItems: TopBarItem[] = [
+    {
+        key: 'Tracks',
+        href: Routes.tracks,
+        label: 'Tracks',
+    },
+    {
+        key: 'Albums',
+        href: Routes.albums,
+        label: 'Albums',
+    },
+    {
+        key: 'Artists',
+        href: Routes.artists,
+        label: 'Artists',
+    },
+];

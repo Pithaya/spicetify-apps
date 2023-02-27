@@ -1,79 +1,39 @@
 import styles from './css/app.module.scss';
-import React, { useEffect, useState } from 'react';
-import { LocalFilesApi, LocalTrack } from '@shared';
-import { Header } from './components/header.component';
-import { ActionBar } from './components/action-bar.component';
-import { TrackList } from './components/track-list/track-list';
-import { History } from '@shared';
-import { CUSTOM_APP_PATH, Routes } from './constants/constants';
-import { TopBarItem } from './models/top-bar-item';
-import { TopBarContent } from './components/top-bar/top-bar-content.component';
+import React from 'react';
 import ReactDOM from 'react-dom';
+import { History } from '@shared';
+import { Routes, topBarItems } from './constants/constants';
+import { TopBarContent } from './components/top-bar/top-bar-content.component';
+import { TracksPage } from './components/pages/tracks.page';
+import { AlbumPage } from './components/pages/album.page';
+import { AlbumsPage } from './components/pages/albums.page';
+import { ArtistPage } from './components/pages/artist.page';
+import { ArtistsPage } from './components/pages/artists.page';
 
 function App() {
-    const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
     const history = Spicetify.Platform.History as History;
     const location = history.location;
-
-    const [tracks, setTracks] = useState<LocalTrack[]>([]);
-
-    useEffect(() => {
-        async function getTracks() {
-            const tracks = await api.getTracks();
-            setTracks(tracks);
-        }
-
-        getTracks();
-    }, []);
-
-    const topBarItems: TopBarItem[] = [
-        {
-            key: 'Tracks',
-            href: Routes.tracks,
-            label: 'Tracks',
-        },
-        {
-            key: 'Albums',
-            href: Routes.albums,
-            label: 'Albums',
-        },
-        {
-            key: 'Artists',
-            href: Routes.artists,
-            label: 'Artists',
-        },
-    ];
 
     let currentPage = <></>;
 
     switch (location.pathname) {
         case Routes.tracks:
-            currentPage = (
-                <>
-                    <Header tracksCount={tracks.length} />
-                    <ActionBar tracks={tracks} />
-                    <TrackList tracks={tracks} />
-                </>
-            );
+            currentPage = <TracksPage />;
             break;
         case Routes.album:
-            currentPage = <h1>Album</h1>;
+            currentPage = <AlbumPage />;
             break;
         case Routes.albums:
-            currentPage = <h1>Albums</h1>;
+            currentPage = <AlbumsPage />;
             break;
         case Routes.artist:
-            currentPage = <h1>artist</h1>;
+            currentPage = <ArtistPage />;
             break;
         case Routes.artists:
-            currentPage = <h1>artists</h1>;
+            currentPage = <ArtistsPage />;
             break;
         default:
             history.replace(Routes.tracks);
-    }
-
-    function navigateTo(href: string) {
-        history.push(href);
     }
 
     const topBarContainer = document.querySelector(
@@ -88,9 +48,13 @@ function App() {
             {topBarContainer !== null &&
                 ReactDOM.createPortal(
                     <TopBarContent
-                        onItemClicked={(item) => navigateTo(item.href)}
+                        onItemClicked={(item) => history.push(item.href)}
                         items={topBarItems}
-                        activeItem={topBarItems[0]}
+                        activeItem={
+                            topBarItems.find(
+                                (i) => i.href === location.pathname
+                            ) ?? topBarItems[0]
+                        }
                     />,
                     topBarContainer
                 )}
