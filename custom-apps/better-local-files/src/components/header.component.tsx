@@ -9,7 +9,7 @@ export interface IProps {
 export function Header(props: IProps) {
     return (
         <>
-            <div className={`${styles.header} ${styles.padded}`}>
+            <div className={`${styles.header}`}>
                 <div className={styles['image-container']}>
                     <Folder fill="var(--spice-text)" size={100}></Folder>
                 </div>

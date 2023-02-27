@@ -28,7 +28,7 @@ export function ActionBar(props: IProps) {
 
     return (
         <>
-            <div className={`${styles['action-bar']} ${styles.padded}`}>
+            <div className={`${styles['action-bar']}`}>
                 <button
                     className={styles['play-button']}
                     aria-label="Lecture"
