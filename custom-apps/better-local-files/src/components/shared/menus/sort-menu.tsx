@@ -1,16 +1,17 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { CaretDown } from '../../shared/icons/caret-down';
+import { CaretDown } from '../icons/caret-down';
 import {
     SelectedSortOption,
     SortOption,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { CaretUp } from '../../shared/icons/caret-up';
+import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 
 export interface IProps {
     sortOptions: SortOption[];
     selectedSortOption: SelectedSortOption;
-    setSelectedSortOption: (o: SortOption) => void;
+    setSelectedSortOption: (key: HeaderKey) => void;
 }
 
 export function SortMenu(props: IProps) {
@@ -28,19 +29,21 @@ export function SortMenu(props: IProps) {
             {props.sortOptions.map((o) => (
                 <Spicetify.ReactComponent.MenuItem
                     key={o.key}
-                    onClick={() => props.setSelectedSortOption(o)}
+                    onClick={() => props.setSelectedSortOption(o.key)}
                 >
-                    <span>{o.label}</span>
-                    {props.selectedSortOption.key === o.key &&
-                        (props.selectedSortOption.order === 'asc' ? (
-                            <CaretUp
-                                className={`${styles['sort-menu-caret']}`}
-                            />
-                        ) : (
-                            <CaretDown
-                                className={`${styles['sort-menu-caret']}`}
-                            />
-                        ))}
+                    <div className={`${styles['sort-menu-item']}`}>
+                        <span>{o.label}</span>
+                        {props.selectedSortOption.key === o.key &&
+                            (props.selectedSortOption.order === 'ascending' ? (
+                                <ArrowUp
+                                    className={`${styles['sort-menu-caret']}`}
+                                />
+                            ) : (
+                                <ArrowDown
+                                    className={`${styles['sort-menu-caret']}`}
+                                />
+                            ))}
+                    </div>
                 </Spicetify.ReactComponent.MenuItem>
             ))}
         </Spicetify.ReactComponent.Menu>
@@ -58,7 +61,11 @@ export function SortMenu(props: IProps) {
                 role="button"
                 aria-expanded="false"
             >
-                <span>{props.selectedSortOption.label}</span>
+                <span>
+                    {props.sortOptions.find(
+                        (o) => o.key === props.selectedSortOption.key
+                    )?.label ?? ''}
+                </span>
                 <CaretDown />
             </button>
         </Spicetify.ReactComponent.ContextMenu>

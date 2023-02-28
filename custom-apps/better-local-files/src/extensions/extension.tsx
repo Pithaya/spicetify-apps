@@ -5,5 +5,5 @@ import { registerProxy } from '@shared';
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    //registerProxy(Spicetify.Player.origin, 'origin');
+    //registerProxy(Spicetify.Platform.LocalFilesAPI, 'LocalFilesAPI');
 })();

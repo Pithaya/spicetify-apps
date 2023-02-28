@@ -58,6 +58,14 @@ export type LocalTrack = {
     is19PlusOnly: boolean;
 };
 
+export type LocalTrackSortOption = {
+    field: 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION';
+    order: 'DESC' | 'ASC';
+};
+
 export type LocalFilesApi = {
-    getTracks(): Promise<LocalTrack[]>;
+    getTracks(
+        sort?: LocalTrackSortOption | undefined,
+        search?: string | ''
+    ): Promise<LocalTrack[]>;
 };

@@ -1,10 +1,13 @@
 import { LocalTrack } from '@shared';
 import React, { useState } from 'react';
-import { TrackListHeader } from './track-list-header';
 import { TrackListRow } from './track-list-row';
-import { IProps as SortProps } from '../../tracks/menus/sort-menu';
+import { IProps as SortProps } from '../../shared/menus/sort-menu';
+import {
+    TrackListHeader,
+    TrackListHeaderProps,
+} from '../../shared/track-list/track-list-header';
 
-export interface IProps extends SortProps {
+export interface IProps extends SortProps, TrackListHeaderProps {
     tracks: LocalTrack[];
     onPlayTrack: (uri: string) => void;
 }
@@ -27,9 +30,9 @@ export function TrackListGrid(props: IProps) {
                 tabIndex={0}
             >
                 <TrackListHeader
-                    sortOptions={props.sortOptions}
-                    selectedSortOption={props.selectedSortOption}
-                    setSelectedSortOption={props.setSelectedSortOption}
+                    headers={props.headers}
+                    sortedHeader={props.sortedHeader}
+                    onHeaderClicked={props.onHeaderClicked}
                 ></TrackListHeader>
 
                 <div role="presentation">

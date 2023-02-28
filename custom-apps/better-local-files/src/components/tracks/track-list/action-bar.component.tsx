@@ -5,7 +5,7 @@ import {
     SearchInput,
 } from '../../shared/filters/search-input';
 import { PlayButton } from '../../shared/buttons/play-button';
-import { IProps as SortProps, SortMenu } from '../menus/sort-menu';
+import { IProps as SortProps, SortMenu } from '../../shared/menus/sort-menu';
 
 export interface IProps extends SearchProps, SortProps {
     onPlayClicked: () => void;

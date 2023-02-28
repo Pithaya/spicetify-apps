@@ -1,8 +1,22 @@
+import { HeaderKey } from '../constants/constants';
+
+/**
+ * Sort option to display in the sort dropdown.
+ */
 export interface SortOption {
-    key: string;
+    key: HeaderKey;
     label: string;
 }
 
-export interface SelectedSortOption extends SortOption {
-    order: 'asc' | 'desc';
+/**
+ * The sort order.
+ */
+export type SortOrder = 'ascending' | 'descending';
+
+/**
+ * A selected sort option.
+ */
+export interface SelectedSortOption {
+    key: HeaderKey;
+    order: SortOrder;
 }

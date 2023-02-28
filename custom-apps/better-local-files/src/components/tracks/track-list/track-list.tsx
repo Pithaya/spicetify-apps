@@ -6,14 +6,18 @@ import { playContext, playTrack } from '../../../helpers/player-helpers';
 import {
     SelectedSortOption,
     SortOption,
+    SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
+import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
+import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 
 export interface IProps {
     tracks: LocalTrack[];
 }
 
-// TODO: Sort by date, title, artist and album
-
+/**
+ * Contains the filtering, ordering, and play logic for a list of tracks.
+ */
 export function TrackList(props: IProps) {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -24,21 +28,36 @@ export function TrackList(props: IProps) {
             label: "Date d'ajout",
         },
         {
-            key: 'name',
+            key: 'title',
             label: 'Titre',
-        },
-        {
-            key: 'artist',
-            label: 'Artiste',
         },
         {
             key: 'album',
             label: 'Album',
         },
+        {
+            key: 'duration',
+            label: 'Duration',
+        },
+    ];
+
+    const headers: TrackListHeaderOption[] = [
+        {
+            key: 'title',
+            label: 'Titre',
+        },
+        {
+            key: 'album',
+            label: 'Album',
+        },
+        {
+            key: 'date',
+            label: 'Ajouté le',
+        },
     ];
 
     const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'asc' });
+        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
     function filterTracks(tracks: LocalTrack[], search: string) {
         if (search === '') {
@@ -55,8 +74,8 @@ export function TrackList(props: IProps) {
         );
     }
 
-    function sort(first: any, second: any, order: 'asc' | 'desc') {
-        const type = order === 'desc' ? -1 : 1;
+    function sort(first: any, second: any, order: SortOrder) {
+        const type = order === 'descending' ? -1 : 1;
 
         if (first > second) {
             return 1 * type;
@@ -69,20 +88,14 @@ export function TrackList(props: IProps) {
     }
 
     function orderTracks(tracks: LocalTrack[], option: SelectedSortOption) {
-        // TODO: type strings
         switch (option.key) {
             case 'date':
                 return tracks.sort((x, y) =>
                     sort(x.addedAt, y.addedAt, option.order)
                 );
-            case 'name':
+            case 'title':
                 return tracks.sort((x, y) =>
                     sort(x.name, y.name, option.order)
-                );
-            case 'artist':
-                // TODO: How to sort ?
-                return tracks.sort((x, y) =>
-                    sort(x.artists[0].name, y.artists[0].name, option.order)
                 );
             case 'album':
                 return tracks.sort((x, y) =>
@@ -115,8 +128,18 @@ export function TrackList(props: IProps) {
         playContext(filteredTracks);
     }
 
-    function toggleOrder(order: string): 'asc' | 'desc' {
-        return order === 'asc' ? 'desc' : 'asc';
+    function toggleOrder(order: SortOrder): SortOrder {
+        return order === 'ascending' ? 'descending' : 'ascending';
+    }
+
+    function handleSortOptionChange(headerKey: HeaderKey): void {
+        setSelectedSortOption((previous) => ({
+            key: headerKey,
+            order:
+                previous.key === headerKey
+                    ? toggleOrder(previous.order)
+                    : 'ascending',
+        }));
     }
 
     return (
@@ -129,30 +152,17 @@ export function TrackList(props: IProps) {
                 setDebouncedSearch={setDebouncedSearch}
                 sortOptions={sortOptions}
                 selectedSortOption={selectedSortOption}
-                setSelectedSortOption={(o) =>
-                    setSelectedSortOption((previous) => ({
-                        ...o,
-                        order:
-                            previous.key === o.key
-                                ? toggleOrder(previous.order)
-                                : 'asc',
-                    }))
-                }
+                setSelectedSortOption={handleSortOptionChange}
             />
             <TrackListGrid
                 tracks={orderedTracks}
                 onPlayTrack={playUri}
                 sortOptions={sortOptions}
                 selectedSortOption={selectedSortOption}
-                setSelectedSortOption={(o) =>
-                    setSelectedSortOption((previous) => ({
-                        ...o,
-                        order:
-                            previous.key === o.key
-                                ? toggleOrder(previous.order)
-                                : 'asc',
-                    }))
-                }
+                setSelectedSortOption={handleSortOptionChange}
+                headers={headers}
+                onHeaderClicked={handleSortOptionChange}
+                sortedHeader={selectedSortOption}
             />
         </>
     );

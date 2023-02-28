@@ -1,6 +1,7 @@
 import { LocalFilesApi, LocalTrack } from '@shared';
+import { Folder } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { Header } from '../track-list/header.component';
+import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
 
 export function TracksPage() {
@@ -19,7 +20,16 @@ export function TracksPage() {
 
     return (
         <>
-            <Header tracksCount={tracks.length} />
+            <Header
+                image={<Folder fill="var(--spice-text)" size={100}></Folder>}
+                title={'Local files'}
+                additionalText={
+                    <>
+                        <p>Fichiers de votre ordinateur</p>
+                        <p>{tracks.length} titres</p>
+                    </>
+                }
+            />
             <TrackList tracks={tracks} />
         </>
     );

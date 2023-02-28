@@ -29,3 +29,5 @@ export const topBarItems: TopBarItem[] = [
         label: 'Artists',
     },
 ];
+
+export type HeaderKey = 'title' | 'album' | 'date' | 'duration';

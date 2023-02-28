@@ -169,6 +169,12 @@
     margin-inline-start: 8px;
 }
 
+.sort-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .main-cardHeader-link {
     font-size: 1rem;
     font-weight: 700;

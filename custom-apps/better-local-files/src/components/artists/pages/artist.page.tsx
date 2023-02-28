@@ -4,10 +4,26 @@ import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { ArtistItem } from 'custom-apps/better-local-files/src/models/artist-item';
 import { AlbumItem } from 'custom-apps/better-local-files/src/models/album-item';
-import { ArtistHeader } from '../track-list/artist-header.component';
 import { ArtistTrackList } from '../track-list/artist-track-list';
+import { Header } from '../../shared/header';
 
 // TODO: Sort by name, album (default)
+
+function ArtistHeader(props: { artist: ArtistItem }) {
+    return (
+        <Header
+            image={
+                <img
+                    src={props.artist.image}
+                    alt="artist image"
+                    className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
+                />
+            }
+            subtitle="Artiste"
+            title={props.artist.name}
+        />
+    );
+}
 
 export function ArtistPage() {
     const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
