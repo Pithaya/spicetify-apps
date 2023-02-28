@@ -142,7 +142,21 @@ export function TrackList(props: IProps) {
                     }))
                 }
             />
-            <TrackListGrid tracks={orderedTracks} onPlayTrack={playUri} />
+            <TrackListGrid
+                tracks={orderedTracks}
+                onPlayTrack={playUri}
+                sortOptions={sortOptions}
+                selectedSortOption={selectedSortOption}
+                setSelectedSortOption={(o) =>
+                    setSelectedSortOption((previous) => ({
+                        ...o,
+                        order:
+                            previous.key === o.key
+                                ? toggleOrder(previous.order)
+                                : 'asc',
+                    }))
+                }
+            />
         </>
     );
 }

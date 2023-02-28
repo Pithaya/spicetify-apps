@@ -1,13 +1,23 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { CaretDown } from '../../shared/icons/caret-down';
+import { CaretUp } from '../../shared/icons/caret-up';
+import { IProps as SortProps } from '../../tracks/menus/sort-menu';
 
-export interface IProps {}
+export interface IProps extends SortProps {}
 
 // TODO: i18n
 // TODO: aria sort
 
 export function TrackListHeader(props: IProps) {
+    function getCaret() {
+        return props.selectedSortOption.order === 'asc' ? (
+            <CaretUp className="main-trackList-arrow" />
+        ) : (
+            <CaretDown className="main-trackList-arrow" />
+        );
+    }
+
     return (
         <div
             className={`${styles.upper} main-trackList-trackListHeader`}
@@ -44,6 +54,9 @@ export function TrackListHeader(props: IProps) {
                         >
                             titre
                         </span>
+                        {(props.selectedSortOption.key === 'name' ||
+                            props.selectedSortOption.key === 'artist') &&
+                            getCaret()}
                     </button>
                 </div>
                 <div
@@ -63,6 +76,7 @@ export function TrackListHeader(props: IProps) {
                         >
                             album
                         </span>
+                        {props.selectedSortOption.key === 'album' && getCaret()}
                     </button>
                 </div>
                 <div
@@ -82,7 +96,7 @@ export function TrackListHeader(props: IProps) {
                         >
                             Ajouté le
                         </span>
-                        <CaretDown className="main-trackList-arrow" />
+                        {props.selectedSortOption.key === 'date' && getCaret()}
                     </button>
                 </div>
                 <div
@@ -103,7 +117,7 @@ export function TrackListHeader(props: IProps) {
                             aria-hidden="true"
                             viewBox="0 0 16 16"
                             data-encore-id="icon"
-                            className="Svg-sc-ytk21e-0 uPxdw"
+                            fill="var(--spice-subtext)"
                         >
                             <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8z"></path>
                             <path d="M8 3.25a.75.75 0 01.75.75v3.25H11a.75.75 0 010 1.5H7.25V4A.75.75 0 018 3.25z"></path>

@@ -5,6 +5,7 @@ import {
     SelectedSortOption,
     SortOption,
 } from 'custom-apps/better-local-files/src/models/sort-option';
+import { CaretUp } from '../../shared/icons/caret-up';
 
 export interface IProps {
     sortOptions: SortOption[];
@@ -30,6 +31,16 @@ export function SortMenu(props: IProps) {
                     onClick={() => props.setSelectedSortOption(o)}
                 >
                     <span>{o.label}</span>
+                    {props.selectedSortOption.key === o.key &&
+                        (props.selectedSortOption.order === 'asc' ? (
+                            <CaretUp
+                                className={`${styles['sort-menu-caret']}`}
+                            />
+                        ) : (
+                            <CaretDown
+                                className={`${styles['sort-menu-caret']}`}
+                            />
+                        ))}
                 </Spicetify.ReactComponent.MenuItem>
             ))}
         </Spicetify.ReactComponent.Menu>
