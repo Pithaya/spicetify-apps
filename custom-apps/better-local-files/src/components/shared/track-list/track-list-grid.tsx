@@ -1,31 +1,29 @@
 import { LocalTrack } from '@shared';
 import React, { useState } from 'react';
 import { TrackListRow } from './track-list-row';
-import { IProps as SortProps } from '../../shared/menus/sort-menu';
-import {
-    TrackListHeader,
-    TrackListHeaderProps,
-} from '../../shared/track-list/track-list-header';
+import { IProps as SortProps } from '../filters/sort-menu';
+import { TrackListHeader, TrackListHeaderProps } from './track-list-header';
 
-export interface IProps extends SortProps, TrackListHeaderProps {
+export interface TrackListGridProps extends SortProps, TrackListHeaderProps {
     tracks: LocalTrack[];
+    gridLabel: string;
+    activeTrackUri: string;
     onPlayTrack: (uri: string) => void;
 }
 
-export function TrackListGrid(props: IProps) {
+export function TrackListGrid(props: TrackListGridProps) {
     // TODO: Multi selection
     const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
         null
     );
 
-    // TODO: aria from props
     return (
         <>
             <div
                 role="grid"
                 aria-rowcount={props.tracks.length}
-                aria-colcount={5}
-                aria-label="Titres likés"
+                aria-colcount={props.headers.length + 2}
+                aria-label={props.gridLabel}
                 className="main-trackList-trackList main-trackList-indexable"
                 tabIndex={0}
             >
@@ -43,6 +41,7 @@ export function TrackListGrid(props: IProps) {
                                 track={track}
                                 index={index}
                                 selected={selectedTrackUri === track.uri}
+                                active={props.activeTrackUri === track.uri}
                                 onClick={() => setSelectedTrackUri(track.uri)}
                                 onDoubleClick={() =>
                                     props.onPlayTrack(track.uri)

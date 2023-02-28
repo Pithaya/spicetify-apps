@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import styles from '../../../css/app.module.scss';
+import React, { useEffect, useMemo, useState } from 'react';
 import { LocalTrack } from '@shared';
-import { ActionBar } from './action-bar.component';
-import { TrackListGrid } from './track-list-grid';
+import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import {
     SelectedSortOption,
@@ -10,6 +10,9 @@ import {
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import { SortMenu } from '../../shared/filters/sort-menu';
+import { SearchInput } from '../../shared/filters/search-input';
+import { PlayButton } from '../../shared/buttons/play-button';
 
 export interface IProps {
     tracks: LocalTrack[];
@@ -21,6 +24,25 @@ export interface IProps {
 export function TrackList(props: IProps) {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [playingTrackUri, setPlayingTrackUri] = useState(
+        Spicetify.Player.data.track?.uri ?? ''
+    );
+
+    useEffect(() => {
+        function handleSongChange(event?: Event) {
+            setPlayingTrackUri(
+                ((event as any)?.data as Spicetify.PlayerState).track?.uri ?? ''
+            );
+        }
+
+        Spicetify.Player.addEventListener('songchange', handleSongChange);
+
+        return () =>
+            Spicetify.Player.removeEventListener(
+                'songchange',
+                handleSongChange
+            );
+    });
 
     const sortOptions: SortOption[] = [
         {
@@ -142,21 +164,33 @@ export function TrackList(props: IProps) {
         }));
     }
 
+    // TODO: Action bar as prop inside the div
     return (
         <>
-            <ActionBar
-                onPlayClicked={playTracks}
-                search={search}
-                setSearch={setSearch}
-                debouncedSearch={debouncedSearch}
-                setDebouncedSearch={setDebouncedSearch}
-                sortOptions={sortOptions}
-                selectedSortOption={selectedSortOption}
-                setSelectedSortOption={handleSortOptionChange}
-            />
+            <div className={`${styles['action-bar']}`}>
+                <PlayButton size={60} iconSize={24} onClick={playTracks} />
+
+                <div className={styles['controls']}>
+                    <SearchInput
+                        search={search}
+                        setSearch={setSearch}
+                        debouncedSearch={debouncedSearch}
+                        setDebouncedSearch={setDebouncedSearch}
+                    />
+
+                    <SortMenu
+                        sortOptions={sortOptions}
+                        selectedSortOption={selectedSortOption}
+                        setSelectedSortOption={handleSortOptionChange}
+                    />
+                </div>
+            </div>
+
             <TrackListGrid
                 tracks={orderedTracks}
+                gridLabel="Local tracks"
                 onPlayTrack={playUri}
+                activeTrackUri={playingTrackUri}
                 sortOptions={sortOptions}
                 selectedSortOption={selectedSortOption}
                 setSelectedSortOption={handleSortOptionChange}

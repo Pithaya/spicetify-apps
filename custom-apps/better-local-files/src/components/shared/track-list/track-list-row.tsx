@@ -3,7 +3,7 @@ import { Routes } from 'custom-apps/better-local-files/src/constants/constants';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import React, { useRef, useState } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { RowMenu } from '../menus/row-menu';
+import { RowMenu } from '../../tracks/menus/row-menu';
 
 const locale: Locale = (Spicetify as any).Locale;
 
@@ -11,12 +11,12 @@ export interface IProps {
     track: LocalTrack;
     index: number;
     selected: boolean;
+    active: boolean;
     onClick: () => void;
     onDoubleClick: () => void;
 }
 
 export function TrackListRow(props: IProps) {
-    const [active, setActive] = useState(false);
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
 
@@ -52,7 +52,7 @@ export function TrackListRow(props: IProps) {
                     >
                         <div
                             className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${
-                                active ? 'main-trackList-active' : ''
+                                props.active ? 'main-trackList-active' : ''
                             } ${
                                 props.selected ? 'main-trackList-selected' : ''
                             }`}
