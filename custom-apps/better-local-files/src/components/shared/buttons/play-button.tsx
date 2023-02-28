@@ -19,7 +19,10 @@ export function PlayButton(props: IProps) {
         <button
             className={styles['play-button']}
             aria-label="Lecture"
-            onClick={props.onClick}
+            onClick={(e) => {
+                e.stopPropagation();
+                props.onClick();
+            }}
             style={style}
         >
             <Play

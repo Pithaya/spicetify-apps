@@ -69,8 +69,6 @@ export function TrackList(props: IProps) {
     }
 
     function orderTracks(tracks: LocalTrack[], option: SelectedSortOption) {
-        console.log('ORDER');
-
         // TODO: type strings
         switch (option.key) {
             case 'date':
@@ -121,7 +119,6 @@ export function TrackList(props: IProps) {
         return order === 'asc' ? 'desc' : 'asc';
     }
 
-    console.log(orderedTracks);
     return (
         <>
             <ActionBar
