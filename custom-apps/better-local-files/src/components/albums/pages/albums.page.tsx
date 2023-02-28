@@ -20,6 +20,7 @@ export function AlbumsPage() {
         async function getTracks() {
             const tracks = await api.getTracks();
 
+            // TODO: Refactor into a 'getAlbumsFromTracks' function
             const albumMap = new Map<string, AlbumItem>();
 
             for (const track of tracks) {
