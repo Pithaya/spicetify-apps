@@ -1,16 +1,14 @@
 import { LocalTrack } from '@shared';
 import React, { useState } from 'react';
-import { TrackListHeader } from './track-list-header';
-import { TrackListRow } from './track-list-row';
-import { IProps as SortProps } from '../../tracks/menus/sort-menu';
+import { ArtistTrackListHeader } from './artist-track-list-header';
+import { ArtistTrackListRow } from './artist-track-list-row';
 
-export interface IProps extends SortProps {
+export interface IProps {
     tracks: LocalTrack[];
     onPlayTrack: (uri: string) => void;
 }
 
-export function TrackListGrid(props: IProps) {
-    // TODO: Multi selection
+export function ArtistTrackListGrid(props: IProps) {
     const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
         null
     );
@@ -26,16 +24,12 @@ export function TrackListGrid(props: IProps) {
                 className="main-trackList-trackList main-trackList-indexable"
                 tabIndex={0}
             >
-                <TrackListHeader
-                    sortOptions={props.sortOptions}
-                    selectedSortOption={props.selectedSortOption}
-                    setSelectedSortOption={props.setSelectedSortOption}
-                ></TrackListHeader>
+                <ArtistTrackListHeader></ArtistTrackListHeader>
 
                 <div role="presentation">
                     <div role="presentation">
                         {props.tracks.map((track, index) => (
-                            <TrackListRow
+                            <ArtistTrackListRow
                                 key={track.uri}
                                 track={track}
                                 index={index}
