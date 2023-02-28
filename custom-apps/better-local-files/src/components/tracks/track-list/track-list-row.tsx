@@ -22,6 +22,21 @@ export function TrackListRow(props: IProps) {
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
+    const imageFallback = `
+        <div class="main-trackList-rowImage main-trackList-rowImageFallback">
+            <svg
+                role="img"
+                height="16"
+                width="16"
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                data-encore-id="icon"
+                fill="currentColor"
+            >
+                <path d="M10 2v9.5a2.75 2.75 0 11-2.75-2.75H8.5V2H10zm-1.5 8.25H7.25A1.25 1.25 0 108.5 11.5v-1.25z"></path>
+            </svg>
+        </div>`;
+
     return (
         <div ref={rowRef}>
             {visible ? (
@@ -70,7 +85,7 @@ export function TrackListRow(props: IProps) {
                                             className="main-trackList-rowPlayPauseIcon"
                                             viewBox="0 0 24 24"
                                             data-encore-id="icon"
-                                            fill="var(--spice-text)"
+                                            fill="currentColor"
                                         >
                                             <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
                                         </svg>
@@ -92,7 +107,12 @@ export function TrackListRow(props: IProps) {
                                     className="main-image-image main-trackList-rowImage main-image-loaded"
                                     width="40"
                                     height="40"
+                                    onError={(e) =>
+                                        (e.currentTarget.outerHTML =
+                                            imageFallback)
+                                    }
                                 />
+
                                 <div className="main-trackList-rowMainContent">
                                     <div
                                         dir="auto"
@@ -189,6 +209,7 @@ export function TrackListRow(props: IProps) {
                                         aria-hidden="true"
                                         viewBox="0 0 16 16"
                                         data-encore-id="icon"
+                                        fill="currentColor"
                                     >
                                         <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
                                     </svg>
