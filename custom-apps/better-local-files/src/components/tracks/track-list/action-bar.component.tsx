@@ -5,9 +5,9 @@ import {
     SearchInput,
 } from '../../shared/filters/search-input';
 import { PlayButton } from '../../shared/buttons/play-button';
-import { SortMenu } from '../menus/sort-menu';
+import { IProps as SortProps, SortMenu } from '../menus/sort-menu';
 
-export interface IProps extends SearchProps {
+export interface IProps extends SearchProps, SortProps {
     onPlayClicked: () => void;
 }
 
@@ -29,7 +29,11 @@ export function ActionBar(props: IProps) {
                         setDebouncedSearch={props.setDebouncedSearch}
                     />
 
-                    <SortMenu />
+                    <SortMenu
+                        sortOptions={props.sortOptions}
+                        selectedSortOption={props.selectedSortOption}
+                        setSelectedSortOption={props.setSelectedSortOption}
+                    />
                 </div>
             </div>
         </>

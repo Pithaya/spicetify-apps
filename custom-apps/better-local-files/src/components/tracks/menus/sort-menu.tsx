@@ -1,8 +1,18 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { CaretDown } from '../../shared/icons/caret-down';
+import {
+    SelectedSortOption,
+    SortOption,
+} from 'custom-apps/better-local-files/src/models/sort-option';
 
-export function SortMenu() {
+export interface IProps {
+    sortOptions: SortOption[];
+    selectedSortOption: SelectedSortOption;
+    setSelectedSortOption: (o: SortOption) => void;
+}
+
+export function SortMenu(props: IProps) {
     const menu = (
         <Spicetify.ReactComponent.Menu>
             <li>
@@ -14,14 +24,14 @@ export function SortMenu() {
                 </span>
             </li>
 
-            <Spicetify.ReactComponent.MenuItem>
-                <span
-                    dir="auto"
-                    //className="ellipsis-one-line main-contextMenu-menuItemLabel"
+            {props.sortOptions.map((o) => (
+                <Spicetify.ReactComponent.MenuItem
+                    key={o.key}
+                    onClick={() => props.setSelectedSortOption(o)}
                 >
-                    Date d'ajout
-                </span>
-            </Spicetify.ReactComponent.MenuItem>
+                    <span>{o.label}</span>
+                </Spicetify.ReactComponent.MenuItem>
+            ))}
         </Spicetify.ReactComponent.Menu>
     );
 
@@ -37,7 +47,7 @@ export function SortMenu() {
                 role="button"
                 aria-expanded="false"
             >
-                <span>Date d'ajout</span>
+                <span>{props.selectedSortOption.label}</span>
                 <CaretDown />
             </button>
         </Spicetify.ReactComponent.ContextMenu>
