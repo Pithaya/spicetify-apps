@@ -1,16 +1,20 @@
 import { LocalTrack } from '@shared';
 import React, { useState } from 'react';
 import { TrackListRow } from './track-list-row';
-import { IProps as SortProps } from '../filters/sort-menu';
 import { TrackListHeader, TrackListHeaderProps } from './track-list-header';
+import { TrackListRowImageTitle } from './track-list-row-image-title';
+import { TrackListRowAlbumLink } from './track-list-row-album-link';
 
-export interface TrackListGridProps extends SortProps, TrackListHeaderProps {
+export interface TrackListGridProps extends TrackListHeaderProps {
     tracks: LocalTrack[];
     gridLabel: string;
     activeTrackUri: string;
     onPlayTrack: (uri: string) => void;
 }
 
+/**
+ * Contains the track list header and rows.
+ */
 export function TrackListGrid(props: TrackListGridProps) {
     // TODO: Multi selection
     const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
@@ -46,7 +50,13 @@ export function TrackListGrid(props: TrackListGridProps) {
                                 onDoubleClick={() =>
                                     props.onPlayTrack(track.uri)
                                 }
-                            />
+                            >
+                                <TrackListRowImageTitle track={track} />
+                                <TrackListRowAlbumLink track={track} />
+                                <span>
+                                    {track.addedAt.toLocaleDateString()}
+                                </span>
+                            </TrackListRow>
                         ))}
                     </div>
                 </div>

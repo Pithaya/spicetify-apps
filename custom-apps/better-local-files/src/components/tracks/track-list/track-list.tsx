@@ -191,9 +191,6 @@ export function TrackList(props: IProps) {
                 gridLabel="Local tracks"
                 onPlayTrack={playUri}
                 activeTrackUri={playingTrackUri}
-                sortOptions={sortOptions}
-                selectedSortOption={selectedSortOption}
-                setSelectedSortOption={handleSortOptionChange}
                 headers={headers}
                 onHeaderClicked={handleSortOptionChange}
                 sortedHeader={selectedSortOption}
