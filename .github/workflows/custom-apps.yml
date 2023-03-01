@@ -19,14 +19,14 @@ jobs:
     - name: Create deploy folder
       run: mkdir deploy
     - name: Copy manifest
-      run: cp manifest.json ./deploy/manifest.json
+      run: cp ./custom-apps/manifest.json ./custom-apps/deploy/manifest.json
     - name: Copy Readme
-      run: cp README.md ./deploy/README.md
+      run: cp ./custom-apps/README.md ./custom-apps/deploy/README.md
     - name: Deploy
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: git@github.com:Pithaya/spicetify-apps-dist.git
         BRANCH: main
-        FOLDER: ./deploy
+        FOLDER: ./custom-apps/deploy
         SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
       
