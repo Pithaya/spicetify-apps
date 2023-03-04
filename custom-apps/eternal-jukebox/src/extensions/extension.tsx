@@ -12,15 +12,23 @@ import { Jukebox } from '../models/jukebox';
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
-
-    const element = await waitForElement('.player-controls__right');
-
     window.jukebox = new Jukebox();
 
-    // TODO: createRoot + root.render() if React updates to v18
-    reactDom.render(
-        reactDom.createPortal(<PlaybarButton />, element),
-        document.createElement('div')
-    );
+    try {
+        const element = await waitForElement('.player-controls__right', 5000);
+
+        const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
+
+        // TODO: createRoot + root.render() if React updates to v18
+        reactDom.render(
+            reactDom.createPortal(<PlaybarButton />, element),
+            document.createElement('div')
+        );
+    } catch (error) {
+        console.error(error);
+        Spicetify.showNotification(
+            'Failed to register the eternal jukebox playbar button',
+            true
+        );
+    }
 })();
