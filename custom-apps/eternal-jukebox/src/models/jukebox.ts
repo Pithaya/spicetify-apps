@@ -11,7 +11,7 @@ import { JukeboxSettings } from './jukebox-settings.js';
 import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
-import { getAudioAnalysis, getId } from '@shared';
+import { AudioAnalysis, getAudioAnalysis, getId } from '@shared';
 
 /**
  * Global class to control the jukebox.
@@ -123,16 +123,37 @@ export class Jukebox {
         }
 
         Spicetify.showNotification('Fetching analysis for song...');
-        const uri = Spicetify.URI.fromString(currentTrack.uri);
-        const id = getId(uri);
-        const analysis = await getAudioAnalysis(id);
 
-        if (analysis === null) {
-            Spicetify.showNotification(
-                'No analysis available for this track.',
-                true
-            );
-            this.disable();
+        const uri = Spicetify.URI.fromString(currentTrack.uri);
+
+        if (Spicetify.URI.isLocalTrack(uri)) {
+            this.disableWithError('No analysis available for local tracks.');
+            return;
+        }
+
+        if (Spicetify.URI.isEpisode(uri)) {
+            this.disableWithError('No analysis available for shows.');
+            return;
+        }
+
+        const id = getId(uri);
+
+        if (id === null) {
+            this.disableWithError("Couldn't get track id.");
+            return;
+        }
+
+        let analysis: AudioAnalysis | null = null;
+
+        try {
+            analysis = await getAudioAnalysis(id);
+        } catch {
+            // Do nothing
+        } finally {
+            if (analysis === null) {
+                this.disableWithError('No analysis available for this track.');
+                return;
+            }
         }
 
         // Preprocess the track
@@ -159,5 +180,10 @@ export class Jukebox {
             })
         );
         this.driver.start();
+    }
+
+    private disableWithError(error: string): void {
+        Spicetify.showNotification(error, true);
+        this.disable();
     }
 }
