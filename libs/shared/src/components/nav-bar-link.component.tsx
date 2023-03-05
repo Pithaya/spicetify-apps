@@ -1,13 +1,13 @@
 import { History, HistoryEntry } from '../platform';
 import React, { useEffect, useState } from 'react';
 
-export interface IProps {
+export interface NavBarLinkProps {
     icon: JSX.Element;
     href: string;
     label: string;
 }
 
-export function NavBarLink(props: IProps) {
+export function NavBarLink(props: NavBarLinkProps) {
     const history = Spicetify.Platform.History as History;
     const initialActive = history.location.pathname === props.href;
 

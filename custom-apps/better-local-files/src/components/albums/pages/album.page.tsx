@@ -5,6 +5,7 @@ import { AlbumItem } from '../../../models/album-item';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
 import { Header } from '../../shared/header';
+import { getTranslatedDuration } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 function AlbumHeader(props: { album: AlbumItem }) {
     return (
@@ -51,7 +52,7 @@ function AlbumHeader(props: { album: AlbumItem }) {
                         {props.album.tracks.length} titres
                     </span>
                     <span className="main-entityHeader-metaDataText">
-                        {Spicetify.Player.formatTime(
+                        {getTranslatedDuration(
                             props.album.tracks
                                 .map((t) => t.duration.milliseconds)
                                 .reduce((total, current) => total + current)

@@ -3,6 +3,8 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { Search } from 'lucide-react';
 import styles from '../../../css/app.module.scss';
 
+// TODO: clear button
+
 export interface IProps {
     search: string;
     setSearch: (value: string) => void;

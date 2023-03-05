@@ -10,6 +10,7 @@ import {
 import { TrackListRowTitle } from '../../shared/track-list/track-list-row-title';
 import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { DiscDivider } from './disc-divider';
 
 export interface IProps {
     tracks: LocalTrack[];
@@ -44,50 +45,7 @@ export function AlbumTrackList(props: IProps) {
             i++
         ) {
             disks.push({
-                headerRow: (
-                    <div
-                        className="main-trackList-trackListRowGrid main-trackList-discRow"
-                        role="presentation"
-                    >
-                        <div
-                            className="main-trackList-rowSectionIndex"
-                            role="gridcell"
-                            aria-colindex={1}
-                            tabIndex={-1}
-                        >
-                            <div className="main-trackList-rowMarker">
-                                <span className="main-trackList-icon">
-                                    <svg
-                                        role="img"
-                                        height="16"
-                                        width="16"
-                                        aria-hidden="true"
-                                        viewBox="0 0 16 16"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"></path>
-                                        <path d="M8 6.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM5 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0z"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                        <div
-                            className="main-trackList-rowSectionStart"
-                            role="gridcell"
-                            aria-colindex={2}
-                            tabIndex={-1}
-                        >
-                            <div className="main-trackList-rowMainContent">
-                                <div
-                                    dir="auto"
-                                    className="main-trackList-rowTitle main-trackList-discTitle standalone-ellipsis-one-line"
-                                >
-                                    Disque&nbsp;{i}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ),
+                headerRow: <DiscDivider discNumber={i} />,
                 tracks: props.tracks
                     .filter((t) => t.discNumber === i)
                     .sort((t1, t2) =>
