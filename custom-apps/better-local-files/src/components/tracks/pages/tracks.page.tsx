@@ -23,6 +23,7 @@ export function TracksPage() {
             <Header
                 image={<Folder fill="var(--spice-text)" size={100}></Folder>}
                 title={'Local files'}
+                titleFontSize="6rem"
                 additionalText={
                     <>
                         <p>Fichiers de votre ordinateur</p>

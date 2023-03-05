@@ -8,20 +8,27 @@ import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constant
 
 export interface TrackListHeaderProps {
     headers: TrackListHeaderOption[];
-    sortedHeader: SelectedSortOption;
-    onHeaderClicked: (key: HeaderKey) => void;
+    sortedHeader?: SelectedSortOption;
+    onHeaderClicked?: (key: HeaderKey) => void;
 }
 
 // TODO: i18n
 
 export function TrackListHeader(props: TrackListHeaderProps) {
     function getCaret() {
+        if (props.sortedHeader === undefined) {
+            return <></>;
+        }
+
         return props.sortedHeader.order === 'ascending' ? (
             <CaretUp className="main-trackList-arrow" />
         ) : (
             <CaretDown className="main-trackList-arrow" />
         );
     }
+
+    const sortableClass =
+        props.sortedHeader !== undefined ? 'main-trackList-sortable' : '';
 
     return (
         <div
@@ -54,21 +61,26 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                         role="columnheader"
                         aria-colindex={index + 2}
                         aria-sort={
+                            props.sortedHeader &&
                             props.sortedHeader.key === header.key
                                 ? props.sortedHeader.order
                                 : 'none'
                         }
                         tabIndex={-1}
-                        onClick={() => props.onHeaderClicked(header.key)}
+                        onClick={() =>
+                            props.onHeaderClicked &&
+                            props.onHeaderClicked(header.key)
+                        }
                     >
                         <button
-                            className="main-trackList-column main-trackList-sortable"
+                            className={`main-trackList-column ${sortableClass}`}
                             tabIndex={-1}
                         >
                             <span className="standalone-ellipsis-one-line">
                                 {header.label}
                             </span>
-                            {props.sortedHeader.key === header.key &&
+                            {props.sortedHeader &&
+                                props.sortedHeader.key === header.key &&
                                 getCaret()}
                         </button>
                     </div>
@@ -80,11 +92,14 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                     aria-colindex={props.headers.length + 2}
                     aria-sort="none"
                     tabIndex={-1}
-                    onClick={() => props.onHeaderClicked('duration')}
+                    onClick={() =>
+                        props.onHeaderClicked &&
+                        props.onHeaderClicked('duration')
+                    }
                 >
                     <div
                         aria-label="durée"
-                        className="main-trackList-column main-trackList-durationHeader main-trackList-sortable"
+                        className={`main-trackList-column main-trackList-durationHeader ${sortableClass}`}
                     >
                         <svg
                             role="img"
@@ -98,7 +113,9 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                             <path d="M8 3.25a.75.75 0 01.75.75v3.25H11a.75.75 0 010 1.5H7.25V4A.75.75 0 018 3.25z"></path>
                         </svg>
                     </div>
-                    {props.sortedHeader.key === 'duration' && getCaret()}
+                    {props.sortedHeader &&
+                        props.sortedHeader.key === 'duration' &&
+                        getCaret()}
                 </div>
             </div>
         </div>

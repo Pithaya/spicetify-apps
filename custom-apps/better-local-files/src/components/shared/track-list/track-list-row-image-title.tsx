@@ -1,5 +1,6 @@
 import { LocalTrack } from '@shared';
 import React from 'react';
+import { TrackListRowTitle } from './track-list-row-title';
 
 // TODO: Only relevant props
 interface TrackListRowImageTitleProps {
@@ -35,22 +36,8 @@ export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
                 height="40"
                 onError={(e) => (e.currentTarget.outerHTML = imageFallback)}
             />
-            <div className="main-trackList-rowMainContent">
-                <div
-                    dir="auto"
-                    className="main-trackList-rowTitle standalone-ellipsis-one-line"
-                >
-                    {props.track.name}
-                </div>
-                <span className="main-trackList-rowSubTitle standalone-ellipsis-one-line">
-                    {props.track.artists.map((a) => (
-                        // TODO: navigate
-                        <a draggable="true" dir="auto" href="#" tabIndex={-1}>
-                            {a.name}
-                        </a>
-                    ))}
-                </span>
-            </div>
+
+            <TrackListRowTitle track={props.track} withArtists={true} />
         </>
     );
 }

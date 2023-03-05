@@ -26,6 +26,7 @@
         border: none;
         border-radius: 8px;
         background-color: #202f72;
+        min-width: 232px;
         width: 232px;
         height: 232px;
 
@@ -44,7 +45,7 @@
 
         h1 {
             font-weight: 900;
-            font-size: 6rem;
+            font-size: 3vw;
         }
     }
 }
@@ -180,4 +181,13 @@
     font-weight: 700;
     padding-block-end: 4px;
     color: var(--spice-text);
+}
+
+.flex-centered {
+    display: flex;
+    align-items: center;
+}
+
+.action-bar-button-container {
+    column-gap: 20px;
 }

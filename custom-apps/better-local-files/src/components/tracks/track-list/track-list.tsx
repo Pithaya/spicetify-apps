@@ -13,6 +13,10 @@ import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constant
 import { SortMenu } from '../../shared/filters/sort-menu';
 import { SearchInput } from '../../shared/filters/search-input';
 import { PlayButton } from '../../shared/buttons/play-button';
+import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
+import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
+import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
+import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 
 export interface IProps {
     tracks: LocalTrack[];
@@ -24,25 +28,6 @@ export interface IProps {
 export function TrackList(props: IProps) {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [playingTrackUri, setPlayingTrackUri] = useState(
-        Spicetify.Player.data.track?.uri ?? ''
-    );
-
-    useEffect(() => {
-        function handleSongChange(event?: Event) {
-            setPlayingTrackUri(
-                ((event as any)?.data as Spicetify.PlayerState).track?.uri ?? ''
-            );
-        }
-
-        Spicetify.Player.addEventListener('songchange', handleSongChange);
-
-        return () =>
-            Spicetify.Player.removeEventListener(
-                'songchange',
-                handleSongChange
-            );
-    });
 
     const sortOptions: SortOption[] = [
         {
@@ -94,19 +79,6 @@ export function TrackList(props: IProps) {
                     a.name.toLowerCase().includes(search.toLowerCase())
                 )
         );
-    }
-
-    function sort(first: any, second: any, order: SortOrder) {
-        const type = order === 'descending' ? -1 : 1;
-
-        if (first > second) {
-            return 1 * type;
-        }
-        if (first < second) {
-            return -1 * type;
-        }
-
-        return 0;
     }
 
     function orderTracks(tracks: LocalTrack[], option: SelectedSortOption) {
@@ -188,12 +160,19 @@ export function TrackList(props: IProps) {
 
             <TrackListGrid
                 tracks={orderedTracks}
+                subtracks={[]}
                 gridLabel="Local tracks"
                 onPlayTrack={playUri}
-                activeTrackUri={playingTrackUri}
                 headers={headers}
                 onHeaderClicked={handleSortOptionChange}
                 sortedHeader={selectedSortOption}
+                getRowContent={(track) => {
+                    return [
+                        <TrackListRowImageTitle track={track} />,
+                        <TrackListRowAlbumLink track={track} />,
+                        <span>{track.addedAt.toLocaleDateString()}</span>,
+                    ];
+                }}
             />
         </>
     );
