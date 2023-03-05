@@ -11,6 +11,9 @@ import { TrackListRowTitle } from '../../shared/track-list/track-list-row-title'
 import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { DiscDivider } from './disc-divider';
+import { MoreButton } from '../../shared/buttons/more-button';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { AlbumRowMenu } from '../menus/album-row-menu';
 
 export interface IProps {
     tracks: LocalTrack[];
@@ -59,7 +62,7 @@ export function AlbumTrackList(props: IProps) {
         },
     ];
 
-    // TODO: More option button in shared, open album menu
+    // TODO: Use the correct more option album menu
     // TODO: use tracknumber instead of index
     return (
         <>
@@ -72,25 +75,13 @@ export function AlbumTrackList(props: IProps) {
                         iconSize={24}
                         onClick={() => playContext(orderedTracks)}
                     />
-                    <button
-                        type="button"
-                        aria-haspopup="menu"
-                        aria-label="Plus d'options pour Catherine &amp; Catherine Full Body Soundtrack Set"
-                        className="main-moreButton-button"
-                        aria-expanded="false"
-                    >
-                        <svg
-                            role="img"
-                            height="32"
-                            width="32"
-                            aria-hidden="true"
-                            viewBox="0 0 24 24"
-                            data-encore-id="icon"
-                            fill="currentColor"
-                        >
-                            <path d="M4.5 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm15 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-                        </svg>
-                    </button>
+                    <MoreButton
+                        label={getTranslation(
+                            ['more.label.context'],
+                            orderedTracks[0].album.name
+                        )}
+                        menu={<AlbumRowMenu track={orderedTracks[0]} />}
+                    />
                 </div>
             </div>
 

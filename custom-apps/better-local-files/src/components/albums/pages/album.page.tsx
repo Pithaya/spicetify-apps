@@ -25,6 +25,7 @@ function AlbumHeader(props: { album: AlbumItem }) {
                         .map((a) => (
                             <span>
                                 <a
+                                    href="#"
                                     draggable="false"
                                     onClick={() =>
                                         navigateTo(Routes.artist, {
