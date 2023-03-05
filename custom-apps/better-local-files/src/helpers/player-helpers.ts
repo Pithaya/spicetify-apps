@@ -7,6 +7,10 @@ import { LocalTrack } from '@shared';
  * @param context The play context.
  */
 export function playTrack(trackUri: string, context: LocalTrack[]): void {
+    if (context.length === 0 || !context.some((t) => t.uri === trackUri)) {
+        return;
+    }
+
     (Spicetify.Player as any).origin.play(
         {
             uri: 'spotify:internal:local-files',
@@ -26,6 +30,10 @@ export function playTrack(trackUri: string, context: LocalTrack[]): void {
  * @param context A list of tracks to play.
  */
 export function playContext(context: LocalTrack[]): void {
+    if (context.length === 0) {
+        return;
+    }
+
     (Spicetify.Player as any).origin.play(
         {
             uri: 'spotify:internal:local-files',

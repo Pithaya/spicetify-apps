@@ -17,18 +17,6 @@ export interface IProps {
 }
 
 export function AlbumTrackList(props: IProps) {
-    function playUri(uri: string) {
-        playTrack(uri, props.tracks);
-    }
-
-    function playTracks() {
-        if (props.tracks.length === 0) {
-            return;
-        }
-
-        playContext(props.tracks);
-    }
-
     const tracks: LocalTrack[] = [];
     const disks: SubTracksList[] = [];
 
@@ -37,7 +25,11 @@ export function AlbumTrackList(props: IProps) {
     const lastDisc = Math.max(...discNumbers);
 
     if (firstDisc === lastDisc) {
-        tracks.push(...props.tracks);
+        tracks.push(
+            ...props.tracks.sort((t1, t2) =>
+                sort(t1.trackNumber, t2.trackNumber, 'ascending')
+            )
+        );
     } else {
         for (
             let i = Math.min(...discNumbers);
@@ -55,7 +47,10 @@ export function AlbumTrackList(props: IProps) {
         }
     }
 
-    console.log(disks);
+    const orderedTracks =
+        tracks.length > 0 ? tracks : disks.flatMap((d) => d.tracks);
+
+    console.log(orderedTracks);
 
     const headers: TrackListHeaderOption[] = [
         {
@@ -65,13 +60,18 @@ export function AlbumTrackList(props: IProps) {
     ];
 
     // TODO: More option button in shared, open album menu
+    // TODO: use tracknumber instead of index
     return (
         <>
             <div className={`${styles['action-bar']}`}>
                 <div
                     className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
                 >
-                    <PlayButton size={60} iconSize={24} onClick={playTracks} />
+                    <PlayButton
+                        size={60}
+                        iconSize={24}
+                        onClick={() => playContext(orderedTracks)}
+                    />
                     <button
                         type="button"
                         aria-haspopup="menu"
@@ -98,7 +98,7 @@ export function AlbumTrackList(props: IProps) {
                 tracks={tracks}
                 subtracks={disks}
                 gridLabel="Local tracks"
-                onPlayTrack={playUri}
+                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
                 headers={headers}
                 getRowContent={(track) => {
                     return [
