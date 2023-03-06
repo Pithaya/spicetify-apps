@@ -78,7 +78,9 @@ export function TabBar(props: IProps) {
                     ))}
                 {droplistItem.length || childrenSizes.length === 0 ? (
                     <TabBarMore
-                        items={droplistItem.map((i) => props.items[i])}
+                        items={props.items.filter(
+                            (_, id) => !droplistItem.includes(id)
+                        )}
                         activeItem={props.activeItem}
                         onClick={props.onItemClicked}
                     />
