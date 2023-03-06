@@ -4,3 +4,4 @@ export * from './session';
 export * from './history';
 export * from './local-files';
 export * from './translations';
+export * from './player';

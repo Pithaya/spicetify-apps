@@ -22,9 +22,7 @@ export function ArtistCard(props: IProps) {
             {visible ? (
                 <div
                     className={`${styles['main-card-card']} main-card-card`}
-                    onClick={() =>
-                        navigateTo(Routes.artist, { uri: props.artist.uri })
-                    }
+                    onClick={() => navigateTo(Routes.artist, props.artist.uri)}
                 >
                     <div draggable="true" className="main-card-draggable">
                         <div className="main-card-imageContainer">

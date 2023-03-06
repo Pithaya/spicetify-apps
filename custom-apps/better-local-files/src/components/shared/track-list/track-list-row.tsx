@@ -1,7 +1,7 @@
 import { Locale, LocalTrack } from '@shared';
 import React, { Children, PropsWithChildren, useRef } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { RowMenu } from '../../tracks/menus/row-menu';
+import { RowMenu } from '../menus/row-menu';
 
 const locale: Locale = (Spicetify as any).Locale;
 

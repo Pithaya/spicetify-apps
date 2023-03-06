@@ -5,6 +5,7 @@ import { TrackListRowTitle } from './track-list-row-title';
 // TODO: Only relevant props
 interface TrackListRowImageTitleProps {
     track: LocalTrack;
+    withArtists: boolean;
 }
 
 export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
@@ -37,7 +38,10 @@ export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
                 onError={(e) => (e.currentTarget.outerHTML = imageFallback)}
             />
 
-            <TrackListRowTitle track={props.track} withArtists={true} />
+            <TrackListRowTitle
+                track={props.track}
+                withArtists={props.withArtists}
+            />
         </>
     );
 }

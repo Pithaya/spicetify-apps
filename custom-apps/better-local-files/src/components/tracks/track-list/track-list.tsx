@@ -110,18 +110,6 @@ export function TrackList(props: IProps) {
         [filteredTracks, selectedSortOption]
     );
 
-    function playUri(uri: string) {
-        playTrack(uri, filteredTracks);
-    }
-
-    function playTracks() {
-        if (filteredTracks.length === 0) {
-            return;
-        }
-
-        playContext(filteredTracks);
-    }
-
     function toggleOrder(order: SortOrder): SortOrder {
         return order === 'ascending' ? 'descending' : 'ascending';
     }
@@ -140,7 +128,11 @@ export function TrackList(props: IProps) {
     return (
         <>
             <div className={`${styles['action-bar']}`}>
-                <PlayButton size={60} iconSize={24} onClick={playTracks} />
+                <PlayButton
+                    size={60}
+                    iconSize={24}
+                    onClick={() => playContext(orderedTracks)}
+                />
 
                 <div className={styles['controls']}>
                     <SearchInput
@@ -162,13 +154,16 @@ export function TrackList(props: IProps) {
                 tracks={orderedTracks}
                 subtracks={[]}
                 gridLabel="Local tracks"
-                onPlayTrack={playUri}
+                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
                 headers={headers}
                 onHeaderClicked={handleSortOptionChange}
                 sortedHeader={selectedSortOption}
                 getRowContent={(track) => {
                     return [
-                        <TrackListRowImageTitle track={track} />,
+                        <TrackListRowImageTitle
+                            track={track}
+                            withArtists={true}
+                        />,
                         <TrackListRowAlbumLink track={track} />,
                         <span>{track.addedAt.toLocaleDateString()}</span>,
                     ];

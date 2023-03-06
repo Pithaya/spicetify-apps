@@ -28,9 +28,7 @@ function AlbumHeader(props: { album: AlbumItem }) {
                                     href="#"
                                     draggable="false"
                                     onClick={() =>
-                                        navigateTo(Routes.artist, {
-                                            uri: a.uri,
-                                        })
+                                        navigateTo(Routes.artist, a.uri)
                                     }
                                 >
                                     {a.name}

@@ -13,7 +13,7 @@ import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { DiscDivider } from './disc-divider';
 import { MoreButton } from '../../shared/buttons/more-button';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { AlbumRowMenu } from '../menus/album-row-menu';
+import { RowMenu } from '../../tracks/menus/row-menu';
 
 export interface IProps {
     tracks: LocalTrack[];
@@ -80,7 +80,7 @@ export function AlbumTrackList(props: IProps) {
                             ['more.label.context'],
                             orderedTracks[0].album.name
                         )}
-                        menu={<AlbumRowMenu track={orderedTracks[0]} />}
+                        menu={<RowMenu track={orderedTracks[0]} />}
                     />
                 </div>
             </div>

@@ -26,11 +26,7 @@ export function TrackListRowAlbumLink(props: TrackListRowAlbumLinkProps) {
                 dir="auto"
                 href="#"
                 tabIndex={-1}
-                onClick={() =>
-                    navigateTo(Routes.album, {
-                        uri: props.track.album.uri,
-                    })
-                }
+                onClick={() => navigateTo(Routes.album, props.track.album.uri)}
             >
                 {props.track.album.name}
             </a>

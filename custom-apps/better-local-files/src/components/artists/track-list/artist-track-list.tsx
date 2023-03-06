@@ -1,57 +1,76 @@
-import React, { useMemo, useState } from 'react';
+import styles from '../../../css/app.module.scss';
+import React from 'react';
 import { LocalTrack } from '@shared';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
-import { ArtistActionBar } from './artist-action-bar.component';
-import { ArtistTrackListGrid } from './artist-track-list-grid';
+import { PlayButton } from '../../shared/buttons/play-button';
+import { MoreButton } from '../../shared/buttons/more-button';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
+import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { TrackListGrid } from '../../shared/track-list/track-list-grid';
+import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
+import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
+import { RowMenu } from '../../tracks/menus/row-menu';
 
 export interface IProps {
     tracks: LocalTrack[];
 }
 
 export function ArtistTrackList(props: IProps) {
-    const [search, setSearch] = useState('');
-    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const headers: TrackListHeaderOption[] = [
+        {
+            key: 'title',
+            label: 'Titre',
+        },
+        {
+            key: 'album',
+            label: 'Album',
+        },
+    ];
 
-    function filterTracks(tracks: LocalTrack[], search: string) {
-        if (search === '') {
-            return tracks;
-        }
-
-        return tracks.filter((t) =>
-            t.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
-
-    const filteredTracks = useMemo(
-        () => filterTracks(props.tracks, debouncedSearch),
-        [props.tracks, debouncedSearch]
+    const orderedTracks = props.tracks.sort(
+        (t1, t2) =>
+            sort(t1.album.name, t2.album.name, 'ascending') ||
+            sort(t1.discNumber, t2.discNumber, 'ascending')
     );
-
-    function playUri(uri: string) {
-        playTrack(uri, filteredTracks);
-    }
-
-    function playTracks() {
-        if (filteredTracks.length === 0) {
-            return;
-        }
-
-        playContext(filteredTracks);
-    }
 
     return (
         <>
-            <ArtistActionBar
-                onPlayClicked={playTracks}
-                search={search}
-                setSearch={setSearch}
-                debouncedSearch={debouncedSearch}
-                setDebouncedSearch={setDebouncedSearch}
-            />
-            <ArtistTrackListGrid
-                tracks={filteredTracks}
-                onPlayTrack={playUri}
-            />
+            <div className={`${styles['action-bar']}`}>
+                <div
+                    className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
+                >
+                    <PlayButton
+                        size={60}
+                        iconSize={24}
+                        onClick={() => playContext(orderedTracks)}
+                    />
+                    <MoreButton
+                        label={getTranslation(
+                            ['more.label.context'],
+                            orderedTracks[0].album.name
+                        )}
+                        menu={<RowMenu track={orderedTracks[0]} />}
+                    />
+                </div>
+            </div>
+
+            <TrackListGrid
+                tracks={orderedTracks}
+                subtracks={[]}
+                gridLabel="Local tracks"
+                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
+                headers={headers}
+                getRowContent={(track) => {
+                    return [
+                        <TrackListRowImageTitle
+                            track={track}
+                            withArtists={false}
+                        />,
+                        <TrackListRowAlbumLink track={track} />,
+                    ];
+                }}
+            ></TrackListGrid>
         </>
     );
 }
