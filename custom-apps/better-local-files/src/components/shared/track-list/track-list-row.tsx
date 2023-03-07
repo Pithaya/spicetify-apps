@@ -59,33 +59,49 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                             <span className="main-trackList-number">
                                                 {props.index}
                                             </span>
-                                            <button
-                                                className="main-trackList-rowImagePlayButton"
-                                                aria-label={getTranslation(
+
+                                            <Spicetify.ReactComponent.TooltipWrapper
+                                                label={getTranslation(
                                                     ['tracklist.a11y.play'],
                                                     props.track.name,
                                                     props.track.artists
                                                         .map((a) => a.name)
                                                         .join(', ')
                                                 )}
-                                                onClick={() =>
-                                                    Spicetify.Player.play()
-                                                }
-                                                tabIndex={-1}
+                                                showDelay={200}
                                             >
-                                                <svg
-                                                    role="img"
-                                                    height="24"
-                                                    width="24"
-                                                    aria-hidden="true"
-                                                    className="main-trackList-rowPlayPauseIcon"
-                                                    viewBox="0 0 24 24"
-                                                    data-encore-id="icon"
-                                                    fill="currentColor"
+                                                <button
+                                                    className="main-trackList-rowImagePlayButton"
+                                                    aria-label={getTranslation(
+                                                        ['tracklist.a11y.play'],
+                                                        props.track.name,
+                                                        props.track.artists
+                                                            .map((a) => a.name)
+                                                            .join(', ')
+                                                    )}
+                                                    onClick={() => {
+                                                        if (props.active) {
+                                                            Spicetify.Player.play();
+                                                        } else {
+                                                            props.onDoubleClick();
+                                                        }
+                                                    }}
+                                                    tabIndex={-1}
                                                 >
-                                                    <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
-                                                </svg>
-                                            </button>
+                                                    <svg
+                                                        role="img"
+                                                        height="24"
+                                                        width="24"
+                                                        aria-hidden="true"
+                                                        className="main-trackList-rowPlayPauseIcon"
+                                                        viewBox="0 0 24 24"
+                                                        data-encore-id="icon"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
+                                                    </svg>
+                                                </button>
+                                            </Spicetify.ReactComponent.TooltipWrapper>
                                         </>
                                     ) : (
                                         <>
@@ -96,29 +112,36 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                                 alt=""
                                                 src="/images/equaliser-green.svg"
                                             />
-                                            <button
-                                                className="main-trackList-rowImagePlayButton"
-                                                aria-label={getTranslation([
+                                            <Spicetify.ReactComponent.TooltipWrapper
+                                                label={getTranslation([
                                                     'playback-control.pause',
                                                 ])}
-                                                tabIndex={0}
-                                                aria-expanded="false"
-                                                onClick={() =>
-                                                    Spicetify.Player.pause()
-                                                }
+                                                showDelay={200}
                                             >
-                                                <svg
-                                                    role="img"
-                                                    height="24"
-                                                    width="24"
-                                                    aria-hidden="true"
-                                                    fill="currentColor"
-                                                    className="main-trackList-rowPlayPauseIcon"
-                                                    viewBox="0 0 24 24"
+                                                <button
+                                                    className="main-trackList-rowImagePlayButton"
+                                                    aria-label={getTranslation([
+                                                        'playback-control.pause',
+                                                    ])}
+                                                    tabIndex={0}
+                                                    aria-expanded="false"
+                                                    onClick={() =>
+                                                        Spicetify.Player.pause()
+                                                    }
                                                 >
-                                                    <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
-                                                </svg>
-                                            </button>
+                                                    <svg
+                                                        role="img"
+                                                        height="24"
+                                                        width="24"
+                                                        aria-hidden="true"
+                                                        fill="currentColor"
+                                                        className="main-trackList-rowPlayPauseIcon"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                                                    </svg>
+                                                </button>
+                                            </Spicetify.ReactComponent.TooltipWrapper>
                                         </>
                                     )}
                                 </div>
