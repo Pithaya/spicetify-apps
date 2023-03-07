@@ -28,7 +28,6 @@ export function TrackListGrid(props: TrackListGridProps) {
         null
     );
 
-    // TODO: Fix aria index
     return (
         <>
             <div
@@ -50,7 +49,7 @@ export function TrackListGrid(props: TrackListGridProps) {
                         <TrackListRow
                             key={track.uri}
                             track={track}
-                            index={index}
+                            index={index + 1}
                             selected={selectedTrackUri === track.uri}
                             active={activeTrackUri === track.uri}
                             onClick={() => setSelectedTrackUri(track.uri)}
@@ -68,7 +67,7 @@ export function TrackListGrid(props: TrackListGridProps) {
                                     <TrackListRow
                                         key={track.uri}
                                         track={track}
-                                        index={index}
+                                        index={track.trackNumber}
                                         selected={
                                             selectedTrackUri === track.uri
                                         }

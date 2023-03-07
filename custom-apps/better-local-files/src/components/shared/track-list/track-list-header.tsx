@@ -5,14 +5,13 @@ import { SelectedSortOption } from 'custom-apps/better-local-files/src/models/so
 import { CaretUp } from '../icons/caret-up';
 import { CaretDown } from '../icons/caret-down';
 import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 export interface TrackListHeaderProps {
     headers: TrackListHeaderOption[];
     sortedHeader?: SelectedSortOption;
     onHeaderClicked?: (key: HeaderKey) => void;
 }
-
-// TODO: i18n
 
 export function TrackListHeader(props: TrackListHeaderProps) {
     function getCaret() {
@@ -98,7 +97,9 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                     }
                 >
                     <div
-                        aria-label="durée"
+                        aria-label={getTranslation([
+                            'tracklist.header.duration',
+                        ])}
                         className={`main-trackList-column main-trackList-durationHeader ${sortableClass}`}
                     >
                         <svg

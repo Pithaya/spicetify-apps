@@ -1,7 +1,8 @@
+import React, { useEffect, useState } from 'react';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Folder } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
 import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
 
@@ -21,12 +22,20 @@ export function TracksPage() {
         <>
             <Header
                 image={<Folder fill="var(--spice-text)" size={100}></Folder>}
-                title={'Local files'}
+                title={getTranslation(['local-files'])}
                 titleFontSize="6rem"
                 additionalText={
                     <>
-                        <p>Fichiers de votre ordinateur</p>
-                        <p>{tracks.length} titres</p>
+                        <p>{getTranslation(['local-files.description'])}</p>
+                        <p>
+                            {getTranslation(
+                                [
+                                    'tracklist-header.songs-counter',
+                                    tracks.length === 1 ? 'one' : 'other',
+                                ],
+                                tracks.length
+                            )}
+                        </p>
                     </>
                 }
             />

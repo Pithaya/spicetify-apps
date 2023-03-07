@@ -1,3 +1,4 @@
+import { getTranslation } from '../helpers/translations-helper';
 import { TopBarItem } from '../models/top-bar-item';
 
 const CUSTOM_APP_PATH = '/better-local-files';
@@ -16,17 +17,17 @@ export const topBarItems: TopBarItem[] = [
     {
         key: 'Tracks',
         href: Routes.tracks,
-        label: 'Tracks',
+        label: getTranslation(['search.title.tracks']),
     },
     {
         key: 'Albums',
         href: Routes.albums,
-        label: 'Albums',
+        label: getTranslation(['albums']),
     },
     {
         key: 'Artists',
         href: Routes.artists,
-        label: 'Artists',
+        label: getTranslation(['artists']),
     },
 ];
 

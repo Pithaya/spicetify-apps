@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import styles from '../../../css/app.module.scss';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { Search } from 'lucide-react';
-import styles from '../../../css/app.module.scss';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 // TODO: clear button
 
@@ -45,7 +46,7 @@ export function SearchInput(props: IProps) {
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck="false"
-                placeholder="Rechercher"
+                placeholder={getTranslation(['navbar.search'])}
                 aria-hidden="true"
                 tabIndex={-1}
                 value={props.search}

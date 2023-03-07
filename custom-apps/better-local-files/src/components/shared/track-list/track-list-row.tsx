@@ -21,6 +21,8 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
+    // TODO: Set the correct aria-rowindex
+
     return (
         <div ref={rowRef}>
             {visible ? (
@@ -29,7 +31,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                 >
                     <div
                         role="row"
-                        aria-rowindex={props.index + 2}
+                        //aria-rowindex={props.index}
                         aria-selected={props.selected}
                         onClick={props.onClick}
                         onDoubleClick={props.onDoubleClick}
@@ -51,7 +53,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                             >
                                 <div className="main-trackList-rowMarker">
                                     <span className="main-trackList-number">
-                                        {props.index + 1}
+                                        {props.index}
                                     </span>
                                     <button
                                         className="main-trackList-rowImagePlayButton"

@@ -92,7 +92,10 @@ export function AlbumPage() {
             {album !== null && (
                 <>
                     <AlbumHeader album={album} />
-                    <AlbumTrackList discs={album.discs} />
+                    <AlbumTrackList
+                        albumName={album.name}
+                        discs={album.discs}
+                    />
                 </>
             )}
         </>

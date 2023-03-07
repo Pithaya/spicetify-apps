@@ -16,6 +16,7 @@ import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-al
 import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 export interface IProps {
     tracks: Track[];
@@ -31,34 +32,34 @@ export function TrackList(props: IProps) {
     const sortOptions: SortOption[] = [
         {
             key: 'date',
-            label: "Date d'ajout",
+            label: getTranslation(['sort.date-added']),
         },
         {
             key: 'title',
-            label: 'Titre',
+            label: getTranslation(['sort.title']),
         },
         {
             key: 'album',
-            label: 'Album',
+            label: getTranslation(['sort.album']),
         },
         {
             key: 'duration',
-            label: 'Duration',
+            label: getTranslation(['sort.duration']),
         },
     ];
 
     const headers: TrackListHeaderOption[] = [
         {
             key: 'title',
-            label: 'Titre',
+            label: getTranslation(['tracklist.header.title']),
         },
         {
             key: 'album',
-            label: 'Album',
+            label: getTranslation(['tracklist.header.album']),
         },
         {
             key: 'date',
-            label: 'Ajouté le',
+            label: getTranslation(['tracklist.header.date-added']),
         },
     ];
 
@@ -94,6 +95,10 @@ export function TrackList(props: IProps) {
                 return tracks.sort((x, y) =>
                     sort(x.album.name, y.album.name, option.order)
                 );
+            case 'duration':
+                return tracks.sort((x, y) =>
+                    sort(x.duration, y.duration, option.order)
+                );
             default:
                 return tracks;
         }
@@ -123,7 +128,6 @@ export function TrackList(props: IProps) {
         }));
     }
 
-    // TODO: Action bar as prop inside the div
     return (
         <>
             <div className={`${styles['action-bar']}`}>
@@ -154,7 +158,7 @@ export function TrackList(props: IProps) {
             <TrackListGrid
                 tracks={orderedTracks}
                 subtracks={[]}
-                gridLabel="Local tracks"
+                gridLabel={getTranslation(['local-files'])}
                 onPlayTrack={(uri) =>
                     playTrack(
                         uri,

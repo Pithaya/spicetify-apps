@@ -7,6 +7,7 @@ import {
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 export interface IProps {
     sortOptions: SortOption[];
@@ -22,7 +23,7 @@ export function SortMenu(props: IProps) {
                     className={`${styles['sort-menu-header']} main-contextMenu-menuHeading ellipsis-one-line`}
                     dir="auto"
                 >
-                    Trier par
+                    {getTranslation(['drop_down.sort_by'])}
                 </span>
             </li>
 

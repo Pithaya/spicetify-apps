@@ -15,6 +15,7 @@ import { Track } from 'custom-apps/better-local-files/src/models/track';
 import { RowMenu } from '../../shared/menus/row-menu';
 
 export interface IProps {
+    albumName: string;
     discs: Map<number, Track[]>;
 }
 
@@ -44,7 +45,6 @@ export function AlbumTrackList(props: IProps) {
     ];
 
     // TODO: Use the correct more option album menu
-    // TODO: use tracknumber instead of index
     return (
         <>
             <div className={`${styles['action-bar']}`}>
@@ -71,7 +71,7 @@ export function AlbumTrackList(props: IProps) {
             <TrackListGrid
                 tracks={tracks}
                 subtracks={subTracks}
-                gridLabel="Local tracks"
+                gridLabel={props.albumName}
                 onPlayTrack={(uri) =>
                     playTrack(
                         uri,
