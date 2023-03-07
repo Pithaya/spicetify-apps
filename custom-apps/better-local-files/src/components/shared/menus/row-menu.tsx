@@ -6,12 +6,12 @@ import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-h
 import { Routes } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArtistSelectionMenu } from './artist-selection-menu';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
+import { PlaylistSelectionMenu } from './playlist-selection-menu';
 
 export interface IProps {
     track: Track;
 }
 
-// TODO: Add to playlist
 // TODO: multi track selection
 
 export function RowMenu(props: IProps) {
@@ -48,10 +48,16 @@ export function RowMenu(props: IProps) {
             )}
 
             <Spicetify.ReactComponent.MenuItem
+                divider="after"
                 onClick={() => navigateTo(Routes.album, props.track.album.uri)}
             >
                 <span>{getTranslation(['contextmenu.go-to-album'])}</span>
             </Spicetify.ReactComponent.MenuItem>
+
+            <SubmenuItem
+                label={getTranslation(['contextmenu.add-to-playlist'])}
+                submenu={<PlaylistSelectionMenu trackUri={props.track.uri} />}
+            />
         </Spicetify.ReactComponent.Menu>
     );
 }

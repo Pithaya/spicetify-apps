@@ -12,7 +12,8 @@ export function SubmenuItem(props: SubmenuItemProps) {
         <Spicetify.ReactComponent.ContextMenu
             trigger="click"
             action="toggle"
-            placement="right-start"
+            placement="right-end"
+            renderInline={true}
             menu={props.submenu}
         >
             <li
