@@ -1,19 +1,20 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { LocalTrack } from '@shared';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import { PlayButton } from '../../shared/buttons/play-button';
 import { MoreButton } from '../../shared/buttons/more-button';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
 import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
-import { RowMenu } from '../../tracks/menus/row-menu';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
+import { RowMenu } from '../../shared/menus/row-menu';
+import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 
 export interface IProps {
-    tracks: LocalTrack[];
+    artist: Artist;
+    tracks: Track[];
 }
 
 export function ArtistTrackList(props: IProps) {
@@ -28,12 +29,6 @@ export function ArtistTrackList(props: IProps) {
         },
     ];
 
-    const orderedTracks = props.tracks.sort(
-        (t1, t2) =>
-            sort(t1.album.name, t2.album.name, 'ascending') ||
-            sort(t1.discNumber, t2.discNumber, 'ascending')
-    );
-
     return (
         <>
             <div className={`${styles['action-bar']}`}>
@@ -43,23 +38,30 @@ export function ArtistTrackList(props: IProps) {
                     <PlayButton
                         size={60}
                         iconSize={24}
-                        onClick={() => playContext(orderedTracks)}
+                        onClick={() =>
+                            playContext(props.tracks.map((t) => t.localTrack))
+                        }
                     />
                     <MoreButton
                         label={getTranslation(
                             ['more.label.context'],
-                            orderedTracks[0].album.name
+                            props.artist.name
                         )}
-                        menu={<RowMenu track={orderedTracks[0]} />}
+                        menu={<RowMenu track={props.tracks[0]} />}
                     />
                 </div>
             </div>
 
             <TrackListGrid
-                tracks={orderedTracks}
+                tracks={props.tracks}
                 subtracks={[]}
                 gridLabel="Local tracks"
-                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
+                onPlayTrack={(uri) =>
+                    playTrack(
+                        uri,
+                        props.tracks.map((t) => t.localTrack)
+                    )
+                }
                 headers={headers}
                 getRowContent={(track) => {
                     return [

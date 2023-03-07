@@ -1,6 +1,5 @@
 import styles from '../../../css/app.module.scss';
-import React, { useEffect, useMemo, useState } from 'react';
-import { LocalTrack } from '@shared';
+import React, { useMemo, useState } from 'react';
 import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import {
@@ -15,11 +14,11 @@ import { SearchInput } from '../../shared/filters/search-input';
 import { PlayButton } from '../../shared/buttons/play-button';
 import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
 import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
-import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 
 export interface IProps {
-    tracks: LocalTrack[];
+    tracks: Track[];
 }
 
 /**
@@ -66,7 +65,7 @@ export function TrackList(props: IProps) {
     const [selectedSortOption, setSelectedSortOption] =
         useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
-    function filterTracks(tracks: LocalTrack[], search: string) {
+    function filterTracks(tracks: Track[], search: string) {
         if (search === '') {
             return tracks;
         }
@@ -81,7 +80,7 @@ export function TrackList(props: IProps) {
         );
     }
 
-    function orderTracks(tracks: LocalTrack[], option: SelectedSortOption) {
+    function orderTracks(tracks: Track[], option: SelectedSortOption) {
         switch (option.key) {
             case 'date':
                 return tracks.sort((x, y) =>
@@ -131,7 +130,9 @@ export function TrackList(props: IProps) {
                 <PlayButton
                     size={60}
                     iconSize={24}
-                    onClick={() => playContext(orderedTracks)}
+                    onClick={() =>
+                        playContext(orderedTracks.map((t) => t.localTrack))
+                    }
                 />
 
                 <div className={styles['controls']}>
@@ -154,7 +155,12 @@ export function TrackList(props: IProps) {
                 tracks={orderedTracks}
                 subtracks={[]}
                 gridLabel="Local tracks"
-                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
+                onPlayTrack={(uri) =>
+                    playTrack(
+                        uri,
+                        orderedTracks.map((t) => t.localTrack)
+                    )
+                }
                 headers={headers}
                 onHeaderClicked={handleSortOptionChange}
                 sortedHeader={selectedSortOption}

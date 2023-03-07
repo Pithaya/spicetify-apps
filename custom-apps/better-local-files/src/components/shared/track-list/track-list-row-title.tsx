@@ -1,9 +1,9 @@
-import { LocalTrack } from '@shared';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
 
 // TODO: Only relevant props
 interface TrackListRowTitleProps {
-    track: LocalTrack;
+    track: Track;
     withArtists: boolean;
 }
 

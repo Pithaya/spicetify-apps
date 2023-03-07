@@ -1,13 +1,14 @@
-import React, { useRef } from 'react';
-import { History, LocalTrack, PlayerAPI } from '@shared';
+import React from 'react';
+import { PlayerAPI } from '@shared';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import { Routes } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArtistSelectionMenu } from './artist-selection-menu';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 
 export interface IProps {
-    track: LocalTrack;
+    track: Track;
 }
 
 // TODO: Add to playlist

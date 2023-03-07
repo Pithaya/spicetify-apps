@@ -1,22 +1,20 @@
-import { LocalTrack } from '@shared';
 import React, { useState } from 'react';
 import { TrackListRow } from './track-list-row';
 import { TrackListHeader, TrackListHeaderProps } from './track-list-header';
-import { TrackListRowImageTitle } from './track-list-row-image-title';
-import { TrackListRowAlbumLink } from './track-list-row-album-link';
 import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
-    tracks: LocalTrack[];
+    tracks: Track[];
 };
 
 export interface TrackListGridProps extends TrackListHeaderProps {
-    tracks: LocalTrack[];
+    tracks: Track[];
     subtracks: SubTracksList[];
     gridLabel: string;
     onPlayTrack: (uri: string) => void;
-    getRowContent: (track: LocalTrack) => JSX.Element[];
+    getRowContent: (track: Track) => JSX.Element[];
 }
 
 /**

@@ -1,6 +1,5 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { LocalTrack } from '@shared';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import { PlayButton } from '../../shared/buttons/play-button';
 import {
@@ -9,51 +8,33 @@ import {
 } from '../../shared/track-list/track-list-grid';
 import { TrackListRowTitle } from '../../shared/track-list/track-list-row-title';
 import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { DiscDivider } from './disc-divider';
 import { MoreButton } from '../../shared/buttons/more-button';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { RowMenu } from '../../tracks/menus/row-menu';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
+import { RowMenu } from '../../shared/menus/row-menu';
 
 export interface IProps {
-    tracks: LocalTrack[];
+    discs: Map<number, Track[]>;
 }
 
 export function AlbumTrackList(props: IProps) {
-    const tracks: LocalTrack[] = [];
-    const disks: SubTracksList[] = [];
+    const tracks: Track[] = [];
+    const subTracks: SubTracksList[] = [];
 
-    const discNumbers = props.tracks.map((t) => t.discNumber);
-    const firstDisc = Math.min(...discNumbers);
-    const lastDisc = Math.max(...discNumbers);
+    const orderedTracks: Track[] = Array.from(props.discs.values()).flat();
 
-    if (firstDisc === lastDisc) {
-        tracks.push(
-            ...props.tracks.sort((t1, t2) =>
-                sort(t1.trackNumber, t2.trackNumber, 'ascending')
-            )
-        );
+    if (props.discs.size === 1) {
+        // Only one disc
+        tracks.push(...orderedTracks);
     } else {
-        for (
-            let i = Math.min(...discNumbers);
-            i <= Math.max(...discNumbers);
-            i++
-        ) {
-            disks.push({
-                headerRow: <DiscDivider discNumber={i} />,
-                tracks: props.tracks
-                    .filter((t) => t.discNumber === i)
-                    .sort((t1, t2) =>
-                        sort(t1.trackNumber, t2.trackNumber, 'ascending')
-                    ),
+        for (const [discNumber, tracks] of props.discs.entries()) {
+            subTracks.push({
+                headerRow: <DiscDivider discNumber={discNumber} />,
+                tracks: tracks,
             });
         }
     }
-
-    const orderedTracks =
-        tracks.length > 0 ? tracks : disks.flatMap((d) => d.tracks);
-
-    console.log(orderedTracks);
 
     const headers: TrackListHeaderOption[] = [
         {
@@ -73,7 +54,9 @@ export function AlbumTrackList(props: IProps) {
                     <PlayButton
                         size={60}
                         iconSize={24}
-                        onClick={() => playContext(orderedTracks)}
+                        onClick={() =>
+                            playContext(orderedTracks.map((t) => t.localTrack))
+                        }
                     />
                     <MoreButton
                         label={getTranslation(
@@ -87,9 +70,14 @@ export function AlbumTrackList(props: IProps) {
 
             <TrackListGrid
                 tracks={tracks}
-                subtracks={disks}
+                subtracks={subTracks}
                 gridLabel="Local tracks"
-                onPlayTrack={(uri) => playTrack(uri, orderedTracks)}
+                onPlayTrack={(uri) =>
+                    playTrack(
+                        uri,
+                        orderedTracks.map((t) => t.localTrack)
+                    )
+                }
                 headers={headers}
                 getRowContent={(track) => {
                     return [

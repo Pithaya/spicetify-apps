@@ -1,4 +1,5 @@
-import { Locale, LocalTrack } from '@shared';
+import { Locale } from '@shared';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, { Children, PropsWithChildren, useRef } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
@@ -6,7 +7,7 @@ import { RowMenu } from '../menus/row-menu';
 const locale: Locale = (Spicetify as any).Locale;
 
 export interface IProps {
-    track: LocalTrack;
+    track: Track;
     index: number;
     selected: boolean;
     active: boolean;
@@ -102,7 +103,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                             >
                                 <div className="main-trackList-rowDuration">
                                     {Spicetify.Player.formatTime(
-                                        props.track.duration.milliseconds
+                                        props.track.duration
                                     )}
                                 </div>
                                 <button

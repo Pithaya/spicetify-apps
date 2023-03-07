@@ -1,18 +1,17 @@
-import { LocalFilesApi, LocalTrack } from '@shared';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
+import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Folder } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
 
 export function TracksPage() {
-    const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
-
-    const [tracks, setTracks] = useState<LocalTrack[]>([]);
+    const [tracks, setTracks] = useState<Track[]>([]);
 
     useEffect(() => {
         async function getTracks() {
-            const tracks = await api.getTracks();
-            setTracks(tracks);
+            const tracks = await LocalTracksService.getTracks();
+            setTracks(Array.from(tracks.values()));
         }
 
         getTracks();

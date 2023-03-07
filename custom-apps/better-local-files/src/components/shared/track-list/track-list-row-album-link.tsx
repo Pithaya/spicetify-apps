@@ -1,11 +1,11 @@
-import { LocalTrack } from '@shared';
 import { Routes } from 'custom-apps/better-local-files/src/constants/constants';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
 
 // TODO: Only relevant props
 interface TrackListRowAlbumLinkProps {
-    track: LocalTrack;
+    track: Track;
 }
 
 export function TrackListRowAlbumLink(props: TrackListRowAlbumLinkProps) {

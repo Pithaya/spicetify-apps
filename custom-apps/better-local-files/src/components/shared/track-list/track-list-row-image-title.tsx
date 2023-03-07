@@ -1,10 +1,10 @@
-import { LocalTrack } from '@shared';
+import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
 import { TrackListRowTitle } from './track-list-row-title';
 
 // TODO: Only relevant props
 interface TrackListRowImageTitleProps {
-    track: LocalTrack;
+    track: Track;
     withArtists: boolean;
 }
 
@@ -30,7 +30,7 @@ export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
                 aria-hidden="false"
                 draggable="false"
                 loading="eager"
-                src={props.track.album.images[0].url}
+                src={props.track.album.image}
                 alt="Track image" // TODO: i18n
                 className="main-image-image main-trackList-rowImage main-image-loaded"
                 width="40"

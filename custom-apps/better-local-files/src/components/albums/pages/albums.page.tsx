@@ -1,60 +1,30 @@
-import { LocalFilesApi } from '@shared';
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlbumItem } from '../../../models/album-item';
 import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
 import { SearchInput } from '../../shared/filters/search-input';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 import { CaretDown } from '../../shared/icons/caret-down';
+import { Album } from 'custom-apps/better-local-files/src/models/album';
+import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 
 // TODO: Sort by name or artist
 
 export function AlbumsPage() {
-    const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
+    const [albums, setAlbums] = useState<Album[]>([]);
 
-    const [albums, setAlbums] = useState<AlbumItem[]>([]);
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
     useEffect(() => {
-        async function getTracks() {
-            const tracks = await api.getTracks();
-
-            // TODO: Refactor into a 'getAlbumsFromTracks' function
-            const albumMap = new Map<string, AlbumItem>();
-
-            for (const track of tracks) {
-                const key =
-                    track.album.name === '' ? 'Untitled' : track.album.name;
-
-                if (!albumMap.has(key)) {
-                    albumMap.set(key, {
-                        name: key,
-                        uri: track.album.uri,
-                        artists: track.artists,
-                        image: track.album.images[0].url,
-                        tracks: [track],
-                    } as AlbumItem);
-                } else {
-                    const album = albumMap.get(key)!;
-
-                    for (const artist of track.artists) {
-                        if (!album.artists.some((a) => a.uri === artist.uri)) {
-                            album.artists.push(artist);
-                        }
-                    }
-
-                    album.tracks.push(track);
-                }
-            }
-
-            setAlbums(Array.from(albumMap).map(([key, value]) => value));
+        async function getAlbums() {
+            const albums = await LocalTracksService.getAlbums();
+            setAlbums(Array.from(albums).map(([key, value]) => value));
         }
 
-        getTracks();
+        getAlbums();
     }, []);
 
-    function filterAlbums(albums: AlbumItem[], search: string) {
+    function filterAlbums(albums: Album[], search: string) {
         if (search === '') {
             return albums;
         }
@@ -73,8 +43,8 @@ export function AlbumsPage() {
         [albums, debouncedSearch]
     );
 
-    function playAlbum(album: AlbumItem) {
-        playContext(album.tracks);
+    function playAlbum(album: Album) {
+        playContext(album.getTracks().map((t) => t.localTrack));
     }
 
     return (

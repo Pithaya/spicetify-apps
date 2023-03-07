@@ -1,13 +1,14 @@
-import { History, LocalFilesApi } from '@shared';
+import { History } from '@shared';
 import React, { useEffect, useState } from 'react';
 import { Routes } from '../../../constants/constants';
-import { AlbumItem } from '../../../models/album-item';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
 import { Header } from '../../shared/header';
 import { getTranslatedDuration } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
+import { Album } from 'custom-apps/better-local-files/src/models/album';
 
-function AlbumHeader(props: { album: AlbumItem }) {
+function AlbumHeader(props: { album: Album }) {
     return (
         <Header
             image={
@@ -48,14 +49,10 @@ function AlbumHeader(props: { album: AlbumItem }) {
                             null
                         )}
                     <span className="main-entityHeader-metaDataText">
-                        {props.album.tracks.length} titres
+                        {props.album.getTracks().length} titres
                     </span>
                     <span className="main-entityHeader-metaDataText">
-                        {getTranslatedDuration(
-                            props.album.tracks
-                                .map((t) => t.duration.milliseconds)
-                                .reduce((total, current) => total + current)
-                        )}
+                        {getTranslatedDuration(props.album.getDuration())}
                     </span>
                 </>
             }
@@ -64,7 +61,6 @@ function AlbumHeader(props: { album: AlbumItem }) {
 }
 
 export function AlbumPage() {
-    const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
     const history = Spicetify.Platform.History as History;
 
     const albumUri = (history.location.state as any).uri ?? null;
@@ -74,43 +70,21 @@ export function AlbumPage() {
         return <></>;
     }
 
-    const [album, setAlbum] = useState<AlbumItem | null>(null);
+    const [album, setAlbum] = useState<Album | null>(null);
 
     useEffect(() => {
-        async function getTracks() {
-            const tracks = await api.getTracks();
+        async function getAlbum() {
+            const albums = await LocalTracksService.getAlbums();
 
-            const album = tracks.find((a) => a.album.uri === albumUri)?.album;
-
-            if (album === undefined) {
+            if (!albums.has(albumUri)) {
                 navigateTo(Routes.albums);
                 return;
             }
 
-            const albumTracks = tracks.filter(
-                (a) => a.album.name === album.name
-            );
-
-            const albumItem: AlbumItem = {
-                name: album.name === '' ? 'Undefined' : album.name,
-                uri: album.uri,
-                artists: [],
-                image: albumTracks[0].album.images[0].url,
-                tracks: albumTracks,
-            };
-
-            for (const track of albumTracks) {
-                for (const artist of track.artists) {
-                    if (!albumItem.artists.some((a) => a.uri === artist.uri)) {
-                        albumItem.artists.push(artist);
-                    }
-                }
-            }
-
-            setAlbum(albumItem);
+            setAlbum(albums.get(albumUri)!);
         }
 
-        getTracks();
+        getAlbum();
     }, []);
 
     return (
@@ -118,7 +92,7 @@ export function AlbumPage() {
             {album !== null && (
                 <>
                     <AlbumHeader album={album} />
-                    <AlbumTrackList tracks={album.tracks} />
+                    <AlbumTrackList discs={album.discs} />
                 </>
             )}
         </>

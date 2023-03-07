@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 export interface SubmenuItemProps {
     label: string;
@@ -6,6 +6,8 @@ export interface SubmenuItemProps {
 }
 
 export function SubmenuItem(props: SubmenuItemProps) {
+    const isMenuOpened = useRef(false);
+
     return (
         <Spicetify.ReactComponent.ContextMenu
             trigger="click"
@@ -13,7 +15,14 @@ export function SubmenuItem(props: SubmenuItemProps) {
             placement="right-start"
             menu={props.submenu}
         >
-            <li role="presentation" className="main-contextMenu-menuItem">
+            <li
+                role="presentation"
+                className="main-contextMenu-menuItem"
+                onMouseEnter={(e) => {
+                    e.currentTarget.click();
+                    isMenuOpened.current = true;
+                }}
+            >
                 <button
                     className="main-contextMenu-menuItemButton"
                     role="menuitem"
@@ -22,6 +31,7 @@ export function SubmenuItem(props: SubmenuItemProps) {
                     <span
                         dir="auto"
                         className="ellipsis-one-line main-contextMenu-menuItemLabel"
+                        style={{ fontSize: '0.875rem' }}
                     >
                         <span>{props.label}</span>
                     </span>
