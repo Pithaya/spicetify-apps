@@ -1,4 +1,5 @@
 import { Locale } from '@shared';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, { Children, PropsWithChildren, useRef } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
@@ -11,6 +12,7 @@ export interface IProps {
     index: number;
     selected: boolean;
     active: boolean;
+    playing: boolean;
     onClick: () => void;
     onDoubleClick: () => void;
 }
@@ -52,28 +54,73 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                 tabIndex={-1}
                             >
                                 <div className="main-trackList-rowMarker">
-                                    <span className="main-trackList-number">
-                                        {props.index}
-                                    </span>
-                                    <button
-                                        className="main-trackList-rowImagePlayButton"
-                                        aria-label="Lire X par X" // TODO: i18n
-                                        // TODO: On click: play
-                                        tabIndex={-1}
-                                    >
-                                        <svg
-                                            role="img"
-                                            height="24"
-                                            width="24"
-                                            aria-hidden="true"
-                                            className="main-trackList-rowPlayPauseIcon"
-                                            viewBox="0 0 24 24"
-                                            data-encore-id="icon"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
-                                        </svg>
-                                    </button>
+                                    {!props.playing ? (
+                                        <>
+                                            <span className="main-trackList-number">
+                                                {props.index}
+                                            </span>
+                                            <button
+                                                className="main-trackList-rowImagePlayButton"
+                                                aria-label={getTranslation(
+                                                    ['tracklist.a11y.play'],
+                                                    props.track.name,
+                                                    props.track.artists
+                                                        .map((a) => a.name)
+                                                        .join(', ')
+                                                )}
+                                                onClick={() =>
+                                                    Spicetify.Player.play()
+                                                }
+                                                tabIndex={-1}
+                                            >
+                                                <svg
+                                                    role="img"
+                                                    height="24"
+                                                    width="24"
+                                                    aria-hidden="true"
+                                                    className="main-trackList-rowPlayPauseIcon"
+                                                    viewBox="0 0 24 24"
+                                                    data-encore-id="icon"
+                                                    fill="currentColor"
+                                                >
+                                                    <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
+                                                </svg>
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <img
+                                                className="main-trackList-playingIcon"
+                                                width="14"
+                                                height="14"
+                                                alt=""
+                                                src="/images/equaliser-green.svg"
+                                            />
+                                            <button
+                                                className="main-trackList-rowImagePlayButton"
+                                                aria-label={getTranslation([
+                                                    'playback-control.pause',
+                                                ])}
+                                                tabIndex={0}
+                                                aria-expanded="false"
+                                                onClick={() =>
+                                                    Spicetify.Player.pause()
+                                                }
+                                            >
+                                                <svg
+                                                    role="img"
+                                                    height="24"
+                                                    width="24"
+                                                    aria-hidden="true"
+                                                    fill="currentColor"
+                                                    className="main-trackList-rowPlayPauseIcon"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                                                </svg>
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -108,25 +155,38 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                         props.track.duration
                                     )}
                                 </div>
-                                <button
-                                    type="button"
-                                    aria-haspopup="menu"
-                                    aria-label="Plus d'options pour Infestation par DM DOKURO" // TODO: i18n
-                                    className="main-moreButton-button main-trackList-rowMoreButton"
-                                    tabIndex={-1}
+
+                                <Spicetify.ReactComponent.ContextMenu
+                                    trigger="click"
+                                    action="toggle"
+                                    menu={<RowMenu track={props.track} />}
                                 >
-                                    <svg
-                                        role="img"
-                                        height="16"
-                                        width="16"
-                                        aria-hidden="true"
-                                        viewBox="0 0 16 16"
-                                        data-encore-id="icon"
-                                        fill="currentColor"
+                                    <button
+                                        type="button"
+                                        aria-haspopup="menu"
+                                        aria-label={getTranslation(
+                                            ['more.label.track'],
+                                            props.track.name,
+                                            props.track.artists
+                                                .map((a) => a.name)
+                                                .join(', ')
+                                        )}
+                                        className="main-moreButton-button main-trackList-rowMoreButton"
+                                        tabIndex={-1}
                                     >
-                                        <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                                    </svg>
-                                </button>
+                                        <svg
+                                            role="img"
+                                            height="16"
+                                            width="16"
+                                            aria-hidden="true"
+                                            viewBox="0 0 16 16"
+                                            data-encore-id="icon"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                                        </svg>
+                                    </button>
+                                </Spicetify.ReactComponent.ContextMenu>
                             </div>
                         </div>
                     </div>

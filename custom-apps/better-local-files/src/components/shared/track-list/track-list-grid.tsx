@@ -3,6 +3,10 @@ import { TrackListRow } from './track-list-row';
 import { TrackListHeader, TrackListHeaderProps } from './track-list-header';
 import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
+import {
+    PlayStatus,
+    usePlayStatus,
+} from 'custom-apps/better-local-files/src/hooks/use-play-status';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
@@ -22,6 +26,7 @@ export interface TrackListGridProps extends TrackListHeaderProps {
  */
 export function TrackListGrid(props: TrackListGridProps) {
     const activeTrackUri = useCurrentPlayerTrackUri();
+    const playStatus: PlayStatus = usePlayStatus();
 
     // TODO: Multi selection
     const [selectedTrackUri, setSelectedTrackUri] = useState<string | null>(
@@ -52,6 +57,10 @@ export function TrackListGrid(props: TrackListGridProps) {
                             index={index + 1}
                             selected={selectedTrackUri === track.uri}
                             active={activeTrackUri === track.uri}
+                            playing={
+                                activeTrackUri === track.uri &&
+                                playStatus === 'play'
+                            }
                             onClick={() => setSelectedTrackUri(track.uri)}
                             onDoubleClick={() => props.onPlayTrack(track.uri)}
                         >
@@ -72,6 +81,10 @@ export function TrackListGrid(props: TrackListGridProps) {
                                             selectedTrackUri === track.uri
                                         }
                                         active={activeTrackUri === track.uri}
+                                        playing={
+                                            activeTrackUri === track.uri &&
+                                            playStatus === 'play'
+                                        }
                                         onClick={() =>
                                             setSelectedTrackUri(track.uri)
                                         }

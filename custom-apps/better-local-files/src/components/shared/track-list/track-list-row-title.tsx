@@ -41,7 +41,7 @@ export function TrackListRowTitle(props: TrackListRowTitleProps) {
                                 ) => {
                                     return accu === null
                                         ? [elem]
-                                        : [...accu, <>', '</>, elem];
+                                        : [...accu, <>{', '}</>, elem];
                                 },
                                 null
                             )}
