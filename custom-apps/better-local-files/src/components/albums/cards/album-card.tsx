@@ -1,15 +1,14 @@
 import React, { useRef } from 'react';
-import { AlbumItem } from '../../../models/album-item';
 import styles from '../../../css/app.module.scss';
-import { Play } from 'lucide-react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { navigateTo } from '../../../helpers/history-helper';
 import { Routes } from '../../../constants/constants';
 import { PlayButton } from '../../shared/buttons/play-button';
+import { Album } from 'custom-apps/better-local-files/src/models/album';
 
 export interface IProps {
-    album: AlbumItem;
-    onPlayClicked: (a: AlbumItem) => void;
+    album: Album;
+    onPlayClicked: (a: Album) => void;
 }
 
 export function AlbumCard(props: IProps) {
@@ -42,7 +41,6 @@ export function AlbumCard(props: IProps) {
                             <div className="main-card-PlayButtonContainer">
                                 <div className="main-playButton-PlayButton">
                                     <PlayButton
-                                        aria-label="Lire XXX par XXX"
                                         size={42}
                                         iconSize={20}
                                         onClick={() => {
@@ -64,19 +62,35 @@ export function AlbumCard(props: IProps) {
                                 </div>
                             </span>
                             <div className="main-cardSubHeader-root">
-                                {props.album.artists.length === 1 ? (
-                                    <a
-                                        draggable="false"
-                                        dir="auto"
-                                        href="/artist/57nPqD7z62gDdq37US9XJR"
-                                    >
-                                        {props.album.artists[0].name}
-                                    </a>
-                                ) : (
-                                    <span className={styles['text-subdued']}>
-                                        Multi-interprètes
-                                    </span>
-                                )}
+                                {props.album.artists
+                                    .map((a) => (
+                                        <span>
+                                            <a
+                                                href="#"
+                                                draggable="false"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigateTo(
+                                                        Routes.artist,
+                                                        a.uri
+                                                    );
+                                                }}
+                                            >
+                                                {a.name}
+                                            </a>
+                                        </span>
+                                    ))
+                                    .reduce(
+                                        (
+                                            accu: JSX.Element[] | null,
+                                            elem: JSX.Element
+                                        ) => {
+                                            return accu === null
+                                                ? [elem]
+                                                : [...accu, <>{', '}</>, elem];
+                                        },
+                                        null
+                                    )}
                             </div>
                         </div>
                     </div>
