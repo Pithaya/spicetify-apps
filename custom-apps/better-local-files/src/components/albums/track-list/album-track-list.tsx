@@ -44,7 +44,6 @@ export function AlbumTrackList(props: IProps) {
         },
     ];
 
-    // TODO: Use the correct more option album menu
     return (
         <>
             <div className={`${styles['action-bar']}`}>

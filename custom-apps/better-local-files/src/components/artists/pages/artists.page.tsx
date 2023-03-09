@@ -1,49 +1,43 @@
-import { LocalFilesApi } from '@shared';
+import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
-import { ArtistItem } from 'custom-apps/better-local-files/src/models/artist-item';
+import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import {
+    SelectedSortOption,
+    SortOption,
+    SortOrder,
+} from 'custom-apps/better-local-files/src/models/sort-option';
+import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import React, { useEffect, useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/search-input';
-import { CaretDown } from '../../shared/icons/caret-down';
+import { SortMenu } from '../../shared/filters/sort-menu';
 import { ArtistCard } from '../cards/artist-card';
 
-// TODO: Sort by name
-
 export function ArtistsPage() {
-    const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
+    const [artists, setArtists] = useState<Artist[]>([]);
 
-    const [artists, setArtists] = useState<ArtistItem[]>([]);
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
+    const sortOptions: SortOption[] = [
+        {
+            key: 'title',
+            label: getTranslation(['collection.sort.alphabetical']),
+        },
+    ];
+
     useEffect(() => {
-        async function getTracks() {
-            const tracks = await api.getTracks();
-
-            const artistMap = new Map<string, ArtistItem>();
-
-            for (const track of tracks) {
-                for (const artist of track.artists) {
-                    if (!artistMap.has(artist.uri)) {
-                        artistMap.set(artist.uri, {
-                            name: artist.name,
-                            uri: artist.uri,
-                            image: track.album.images[0].url,
-                            tracks: [track],
-                        } as ArtistItem);
-                    } else {
-                        artistMap.get(artist.uri)!.tracks.push(track);
-                    }
-                }
-            }
-
-            setArtists(Array.from(artistMap).map(([key, value]) => value));
+        async function getArtists() {
+            const artists = await LocalTracksService.getArtists();
+            setArtists(Array.from(artists).map(([key, value]) => value));
         }
 
-        getTracks();
+        getArtists();
     }, []);
 
-    function filterArtists(artists: ArtistItem[], search: string) {
+    function filterArtists(artists: Artist[], search: string) {
         if (search === '') {
             return artists;
         }
@@ -58,14 +52,51 @@ export function ArtistsPage() {
         [artists, debouncedSearch]
     );
 
-    function playArtist(artist: ArtistItem) {
-        playContext(artist.tracks);
+    const [selectedSortOption, setSelectedSortOption] =
+        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+
+    function orderArtists(artists: Artist[], option: SelectedSortOption) {
+        switch (option.key) {
+            case 'title':
+                return artists.sort((x, y) =>
+                    sort(x.name, y.name, option.order)
+                );
+            default:
+                return artists;
+        }
+    }
+
+    const orderedArtists = useMemo(
+        () => [...orderArtists(filteredArtists, selectedSortOption)],
+        [filteredArtists, selectedSortOption]
+    );
+
+    function toggleOrder(order: SortOrder): SortOrder {
+        return order === 'ascending' ? 'descending' : 'ascending';
+    }
+
+    function handleSortOptionChange(headerKey: HeaderKey): void {
+        setSelectedSortOption((previous) => ({
+            key: headerKey,
+            order:
+                previous.key === headerKey
+                    ? toggleOrder(previous.order)
+                    : 'ascending',
+        }));
+    }
+
+    function playArtist(artist: Artist) {
+        playContext(
+            LocalTracksService.getArtistTracks(artist.uri).map(
+                (t) => t.localTrack
+            )
+        );
     }
 
     return (
         <>
             <div className={styles['album-header']}>
-                <h1>Artists</h1>
+                <h1>{getTranslation(['artists'])}</h1>
 
                 <div className={styles['controls']}>
                     <SearchInput
@@ -75,21 +106,18 @@ export function ArtistsPage() {
                         setDebouncedSearch={setDebouncedSearch}
                     />
 
-                    <button
-                        className="x-sortBox-sortDropdown"
-                        type="button"
-                        aria-expanded="false"
-                    >
-                        <span data-encore-id="type">Date d'ajout</span>
-                        <CaretDown />
-                    </button>
+                    <SortMenu
+                        sortOptions={sortOptions}
+                        selectedSortOption={selectedSortOption}
+                        setSelectedSortOption={handleSortOptionChange}
+                    />
                 </div>
             </div>
 
             <div
                 className={`${styles['album-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
-                {filteredArtists.map((a) => (
+                {orderedArtists.map((a) => (
                     <ArtistCard
                         key={a.uri}
                         artist={a}

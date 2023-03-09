@@ -7,8 +7,6 @@ import { Header } from '../../shared/header';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 
-// TODO: Sort by name, album (default)
-
 function ArtistHeader(props: { artist: Artist }) {
     return (
         <Header
@@ -41,7 +39,7 @@ export function ArtistPage() {
         artist != null ? LocalTracksService.getArtistTracks(artist.uri) : [];
 
     useEffect(() => {
-        async function getTracks() {
+        async function getArtist() {
             const artists = await LocalTracksService.getArtists();
 
             if (!artists.has(artistUri)) {
@@ -52,7 +50,7 @@ export function ArtistPage() {
             setArtist(artists.get(artistUri)!);
         }
 
-        getTracks();
+        getArtist();
     }, []);
 
     return (

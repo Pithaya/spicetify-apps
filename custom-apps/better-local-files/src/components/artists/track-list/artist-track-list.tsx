@@ -9,8 +9,8 @@ import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
 import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
-import { RowMenu } from '../../shared/menus/row-menu';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
 
 export interface IProps {
     artist: Artist;
@@ -47,7 +47,7 @@ export function ArtistTrackList(props: IProps) {
                             ['more.label.context'],
                             props.artist.name
                         )}
-                        menu={<RowMenu track={props.tracks[0]} />}
+                        menu={<MultiTrackMenu tracks={props.tracks} />}
                     />
                 </div>
             </div>
@@ -55,7 +55,7 @@ export function ArtistTrackList(props: IProps) {
             <TrackListGrid
                 tracks={props.tracks}
                 subtracks={[]}
-                gridLabel="Local tracks"
+                gridLabel={props.artist.name}
                 onPlayTrack={(uri) =>
                     playTrack(
                         uri,
