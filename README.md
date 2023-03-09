@@ -10,4 +10,5 @@ See each app's readme for more details.
 
 ## Custom apps
 
--   [Eternal Jukebox](./custom-apps/eternal-jukebox/README.md): Loop a song infinitely and (almost) seamlessly.
+-   [Eternal Jukebox (Beta)](./custom-apps/eternal-jukebox/README.md): Loop a song infinitely and (almost) seamlessly.
+-   [Better local files](./custom-apps/better-local-files/README.md): View your local songs, albums and artists.

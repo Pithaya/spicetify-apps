@@ -82,10 +82,6 @@ export namespace Platform {
 
     export type SoundtrapAPI = {};
 
-    export type Translations = {
-        [translationKey: string]: string;
-    };
-
     export type Transport = {};
 
     export type UBILogger = {};
