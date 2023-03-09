@@ -17,7 +17,7 @@
     },
     {
         "name": "Better local files",
-        "description": "Adds album and artist displays to the local files.",
+        "description": "View your local songs, albums and artists.",
         "preview": "preview.png",
         "readme": "README.md",
         "branch": "dist/better-local-files",
