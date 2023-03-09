@@ -5,7 +5,6 @@ import { Artist } from '../models/artist';
 import { Track } from '../models/track';
 
 export class LocalTracksService {
-    private static readonly artistTempSeparator = '{separator}';
     private static isInitialized: boolean = false;
 
     private static _tracks: Map<string, Track>;
@@ -52,8 +51,6 @@ export class LocalTracksService {
     }
 
     private static async init(): Promise<void> {
-        console.log('init');
-
         if (this.isInitialized) {
             return;
         }
@@ -61,6 +58,8 @@ export class LocalTracksService {
         const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
 
         const localTracks = await api.getTracks();
+
+        console.log(localTracks);
 
         this._tracks = new Map<string, Track>();
         this._albums = new Map<string, Album>();
@@ -70,44 +69,49 @@ export class LocalTracksService {
             // Add the album
             let album: Album;
 
-            if (!this._albums.has(localTrack.album.uri)) {
+            // Recreate an uri from the album's name
+            const albumName =
+                localTrack.album.name === ''
+                    ? 'Untitled'
+                    : localTrack.album.name;
+
+            // TODO: Use cover data to differenciate albums with the same name ? Too slow for now
+            /*const albumCoverB64 = await this.getBase64Image(
+                localTrack.album.images[0].url
+            );
+            const coverData =
+                albumCoverB64.match(
+                    /(?:(data:text\/plain;base64,))(.*)(?:(=)$)/
+                )?.[2] ?? '';*/
+
+            const albumKey = `spotify:uri:${localTrack.album.name
+                .toLowerCase()
+                .replace(/\s/g, '+')}`;
+
+            if (!this._albums.has(albumKey)) {
                 album = new Album(
-                    localTrack.album.uri,
-                    localTrack.album.name === ''
-                        ? 'Untitled'
-                        : localTrack.album.name,
+                    albumKey,
+                    albumName,
                     localTrack.album.images[0].url
                 );
 
-                // Add the album artists
-                const albumUri: LocalAlbumURI = Spicetify.URI.fromString(
-                    album.uri
-                ) as any;
-                const artists: Artist[] = this.getArtistsFromString(
-                    albumUri.artist,
-                    album.image
-                );
-
-                album.artists.push(...artists);
-
-                for (let a of artists) {
-                    if (!this._artists.has(a.uri)) {
-                        this._artists.set(a.uri, a);
-                    }
-                }
-
-                this._albums.set(localTrack.album.uri, album);
+                this._albums.set(albumKey, album);
             } else {
-                album = this._albums.get(localTrack.album.uri)!;
+                album = this._albums.get(albumKey)!;
             }
 
             // Add the track artists
-            const artists: Artist[] = localTrack.artists.flatMap((a) =>
+            const trackArtists: Artist[] = localTrack.artists.flatMap((a) =>
                 this.getArtistsFromString(a.name, album.image)
             );
-            for (let a of artists) {
-                if (!this._artists.has(a.uri)) {
-                    this._artists.set(a.uri, a);
+
+            for (let artist of trackArtists) {
+                if (!this._artists.has(artist.uri)) {
+                    this._artists.set(artist.uri, artist);
+                }
+
+                if (!album.artists.some((a) => a.uri === artist.uri)) {
+                    album.artists.push(artist);
                 }
             }
 
@@ -119,7 +123,7 @@ export class LocalTracksService {
                 name: localTrack.name,
                 discNumber: localTrack.discNumber,
                 trackNumber: localTrack.trackNumber,
-                artists: artists,
+                artists: trackArtists,
                 album: album,
                 localTrack: localTrack,
             };
@@ -157,10 +161,34 @@ export class LocalTracksService {
         artistImage: string
     ): Artist[] {
         return artistNames
-            .replace(',', this.artistTempSeparator)
-            .replace(';', this.artistTempSeparator)
-            .split(this.artistTempSeparator)
+            .split(/(?:,|;)/)
             .map((a) => new Artist(a.trim(), artistImage));
+    }
+
+    private static async getBase64Image(imageUrl: string): Promise<string> {
+        let blob = new Blob([imageUrl]);
+        let url = URL.createObjectURL(blob);
+
+        let response = await fetch(url);
+        let resultBlob = await response.blob();
+
+        return new Promise((resolve, reject) => {
+            let fileReader = new FileReader();
+
+            fileReader.onload = () => {
+                let b64 = fileReader.result;
+
+                if (b64 === null || b64 instanceof ArrayBuffer) {
+                    reject();
+                } else {
+                    resolve(b64);
+                }
+            };
+
+            fileReader.onerror = (e) => reject(e);
+
+            fileReader.readAsDataURL(resultBlob);
+        });
     }
 
     private constructor() {}

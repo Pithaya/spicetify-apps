@@ -56,7 +56,9 @@ export function RowMenu(props: IProps) {
 
             <SubmenuItem
                 label={getTranslation(['contextmenu.add-to-playlist'])}
-                submenu={<PlaylistSelectionMenu trackUri={props.track.uri} />}
+                submenu={
+                    <PlaylistSelectionMenu tracksUri={[props.track.uri]} />
+                }
             />
         </Spicetify.ReactComponent.Menu>
     );

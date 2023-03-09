@@ -2,7 +2,7 @@ import { Playlist, PlaylistAPI, RootlistAPI, UserAPI } from '@shared';
 import React, { useEffect, useState } from 'react';
 
 export interface PlaylistSelectionMenuProps {
-    trackUri: string;
+    tracksUri: string[];
 }
 
 export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
@@ -30,7 +30,7 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
     }, []);
 
     async function addToPlaylist(playlistUri: string) {
-        await playlistAPI.add(playlistUri, [props.trackUri], { after: 'end' });
+        await playlistAPI.add(playlistUri, props.tracksUri, { after: 'end' });
     }
 
     return (

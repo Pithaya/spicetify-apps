@@ -4,7 +4,10 @@ import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
 import { Header } from '../../shared/header';
-import { getTranslatedDuration } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import {
+    getTranslatedDuration,
+    getTranslation,
+} from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
 
@@ -49,7 +52,15 @@ function AlbumHeader(props: { album: Album }) {
                             null
                         )}
                     <span className="main-entityHeader-metaDataText">
-                        {props.album.getTracks().length} titres
+                        {getTranslation(
+                            [
+                                'tracklist-header.songs-counter',
+                                props.album.getTracks().length === 1
+                                    ? 'one'
+                                    : 'other',
+                            ],
+                            props.album.getTracks().length
+                        )}
                     </span>
                     <span className="main-entityHeader-metaDataText">
                         {getTranslatedDuration(props.album.getDuration())}
