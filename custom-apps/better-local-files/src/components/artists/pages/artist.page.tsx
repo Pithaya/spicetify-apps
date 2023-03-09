@@ -6,6 +6,7 @@ import { ArtistTrackList } from '../track-list/artist-track-list';
 import { Header } from '../../shared/header';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
+import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 function ArtistHeader(props: { artist: Artist }) {
     return (
@@ -17,7 +18,7 @@ function ArtistHeader(props: { artist: Artist }) {
                     className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
                 />
             }
-            subtitle="Artiste"
+            subtitle={getTranslation(['artist'])}
             title={props.artist.name}
         />
     );

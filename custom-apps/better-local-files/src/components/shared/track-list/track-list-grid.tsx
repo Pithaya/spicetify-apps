@@ -17,6 +17,7 @@ export interface TrackListGridProps extends TrackListHeaderProps {
     tracks: Track[];
     subtracks: SubTracksList[];
     gridLabel: string;
+    useTrackNumber: boolean;
     onPlayTrack: (uri: string) => void;
     getRowContent: (track: Track) => JSX.Element[];
 }
@@ -54,7 +55,11 @@ export function TrackListGrid(props: TrackListGridProps) {
                         <TrackListRow
                             key={track.uri}
                             track={track}
-                            index={index + 1}
+                            index={
+                                props.useTrackNumber
+                                    ? track.trackNumber
+                                    : index + 1
+                            }
                             selected={selectedTrackUri === track.uri}
                             active={activeTrackUri === track.uri}
                             playing={
@@ -76,7 +81,11 @@ export function TrackListGrid(props: TrackListGridProps) {
                                     <TrackListRow
                                         key={track.uri}
                                         track={track}
-                                        index={track.trackNumber}
+                                        index={
+                                            props.useTrackNumber
+                                                ? track.trackNumber
+                                                : index + 1
+                                        }
                                         selected={
                                             selectedTrackUri === track.uri
                                         }

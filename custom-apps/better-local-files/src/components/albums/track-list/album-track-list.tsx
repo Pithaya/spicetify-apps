@@ -40,7 +40,7 @@ export function AlbumTrackList(props: IProps) {
     const headers: TrackListHeaderOption[] = [
         {
             key: 'title',
-            label: 'Titre',
+            label: getTranslation(['sort.title']),
         },
     ];
 
@@ -71,6 +71,7 @@ export function AlbumTrackList(props: IProps) {
                 tracks={tracks}
                 subtracks={subTracks}
                 gridLabel={props.albumName}
+                useTrackNumber={true}
                 onPlayTrack={(uri) =>
                     playTrack(
                         uri,

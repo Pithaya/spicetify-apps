@@ -159,6 +159,7 @@ export function TrackList(props: IProps) {
                 tracks={orderedTracks}
                 subtracks={[]}
                 gridLabel={getTranslation(['local-files'])}
+                useTrackNumber={false}
                 onPlayTrack={(uri) =>
                     playTrack(
                         uri,

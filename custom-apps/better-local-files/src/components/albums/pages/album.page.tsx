@@ -21,7 +21,7 @@ function AlbumHeader(props: { album: Album }) {
                     className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
                 />
             }
-            subtitle="Album"
+            subtitle={getTranslation(['album'])}
             title={props.album.name}
             metadata={
                 <>
