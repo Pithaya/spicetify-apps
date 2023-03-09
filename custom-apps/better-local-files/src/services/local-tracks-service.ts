@@ -59,8 +59,6 @@ export class LocalTracksService {
 
         const localTracks = await api.getTracks();
 
-        console.log(localTracks);
-
         this._tracks = new Map<string, Track>();
         this._albums = new Map<string, Album>();
         this._artists = new Map<string, Artist>();
@@ -150,10 +148,6 @@ export class LocalTracksService {
         }
 
         this.isInitialized = true;
-
-        console.log(this._tracks);
-        console.log(this._artists);
-        console.log(this._albums);
     }
 
     private static getArtistsFromString(

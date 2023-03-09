@@ -9,8 +9,6 @@ export interface MoreButtonProps {
 
 // TODO: update aria expanded
 export function MoreButton(props: MoreButtonProps) {
-    console.log(props.label);
-
     return (
         <Spicetify.ReactComponent.TooltipWrapper
             label={props.label}
