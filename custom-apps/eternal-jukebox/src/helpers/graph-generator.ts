@@ -48,7 +48,7 @@ export class GraphGenerator {
 
     public generateGraph(): SongGraph {
         const graphBeats = this.beats.map(
-            (b) => new Beat(b.index, b.start, b.duration)
+            (b) => new Beat(b.index, b.start * 1000, b.duration * 1000)
         );
 
         for (const [beatIndex, beat] of graphBeats.entries()) {

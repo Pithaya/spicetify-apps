@@ -30,12 +30,12 @@ export class Beat {
     public neighbours: Edge[] = [];
 
     /**
-     * The starting point (in seconds) of the beat.
+     * The starting point (in milliseconds) of the beat.
      */
     public start: number;
 
     /**
-     * The duration (in seconds) of the beat.
+     * The duration (in milliseconds) of the beat.
      */
     public duration: number;
 
@@ -45,7 +45,7 @@ export class Beat {
     public playCount: number = 0;
 
     /**
-     * The end point (in seconds) of the beat.
+     * The end point (in milliseconds) of the beat.
      */
     public get end(): number {
         return this.start + this.duration;
