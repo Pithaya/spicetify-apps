@@ -54,6 +54,8 @@ export class HomeComponent extends React.Component<IProps, IState> {
                 <h1 style={{ textAlign: 'center' }}>
                     {this.props.songState.track.metadata?.title}
                 </h1>
+                <p>by</p>
+                <h2>{this.props.songState.track.metadata?.artist_name}</h2>
 
                 <JukeboxVisualizer
                     beats={this.props.songState.graph.beats}

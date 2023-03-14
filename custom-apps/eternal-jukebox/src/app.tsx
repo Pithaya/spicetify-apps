@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from 'css/app.module.scss';
 import { Subscription } from 'rxjs';
 import { HomeComponent } from './components/home.component';
 import { JukeboxSongState } from './models/jukebox-song-state';
@@ -43,7 +44,11 @@ class App extends React.Component<IProps, IState> {
             );
         }
 
-        return <h1 style={{ textAlign: 'center' }}>Jukebox not enabled.</h1>;
+        return (
+            <div className={styles['empty-container']}>
+                <h1>Jukebox not enabled.</h1>
+            </div>
+        );
     }
 }
 
