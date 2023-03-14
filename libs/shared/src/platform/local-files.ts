@@ -63,7 +63,7 @@ export type LocalTrackSortOption = {
     order: 'DESC' | 'ASC';
 };
 
-export type LocalFilesApi = {
+export type LocalFilesAPI = {
     getTracks(
         sort?: LocalTrackSortOption | undefined,
         search?: string | ''

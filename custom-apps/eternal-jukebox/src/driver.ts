@@ -1,4 +1,4 @@
-import { PlayerAPI } from '@shared';
+import { Platform } from '@shared';
 import {
     distinctUntilChanged,
     fromEvent,
@@ -159,9 +159,12 @@ export class Driver {
         // Get the new current tile
 
         const outOfSync =
-            this.currentBeat !== null &&
-            this.currentBeat.next !== null &&
-            playerProgress > this.currentBeat.next.end;
+            (this.currentBeat !== null &&
+                this.currentBeat.next !== null &&
+                playerProgress > this.currentBeat.next.end) ||
+            (this.currentBeat !== null &&
+                this.currentBeat.previous !== null &&
+                playerProgress < this.currentBeat.previous.start);
 
         let lastBeat = this.currentBeat;
         this.currentBeat = this.getNextBeat(playerProgress, outOfSync);
@@ -247,9 +250,7 @@ export class Driver {
         if (DEBUG) {
             console.time('seek');
         }
-        await (Spicetify.Platform.PlayerAPI as PlayerAPI).seekTo(
-            playerPositionAfterJump
-        );
+        await Platform.PlayerAPI.seekTo(playerPositionAfterJump);
 
         if (DEBUG) {
             console.timeEnd('seek');
