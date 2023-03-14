@@ -128,13 +128,7 @@ export class Driver {
         }
 
         this.logDebug(
-            `Processing with current beat: ${
-                this.currentBeat?.index
-            }, current beat time: ${this.currentBeat?.start} - ${
-                this.currentBeat?.end
-            } (${
-                this.currentBeat?.duration
-            }), player time: ${Spicetify.Player.getProgress()}`
+            `Processing with current beat: ${this.currentBeat?.toString()}, player time: ${Spicetify.Player.getProgress()}`
         );
 
         if (this.lastBranch !== null) {
@@ -142,10 +136,7 @@ export class Driver {
         }
 
         if (this.currentBeat !== null) {
-            if (
-                playerProgress <
-                this.currentBeat.start + this.currentBeat.duration
-            ) {
+            if (this.currentBeat.isInBeat(playerProgress)) {
                 // We're still in the same beat: continue
                 return;
             }
@@ -165,6 +156,12 @@ export class Driver {
             (this.currentBeat !== null &&
                 this.currentBeat.previous !== null &&
                 playerProgress < this.currentBeat.previous.start);
+
+        if (outOfSync) {
+            console.error(
+                `Out of sync ! ${playerProgress} - ${this.currentBeat?.toString()}`
+            );
+        }
 
         let lastBeat = this.currentBeat;
         this.currentBeat = this.getNextBeat(playerProgress, outOfSync);
@@ -265,9 +262,11 @@ export class Driver {
         playerProgress: number,
         outOfSync: boolean
     ): Beat | null {
-        if (this.currentBeat === null) {
-            // Get the first beat
-            // The jukebox can be enabled midway though the song, so search for the current beat
+        // Either we have to get the first beat
+        // The jukebox can be enabled midway though the song, so search for the current beat
+        // Or the player is advancing too fast, so we need to skip beats to catch up
+        // Or the user is manually seeking through the song
+        if (this.currentBeat === null || outOfSync) {
             for (const beat of this.songState.graph.beats) {
                 if (
                     playerProgress >= beat.start &&
@@ -279,33 +278,6 @@ export class Driver {
 
             // Should never be called, but necessary for TS null check
             return this.songState.graph.beats[0];
-        }
-
-        if (outOfSync) {
-            console.error(
-                `Out of sync ! ${playerProgress} > ${this.currentBeat.next?.end}`
-            );
-
-            // The player is advancing too fast, so we need to skip beats to catch up
-            let nextBeat: Beat | null = this.currentBeat.next;
-
-            while (
-                nextBeat !== null &&
-                !(
-                    playerProgress >= nextBeat.start &&
-                    playerProgress <= nextBeat.end
-                )
-            ) {
-                nextBeat = nextBeat.next;
-            }
-
-            if (nextBeat === null) {
-                // Shouldn't happen
-                this.stop();
-                return null;
-            }
-
-            return nextBeat;
         }
 
         // Keep moving along edges

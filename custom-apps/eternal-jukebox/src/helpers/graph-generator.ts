@@ -56,7 +56,7 @@ export class GraphGenerator {
                 beat.next = graphBeats[beatIndex + 1];
             }
 
-            if (beatIndex < 0) {
+            if (beatIndex > 0) {
                 beat.previous = graphBeats[beatIndex - 1];
             }
         }

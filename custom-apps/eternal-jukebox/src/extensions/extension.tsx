@@ -8,11 +8,11 @@ import { Jukebox } from '../models/jukebox';
 // TODO: Add i18n
 
 (async () => {
+    window.jukebox = new Jukebox();
+
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
-
-    window.jukebox = new Jukebox();
 
     try {
         const element = await waitForElement('.player-controls__right', 10000);

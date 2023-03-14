@@ -56,4 +56,12 @@ export class Beat {
         this.start = start;
         this.duration = duration;
     }
+
+    public toString(): string {
+        return `[${this.index}]: ${this.start} - ${this.end} (${this.duration})`;
+    }
+
+    public isInBeat(time: number): boolean {
+        return time >= this.start && time <= this.end;
+    }
 }
