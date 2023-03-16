@@ -51,6 +51,12 @@ export class Driver {
     private lastBranch: Edge | null = null;
 
     /**
+     * The scheduled next beat.
+     * TODO: Use this instead of seek on slice click.
+     */
+    private nextBeat: Beat | null = null;
+
+    /**
      * Resolver used to wait for the seeking to finish.
      * If null, we're not currently seeking.
      */
