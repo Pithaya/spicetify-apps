@@ -44,7 +44,6 @@ export function HomeComponent() {
                     artistName: songState?.track?.metadata?.artist_name ?? '',
                 });
 
-                console.log('graph state change');
                 setGraphState({
                     beats: songState?.graph.beats ?? [],
                     segments: songState?.analysis.segments ?? [],
@@ -69,19 +68,13 @@ export function HomeComponent() {
         return subscription.unsubscribe;
     }, []);
 
-    // TODO: Refactor this with jukebox visualizer
-    const svgSize = 600;
-    const halfSize = svgSize / 2;
-
-    const drawData = initSvgDrawData(svgSize, halfSize, graphState);
-
     return (
         <div className={styles.container}>
             <h1>{trackState.trackName}</h1>
             <p>by</p>
             <h2>{trackState.artistName}</h2>
 
-            <JukeboxVisualizer drawData={drawData}></JukeboxVisualizer>
+            <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
 
             <div className={styles.stats}>
                 <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>

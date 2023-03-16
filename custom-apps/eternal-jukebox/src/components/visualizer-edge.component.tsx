@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../css/app.module.scss';
 import { IEdgeDrawData } from '../models/visualization/edge-draw-data.interface';
 
@@ -6,47 +6,35 @@ interface IProps {
     drawData: IEdgeDrawData;
 }
 
-interface IState {
-    isHovered: boolean;
-}
+export function VisualizerEdge(props: IProps) {
+    const [isHovered, setIsHovered] = useState(false);
 
-export class VisualizerEdge extends React.Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            isHovered: false,
-        };
-    }
-
-    render() {
-        return (
-            <path
-                className={`${styles['edge-path']} ${
-                    this.props.drawData.edge.isPlaying ? 'is-active' : ''
-                }`}
-                fill="none"
-                stroke={
-                    this.props.drawData.edge.isPlaying || this.state.isHovered
-                        ? this.props.drawData.activeColor
-                        : this.props.drawData.color
-                }
-                strokeWidth={this.props.drawData.strokeWidth}
-                d={this.props.drawData.drawCommand}
-                onMouseOver={(event) => this.onMouseOver(event.target as Node)}
-                onMouseOut={() => this.setState(() => ({ isHovered: false }))}
-            >
-                <title>
-                    {`${this.props.drawData.edge.source.index} - ${this.props.drawData.edge.destination.index}`}
-                </title>
-            </path>
-        );
-    }
-
-    private onMouseOver(node: Node) {
+    function onMouseOver(node: Node) {
         const svg = document.getElementById('#jukebox-graph');
         svg?.firstChild?.appendChild(node);
 
-        this.setState(() => ({ isHovered: true }));
+        setIsHovered(true);
     }
+
+    return (
+        <path
+            className={`${styles['edge-path']} ${
+                props.drawData.edge.isPlaying ? 'is-active' : ''
+            }`}
+            fill="none"
+            stroke={
+                props.drawData.edge.isPlaying || isHovered
+                    ? props.drawData.activeColor
+                    : props.drawData.color
+            }
+            strokeWidth={props.drawData.strokeWidth}
+            d={props.drawData.drawCommand}
+            onMouseOver={(event) => onMouseOver(event.target as Node)}
+            onMouseOut={() => setIsHovered(false)}
+        >
+            <title>
+                {`${props.drawData.edge.source.index} - ${props.drawData.edge.destination.index}`}
+            </title>
+        </path>
+    );
 }

@@ -2,19 +2,18 @@ import styles from '../css/app.module.scss';
 import React, { useEffect } from 'react';
 import { VisualizerSlice } from './visualizer-slice.component';
 import { VisualizerEdge } from './visualizer-edge.component';
-import { IGraphDrawData } from '../models/visualization/graph-draw-data';
+import { IGraphState } from '../models/graph/graph-state';
+import { initSvgDrawData } from '../helpers/visualization-builder';
 
 // TODO: Update tile height depending on each beat's play count.
 
 interface IProps {
-    drawData: IGraphDrawData;
+    state: IGraphState;
 }
 
 // Reference: https://dev.to/mustapha/how-to-create-an-interactive-svg-donut-chart-using-angular-19eo
 
 export function JukeboxVisualizer(props: IProps) {
-    console.log('render visu');
-
     useEffect(() => {
         const activeBranch = document.querySelector('svg path.is-active');
         if (activeBranch !== null) {
@@ -22,16 +21,15 @@ export function JukeboxVisualizer(props: IProps) {
         }
     });
 
-    if (
-        props.drawData.beats.length === 0 ||
-        props.drawData.edges.length === 0
-    ) {
+    if (props.state.beats.length === 0) {
         return <div>Loading...</div>;
     }
 
     // TODO: Could be responsive
     const svgSize = 600;
     const halfSize = svgSize / 2;
+
+    const drawData = initSvgDrawData(svgSize, halfSize, props.state);
 
     function pathToFront(node: Node): void {
         const svg = document.getElementById('#jukebox-graph');
@@ -50,13 +48,13 @@ export function JukeboxVisualizer(props: IProps) {
                 <g
                     transform={`scale(-1,1) translate(${-svgSize}, 0) rotate(-90,${halfSize},${halfSize}) `}
                 >
-                    {props.drawData.beats.map((currentData) => (
+                    {drawData.beats.map((currentData) => (
                         <VisualizerSlice
                             key={currentData.beat.index}
                             drawData={currentData}
                         />
                     ))}
-                    {props.drawData.edges.map((currentData) => (
+                    {drawData.edges.map((currentData) => (
                         <VisualizerEdge
                             key={`${currentData.edge.source.index}-${currentData.edge.destination.index}`}
                             drawData={currentData}

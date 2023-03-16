@@ -17,7 +17,6 @@ export function initSvgDrawData(
         return { beats: [], edges: [] };
     }
 
-    console.log('draw data');
     const [cmin, cmax] = normalizeColor(graphState);
 
     // Prevent an empty first slice if the first beat doesn't start at 0
