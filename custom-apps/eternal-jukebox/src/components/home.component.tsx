@@ -1,9 +1,9 @@
 import styles from '../css/app.module.scss';
 import React, { useEffect, useState } from 'react';
-import { JukeboxVisualizer } from './jukebox-visualizer.component';
+import { JukeboxVisualizer } from './visualizer/jukebox-visualizer.component';
 import { millisToMinutesAndSeconds } from '../utils/time-utils';
-import { initSvgDrawData } from '../helpers/visualization-builder';
 import { IGraphState } from '../models/graph/graph-state';
+import { SettingsButton } from './settings/settings-button';
 
 // TODO: Add settings button and modal
 
@@ -70,9 +70,18 @@ export function HomeComponent() {
 
     return (
         <div className={styles.container}>
-            <h1>{trackState.trackName}</h1>
-            <p>by</p>
-            <h2>{trackState.artistName}</h2>
+            <div className={styles['jukebox-header']}>
+                <span className={styles['side']}></span>
+                <div className={styles['center']}>
+                    <h1>{trackState.trackName}</h1>
+                    <p>by</p>
+                    <h2>{trackState.artistName}</h2>
+                </div>
+
+                <div className={styles['side']}>
+                    <SettingsButton />
+                </div>
+            </div>
 
             <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
 

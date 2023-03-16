@@ -1,7 +1,7 @@
 import { Platform } from '@shared';
 import React, { useState } from 'react';
-import styles from '../css/app.module.scss';
-import { IBeatDrawData } from '../models/visualization/beat-draw-data.interface';
+import styles from '../../css/app.module.scss';
+import { IBeatDrawData } from '../../models/visualization/beat-draw-data.interface';
 
 interface IProps {
     drawData: IBeatDrawData;

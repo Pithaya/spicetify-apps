@@ -1,9 +1,9 @@
-import styles from '../css/app.module.scss';
+import styles from '../../css/app.module.scss';
 import React, { useEffect } from 'react';
 import { VisualizerSlice } from './visualizer-slice.component';
 import { VisualizerEdge } from './visualizer-edge.component';
-import { IGraphState } from '../models/graph/graph-state';
-import { initSvgDrawData } from '../helpers/visualization-builder';
+import { IGraphState } from '../../models/graph/graph-state';
+import { initSvgDrawData } from '../../helpers/visualization-builder';
 
 // TODO: Update tile height depending on each beat's play count.
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styles from '../css/app.module.scss';
-import { IEdgeDrawData } from '../models/visualization/edge-draw-data.interface';
+import styles from '../../css/app.module.scss';
+import { IEdgeDrawData } from '../../models/visualization/edge-draw-data.interface';
 
 interface IProps {
     drawData: IEdgeDrawData;

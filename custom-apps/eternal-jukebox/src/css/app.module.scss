@@ -1,3 +1,34 @@
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jukebox-header {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
+    width: 100%;
+
+    .side {
+        flex-grow: 1;
+
+        display: flex;
+        align-items: start;
+        justify-content: end;
+
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .center {
+        * {
+            text-align: center;
+        }
+    }
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -40,5 +71,22 @@
         &:hover {
             stroke-opacity: 1;
         }
+    }
+}
+
+.settings-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--spice-subtext);
+    background-color: var(--spice-sidebar);
+
+    border: none;
+
+    &:hover {
+        transition: background-color 0.5s ease;
+        background-color: var(--spice-button-disabled);
+        cursor: pointer;
     }
 }
