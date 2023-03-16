@@ -24,6 +24,13 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
+    margin-top: 1rem;
+
+    span {
+        flex-grow: 1;
+        flex-basis: 0;
+        text-align: center;
+    }
 }
 
 .jukebox-graph {

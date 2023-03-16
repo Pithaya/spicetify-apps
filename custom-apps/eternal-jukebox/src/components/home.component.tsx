@@ -1,91 +1,100 @@
 import styles from '../css/app.module.scss';
-import React from 'react';
-import { JukeboxSongState } from '../models/jukebox-song-state';
+import React, { useEffect, useState } from 'react';
 import { JukeboxVisualizer } from './jukebox-visualizer.component';
-import { Subscription } from 'rxjs';
+import { RemixedSegment, RemixedTimeInterval } from '../models/remixer.types';
+import { Beat } from '../models/graph/beat';
+import { millisToMinutesAndSeconds } from '../utils/time-utils';
 
 // TODO: Add settings button and modal
-// TODO: Show branch chance below the visualization
-// TODO: Add artist name
 
-interface IProps {
-    songState: JukeboxSongState;
+interface ITrackState {
+    trackName: string;
+    artistName: string;
 }
 
-interface IState {
-    playedBeats: number;
-    listenTime: number;
+interface IGraphState {
+    beats: Beat[];
+    segments: RemixedSegment[];
+    remixedBeats: RemixedTimeInterval[];
 }
 
-export class HomeComponent extends React.Component<IProps, IState> {
-    private subscription: Subscription = new Subscription();
+interface IStatsState {
+    beatsPlayed: number;
+    currentRandomBranchChance: number;
+    listenTime: string;
+}
 
-    constructor(props: IProps) {
-        super(props);
+export function HomeComponent() {
+    const [trackState, setTrackState] = useState<ITrackState>({
+        trackName: '',
+        artistName: '',
+    });
 
-        this.state = {
-            playedBeats: 0,
-            listenTime: 0,
-        };
-    }
+    const [graphState, setGraphState] = useState<IGraphState>({
+        beats: [],
+        remixedBeats: [],
+        segments: [],
+    });
 
-    componentDidMount(): void {
-        this.subscription.add(
-            window.jukebox.statsChanged$.subscribe(() => {
-                this.setState(() => {
-                    return {
-                        playedBeats: this.props.songState.beatsPlayed,
-                        listenTime:
-                            new Date().getTime() -
-                            this.props.songState.startTime,
-                    };
+    const [statsState, setStatsState] = useState<IStatsState>({
+        beatsPlayed: 0,
+        listenTime: '0',
+        currentRandomBranchChance: 0,
+    });
+
+    useEffect(() => {
+        const subscription = window.jukebox.songState$.subscribe(
+            (songState) => {
+                setTrackState({
+                    trackName: songState?.track?.metadata?.title ?? '',
+                    artistName: songState?.track?.metadata?.artist_name ?? '',
                 });
-            })
+
+                setGraphState({
+                    beats: songState?.graph.beats ?? [],
+                    segments: songState?.analysis.segments ?? [],
+                    remixedBeats: songState?.analysis.beats ?? [],
+                });
+            }
         );
-    }
 
-    componentWillUnmount(): void {
-        this.subscription.unsubscribe();
-    }
+        return subscription.unsubscribe;
+    }, []);
 
-    render() {
-        return (
-            <div className={styles.container}>
-                <h1 style={{ textAlign: 'center' }}>
-                    {this.props.songState.track.metadata?.title}
-                </h1>
-                <p>by</p>
-                <h2>{this.props.songState.track.metadata?.artist_name}</h2>
+    useEffect(() => {
+        const subscription = window.jukebox.statsChanged$.subscribe((stats) => {
+            setStatsState({
+                beatsPlayed: stats.beatsPlayed,
+                currentRandomBranchChance:
+                    stats.currentRandomBranchChance * 100,
+                listenTime: millisToMinutesAndSeconds(stats.listenTime),
+            });
+        });
 
-                <JukeboxVisualizer
-                    beats={this.props.songState.graph.beats}
-                    segments={this.props.songState.analysis.segments}
-                    remixedBeats={this.props.songState.analysis.beats}
-                ></JukeboxVisualizer>
+        return subscription.unsubscribe;
+    }, []);
 
-                <div className={styles.stats}>
-                    <span id="sbeats">
-                        Total Beats:
-                        <span id="beats">{this.state.playedBeats}</span>
-                    </span>
-                    <span id="stime">
-                        Listen Time:
-                        <span id="time">
-                            {this.millisToMinutesAndSeconds(
-                                this.state.listenTime
-                            )}
-                        </span>
-                    </span>
-                </div>
+    return (
+        <div className={styles.container}>
+            <h1>{trackState.trackName}</h1>
+            <p>by</p>
+            <h2>{trackState.artistName}</h2>
+
+            <JukeboxVisualizer
+                beats={graphState.beats}
+                segments={graphState.segments}
+                remixedBeats={graphState.remixedBeats}
+            ></JukeboxVisualizer>
+
+            <div className={styles.stats}>
+                <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>
+                <span>
+                    {`Current branch change: ${Math.round(
+                        statsState.currentRandomBranchChance
+                    )}%`}
+                </span>
+                <span>{`Listen Time: ${statsState.listenTime}`}</span>
             </div>
-        );
-    }
-
-    private millisToMinutesAndSeconds(millis: number): string {
-        var minutes = Math.floor(millis / 60000);
-        var seconds = Math.floor((millis % 60000) / 1000);
-        return seconds === 60
-            ? minutes + 1 + ':00'
-            : minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-    }
+        </div>
+    );
 }

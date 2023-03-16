@@ -12,11 +12,11 @@ function App() {
                 setSongState(songState);
             }
         );
-        return () => subscription.unsubscribe();
+        return subscription.unsubscribe;
     }, []);
 
     if (songState !== null) {
-        return <HomeComponent songState={songState}></HomeComponent>;
+        return <HomeComponent />;
     }
 
     return (

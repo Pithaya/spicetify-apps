@@ -13,6 +13,12 @@ import { GraphGenerator } from '../helpers/graph-generator.js';
 import { Driver } from '../driver';
 import { AudioAnalysis, getAudioAnalysis, getId } from '@shared';
 
+export interface StatsChangedEvent {
+    beatsPlayed: number;
+    currentRandomBranchChance: number;
+    listenTime: number;
+}
+
 /**
  * Global class to control the jukebox.
  */
@@ -61,8 +67,9 @@ export class Jukebox {
     private songChangedSubscription: Subscription = new Subscription();
     private driverProcessSubscription: Subscription = new Subscription();
 
-    private statsChangedSubject: Subject<void> = new Subject<void>();
-    public statsChanged$: Observable<void> =
+    private statsChangedSubject: Subject<StatsChangedEvent> =
+        new Subject<StatsChangedEvent>();
+    public statsChanged$: Observable<StatsChangedEvent> =
         this.statsChangedSubject.asObservable();
 
     private stateChangedSubject: BehaviorSubject<boolean> =
@@ -178,7 +185,15 @@ export class Jukebox {
         this.driver = new Driver(this.songState, this.settings);
         this.driverProcessSubscription.add(
             this.driver.onProgress$.subscribe(() => {
-                this.statsChangedSubject.next();
+                this.statsChangedSubject.next({
+                    beatsPlayed: this.songState?.beatsPlayed ?? 0,
+                    currentRandomBranchChance:
+                        this.songState?.currentRandomBranchChance ?? 0,
+                    listenTime:
+                        this.songState !== null
+                            ? new Date().getTime() - this.songState.startTime
+                            : 0,
+                });
             })
         );
         this.driver.start();
