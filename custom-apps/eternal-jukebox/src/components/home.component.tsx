@@ -1,21 +1,15 @@
 import styles from '../css/app.module.scss';
 import React, { useEffect, useState } from 'react';
 import { JukeboxVisualizer } from './jukebox-visualizer.component';
-import { RemixedSegment, RemixedTimeInterval } from '../models/remixer.types';
-import { Beat } from '../models/graph/beat';
 import { millisToMinutesAndSeconds } from '../utils/time-utils';
+import { initSvgDrawData } from '../helpers/visualization-builder';
+import { IGraphState } from '../models/graph/graph-state';
 
 // TODO: Add settings button and modal
 
 interface ITrackState {
     trackName: string;
     artistName: string;
-}
-
-interface IGraphState {
-    beats: Beat[];
-    segments: RemixedSegment[];
-    remixedBeats: RemixedTimeInterval[];
 }
 
 interface IStatsState {
@@ -50,6 +44,7 @@ export function HomeComponent() {
                     artistName: songState?.track?.metadata?.artist_name ?? '',
                 });
 
+                console.log('graph state change');
                 setGraphState({
                     beats: songState?.graph.beats ?? [],
                     segments: songState?.analysis.segments ?? [],
@@ -74,17 +69,19 @@ export function HomeComponent() {
         return subscription.unsubscribe;
     }, []);
 
+    // TODO: Refactor this with jukebox visualizer
+    const svgSize = 600;
+    const halfSize = svgSize / 2;
+
+    const drawData = initSvgDrawData(svgSize, halfSize, graphState);
+
     return (
         <div className={styles.container}>
             <h1>{trackState.trackName}</h1>
             <p>by</p>
             <h2>{trackState.artistName}</h2>
 
-            <JukeboxVisualizer
-                beats={graphState.beats}
-                segments={graphState.segments}
-                remixedBeats={graphState.remixedBeats}
-            ></JukeboxVisualizer>
+            <JukeboxVisualizer drawData={drawData}></JukeboxVisualizer>
 
             <div className={styles.stats}>
                 <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>
