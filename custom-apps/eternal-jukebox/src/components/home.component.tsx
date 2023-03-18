@@ -83,7 +83,9 @@ export function HomeComponent() {
                 </div>
             </div>
 
-            <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
+            <div className={styles['visualizer-container']}>
+                <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
+            </div>
 
             <div className={styles.stats}>
                 <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>

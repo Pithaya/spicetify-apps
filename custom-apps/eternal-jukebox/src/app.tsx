@@ -18,7 +18,11 @@ function App() {
 
     if (window.jukebox.isEnabled) {
         if (songState !== null) {
-            return <HomeComponent />;
+            return (
+                <div className={styles['full-size-container']}>
+                    <HomeComponent />
+                </div>
+            );
         } else {
             return (
                 <div className={styles['empty-container']}>

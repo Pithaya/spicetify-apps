@@ -31,9 +31,19 @@
 
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-direction: column;
+    height: 100%;
+}
+
+.full-size-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-top: 64px;
 }
 
 .empty-container {
@@ -64,11 +74,16 @@
     }
 }
 
+.visualizer-container {
+    flex-grow: 1;
+}
+
 .stats {
     width: 100%;
     display: flex;
     justify-content: space-around;
-    margin-top: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 
     span {
         flex-grow: 1;
