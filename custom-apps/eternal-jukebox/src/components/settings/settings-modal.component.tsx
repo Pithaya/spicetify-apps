@@ -7,8 +7,6 @@ import {
 import { SettingsService } from '../../services/settings-service';
 import { MultiRangeSlider } from '../shared/multi-range-slider';
 
-// TODO: Add tooltips
-
 export function SettingsModal() {
     const [settings, setSettings] = useState<JukeboxStoredSettings>(
         SettingsService.storedSettings
