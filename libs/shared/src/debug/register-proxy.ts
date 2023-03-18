@@ -7,11 +7,23 @@ function createProxyHandler<T extends object>(
 
             if (typeof targetValue === 'function') {
                 return function (...args: unknown[]) {
-                    console.log(`[${objectName}] - CALL`, property, args);
-                    return targetValue.apply(this, args);
+                    const result = targetValue.apply(this, args);
+                    console.log(
+                        `[${objectName}] - CALL`,
+                        property,
+                        args,
+                        `-->`,
+                        result
+                    );
+                    return result;
                 };
             } else {
-                console.log(`[${objectName}] - GET`, property);
+                console.log(
+                    `[${objectName}] - GET`,
+                    property,
+                    '-->',
+                    targetValue
+                );
                 return targetValue;
             }
         },
@@ -42,4 +54,26 @@ export function registerPlatformProxies(): void {
     for (const [name, api] of Object.entries(Spicetify.Platform)) {
         registerProxy(api, name);
     }
+}
+
+export function registerServicesProxies(): void {
+    const servicesMap = new Map<string, any>();
+
+    for (const [platformName, platformApi] of Object.entries(
+        Spicetify.Platform
+    )) {
+        for (const [name, service] of Object.entries(platformApi as any).filter(
+            ([n, s]) => n.startsWith('_')
+        )) {
+            const fullName = `${platformName}.${name}`;
+            if (!servicesMap.has(name)) {
+                servicesMap.set(name, service);
+                try {
+                    registerProxy(service, fullName);
+                } catch {}
+            }
+        }
+    }
+
+    console.log(servicesMap);
 }

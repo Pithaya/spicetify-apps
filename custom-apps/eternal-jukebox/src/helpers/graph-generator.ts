@@ -33,9 +33,9 @@ export class GraphGenerator {
     public computedMaxBranchDistance: number = 0;
 
     /**
-     * Current in-use max branch distance.
+     * Max branches (neighbours) allowed per beat.
      */
-    public currentMaxBranchDistance: number = 0;
+    private readonly maxBranches: number = 4;
 
     constructor(
         private readonly settings: Readonly<JukeboxSettings>,
@@ -48,7 +48,7 @@ export class GraphGenerator {
 
     public generateGraph(): SongGraph {
         const graphBeats = this.beats.map(
-            (b) => new Beat(b.index, b.start, b.duration)
+            (b) => new Beat(b.index, b.start * 1000, b.duration * 1000)
         );
 
         for (const [beatIndex, beat] of graphBeats.entries()) {
@@ -56,7 +56,7 @@ export class GraphGenerator {
                 beat.next = graphBeats[beatIndex + 1];
             }
 
-            if (beatIndex < 0) {
+            if (beatIndex > 0) {
                 beat.previous = graphBeats[beatIndex - 1];
             }
         }
@@ -67,10 +67,10 @@ export class GraphGenerator {
 
         this.precalculateNearestNeighbors();
 
-        if (this.currentMaxBranchDistance == 0) {
+        if (this.settings.useDynamicBranchDistance) {
             this.dynamicCollectNearestNeighbors();
         } else {
-            this.collectNearestNeighbors(this.currentMaxBranchDistance);
+            this.collectNearestNeighbors(this.settings.maxBranchDistance);
         }
 
         this.postProcessNearestNeighbors();
@@ -98,7 +98,6 @@ export class GraphGenerator {
             }
         }
 
-        this.currentMaxBranchDistance = threshold;
         this.computedMaxBranchDistance = threshold;
     }
 
@@ -125,7 +124,7 @@ export class GraphGenerator {
      * @param currentBeat The current beat.
      */
     private calculateNearestNeighborsForBeat(currentBeat: RemixedTimeInterval) {
-        const maxNeighbors = this.settings.maxBranches;
+        const maxNeighbors = this.maxBranches;
         const maxBranchDistance = this.settings.maxBranchDistance;
 
         const edges: Edge[] = [];
@@ -332,7 +331,7 @@ export class GraphGenerator {
     private postProcessNearestNeighbors(): void {
         if (this.settings.addLastEdge) {
             this.insertBestBackwardBranch(
-                this.currentMaxBranchDistance,
+                this.settings.maxBranchDistance,
                 this.longestBackwardBranch() < 50 ? 65 : 55
             );
         }

@@ -1,49 +1,51 @@
-import React from 'react';
-import { Subscription } from 'rxjs';
+import React, { useEffect, useState } from 'react';
+import styles from 'css/app.module.scss';
 import { HomeComponent } from './components/home.component';
 import { JukeboxSongState } from './models/jukebox-song-state';
+import { SettingsButton } from './components/settings/settings-button';
 
-interface IProps {}
+function App() {
+    const [songState, setSongState] = useState<JukeboxSongState | null>(null);
 
-interface IState {
-    songState: JukeboxSongState | null;
-}
-
-class App extends React.Component<IProps, IState> {
-    private subscription: Subscription = new Subscription();
-
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            songState: null,
-        };
-    }
-
-    componentDidMount(): void {
-        this.subscription.add(
-            window.jukebox.songState$.subscribe((songState) => {
-                this.setState(() => {
-                    return {
-                        songState: songState,
-                    };
-                });
-            })
+    useEffect(() => {
+        const subscription = window.jukebox.songState$.subscribe(
+            (songState) => {
+                setSongState(songState);
+            }
         );
-    }
+        return subscription.unsubscribe;
+    }, []);
 
-    componentWillUnmount(): void {
-        this.subscription.unsubscribe();
-    }
-
-    render() {
-        if (this.state.songState !== null) {
+    if (window.jukebox.isEnabled) {
+        if (songState !== null) {
             return (
-                <HomeComponent songState={this.state.songState}></HomeComponent>
+                <div className={styles['full-size-container']}>
+                    <HomeComponent />
+                </div>
+            );
+        } else {
+            return (
+                <div className={styles['empty-container']}>
+                    <div className={styles['elements-container']}>
+                        <SettingsButton />
+                        <div>
+                            <h1>Loading...</h1>
+                        </div>
+                    </div>
+                </div>
             );
         }
-
-        return <h1 style={{ textAlign: 'center' }}>Jukebox not enabled.</h1>;
+    } else {
+        return (
+            <div className={styles['empty-container']}>
+                <div className={styles['elements-container']}>
+                    <SettingsButton />
+                    <div>
+                        <h1>Jukebox not enabled.</h1>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 

@@ -1,94 +1,234 @@
-// Last updated: December 2022
+// Last updated: March 2023
 
-export namespace Platform {
-    export type AdManagers = {};
+import { ClipboardAPI } from './clipboard';
+import { LocalFilesAPI } from './local-files';
+import { PlayerAPI } from './player';
+import { PlaylistAPI } from './playlist';
+import { RootlistAPI } from './rootlist';
+import { Session } from './session';
+import { Translations } from './translations';
+import { UserAPI } from './user';
 
-    export type AuthorizationAPI = {};
+type Transport = any;
+type EventSender = any;
+type FeatureFlags = any;
+type AdManagers = any;
+type RemoteConfiguration = any;
+type ActionStoreAPI = any;
+type AuthorizationAPI = any;
+type ConnectAPI = any;
+type ControlMessageAPI = any;
+type FacebookAPI = any;
+type FollowAPI = any;
+type GraphQLLoader = any;
+type LibraryAPI = any;
+type OfflineAPI = any;
+type PlatformData = any;
+type PlayHistoryAPI = any;
+type PlaylistPermissionsAPI = any;
+type PrivateSessionAPI = any;
+type RadioStationAPI = any;
+type RecaptchaLoggerAPI = any;
+type RecentlyPlayedAPI = any;
+type ReportAPI = any;
+type SegmentsAPI = any;
+type ShowAPI = any;
+type UpdateAPI = any;
+type VideoAPI = any;
+type EnhanceAPI = any;
+type SEOExperiments = any;
+type SingAlongAPI = any;
+type PlaybackAPI = any;
+type UBILogger = any;
+type CollectionPlatformAPI = any;
+type LocalStorageAPI = any;
+type EqualizerAPI = any;
+type SoundtrapAPI = any;
+type BuddyFeedAPI = any;
+type PanelAPI = any;
 
-    export type BuddyFeedAPI = {};
+export class Platform {
+    static get Session(): Session {
+        return Spicetify.Platform.Session;
+    }
 
-    export type CollectionPlatformAPI = {};
+    static get Transport(): Transport {
+        return Spicetify.Platform.Transport;
+    }
 
-    export type ConnectAPI = {};
+    static get EventSender(): EventSender {
+        return Spicetify.Platform.EventSender;
+    }
 
-    export type ControlMessageAPI = {};
+    static get Translations(): Translations {
+        return Spicetify.Platform.Translations;
+    }
 
-    export type EnhanceAPI = {};
+    static get FeatureFlags(): FeatureFlags {
+        return Spicetify.Platform.FeatureFlags;
+    }
 
-    export type EqualizerAPI = {};
+    static get History(): History {
+        return Spicetify.Platform.History;
+    }
 
-    export type EventSender = {};
+    static get AdManagers(): AdManagers {
+        return Spicetify.Platform.AdManagers;
+    }
 
-    export type FacebookAPI = {};
+    static get RemoteConfiguration(): RemoteConfiguration {
+        return Spicetify.Platform.RemoteConfiguration;
+    }
 
-    export type FeatureFlags = {};
+    static get ActionStoreAPI(): ActionStoreAPI {
+        return Spicetify.Platform.ActionStoreAPI;
+    }
 
-    export type FollowAPI = {};
+    static get AuthorizationAPI(): AuthorizationAPI {
+        return Spicetify.Platform.AuthorizationAPI;
+    }
 
-    export type GraphQLLoader = {};
+    static get ClipboardAPI(): ClipboardAPI {
+        return Spicetify.Platform.ClipboardAPI;
+    }
 
-    export type History = {};
+    static get ConnectAPI(): ConnectAPI {
+        return Spicetify.Platform.ConnectAPI;
+    }
 
-    export type LibraryAPI = {};
+    static get ControlMessageAPI(): ControlMessageAPI {
+        return Spicetify.Platform.ControlMessageAPI;
+    }
 
-    export type LocalFilesAPI = {};
+    static get FacebookAPI(): FacebookAPI {
+        return Spicetify.Platform.FacebookAPI;
+    }
 
-    export type LocalStorageAPI = {};
+    static get FollowAPI(): FollowAPI {
+        return Spicetify.Platform.FollowAPI;
+    }
 
-    export type OfflineAPI = {};
+    static get GraphQLLoader(): GraphQLLoader {
+        return Spicetify.Platform.GraphQLLoader;
+    }
 
-    export type PanelAPI = {};
+    static get LibraryAPI(): LibraryAPI {
+        return Spicetify.Platform.LibraryAPI;
+    }
 
-    export type PlatformData = {};
+    static get LocalFilesAPI(): LocalFilesAPI {
+        return Spicetify.Platform.LocalFilesAPI;
+    }
 
-    export type PlayHistoryAPI = {};
+    static get OfflineAPI(): OfflineAPI {
+        return Spicetify.Platform.OfflineAPI;
+    }
 
-    export type PlaybackAPI = {};
+    static get PlatformData(): PlatformData {
+        return Spicetify.Platform.PlatformData;
+    }
 
-    export type PlayerAPI = {};
+    static get PlayerAPI(): PlayerAPI {
+        return Spicetify.Platform.PlayerAPI;
+    }
 
-    export type PlaylistAPI = {};
+    static get PlayHistoryAPI(): PlayHistoryAPI {
+        return Spicetify.Platform.PlayHistoryAPI;
+    }
 
-    export type PlaylistPermissionsAPI = {};
+    static get PlaylistAPI(): PlaylistAPI {
+        return Spicetify.Platform.PlaylistAPI;
+    }
 
-    export type PrivateSessionAPI = {};
+    static get PlaylistPermissionsAPI(): PlaylistPermissionsAPI {
+        return Spicetify.Platform.PlaylistPermissionsAPI;
+    }
 
-    export type RadioStationAPI = {};
+    static get PrivateSessionAPI(): PrivateSessionAPI {
+        return Spicetify.Platform.PrivateSessionAPI;
+    }
 
-    export type RecaptchaLoggerAPI = {};
+    static get RadioStationAPI(): RadioStationAPI {
+        return Spicetify.Platform.RadioStationAPI;
+    }
 
-    export type RecentlyPlayedAPI = {};
+    static get RecaptchaLoggerAPI(): RecaptchaLoggerAPI {
+        return Spicetify.Platform.RecaptchaLoggerAPI;
+    }
 
-    export type RemoteConfiguration = {};
+    static get RecentlyPlayedAPI(): RecentlyPlayedAPI {
+        return Spicetify.Platform.RecentlyPlayedAPI;
+    }
 
-    export type ReportAPI = {};
+    static get ReportAPI(): ReportAPI {
+        return Spicetify.Platform.ReportAPI;
+    }
 
-    export type RootlistAPI = {};
+    static get RootlistAPI(): RootlistAPI {
+        return Spicetify.Platform.RootlistAPI;
+    }
 
-    export type SEOExperiments = {};
+    static get SegmentsAPI(): SegmentsAPI {
+        return Spicetify.Platform.SegmentsAPI;
+    }
 
-    export type SegmentsAPI = {};
+    static get ShowAPI(): ShowAPI {
+        return Spicetify.Platform.ShowAPI;
+    }
 
-    export type ShowAPI = {};
+    static get UpdateAPI(): UpdateAPI {
+        return Spicetify.Platform.UpdateAPI;
+    }
 
-    export type SingAlongAPI = {
-        getCapabilities: () => {
-            isSupported: boolean;
-        };
-        getStatus: () => Promise<'disabled' | 'enabled'>;
-        setStatus: (status: 'disabled' | 'enabled') => Promise<void>;
-        setVocalVolume: (volume: number) => Promise<void>;
-    };
+    static get UserAPI(): UserAPI {
+        return Spicetify.Platform.UserAPI;
+    }
 
-    export type SoundtrapAPI = {};
+    static get VideoAPI(): VideoAPI {
+        return Spicetify.Platform.VideoAPI;
+    }
 
-    export type Transport = {};
+    static get EnhanceAPI(): EnhanceAPI {
+        return Spicetify.Platform.EnhanceAPI;
+    }
 
-    export type UBILogger = {};
+    static get SEOExperiments(): SEOExperiments {
+        return Spicetify.Platform.SEOExperiments;
+    }
 
-    export type UpdateAPI = {};
+    static get SingAlongAPI(): SingAlongAPI {
+        return Spicetify.Platform.SingAlongAPI;
+    }
 
-    export type UserAPI = {};
+    static get PlaybackAPI(): PlaybackAPI {
+        return Spicetify.Platform.PlaybackAPI;
+    }
 
-    export type VideoAPI = {};
+    static get UBILogger(): UBILogger {
+        return Spicetify.Platform.UBILogger;
+    }
+
+    static get CollectionPlatformAPI(): CollectionPlatformAPI {
+        return Spicetify.Platform.CollectionPlatformAPI;
+    }
+
+    static get LocalStorageAPI(): LocalStorageAPI {
+        return Spicetify.Platform.LocalStorageAPI;
+    }
+
+    static get EqualizerAPI(): EqualizerAPI {
+        return Spicetify.Platform.EqualizerAPI;
+    }
+
+    static get SoundtrapAPI(): SoundtrapAPI {
+        return Spicetify.Platform.SoundtrapAPI;
+    }
+
+    static get BuddyFeedAPI(): BuddyFeedAPI {
+        return Spicetify.Platform.BuddyFeedAPI;
+    }
+
+    static get PanelAPI(): PanelAPI {
+        return Spicetify.Platform.PanelAPI;
+    }
 }

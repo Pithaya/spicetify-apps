@@ -12,6 +12,13 @@ import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
 import { AudioAnalysis, getAudioAnalysis, getId } from '@shared';
+import { SettingsService } from '../services/settings-service';
+
+export interface StatsChangedEvent {
+    beatsPlayed: number;
+    currentRandomBranchChance: number;
+    listenTime: number;
+}
 
 /**
  * Global class to control the jukebox.
@@ -46,18 +53,11 @@ export class Jukebox {
      */
     private driver: Driver | null = null;
 
-    /**
-     * Controls if the jukebox is enabled.
-     */
-    private _isEnabled = false;
-
     public get isEnabled(): boolean {
-        return this._isEnabled;
+        return this.stateChangedSubject.value;
     }
 
     public set isEnabled(value: boolean) {
-        this._isEnabled = value;
-
         if (value) {
             this.enable();
         } else {
@@ -68,20 +68,34 @@ export class Jukebox {
     private songChangedSubscription: Subscription = new Subscription();
     private driverProcessSubscription: Subscription = new Subscription();
 
-    private statsChangedSubject: Subject<void> = new Subject<void>();
-    public statsChanged$: Observable<void> =
+    private statsChangedSubject: Subject<StatsChangedEvent> =
+        new Subject<StatsChangedEvent>();
+    public statsChanged$: Observable<StatsChangedEvent> =
         this.statsChangedSubject.asObservable();
 
+    private stateChangedSubject: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    public stateChanged$: Observable<boolean> =
+        this.stateChangedSubject.asObservable();
+
     public constructor() {
-        // TODO: Get settings from local storage
-        this.settings = new JukeboxSettings();
+        this.settings = SettingsService.settings;
+    }
+
+    public reloadSettings(): void {
+        this.settings = SettingsService.settings;
+
+        if (this.isEnabled) {
+            this.stop();
+            this.start();
+        }
     }
 
     /**
      * Starts the Jukebox.
      */
     public async enable(): Promise<void> {
-        await this.start();
+        this.stateChangedSubject.next(true);
 
         let source = fromEvent(Spicetify.Player, 'songchange');
         let subscription = source.subscribe(() => {
@@ -90,6 +104,8 @@ export class Jukebox {
         });
 
         this.songChangedSubscription.add(subscription);
+
+        await this.start();
     }
 
     /**
@@ -99,6 +115,8 @@ export class Jukebox {
         this.stop();
         this.songChangedSubscription.unsubscribe();
         this.songChangedSubscription = new Subscription();
+
+        this.stateChangedSubject.next(false);
     }
 
     /**
@@ -176,7 +194,15 @@ export class Jukebox {
         this.driver = new Driver(this.songState, this.settings);
         this.driverProcessSubscription.add(
             this.driver.onProgress$.subscribe(() => {
-                this.statsChangedSubject.next();
+                this.statsChangedSubject.next({
+                    beatsPlayed: this.songState?.beatsPlayed ?? 0,
+                    currentRandomBranchChance:
+                        this.songState?.currentRandomBranchChance ?? 0,
+                    listenTime:
+                        this.songState !== null
+                            ? new Date().getTime() - this.songState.startTime
+                            : 0,
+                });
             })
         );
         this.driver.start();

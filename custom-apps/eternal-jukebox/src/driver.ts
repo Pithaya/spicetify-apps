@@ -1,3 +1,4 @@
+import { Platform } from '@shared';
 import {
     distinctUntilChanged,
     fromEvent,
@@ -50,6 +51,12 @@ export class Driver {
     private lastBranch: Edge | null = null;
 
     /**
+     * The scheduled next beat.
+     * TODO: Use this instead of seek on slice click.
+     */
+    private nextBeat: Beat | null = null;
+
+    /**
      * Resolver used to wait for the seeking to finish.
      * If null, we're not currently seeking.
      */
@@ -82,7 +89,7 @@ export class Driver {
         let source = fromEvent(Spicetify.Player, 'onprogress');
         let subscription = source
             .pipe(
-                map((e) => (e as any).data / 1000),
+                map((e) => (e as any).data),
                 distinctUntilChanged() // onprogress keeps being fired even on pause
             )
             .subscribe((playerProgress) => this.process(playerProgress));
@@ -107,6 +114,8 @@ export class Driver {
      * @param playerProgress Current player progress.
      */
     private process(playerProgress: number): void {
+        // Necessary as playerProgress callbacks can keep firing
+        // with the previous time even after seeking
         if (this.isSeekingResolver !== null) {
             this.logDebug(
                 `Is seeking... ${playerProgress} -> ${this.currentBeat?.start}`
@@ -125,11 +134,7 @@ export class Driver {
         }
 
         this.logDebug(
-            `Processing with current beat: ${
-                this.currentBeat?.index
-            }, current beat time: ${this.currentBeat?.start} - ${
-                this.currentBeat?.end
-            }, player time: ${this.getPlayerProgress()}`
+            `Processing with current beat: ${this.currentBeat?.toString()}, player time: ${Spicetify.Player.getProgress()}`
         );
 
         if (this.lastBranch !== null) {
@@ -137,10 +142,7 @@ export class Driver {
         }
 
         if (this.currentBeat !== null) {
-            if (
-                playerProgress <
-                this.currentBeat.start + this.currentBeat.duration
-            ) {
+            if (this.currentBeat.isInBeat(playerProgress)) {
                 // We're still in the same beat: continue
                 return;
             }
@@ -154,9 +156,18 @@ export class Driver {
         // Get the new current tile
 
         const outOfSync =
-            this.currentBeat !== null &&
-            this.currentBeat.next !== null &&
-            playerProgress > this.currentBeat.next.end;
+            (this.currentBeat !== null &&
+                this.currentBeat.next !== null &&
+                playerProgress > this.currentBeat.next.end) ||
+            (this.currentBeat !== null &&
+                this.currentBeat.previous !== null &&
+                playerProgress < this.currentBeat.previous.start);
+
+        if (outOfSync) {
+            console.error(
+                `Out of sync ! ${playerProgress} - ${this.currentBeat?.toString()}`
+            );
+        }
 
         let lastBeat = this.currentBeat;
         this.currentBeat = this.getNextBeat(playerProgress, outOfSync);
@@ -171,10 +182,10 @@ export class Driver {
                 this.currentBeat?.start
             } - ${
                 this.currentBeat?.end
-            }, player time: ${this.getPlayerProgress()}`
+            }, player time: ${Spicetify.Player.getProgress()}`
         );
 
-        this.playBeat(lastBeat, this.currentBeat, outOfSync);
+        this.playBeat(lastBeat, this.currentBeat, playerProgress, outOfSync);
 
         this.currentBeat.playCount += 1;
         this.songState.beatsPlayed += 1;
@@ -193,17 +204,10 @@ export class Driver {
         this.onProgressSubject.next();
     }
 
-    /**
-     * Returns the player progress in seconds.
-     * @returns The player progress, in seconds.
-     */
-    private getPlayerProgress(): number {
-        return Spicetify.Player.getProgress() / 1000;
-    }
-
     private async playBeat(
         lastBeat: Beat | null,
         currentBeat: Beat,
+        playerProgress: number,
         outOfSync: boolean
     ): Promise<void> {
         if (lastBeat === null) {
@@ -219,15 +223,17 @@ export class Driver {
         // Instead of playing this beat, jump to another one to play it instead
 
         // Player progression in the 'no-jump' beat
-        let expectedBeat = lastBeat.next!;
-        let playerOffsetInBeat = this.getPlayerProgress() - expectedBeat.start;
+        let playerOffsetInBeat = Spicetify.Player.getProgress() - lastBeat.end;
 
         // Seek to the jumped beat + player offset
         let playerPositionAfterJump = currentBeat.start + playerOffsetInBeat;
 
-        this.logDebug(`Seek to: ${playerPositionAfterJump}`);
+        this.logDebug(
+            `Seek to: ${playerPositionAfterJump}ms, from ${playerProgress}ms, with offset ${playerOffsetInBeat}`
+        );
 
-        const isForward = playerPositionAfterJump > this.getPlayerProgress();
+        const isForward =
+            playerPositionAfterJump > Spicetify.Player.getProgress();
 
         if (isForward) {
             this.isSeekingResolver = (playerProgress) =>
@@ -235,10 +241,23 @@ export class Driver {
         } else {
             // Let a margin of 1 second for the check
             this.isSeekingResolver = (playerProgress) =>
-                playerProgress <= playerPositionAfterJump + 1;
+                playerProgress <= playerPositionAfterJump + 1000;
         }
 
-        Spicetify.Player.seek(playerPositionAfterJump * 1000);
+        this.logDebug(
+            `Time to get there: ${Math.abs(
+                Spicetify.Player.getProgress() - playerProgress
+            )}ms`
+        );
+
+        if (DEBUG) {
+            console.time('seek');
+        }
+        await Platform.PlayerAPI.seekTo(playerPositionAfterJump);
+
+        if (DEBUG) {
+            console.timeEnd('seek');
+        }
     }
 
     /**
@@ -249,9 +268,11 @@ export class Driver {
         playerProgress: number,
         outOfSync: boolean
     ): Beat | null {
-        if (this.currentBeat === null) {
-            // Get the first beat
-            // The jukebox can be enabled midway though the song, so search for the current beat
+        // Either we have to get the first beat
+        // The jukebox can be enabled midway though the song, so search for the current beat
+        // Or the player is advancing too fast, so we need to skip beats to catch up
+        // Or the user is manually seeking through the song
+        if (this.currentBeat === null || outOfSync) {
             for (const beat of this.songState.graph.beats) {
                 if (
                     playerProgress >= beat.start &&
@@ -263,33 +284,6 @@ export class Driver {
 
             // Should never be called, but necessary for TS null check
             return this.songState.graph.beats[0];
-        }
-
-        if (outOfSync) {
-            console.error(
-                `Out of sync ! ${playerProgress} > ${this.currentBeat.next?.end}`
-            );
-
-            // The player is advancing too fast, so we need to skip beats to catch up
-            let nextBeat: Beat | null = this.currentBeat.next;
-
-            while (
-                nextBeat !== null &&
-                !(
-                    playerProgress >= nextBeat.start &&
-                    playerProgress <= nextBeat.end
-                )
-            ) {
-                nextBeat = nextBeat.next;
-            }
-
-            if (nextBeat === null) {
-                // Shouldn't happen
-                this.stop();
-                return null;
-            }
-
-            return nextBeat;
         }
 
         // Keep moving along edges
@@ -393,7 +387,7 @@ export class Driver {
         }
 
         if (
-            this.beatsSinceLastBranch <= this.settings.minBeatsBeforeBranching
+            this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
         ) {
             return false;
         }

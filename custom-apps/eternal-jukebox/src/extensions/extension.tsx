@@ -4,18 +4,17 @@ import ReactDOM from 'react-dom';
 import { PlaybarButton } from '../components/playbar-button.component';
 import { Jukebox } from '../models/jukebox';
 
-// TODO: Switch to functions components
 // TODO: Add i18n
 
 (async () => {
+    window.jukebox = new Jukebox();
+
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    window.jukebox = new Jukebox();
-
     try {
-        const element = await waitForElement('.player-controls__right', 5000);
+        const element = await waitForElement('.player-controls__right', 10000);
 
         const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
 
