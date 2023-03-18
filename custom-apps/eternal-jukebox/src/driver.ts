@@ -387,7 +387,7 @@ export class Driver {
         }
 
         if (
-            this.beatsSinceLastBranch <= this.settings.minBeatsBeforeBranching
+            this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
         ) {
             return false;
         }

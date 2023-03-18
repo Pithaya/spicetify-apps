@@ -42,13 +42,26 @@
     right: 0;
     top: 0;
     bottom: 0;
+    padding-top: 64px;
 
-    text-align: center;
+    .elements-container {
+        height: 100%;
+        position: relative;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+        button {
+            position: absolute;
+            top: 0;
+            right: 2rem;
+        }
+
+        div {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    }
 }
 
 .stats {
@@ -89,4 +102,22 @@
         background-color: var(--spice-button-disabled);
         cursor: pointer;
     }
+}
+
+.settings-modal {
+    input[type='range'] {
+        padding: 0;
+        accent-color: var(--spice-text);
+        width: 300px;
+    }
+}
+
+.range-subtext {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.small-text {
+    font-size: small;
 }
