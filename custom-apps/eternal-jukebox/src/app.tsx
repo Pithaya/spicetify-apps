@@ -16,20 +16,33 @@ function App() {
         return subscription.unsubscribe;
     }, []);
 
-    if (songState !== null) {
-        return <HomeComponent />;
-    }
-
-    return (
-        <div className={styles['empty-container']}>
-            <div className={styles['elements-container']}>
-                <SettingsButton />
-                <div>
-                    <h1>Jukebox not enabled.</h1>
+    if (window.jukebox.isEnabled) {
+        if (songState !== null) {
+            return <HomeComponent />;
+        } else {
+            return (
+                <div className={styles['empty-container']}>
+                    <div className={styles['elements-container']}>
+                        <SettingsButton />
+                        <div>
+                            <h1>Loading...</h1>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    } else {
+        return (
+            <div className={styles['empty-container']}>
+                <div className={styles['elements-container']}>
+                    <SettingsButton />
+                    <div>
+                        <h1>Jukebox not enabled.</h1>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 export default App;

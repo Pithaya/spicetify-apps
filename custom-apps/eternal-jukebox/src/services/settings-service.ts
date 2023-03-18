@@ -7,21 +7,25 @@ export class SettingsService {
     private static readonly settingId: string = 'jukebox:settings';
 
     public static get settings(): JukeboxSettings {
-        const storageValue = Spicetify.LocalStorage.get(this.settingId);
-
-        if (storageValue == null) {
-            return new JukeboxSettings();
-        }
-
-        const parsedValue: JukeboxStoredSettings = JSON.parse(storageValue);
-        return JukeboxSettings.fromPartial(parsedValue);
+        return JukeboxSettings.fromPartial(SettingsService.storedSettings);
     }
 
     public static set settings(settings: JukeboxSettings) {
-        const storedSettings: JukeboxStoredSettings = settings.toPartial();
-        Spicetify.LocalStorage.set(
-            this.settingId,
-            JSON.stringify(storedSettings)
-        );
+        SettingsService.storedSettings = settings.toPartial();
+    }
+
+    public static get storedSettings(): JukeboxStoredSettings {
+        const storageValue = Spicetify.LocalStorage.get(this.settingId);
+
+        if (storageValue == null) {
+            return new JukeboxSettings().toPartial();
+        }
+
+        const parsedValue: JukeboxStoredSettings = JSON.parse(storageValue);
+        return parsedValue;
+    }
+
+    public static set storedSettings(settings: JukeboxStoredSettings) {
+        Spicetify.LocalStorage.set(this.settingId, JSON.stringify(settings));
     }
 }

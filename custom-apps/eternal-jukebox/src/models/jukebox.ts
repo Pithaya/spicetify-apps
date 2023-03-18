@@ -12,6 +12,7 @@ import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
 import { AudioAnalysis, getAudioAnalysis, getId } from '@shared';
+import { SettingsService } from '../services/settings-service';
 
 export interface StatsChangedEvent {
     beatsPlayed: number;
@@ -78,8 +79,16 @@ export class Jukebox {
         this.stateChangedSubject.asObservable();
 
     public constructor() {
-        // TODO: Get settings from local storage
-        this.settings = new JukeboxSettings();
+        this.settings = SettingsService.settings;
+    }
+
+    public reloadSettings(): void {
+        this.settings = SettingsService.settings;
+
+        if (this.isEnabled) {
+            this.stop();
+            this.start();
+        }
     }
 
     /**
