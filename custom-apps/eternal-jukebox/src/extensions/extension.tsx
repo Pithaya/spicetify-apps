@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { PlaybarButton } from '../components/playbar-button.component';
 import { Jukebox } from '../models/jukebox';
 
-// TODO: Switch to functions components
 // TODO: Add i18n
 
 (async () => {

@@ -5,8 +5,6 @@ import { millisToMinutesAndSeconds } from '../utils/time-utils';
 import { IGraphState } from '../models/graph/graph-state';
 import { SettingsButton } from './settings/settings-button';
 
-// TODO: Add settings button and modal
-
 interface ITrackState {
     trackName: string;
     artistName: string;
