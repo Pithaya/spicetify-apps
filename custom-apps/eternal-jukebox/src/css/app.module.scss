@@ -125,6 +125,23 @@
         accent-color: var(--spice-text);
         width: 300px;
     }
+
+    button {
+        background-color: var(--spice-text);
+        color: var(--spice-nav-active-text);
+
+        padding: 0.5rem 1rem;
+        border-style: none;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: bold;
+
+        margin-top: 2rem;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 .range-subtext {

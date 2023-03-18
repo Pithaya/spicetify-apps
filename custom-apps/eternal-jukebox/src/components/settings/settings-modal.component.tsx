@@ -56,6 +56,10 @@ export function SettingsModal() {
         setSettings((previousValue) => ({ ...previousValue, [field]: value }));
     }
 
+    function reset() {
+        setSettings(new JukeboxSettings().toPartial());
+    }
+
     const labelStyle: React.CSSProperties = {
         marginBottom: '0.5rem',
         marginTop: '0.5rem',
@@ -72,13 +76,18 @@ export function SettingsModal() {
     return (
         <div className={styles['settings-modal']}>
             <>
-                <label
-                    htmlFor="jukebox.settings.maxBranchDistance"
-                    style={labelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="The maximum similarity distance allowed between two beats in order to create a branch."
+                    showDelay={100}
                 >
-                    <b>Branch Similarity Threshold</b>:
-                    {settings.maxBranchDistance}
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.maxBranchDistance"
+                        style={labelStyle}
+                    >
+                        <b>Branch Similarity Threshold</b>:
+                        {settings.maxBranchDistance}
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <div className={styles['input-range-container']}>
                     <input
@@ -109,14 +118,21 @@ export function SettingsModal() {
             </>
 
             <>
-                <label
-                    htmlFor="jukebox.settings.randomBranchChance"
-                    style={labelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="The minimum and maximum chance for a branch to be selected each beat."
+                    showDelay={100}
                 >
-                    <b>Branch Probability Range</b>:
-                    {` ${Math.round(settings.minRandomBranchChance * 100)}% to 
+                    <label
+                        htmlFor="jukebox.settings.randomBranchChance"
+                        style={labelStyle}
+                    >
+                        <b>Branch Probability Range</b>:
+                        {` ${Math.round(
+                            settings.minRandomBranchChance * 100
+                        )}% to 
                 ${Math.round(settings.maxRandomBranchChance * 100)}%`}
-                </label>
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <div className={styles['input-range-container']}>
                     <MultiRangeSlider
@@ -144,13 +160,18 @@ export function SettingsModal() {
             </>
 
             <>
-                <label
-                    htmlFor="jukebox.settings.randomBranchChanceDelta"
-                    style={labelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="Controls how fast the chance to select a branch will increase."
+                    showDelay={100}
                 >
-                    <b>Branch Probability Ramp-up Speed</b>:
-                    {Math.round(settings.randomBranchChanceDelta * 100)}%
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.randomBranchChanceDelta"
+                        style={labelStyle}
+                    >
+                        <b>Branch Probability Ramp-up Speed</b>:
+                        {Math.round(settings.randomBranchChanceDelta * 100)}%
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <div className={styles['input-range-container']}>
                     <input
@@ -177,12 +198,17 @@ export function SettingsModal() {
             </>
 
             <div className={styles['checkbox-container']}>
-                <label
-                    htmlFor="jukebox.settings.addLastEdge"
-                    style={checkboxLabelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If true, optimize by adding a good last edge."
+                    showDelay={100}
                 >
-                    <b>Loop extension optimization</b>:
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.addLastEdge"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Loop extension optimization</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <label className="x-toggle-wrapper">
                     <input
@@ -204,12 +230,17 @@ export function SettingsModal() {
             </div>
 
             <div className={styles['checkbox-container']}>
-                <label
-                    htmlFor="jukebox.settings.justBackwards"
-                    style={checkboxLabelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If true, only add backward branches."
+                    showDelay={100}
                 >
-                    <b>Allow only reverse branches</b>:
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.justBackwards"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Allow only reverse branches</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <label className="x-toggle-wrapper">
                     <input
@@ -231,12 +262,17 @@ export function SettingsModal() {
             </div>
 
             <div className={styles['checkbox-container']}>
-                <label
-                    htmlFor="jukebox.settings.justLongBranches"
-                    style={checkboxLabelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If true, only add long branches."
+                    showDelay={100}
                 >
-                    <b>Allow only long branches</b>:
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.justLongBranches"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Allow only long branches</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <label className="x-toggle-wrapper">
                     <input
@@ -258,12 +294,17 @@ export function SettingsModal() {
             </div>
 
             <div className={styles['checkbox-container']}>
-                <label
-                    htmlFor="jukebox.settings.removeSequentialBranches"
-                    style={checkboxLabelStyle}
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If true, remove consecutive branches of the same distance."
+                    showDelay={100}
                 >
-                    <b>Remove sequential branches</b>:
-                </label>
+                    <label
+                        htmlFor="jukebox.settings.removeSequentialBranches"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Remove sequential branches</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
 
                 <label className="x-toggle-wrapper">
                     <input
@@ -282,6 +323,10 @@ export function SettingsModal() {
                         <span className="x-toggle-indicator"></span>
                     </span>
                 </label>
+            </div>
+
+            <div className={styles['flex-center']}>
+                <button onClick={reset}>Reset</button>
             </div>
         </div>
     );
