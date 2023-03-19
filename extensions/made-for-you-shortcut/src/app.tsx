@@ -33,11 +33,29 @@ async function main() {
 
     const element = await waitForElement('#spicetify-sticky-list');
 
+    // Prevent global changes to the stroke-width distorting the icon
+    let styles = `
+        svg.made-for-you-icon {
+            stroke-width: 2px !important;
+        }
+    `;
+
+    let styleSheet = document.createElement('style');
+    styleSheet.innerText = styles;
+    document.head.appendChild(styleSheet);
+
     // TODO: createRoot + root.render() if React updates to v18
     reactDom.render(
         reactDom.createPortal(
             <NavBarLink
-                icon={<Crown size={20} />}
+                icon={<Crown size={20} className="made-for-you-icon" />}
+                activeIcon={
+                    <Crown
+                        size={20}
+                        fill="currentColor"
+                        className="made-for-you-icon"
+                    />
+                }
                 label={i18next.t('forYou')}
                 href="/genre/made-for-x-hub"
             />,
