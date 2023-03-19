@@ -10,6 +10,8 @@ export class KuroshiroSettingsService {
     private readonly conversionModeSettingId: string =
         'kuroshiro:conversion-mode';
     private readonly romajiSystemSettingId: string = 'kuroshiro:romaji-system';
+    private readonly notificationTimeoutId: string =
+        'kuroshiro:notification-timeout';
 
     public get targetSyllabary(): TargetSyllabary {
         return (
@@ -45,5 +47,19 @@ export class KuroshiroSettingsService {
 
     public set romajiSystem(value: RomajiSystem) {
         Spicetify.LocalStorage.set(this.romajiSystemSettingId, value);
+    }
+
+    public get notificationTimeout(): number {
+        const storageValue = Spicetify.LocalStorage.get(
+            this.notificationTimeoutId
+        );
+        return storageValue === null ? 2 * 1000 : Number.parseInt(storageValue);
+    }
+
+    public set notificationTimeout(value: number) {
+        Spicetify.LocalStorage.set(
+            this.notificationTimeoutId,
+            value.toString()
+        );
     }
 }

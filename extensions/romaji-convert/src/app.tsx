@@ -51,6 +51,9 @@ async function main(): Promise<void> {
                                 hepburn: 'Hepburn',
                             },
                         },
+                        notificationTimeout: {
+                            label: 'Converted text display time, in seconds',
+                        },
                     },
                     contextMenu: {
                         name: 'Convert to {{syllabary, lowercase}}',
@@ -86,6 +89,9 @@ async function main(): Promise<void> {
                                 passport: 'Passport',
                                 hepburn: 'Hepburn',
                             },
+                        },
+                        notificationTimeout: {
+                            label: "Temps d'affichage du texte converti, en secondes",
                         },
                     },
                     contextMenu: {
