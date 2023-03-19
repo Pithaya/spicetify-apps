@@ -1,14 +1,15 @@
-import { History, HistoryEntry } from '../platform';
+import { HistoryEntry, Platform } from '../platform';
 import React, { useEffect, useState } from 'react';
 
 export interface NavBarLinkProps {
     icon: JSX.Element;
+    activeIcon: JSX.Element;
     href: string;
     label: string;
 }
 
 export function NavBarLink(props: NavBarLinkProps) {
-    const history = Spicetify.Platform.History as History;
+    const history = Platform.History;
     const initialActive = history.location.pathname === props.href;
 
     const [active, setActive] = useState(initialActive);
@@ -38,7 +39,7 @@ export function NavBarLink(props: NavBarLinkProps) {
                 >
                     <div className="icon collection-icon">{props.icon}</div>
                     <div className="icon collection-active-icon">
-                        {props.icon}
+                        {props.activeIcon}
                     </div>
                     <span className="ellipsis-one-line main-type-mestoBold">
                         {props.label}

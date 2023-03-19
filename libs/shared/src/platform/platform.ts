@@ -8,6 +8,7 @@ import { RootlistAPI } from './rootlist';
 import { Session } from './session';
 import { Translations } from './translations';
 import { UserAPI } from './user';
+import { History } from './history';
 
 type Transport = any;
 type EventSender = any;
