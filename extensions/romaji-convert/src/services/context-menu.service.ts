@@ -68,6 +68,10 @@ export class ContextMenuService {
             this.selectedElementName
         );
 
-        Spicetify.showNotification(result);
+        Spicetify.showNotification(
+            result,
+            false,
+            this.settingsService.notificationTimeout
+        );
     }
 }

@@ -13,10 +13,10 @@ interface IState {
     targetSyllabary: TargetSyllabary;
     conversionMode: ConversionMode;
     romajiSystem: RomajiSystem;
+    notificationTimeout: number;
 }
 
 // TODO: Switch to a function component
-
 export class SettingsModal extends React.Component<IProps, IState> {
     private readonly settingsService: KuroshiroSettingsService;
     private readonly contextMenuService: ContextMenuService;
@@ -31,6 +31,7 @@ export class SettingsModal extends React.Component<IProps, IState> {
             targetSyllabary: this.settingsService.targetSyllabary,
             conversionMode: this.settingsService.conversionMode,
             romajiSystem: this.settingsService.romajiSystem,
+            notificationTimeout: this.settingsService.notificationTimeout,
         };
     }
 
@@ -139,6 +140,24 @@ export class SettingsModal extends React.Component<IProps, IState> {
                         </select>
                     </div>
                 )}
+
+                <label
+                    htmlFor="kuroshiro.settings.notification-timeout"
+                    style={labelStyle}
+                >
+                    {i18next.t('settings.notificationTimeout.label')}
+                </label>
+                <input
+                    type={'number'}
+                    style={{ borderStyle: 'none', paddingLeft: '10px' }}
+                    id="kuroshiro.settings.notification-timeout"
+                    value={this.state.notificationTimeout / 1000}
+                    onChange={(e) =>
+                        this.onNotificationTimeoutChange(
+                            e.target.valueAsNumber * 1000
+                        )
+                    }
+                />
             </div>
         );
     }
@@ -162,6 +181,13 @@ export class SettingsModal extends React.Component<IProps, IState> {
         this.settingsService.romajiSystem = value;
         this.setState({
             romajiSystem: this.settingsService.romajiSystem,
+        });
+    }
+
+    private onNotificationTimeoutChange(value: number): void {
+        this.settingsService.notificationTimeout = value;
+        this.setState({
+            notificationTimeout: this.settingsService.notificationTimeout,
         });
     }
 }
