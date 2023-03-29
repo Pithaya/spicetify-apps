@@ -1,5 +1,7 @@
 import { History } from '@shared';
 
+// TODO: Use the uri in the url to fix navigation between artist pages
+
 export function navigateTo(href: string, uri: string | null = null) {
     if (uri === null) {
         (Spicetify.Platform.History as History).push(href);

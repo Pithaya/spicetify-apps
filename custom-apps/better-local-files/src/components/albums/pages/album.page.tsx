@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
-import { Header } from '../../shared/header';
+import { Header, headerImageFallback } from '../../shared/header';
 import {
     getTranslatedDuration,
     getTranslation,
@@ -19,6 +19,9 @@ function AlbumHeader(props: { album: Album }) {
                     src={props.album.image}
                     alt="album image"
                     className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
+                    onError={(e) =>
+                        (e.currentTarget.outerHTML = headerImageFallback)
+                    }
                 />
             }
             subtitle={getTranslation(['album'])}
