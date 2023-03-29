@@ -30,7 +30,7 @@ export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
                 aria-hidden="false"
                 draggable="false"
                 loading="eager"
-                src={props.track.album.image}
+                src={props.track.localTrack.album.images[0].url}
                 alt="Track image" // TODO: i18n
                 className="main-image-image main-trackList-rowImage main-image-loaded"
                 width="40"
