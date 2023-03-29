@@ -163,6 +163,10 @@
 .search-container {
     input {
         border-style: none;
+        background-color: rgba(var(--spice-rgb-selected-row), 0.1);
+        border-radius: 4px;
+        padding: 6px 10px 6px 48px;
+        color: var(--spice-text) !important;
     }
 
     .search-icon {
