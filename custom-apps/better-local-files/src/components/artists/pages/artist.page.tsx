@@ -1,5 +1,5 @@
 import { History } from '@shared';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { ArtistTrackList } from '../track-list/artist-track-list';
@@ -37,25 +37,16 @@ export function ArtistPage() {
         return <></>;
     }
 
-    const [artist, setArtist] = useState<Artist | null>(null);
+    const artists = LocalTracksService.getArtists();
 
-    const artistTracks =
-        artist != null ? LocalTracksService.getArtistTracks(artist.uri) : [];
+    if (!artists.has(artistUri)) {
+        navigateTo(Routes.artists);
+        return;
+    }
 
-    useEffect(() => {
-        async function getArtist() {
-            const artists = await LocalTracksService.getArtists();
+    const artist = artists.get(artistUri)!;
 
-            if (!artists.has(artistUri)) {
-                navigateTo(Routes.artists);
-                return;
-            }
-
-            setArtist(artists.get(artistUri)!);
-        }
-
-        getArtist();
-    }, []);
+    const artistTracks = LocalTracksService.getArtistTracks(artist.uri);
 
     return (
         <>

@@ -1,5 +1,5 @@
 import { History } from '@shared';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
@@ -84,22 +84,14 @@ export function AlbumPage() {
         return <></>;
     }
 
-    const [album, setAlbum] = useState<Album | null>(null);
+    const albums = LocalTracksService.getAlbums();
 
-    useEffect(() => {
-        async function getAlbum() {
-            const albums = await LocalTracksService.getAlbums();
+    if (!albums.has(albumUri)) {
+        navigateTo(Routes.albums);
+        return;
+    }
 
-            if (!albums.has(albumUri)) {
-                navigateTo(Routes.albums);
-                return;
-            }
-
-            setAlbum(albums.get(albumUri)!);
-        }
-
-        getAlbum();
-    }, []);
+    const album = albums.get(albumUri)!;
 
     return (
         <>
