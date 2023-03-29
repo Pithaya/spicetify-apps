@@ -302,8 +302,8 @@ export class LocalTracksService {
             }
         }
 
-        console.log('remove albums:', albumsToRemove);
-        console.log('add albums:', albumsToAdd);
+        //console.log('remove albums:', albumsToRemove);
+        //console.log('add albums:', albumsToAdd);
 
         // Set the cache
         if (!hasCache) {
