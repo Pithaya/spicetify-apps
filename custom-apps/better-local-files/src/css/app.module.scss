@@ -2,11 +2,30 @@
 
 // Root
 
-.container {
+.stretch-container,
+.center-container {
     display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.stretch-container {
     justify-content: stretch;
     align-items: stretch;
-    flex-direction: column;
+}
+
+.center-container {
+    justify-content: center;
+    align-items: center;
+}
+
+.full-size-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-top: 64px;
 }
 
 // Shared

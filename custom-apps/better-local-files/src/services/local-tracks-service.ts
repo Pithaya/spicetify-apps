@@ -4,44 +4,75 @@ import { Artist } from '../models/artist';
 import { Track } from '../models/track';
 import { Platform } from '@shared';
 import pixelmatch from 'pixelmatch';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+const HAS_CACHE_KEY = 'local-files:has-cache';
+const MERGED_ALBUMS = 'local-files:merged-albums';
 
 export class LocalTracksService {
-    private static isInitialized: boolean = false;
+    private static isInitializedSubject: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    private static isInitializing: boolean = false;
+
+    public static isReady$: Observable<boolean> =
+        LocalTracksService.isInitializedSubject.asObservable();
+
+    public static get isReady(): boolean {
+        return LocalTracksService.isInitializedSubject.value;
+    }
+
+    public static get hasCache(): boolean {
+        let storedValue = localStorage.getItem(HAS_CACHE_KEY);
+
+        // Set to true by default to avoid a long first load
+        if (storedValue === null) {
+            const stringified = JSON.stringify(true);
+            localStorage.setItem(HAS_CACHE_KEY, stringified);
+            storedValue = stringified;
+        }
+
+        return JSON.parse(storedValue);
+    }
+
+    public static set hasCache(value: boolean) {
+        localStorage.setItem(HAS_CACHE_KEY, JSON.stringify(value));
+    }
+
+    // TODO: Cache the album <-> tracks relations so that we don't have to still compare the images every time
+    public static get cache(): string[] {
+        let storedValue = localStorage.getItem(MERGED_ALBUMS);
+
+        if (storedValue === null) {
+            const stringified = JSON.stringify([]);
+            localStorage.setItem(MERGED_ALBUMS, stringified);
+            storedValue = stringified;
+        }
+
+        return JSON.parse(storedValue);
+    }
+
+    public static set cache(value: string[]) {
+        localStorage.setItem(MERGED_ALBUMS, JSON.stringify(value));
+    }
 
     private static _tracks: Map<string, Track>;
     private static _albums: Map<string, Album>;
     private static _artists: Map<string, Artist>;
 
-    public static async getTracks(): Promise<Readonly<Map<string, Track>>> {
-        if (!this.isInitialized) {
-            await this.init();
-        }
-
-        return this._tracks;
+    public static getTracks(): Readonly<Map<string, Track>> {
+        return LocalTracksService._tracks;
     }
 
-    public static async getAlbums(): Promise<Readonly<Map<string, Album>>> {
-        if (!this.isInitialized) {
-            await this.init();
-        }
-
-        return this._albums;
+    public static getAlbums(): Readonly<Map<string, Album>> {
+        return LocalTracksService._albums;
     }
 
-    public static async getArtists(): Promise<Readonly<Map<string, Artist>>> {
-        if (!this.isInitialized) {
-            await this.init();
-        }
-
-        return this._artists;
+    public static getArtists(): Readonly<Map<string, Artist>> {
+        return LocalTracksService._artists;
     }
 
     public static getArtistTracks(artistUri: string): Track[] {
-        if (!this.isInitialized) {
-            return [];
-        }
-
-        return Array.from(this._tracks.values())
+        return Array.from(LocalTracksService._tracks.values())
             .filter((t) => t.artists.some((a) => a.uri === artistUri))
             .sort(
                 (t1, t2) =>
@@ -59,47 +90,58 @@ export class LocalTracksService {
         return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
     }
 
-    private static async init(): Promise<void> {
-        if (this.isInitialized) {
+    public static async reset(): Promise<void> {
+        LocalTracksService.isInitializedSubject.next(false);
+        LocalTracksService.hasCache = false;
+
+        await LocalTracksService.init();
+    }
+
+    public static async init(): Promise<void> {
+        if (LocalTracksService.isReady || LocalTracksService.isInitializing) {
             return;
         }
+
+        LocalTracksService.isInitializing = true;
 
         const api = Platform.LocalFilesAPI;
 
         const localTracks = await api.getTracks();
 
-        this._tracks = new Map<string, Track>();
-        this._albums = new Map<string, Album>();
-        this._artists = new Map<string, Artist>();
+        LocalTracksService._tracks = new Map<string, Track>();
+        LocalTracksService._albums = new Map<string, Album>();
+        LocalTracksService._artists = new Map<string, Artist>();
 
         for (const localTrack of localTracks) {
             // Add the album
             let album: Album;
 
             // Recreate an uri from the album's name
-            const albumName = this.getDisplayName(localTrack.album.name);
-            const albumKey = this.albumKeyFromName(albumName);
+            const albumName = LocalTracksService.getDisplayName(
+                localTrack.album.name
+            );
+            const albumKey = LocalTracksService.albumKeyFromName(albumName);
 
-            if (!this._albums.has(albumKey)) {
+            if (!LocalTracksService._albums.has(albumKey)) {
                 album = new Album(
                     albumKey,
                     albumName,
                     localTrack.album.images[0].url
                 );
 
-                this._albums.set(albumKey, album);
+                LocalTracksService._albums.set(albumKey, album);
             } else {
-                album = this._albums.get(albumKey)!;
+                album = LocalTracksService._albums.get(albumKey)!;
             }
 
             // Add the track artists
             const trackArtists: Artist[] = localTrack.artists.flatMap((a) =>
-                this.getArtistsFromString(a.name, album.image)
+                LocalTracksService.getArtistsFromString(a.name, album.image)
             );
 
             for (let artist of trackArtists) {
-                if (!this._artists.has(artist.uri)) {
-                    this._artists.set(artist.uri, artist);
+                if (!LocalTracksService._artists.has(artist.uri)) {
+                    LocalTracksService._artists.set(artist.uri, artist);
                 }
 
                 if (!album.artists.some((a) => a.uri === artist.uri)) {
@@ -120,7 +162,7 @@ export class LocalTracksService {
                 localTrack: localTrack,
             };
 
-            this._tracks.set(track.uri, track);
+            LocalTracksService._tracks.set(track.uri, track);
 
             if (!album.discs.has(localTrack.discNumber)) {
                 album.discs.set(localTrack.discNumber, []);
@@ -129,13 +171,21 @@ export class LocalTracksService {
             album.discs.get(localTrack.discNumber)?.push(track);
         }
 
+        // Cached albums to process
+        const hasCache = LocalTracksService.hasCache;
+        const cache: string[] = LocalTracksService.cache;
+
         // Temp arrays to avoid editing the map while iterating it
         const albumsToRemove: string[] = [];
         const albumsToAdd: Album[] = [];
 
         // Fix different albums with the same name being grouped together
         // Happens when there are albums with the same name but from different artists
-        for (const [albumUri, album] of this._albums.entries()) {
+        for (const [albumUri, album] of LocalTracksService._albums.entries()) {
+            if (hasCache && !cache.includes(albumUri)) {
+                continue;
+            }
+
             // Only one artist
             if (album.artists.length <= 1) {
                 continue;
@@ -178,19 +228,20 @@ export class LocalTracksService {
                 const coverUrl = tracks[0].localTrack.album.images[0].url;
 
                 //console.time('image');
-                const image = await this.getImage(coverUrl);
+                const image = await LocalTracksService.getImage(coverUrl);
                 //console.timeEnd('image');
 
                 //console.log('image size: ', image.width, image.height);
 
                 //console.time('image data');
-                const imageData = this.getImageDataFromCanvas(image);
+                const imageData =
+                    LocalTracksService.getImageDataFromCanvas(image);
                 //console.timeEnd('image data');
 
                 //console.time('pixelmatch');
                 const tracksWithSameCover = tracksWithCover.find(
                     (x) =>
-                        this.getImageDifferenceWithPixelMatch(
+                        LocalTracksService.getImageDifferenceWithPixelMatch(
                             x.cover,
                             imageData
                         ) === 0
@@ -199,7 +250,10 @@ export class LocalTracksService {
 
                 if (tracksWithSameCover === undefined) {
                     // No tracks with the same cover
-                    tracksWithCover.push({ tracks: tracks, cover: imageData });
+                    tracksWithCover.push({
+                        tracks: tracks,
+                        cover: imageData,
+                    });
                 } else {
                     tracksWithSameCover.tracks.push(...tracks);
                 }
@@ -207,7 +261,6 @@ export class LocalTracksService {
 
             if (tracksWithCover.length === 1) {
                 // All artists belong on this album, do nothing
-                //console.log('skip');
                 continue;
             }
 
@@ -217,7 +270,7 @@ export class LocalTracksService {
             // Add a new album for each group of tracks that share the same cover
             for (const [index, tracks] of tracksWithCover.entries()) {
                 const firstTrack = tracks.tracks[0];
-                const albumKey = this.albumKeyFromName(
+                const albumKey = LocalTracksService.albumKeyFromName(
                     `${album.name} ${index}`
                 );
 
@@ -253,18 +306,24 @@ export class LocalTracksService {
         console.log('remove albums:', albumsToRemove);
         console.log('add albums:', albumsToAdd);
 
+        // Set the cache
+        if (!hasCache) {
+            LocalTracksService.cache = albumsToRemove;
+            LocalTracksService.hasCache = true;
+        }
+
         // Remove the merged album
         for (const key of albumsToRemove) {
-            this._albums.delete(key);
+            LocalTracksService._albums.delete(key);
         }
 
         // Add the new albums
         for (const album of albumsToAdd) {
-            this._albums.set(album.uri, album);
+            LocalTracksService._albums.set(album.uri, album);
         }
 
         // Sort album tracks
-        for (const [albumUri, album] of this._albums.entries()) {
+        for (const [albumUri, album] of LocalTracksService._albums.entries()) {
             for (const [discNumber, tracks] of album.discs.entries()) {
                 album.discs.set(
                     discNumber,
@@ -275,7 +334,8 @@ export class LocalTracksService {
             }
         }
 
-        this.isInitialized = true;
+        LocalTracksService.isInitializedSubject.next(true);
+        LocalTracksService.isInitializing = false;
     }
 
     private static getArtistsFromString(
@@ -284,7 +344,13 @@ export class LocalTracksService {
     ): Artist[] {
         return artistNames
             .split(/(?:,|;)/)
-            .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
+            .map(
+                (a) =>
+                    new Artist(
+                        LocalTracksService.getDisplayName(a.trim()),
+                        artistImage
+                    )
+            );
     }
 
     private static async getImage(imageUrl: string): Promise<HTMLImageElement> {
@@ -316,8 +382,6 @@ export class LocalTracksService {
         const ctx = canvas.getContext('2d');
 
         ctx!.drawImage(img, 0, 0, img.width, img.height, 0, 0, 50, 50);
-
-        //document.body.appendChild(canvas); // for debug
 
         return ctx!.getImageData(0, 0, 50, 50);
     }
