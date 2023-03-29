@@ -1,12 +1,14 @@
 /**
  * Wait for an element to be available in the DOM.
  * @param selector The element's selector.
- * @param timeout The maximum waiting time, in milliseconds. If not provided, the function will keep waiting with no limits.
+ * @param timeout The maximum waiting time, in milliseconds. If not provided, will use the default (5 seconds).
+ * @param parentElement The parent element to observe. If not provided, will use the document body.
  * @returns The element.
  */
 export function waitForElement(
     selector: string,
-    timeout?: number
+    timeout: number = 5 * 1000,
+    parentElement: HTMLElement | null = null
 ): Promise<Element> {
     return new Promise<Element>((resolve, reject) => {
         const element: Element | null = document.querySelector(selector);
@@ -22,16 +24,26 @@ export function waitForElement(
             }
         });
 
-        observer.observe(document.body, {
+        if (parentElement === null) {
+            parentElement = document.body;
+        }
+
+        observer.observe(parentElement, {
             childList: true,
             subtree: true,
         });
 
-        if (timeout !== undefined) {
-            setTimeout(() => {
-                observer.disconnect();
+        setTimeout(() => {
+            observer.disconnect();
+
+            // Sometimes the observer do not work ?
+            // So try one last time to find the element
+            const element: Element | null = document.querySelector(selector);
+            if (element !== null) {
+                return resolve(element);
+            } else {
                 reject(`Couldn't find the element "${selector}".`);
-            }, timeout);
-        }
+            }
+        }, timeout);
     });
 }
