@@ -8,7 +8,6 @@ import {
     SortOption,
     SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/search-input';
@@ -26,7 +25,7 @@ export function ArtistsPage() {
         },
     ];
 
-    const artists = Array.from(LocalTracksService.getArtists()).map(
+    const artists = Array.from(window.localTracksService.getArtists()).map(
         ([key, value]) => value
     );
 
@@ -80,9 +79,9 @@ export function ArtistsPage() {
 
     function playArtist(artist: Artist) {
         playContext(
-            LocalTracksService.getArtistTracks(artist.uri).map(
-                (t) => t.localTrack
-            )
+            window.localTracksService
+                .getArtistTracks(artist.uri)
+                .map((t) => t.localTrack)
         );
     }
 

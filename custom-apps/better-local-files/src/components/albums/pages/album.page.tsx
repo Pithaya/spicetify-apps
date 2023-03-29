@@ -8,7 +8,6 @@ import {
     getTranslatedDuration,
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
 
 function AlbumHeader(props: { album: Album }) {
@@ -84,11 +83,11 @@ export function AlbumPage() {
         return <></>;
     }
 
-    const albums = LocalTracksService.getAlbums();
+    const albums = window.localTracksService.getAlbums();
 
     if (!albums.has(albumUri)) {
         navigateTo(Routes.albums);
-        return;
+        return <></>;
     }
 
     const album = albums.get(albumUri)!;

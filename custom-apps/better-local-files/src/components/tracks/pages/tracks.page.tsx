@@ -1,12 +1,11 @@
 import React from 'react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Folder } from 'lucide-react';
 import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
 
 export function TracksPage() {
-    const tracks = Array.from(LocalTracksService.getTracks().values());
+    const tracks = Array.from(window.localTracksService.getTracks().values());
 
     return (
         <>

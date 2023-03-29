@@ -6,7 +6,6 @@ import { Routes } from '../../../constants/constants';
 import { PlayButton } from '../../shared/buttons/play-button';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 export interface IProps {
@@ -44,7 +43,7 @@ export function ArtistCard(props: IProps) {
                 <Spicetify.ReactComponent.RightClickMenu
                     menu={
                         <MultiTrackMenu
-                            tracks={LocalTracksService.getArtistTracks(
+                            tracks={window.localTracksService.getArtistTracks(
                                 props.artist.uri
                             )}
                         />

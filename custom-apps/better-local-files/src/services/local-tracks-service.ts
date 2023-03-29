@@ -10,18 +10,18 @@ const HAS_CACHE_KEY = 'local-files:has-cache';
 const MERGED_ALBUMS = 'local-files:merged-albums';
 
 export class LocalTracksService {
-    private static isInitializedSubject: BehaviorSubject<boolean> =
+    private readonly isInitializedSubject: BehaviorSubject<boolean> =
         new BehaviorSubject<boolean>(false);
-    private static isInitializing: boolean = false;
+    private isInitializing: boolean = false;
 
-    public static isReady$: Observable<boolean> =
-        LocalTracksService.isInitializedSubject.asObservable();
+    public readonly isReady$: Observable<boolean> =
+        this.isInitializedSubject.asObservable();
 
-    public static get isReady(): boolean {
-        return LocalTracksService.isInitializedSubject.value;
+    public get isReady(): boolean {
+        return this.isInitializedSubject.value;
     }
 
-    public static get hasCache(): boolean {
+    public get hasCache(): boolean {
         let storedValue = localStorage.getItem(HAS_CACHE_KEY);
 
         // Set to true by default to avoid a long first load
@@ -34,12 +34,12 @@ export class LocalTracksService {
         return JSON.parse(storedValue);
     }
 
-    public static set hasCache(value: boolean) {
+    public set hasCache(value: boolean) {
         localStorage.setItem(HAS_CACHE_KEY, JSON.stringify(value));
     }
 
     // TODO: Cache the album <-> tracks relations so that we don't have to still compare the images every time
-    public static get cache(): string[] {
+    public get cache(): string[] {
         let storedValue = localStorage.getItem(MERGED_ALBUMS);
 
         if (storedValue === null) {
@@ -51,28 +51,28 @@ export class LocalTracksService {
         return JSON.parse(storedValue);
     }
 
-    public static set cache(value: string[]) {
+    public set cache(value: string[]) {
         localStorage.setItem(MERGED_ALBUMS, JSON.stringify(value));
     }
 
-    private static _tracks: Map<string, Track>;
-    private static _albums: Map<string, Album>;
-    private static _artists: Map<string, Artist>;
+    private _tracks: Map<string, Track> = new Map<string, Track>();
+    private _albums: Map<string, Album> = new Map<string, Album>();
+    private _artists: Map<string, Artist> = new Map<string, Artist>();
 
-    public static getTracks(): Readonly<Map<string, Track>> {
-        return LocalTracksService._tracks;
+    public getTracks(): Readonly<Map<string, Track>> {
+        return this._tracks;
     }
 
-    public static getAlbums(): Readonly<Map<string, Album>> {
-        return LocalTracksService._albums;
+    public getAlbums(): Readonly<Map<string, Album>> {
+        return this._albums;
     }
 
-    public static getArtists(): Readonly<Map<string, Artist>> {
-        return LocalTracksService._artists;
+    public getArtists(): Readonly<Map<string, Artist>> {
+        return this._artists;
     }
 
-    public static getArtistTracks(artistUri: string): Track[] {
-        return Array.from(LocalTracksService._tracks.values())
+    public getArtistTracks(artistUri: string): Track[] {
+        return Array.from(this._tracks.values())
             .filter((t) => t.artists.some((a) => a.uri === artistUri))
             .sort(
                 (t1, t2) =>
@@ -82,66 +82,66 @@ export class LocalTracksService {
             );
     }
 
-    private static getDisplayName(name: string): string {
+    constructor() {}
+
+    private getDisplayName(name: string): string {
         return name === '' ? 'Untitled' : name;
     }
 
-    private static albumKeyFromName(albumName: string): string {
+    private albumKeyFromName(albumName: string): string {
         return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
     }
 
-    public static async reset(): Promise<void> {
-        LocalTracksService.isInitializedSubject.next(false);
-        LocalTracksService.hasCache = false;
+    public async reset(): Promise<void> {
+        this.isInitializedSubject.next(false);
+        this.hasCache = false;
 
-        await LocalTracksService.init();
+        await this.init();
     }
 
-    public static async init(): Promise<void> {
-        if (LocalTracksService.isReady || LocalTracksService.isInitializing) {
+    public async init(): Promise<void> {
+        if (this.isReady || this.isInitializing) {
             return;
         }
 
-        LocalTracksService.isInitializing = true;
+        this.isInitializing = true;
 
         const api = Platform.LocalFilesAPI;
 
         const localTracks = await api.getTracks();
 
-        LocalTracksService._tracks = new Map<string, Track>();
-        LocalTracksService._albums = new Map<string, Album>();
-        LocalTracksService._artists = new Map<string, Artist>();
+        this._tracks = new Map<string, Track>();
+        this._albums = new Map<string, Album>();
+        this._artists = new Map<string, Artist>();
 
         for (const localTrack of localTracks) {
             // Add the album
             let album: Album;
 
             // Recreate an uri from the album's name
-            const albumName = LocalTracksService.getDisplayName(
-                localTrack.album.name
-            );
-            const albumKey = LocalTracksService.albumKeyFromName(albumName);
+            const albumName = this.getDisplayName(localTrack.album.name);
+            const albumKey = this.albumKeyFromName(albumName);
 
-            if (!LocalTracksService._albums.has(albumKey)) {
+            if (!this._albums.has(albumKey)) {
                 album = new Album(
                     albumKey,
                     albumName,
                     localTrack.album.images[0].url
                 );
 
-                LocalTracksService._albums.set(albumKey, album);
+                this._albums.set(albumKey, album);
             } else {
-                album = LocalTracksService._albums.get(albumKey)!;
+                album = this._albums.get(albumKey)!;
             }
 
             // Add the track artists
             const trackArtists: Artist[] = localTrack.artists.flatMap((a) =>
-                LocalTracksService.getArtistsFromString(a.name, album.image)
+                this.getArtistsFromString(a.name, album.image)
             );
 
             for (let artist of trackArtists) {
-                if (!LocalTracksService._artists.has(artist.uri)) {
-                    LocalTracksService._artists.set(artist.uri, artist);
+                if (!this._artists.has(artist.uri)) {
+                    this._artists.set(artist.uri, artist);
                 }
 
                 if (!album.artists.some((a) => a.uri === artist.uri)) {
@@ -162,7 +162,7 @@ export class LocalTracksService {
                 localTrack: localTrack,
             };
 
-            LocalTracksService._tracks.set(track.uri, track);
+            this._tracks.set(track.uri, track);
 
             if (!album.discs.has(localTrack.discNumber)) {
                 album.discs.set(localTrack.discNumber, []);
@@ -172,8 +172,8 @@ export class LocalTracksService {
         }
 
         // Cached albums to process
-        const hasCache = LocalTracksService.hasCache;
-        const cache: string[] = LocalTracksService.cache;
+        const hasCache = this.hasCache;
+        const cache: string[] = this.cache;
 
         // Temp arrays to avoid editing the map while iterating it
         const albumsToRemove: string[] = [];
@@ -181,7 +181,7 @@ export class LocalTracksService {
 
         // Fix different albums with the same name being grouped together
         // Happens when there are albums with the same name but from different artists
-        for (const [albumUri, album] of LocalTracksService._albums.entries()) {
+        for (const [albumUri, album] of this._albums.entries()) {
             if (hasCache && !cache.includes(albumUri)) {
                 continue;
             }
@@ -228,20 +228,19 @@ export class LocalTracksService {
                 const coverUrl = tracks[0].localTrack.album.images[0].url;
 
                 //console.time('image');
-                const image = await LocalTracksService.getImage(coverUrl);
+                const image = await this.getImage(coverUrl);
                 //console.timeEnd('image');
 
                 //console.log('image size: ', image.width, image.height);
 
                 //console.time('image data');
-                const imageData =
-                    LocalTracksService.getImageDataFromCanvas(image);
+                const imageData = this.getImageDataFromCanvas(image);
                 //console.timeEnd('image data');
 
                 //console.time('pixelmatch');
                 const tracksWithSameCover = tracksWithCover.find(
                     (x) =>
-                        LocalTracksService.getImageDifferenceWithPixelMatch(
+                        this.getImageDifferenceWithPixelMatch(
                             x.cover,
                             imageData
                         ) === 0
@@ -270,7 +269,7 @@ export class LocalTracksService {
             // Add a new album for each group of tracks that share the same cover
             for (const [index, tracks] of tracksWithCover.entries()) {
                 const firstTrack = tracks.tracks[0];
-                const albumKey = LocalTracksService.albumKeyFromName(
+                const albumKey = this.albumKeyFromName(
                     `${album.name} ${index}`
                 );
 
@@ -308,22 +307,22 @@ export class LocalTracksService {
 
         // Set the cache
         if (!hasCache) {
-            LocalTracksService.cache = albumsToRemove;
-            LocalTracksService.hasCache = true;
+            this.cache = albumsToRemove;
+            this.hasCache = true;
         }
 
         // Remove the merged album
         for (const key of albumsToRemove) {
-            LocalTracksService._albums.delete(key);
+            this._albums.delete(key);
         }
 
         // Add the new albums
         for (const album of albumsToAdd) {
-            LocalTracksService._albums.set(album.uri, album);
+            this._albums.set(album.uri, album);
         }
 
         // Sort album tracks
-        for (const [albumUri, album] of LocalTracksService._albums.entries()) {
+        for (const [albumUri, album] of this._albums.entries()) {
             for (const [discNumber, tracks] of album.discs.entries()) {
                 album.discs.set(
                     discNumber,
@@ -334,26 +333,20 @@ export class LocalTracksService {
             }
         }
 
-        LocalTracksService.isInitializedSubject.next(true);
-        LocalTracksService.isInitializing = false;
+        this.isInitializedSubject.next(true);
+        this.isInitializing = false;
     }
 
-    private static getArtistsFromString(
+    private getArtistsFromString(
         artistNames: string,
         artistImage: string
     ): Artist[] {
         return artistNames
             .split(/(?:,|;)/)
-            .map(
-                (a) =>
-                    new Artist(
-                        LocalTracksService.getDisplayName(a.trim()),
-                        artistImage
-                    )
-            );
+            .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
     }
 
-    private static async getImage(imageUrl: string): Promise<HTMLImageElement> {
+    private async getImage(imageUrl: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             const image = new Image();
 
@@ -370,7 +363,7 @@ export class LocalTracksService {
         });
     }
 
-    private static getImageDataFromCanvas(img: HTMLImageElement): ImageData {
+    private getImageDataFromCanvas(img: HTMLImageElement): ImageData {
         const canvas = document.createElement('canvas');
 
         // Set a small size for the canvas to make the image comparison faster
@@ -386,7 +379,7 @@ export class LocalTracksService {
         return ctx!.getImageData(0, 0, 50, 50);
     }
 
-    private static getImageDifferenceWithPixelMatch(
+    private getImageDifferenceWithPixelMatch(
         imgA: ImageData,
         imgB: ImageData
     ): number {
@@ -401,6 +394,4 @@ export class LocalTracksService {
 
         return mismatchedPixels;
     }
-
-    private constructor() {}
 }

@@ -4,7 +4,6 @@ import { AlbumCard } from '../cards/album-card';
 import { SearchInput } from '../../shared/filters/search-input';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import {
     SelectedSortOption,
@@ -26,7 +25,7 @@ export function AlbumsPage() {
         },
     ];
 
-    const albums = Array.from(LocalTracksService.getAlbums()).map(
+    const albums = Array.from(window.localTracksService.getAlbums()).map(
         ([key, value]) => value
     );
 

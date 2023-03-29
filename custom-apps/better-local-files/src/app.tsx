@@ -9,22 +9,23 @@ import { AlbumPage } from './components/albums/pages/album.page';
 import { ArtistsPage } from './components/artists/pages/artists.page';
 import { AlbumsPage } from './components/albums/pages/albums.page';
 import { ArtistPage } from './components/artists/pages/artist.page';
-import { LocalTracksService } from './services/local-tracks-service';
 import { LoadingIcon } from './components/shared/icons/loading';
 
 function App() {
-    const [isReady, setIsReady] = useState(LocalTracksService.isReady);
+    const [isReady, setIsReady] = useState(window.localTracksService.isReady);
 
     useEffect(() => {
-        const subscription = LocalTracksService.isReady$.subscribe((ready) => {
-            setIsReady(ready);
-        });
+        const subscription = window.localTracksService.isReady$.subscribe(
+            (ready) => {
+                setIsReady(ready);
+            }
+        );
 
         return () => subscription.unsubscribe();
     }, []);
 
     // No need to await this
-    LocalTracksService.init();
+    window.localTracksService.init();
 
     const history = Spicetify.Platform.History as History;
     const location = history.location;

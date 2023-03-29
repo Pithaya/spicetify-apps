@@ -5,7 +5,6 @@ import { navigateTo } from '../../../helpers/history-helper';
 import { ArtistTrackList } from '../track-list/artist-track-list';
 import { Header, headerImageFallback } from '../../shared/header';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 function ArtistHeader(props: { artist: Artist }) {
@@ -37,16 +36,16 @@ export function ArtistPage() {
         return <></>;
     }
 
-    const artists = LocalTracksService.getArtists();
+    const artists = window.localTracksService.getArtists();
 
     if (!artists.has(artistUri)) {
         navigateTo(Routes.artists);
-        return;
+        return <></>;
     }
 
     const artist = artists.get(artistUri)!;
 
-    const artistTracks = LocalTracksService.getArtistTracks(artist.uri);
+    const artistTracks = window.localTracksService.getArtistTracks(artist.uri);
 
     return (
         <>
