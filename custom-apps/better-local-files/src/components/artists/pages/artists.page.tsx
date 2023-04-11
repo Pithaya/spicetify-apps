@@ -8,16 +8,13 @@ import {
     SortOption,
     SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/search-input';
 import { SortMenu } from '../../shared/filters/sort-menu';
 import { ArtistCard } from '../cards/artist-card';
 
 export function ArtistsPage() {
-    const [artists, setArtists] = useState<Artist[]>([]);
-
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -28,14 +25,9 @@ export function ArtistsPage() {
         },
     ];
 
-    useEffect(() => {
-        async function getArtists() {
-            const artists = await LocalTracksService.getArtists();
-            setArtists(Array.from(artists).map(([key, value]) => value));
-        }
-
-        getArtists();
-    }, []);
+    const artists = Array.from(window.localTracksService.getArtists()).map(
+        ([key, value]) => value
+    );
 
     function filterArtists(artists: Artist[], search: string) {
         if (search === '') {
@@ -87,9 +79,9 @@ export function ArtistsPage() {
 
     function playArtist(artist: Artist) {
         playContext(
-            LocalTracksService.getArtistTracks(artist.uri).map(
-                (t) => t.localTrack
-            )
+            window.localTracksService
+                .getArtistTracks(artist.uri)
+                .map((t) => t.localTrack)
         );
     }
 

@@ -29,6 +29,9 @@ export function TrackList(props: IProps) {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
+    /**
+     * Options for the sort dropdown.
+     */
     const sortOptions: SortOption[] = [
         {
             key: 'date',
@@ -37,6 +40,10 @@ export function TrackList(props: IProps) {
         {
             key: 'title',
             label: getTranslation(['sort.title']),
+        },
+        {
+            key: 'artist',
+            label: getTranslation(['sort.artist']),
         },
         {
             key: 'album',
@@ -48,11 +55,19 @@ export function TrackList(props: IProps) {
         },
     ];
 
+    const [selectedSortOption, setSelectedSortOption] =
+        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+
     const headers: TrackListHeaderOption[] = [
-        {
-            key: 'title',
-            label: getTranslation(['tracklist.header.title']),
-        },
+        selectedSortOption.key === 'artist'
+            ? {
+                  key: 'artist',
+                  label: getTranslation(['artist']),
+              }
+            : {
+                  key: 'title',
+                  label: getTranslation(['tracklist.header.title']),
+              },
         {
             key: 'album',
             label: getTranslation(['tracklist.header.album']),
@@ -62,9 +77,6 @@ export function TrackList(props: IProps) {
             label: getTranslation(['tracklist.header.date-added']),
         },
     ];
-
-    const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
     function filterTracks(tracks: Track[], search: string) {
         if (search === '') {
@@ -90,6 +102,14 @@ export function TrackList(props: IProps) {
             case 'title':
                 return tracks.sort((x, y) =>
                     sort(x.name, y.name, option.order)
+                );
+            case 'artist':
+                return tracks.sort((x, y) =>
+                    sort(
+                        x.artists.map((a) => a.name).join(', '),
+                        y.artists.map((a) => a.name).join(', '),
+                        option.order
+                    )
                 );
             case 'album':
                 return tracks.sort((x, y) =>
@@ -118,14 +138,41 @@ export function TrackList(props: IProps) {
         return order === 'ascending' ? 'descending' : 'ascending';
     }
 
-    function handleSortOptionChange(headerKey: HeaderKey): void {
-        setSelectedSortOption((previous) => ({
-            key: headerKey,
-            order:
-                previous.key === headerKey
-                    ? toggleOrder(previous.order)
-                    : 'ascending',
-        }));
+    function handleSortOptionChange(
+        headerKey: HeaderKey,
+        fromDropdownMenu: boolean
+    ): void {
+        setSelectedSortOption((previous) => {
+            let newKey: HeaderKey;
+            let newOrder: SortOrder;
+
+            if (
+                !fromDropdownMenu &&
+                headerKey === 'title' &&
+                selectedSortOption.order === 'descending'
+            ) {
+                newKey = 'artist';
+                newOrder = 'ascending';
+            } else if (
+                !fromDropdownMenu &&
+                headerKey === 'artist' &&
+                selectedSortOption.order === 'descending'
+            ) {
+                newKey = 'title';
+                newOrder = 'ascending';
+            } else {
+                newKey = headerKey;
+                newOrder =
+                    previous.key === headerKey
+                        ? toggleOrder(previous.order)
+                        : 'ascending';
+            }
+
+            return {
+                key: newKey,
+                order: newOrder,
+            };
+        });
     }
 
     return (
@@ -150,7 +197,9 @@ export function TrackList(props: IProps) {
                     <SortMenu
                         sortOptions={sortOptions}
                         selectedSortOption={selectedSortOption}
-                        setSelectedSortOption={handleSortOptionChange}
+                        setSelectedSortOption={(key) =>
+                            handleSortOptionChange(key, true)
+                        }
                     />
                 </div>
             </div>
@@ -167,7 +216,7 @@ export function TrackList(props: IProps) {
                     )
                 }
                 headers={headers}
-                onHeaderClicked={handleSortOptionChange}
+                onHeaderClicked={(key) => handleSortOptionChange(key, false)}
                 sortedHeader={selectedSortOption}
                 getRowContent={(track) => {
                     return [

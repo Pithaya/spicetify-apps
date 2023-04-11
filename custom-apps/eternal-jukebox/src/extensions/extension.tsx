@@ -14,7 +14,7 @@ import { Jukebox } from '../models/jukebox';
     }
 
     try {
-        const element = await waitForElement('.player-controls__right', 10000);
+        const element = await waitForElement('.player-controls__right');
 
         const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
 

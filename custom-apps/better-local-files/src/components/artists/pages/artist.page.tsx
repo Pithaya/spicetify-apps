@@ -1,11 +1,10 @@
 import { History } from '@shared';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { ArtistTrackList } from '../track-list/artist-track-list';
-import { Header } from '../../shared/header';
+import { Header, headerImageFallback } from '../../shared/header';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
 function ArtistHeader(props: { artist: Artist }) {
@@ -16,6 +15,9 @@ function ArtistHeader(props: { artist: Artist }) {
                     src={props.artist.image}
                     alt="artist image"
                     className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
+                    onError={(e) =>
+                        (e.currentTarget.outerHTML = headerImageFallback)
+                    }
                 />
             }
             subtitle={getTranslation(['artist'])}
@@ -34,25 +36,16 @@ export function ArtistPage() {
         return <></>;
     }
 
-    const [artist, setArtist] = useState<Artist | null>(null);
+    const artists = window.localTracksService.getArtists();
 
-    const artistTracks =
-        artist != null ? LocalTracksService.getArtistTracks(artist.uri) : [];
+    if (!artists.has(artistUri)) {
+        navigateTo(Routes.artists);
+        return <></>;
+    }
 
-    useEffect(() => {
-        async function getArtist() {
-            const artists = await LocalTracksService.getArtists();
+    const artist = artists.get(artistUri)!;
 
-            if (!artists.has(artistUri)) {
-                navigateTo(Routes.artists);
-                return;
-            }
-
-            setArtist(artists.get(artistUri)!);
-        }
-
-        getArtist();
-    }, []);
+    const artistTracks = window.localTracksService.getArtistTracks(artist.uri);
 
     return (
         <>

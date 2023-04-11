@@ -1,14 +1,13 @@
 import { History } from '@shared';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
-import { Header } from '../../shared/header';
+import { Header, headerImageFallback } from '../../shared/header';
 import {
     getTranslatedDuration,
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
 
 function AlbumHeader(props: { album: Album }) {
@@ -19,6 +18,9 @@ function AlbumHeader(props: { album: Album }) {
                     src={props.album.image}
                     alt="album image"
                     className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
+                    onError={(e) =>
+                        (e.currentTarget.outerHTML = headerImageFallback)
+                    }
                 />
             }
             subtitle={getTranslation(['album'])}
@@ -81,22 +83,14 @@ export function AlbumPage() {
         return <></>;
     }
 
-    const [album, setAlbum] = useState<Album | null>(null);
+    const albums = window.localTracksService.getAlbums();
 
-    useEffect(() => {
-        async function getAlbum() {
-            const albums = await LocalTracksService.getAlbums();
+    if (!albums.has(albumUri)) {
+        navigateTo(Routes.albums);
+        return <></>;
+    }
 
-            if (!albums.has(albumUri)) {
-                navigateTo(Routes.albums);
-                return;
-            }
-
-            setAlbum(albums.get(albumUri)!);
-        }
-
-        getAlbum();
-    }, []);
+    const album = albums.get(albumUri)!;
 
     return (
         <>

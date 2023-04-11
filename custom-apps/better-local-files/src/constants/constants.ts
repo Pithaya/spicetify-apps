@@ -31,4 +31,4 @@ export const topBarItems: TopBarItem[] = [
     },
 ];
 
-export type HeaderKey = 'title' | 'album' | 'date' | 'duration';
+export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';

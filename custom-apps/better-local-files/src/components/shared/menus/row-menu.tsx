@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayerAPI } from '@shared';
+import { Platform } from '@shared';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
@@ -16,9 +16,7 @@ export interface IProps {
 
 export function RowMenu(props: IProps) {
     function addToQueue() {
-        (Spicetify.Platform.PlayerAPI as PlayerAPI).addToQueue([
-            { uri: props.track.uri },
-        ]);
+        Platform.PlayerAPI.addToQueue([{ uri: props.track.uri }]);
     }
 
     return (

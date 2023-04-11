@@ -13,7 +13,7 @@ function App() {
                 setSongState(songState);
             }
         );
-        return subscription.unsubscribe;
+        return () => subscription.unsubscribe();
     }, []);
 
     if (window.jukebox.isEnabled) {

@@ -1,4 +1,4 @@
-import { Playlist, PlaylistAPI, RootlistAPI, UserAPI } from '@shared';
+import { Platform, Playlist } from '@shared';
 import React, { useEffect, useState } from 'react';
 
 export interface PlaylistSelectionMenuProps {
@@ -6,9 +6,9 @@ export interface PlaylistSelectionMenuProps {
 }
 
 export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
-    const playlistAPI = Spicetify.Platform.PlaylistAPI as PlaylistAPI;
-    const rootlistAPI = Spicetify.Platform.RootlistAPI as RootlistAPI;
-    const userAPI = Spicetify.Platform.UserAPI as UserAPI;
+    const playlistAPI = Platform.PlaylistAPI;
+    const rootlistAPI = Platform.RootlistAPI;
+    const userAPI = Platform.UserAPI;
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 

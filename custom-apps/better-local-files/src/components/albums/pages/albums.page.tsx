@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
 import { SearchInput } from '../../shared/filters/search-input';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
-import { LocalTracksService } from 'custom-apps/better-local-files/src/services/local-tracks-service';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import {
     SelectedSortOption,
@@ -16,8 +15,6 @@ import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constant
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 
 export function AlbumsPage() {
-    const [albums, setAlbums] = useState<Album[]>([]);
-
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -28,14 +25,9 @@ export function AlbumsPage() {
         },
     ];
 
-    useEffect(() => {
-        async function getAlbums() {
-            const albums = await LocalTracksService.getAlbums();
-            setAlbums(Array.from(albums).map(([key, value]) => value));
-        }
-
-        getAlbums();
-    }, []);
+    const albums = Array.from(window.localTracksService.getAlbums()).map(
+        ([key, value]) => value
+    );
 
     function filterAlbums(albums: Album[], search: string) {
         if (search === '') {

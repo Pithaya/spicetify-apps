@@ -50,7 +50,7 @@ export function HomeComponent() {
             }
         );
 
-        return subscription.unsubscribe;
+        return () => subscription.unsubscribe();
     }, []);
 
     useEffect(() => {
@@ -63,7 +63,7 @@ export function HomeComponent() {
             });
         });
 
-        return subscription.unsubscribe;
+        return () => subscription.unsubscribe();
     }, []);
 
     return (

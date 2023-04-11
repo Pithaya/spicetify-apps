@@ -1,45 +1,93 @@
-import { LocalAlbumURI, LocalFilesApi } from '@shared';
 import { sort } from '../helpers/sort-helper';
 import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
+import { Platform } from '@shared';
+import pixelmatch from 'pixelmatch';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+const HAS_CACHE_KEY = 'local-files:has-cache';
+const MERGED_ALBUMS = 'local-files:merged-albums';
+
+type CachedAlbum = {
+    /**
+     * Album URI.
+     */
+    uri: string;
+
+    /**
+     * List of tracks URI to separate for this album.
+     */
+    tracks: string[][];
+};
+
+type TracksWithCover = {
+    tracks: Track[];
+    cover: ImageData;
+};
 
 export class LocalTracksService {
-    private static isInitialized: boolean = false;
+    private readonly isInitializedSubject: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    private isInitializing: boolean = false;
 
-    private static _tracks: Map<string, Track>;
-    private static _albums: Map<string, Album>;
-    private static _artists: Map<string, Artist>;
+    public readonly isReady$: Observable<boolean> =
+        this.isInitializedSubject.asObservable();
 
-    public static async getTracks(): Promise<Readonly<Map<string, Track>>> {
-        if (!this.isInitialized) {
-            await this.init();
+    public get isReady(): boolean {
+        return this.isInitializedSubject.value;
+    }
+
+    public get hasCache(): boolean {
+        let storedValue = localStorage.getItem(HAS_CACHE_KEY);
+
+        // Set to true by default to avoid a long first load
+        if (storedValue === null) {
+            const stringified = JSON.stringify(true);
+            localStorage.setItem(HAS_CACHE_KEY, stringified);
+            storedValue = stringified;
         }
 
+        return JSON.parse(storedValue);
+    }
+
+    public set hasCache(value: boolean) {
+        localStorage.setItem(HAS_CACHE_KEY, JSON.stringify(value));
+    }
+
+    public get cache(): CachedAlbum[] {
+        let storedValue = localStorage.getItem(MERGED_ALBUMS);
+
+        if (storedValue === null) {
+            const stringified = JSON.stringify([]);
+            localStorage.setItem(MERGED_ALBUMS, stringified);
+            storedValue = stringified;
+        }
+
+        return JSON.parse(storedValue);
+    }
+
+    public set cache(value: CachedAlbum[]) {
+        localStorage.setItem(MERGED_ALBUMS, JSON.stringify(value));
+    }
+
+    private _tracks: Map<string, Track> = new Map<string, Track>();
+    private _albums: Map<string, Album> = new Map<string, Album>();
+    private _artists: Map<string, Artist> = new Map<string, Artist>();
+
+    public getTracks(): Readonly<Map<string, Track>> {
         return this._tracks;
     }
 
-    public static async getAlbums(): Promise<Readonly<Map<string, Album>>> {
-        if (!this.isInitialized) {
-            await this.init();
-        }
-
+    public getAlbums(): Readonly<Map<string, Album>> {
         return this._albums;
     }
 
-    public static async getArtists(): Promise<Readonly<Map<string, Artist>>> {
-        if (!this.isInitialized) {
-            await this.init();
-        }
-
+    public getArtists(): Readonly<Map<string, Artist>> {
         return this._artists;
     }
 
-    public static getArtistTracks(artistUri: string): Track[] {
-        if (!this.isInitialized) {
-            return [];
-        }
-
+    public getArtistTracks(artistUri: string): Track[] {
         return Array.from(this._tracks.values())
             .filter((t) => t.artists.some((a) => a.uri === artistUri))
             .sort(
@@ -50,41 +98,51 @@ export class LocalTracksService {
             );
     }
 
-    private static async init(): Promise<void> {
-        if (this.isInitialized) {
+    constructor() {}
+
+    private getDisplayName(name: string): string {
+        return name === '' ? 'Untitled' : name;
+    }
+
+    private albumKeyFromName(albumName: string): string {
+        return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
+    }
+
+    public async reset(): Promise<void> {
+        this.isInitializedSubject.next(false);
+        this.hasCache = false;
+
+        await this.init();
+    }
+
+    public async init(): Promise<void> {
+        if (this.isReady || this.isInitializing) {
             return;
         }
 
-        const api = Spicetify.Platform.LocalFilesAPI as LocalFilesApi;
-
-        const localTracks = await api.getTracks();
+        this.isInitializing = true;
 
         this._tracks = new Map<string, Track>();
         this._albums = new Map<string, Album>();
         this._artists = new Map<string, Artist>();
+
+        await this.processLocalTracks();
+        await this.postProcessAlbums();
+
+        this.isInitializedSubject.next(true);
+        this.isInitializing = false;
+    }
+
+    private async processLocalTracks(): Promise<void> {
+        const localTracks = await Platform.LocalFilesAPI.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album
             let album: Album;
 
             // Recreate an uri from the album's name
-            const albumName =
-                localTrack.album.name === ''
-                    ? 'Untitled'
-                    : localTrack.album.name;
-
-            // TODO: Use cover data to differenciate albums with the same name ? Too slow for now
-            /*const albumCoverB64 = await this.getBase64Image(
-                localTrack.album.images[0].url
-            );
-            const coverData =
-                albumCoverB64.match(
-                    /(?:(data:text\/plain;base64,))(.*)(?:(=)$)/
-                )?.[2] ?? '';*/
-
-            const albumKey = `spotify:uri:${localTrack.album.name
-                .toLowerCase()
-                .replace(/\s/g, '+')}`;
+            const albumName = this.getDisplayName(localTrack.album.name);
+            const albumKey = this.albumKeyFromName(albumName);
 
             if (!this._albums.has(albumKey)) {
                 album = new Album(
@@ -134,6 +192,94 @@ export class LocalTracksService {
 
             album.discs.get(localTrack.discNumber)?.push(track);
         }
+    }
+
+    private async postProcessAlbums(): Promise<void> {
+        // Cached albums to process
+        const hasCache = this.hasCache;
+        const newCache: CachedAlbum[] = [];
+
+        // Temp arrays to avoid editing the map while iterating it
+        const albumsToRemove: string[] = [];
+        const albumsToAdd: Album[] = [];
+
+        // Fix different albums with the same name being grouped together
+        // Happens when there are albums with the same name but from different artists
+        for (const [albumUri, album] of this._albums.entries()) {
+            const tracksWithCover: TracksWithCover[] =
+                await this.postProcessAlbum(albumUri, album);
+
+            if (tracksWithCover.length <= 1) {
+                // All artists belong on this album, do nothing
+                continue;
+            }
+
+            // Add the original merged album to the list to remove
+            albumsToRemove.push(albumUri);
+
+            // Add a new album for each group of tracks that share the same cover
+            for (const [index, tracks] of tracksWithCover.entries()) {
+                const firstTrack = tracks.tracks[0];
+                const albumKey = this.albumKeyFromName(
+                    `${album.name} ${index}`
+                );
+
+                const newAlbum = new Album(
+                    albumKey,
+                    album.name,
+                    firstTrack.localTrack.album.images[0].url
+                );
+
+                for (let artist of firstTrack.artists) {
+                    if (!newAlbum.artists.some((a) => a.uri === artist.uri)) {
+                        newAlbum.artists.push(artist);
+                    }
+                }
+
+                // Update the album for the tracks and set the discs
+                for (const track of tracks.tracks) {
+                    track.album = newAlbum;
+
+                    if (!newAlbum.discs.has(track.localTrack.discNumber)) {
+                        newAlbum.discs.set(track.localTrack.discNumber, []);
+                    }
+
+                    newAlbum.discs
+                        .get(track.localTrack.discNumber)
+                        ?.push(track);
+                }
+
+                albumsToAdd.push(newAlbum);
+            }
+
+            newCache.push({
+                uri: albumUri,
+                tracks: tracksWithCover.map((tracksWithCover) => {
+                    return tracksWithCover.tracks.map((track) => {
+                        return track.uri;
+                    });
+                }),
+            });
+        }
+
+        //console.log('remove albums:', albumsToRemove);
+        //console.log('add albums:', albumsToAdd);
+
+        // Set the cache
+        if (!hasCache) {
+            this.cache = newCache;
+            this.hasCache = true;
+        }
+
+        // Remove the merged album
+        for (const key of albumsToRemove) {
+            this._albums.delete(key);
+        }
+
+        // Add the new albums
+        for (const album of albumsToAdd) {
+            this._albums.set(album.uri, album);
+        }
 
         // Sort album tracks
         for (const [albumUri, album] of this._albums.entries()) {
@@ -146,44 +292,159 @@ export class LocalTracksService {
                 );
             }
         }
-
-        this.isInitialized = true;
     }
 
-    private static getArtistsFromString(
+    private async postProcessAlbum(
+        albumUri: string,
+        album: Album
+    ): Promise<TracksWithCover[]> {
+        const hasCache = this.hasCache;
+        const cache: CachedAlbum[] = this.cache;
+
+        let tracksWithCover: TracksWithCover[] = [];
+
+        if (hasCache) {
+            const cachedAlbum = cache.find((c) => c.uri === albumUri);
+            if (cachedAlbum !== undefined) {
+                // Album is in cache, get data
+                tracksWithCover = cachedAlbum.tracks.map((trackList) => ({
+                    cover: null!,
+                    tracks: trackList
+                        .filter((trackUri) => this._tracks.has(trackUri))
+                        .map((trackUri) => this._tracks.get(trackUri)!),
+                }));
+            }
+
+            // Cache has been processed and this album is not in it: do nothing, we'll return an empty array
+        } else {
+            // No cache: process this album
+
+            // Only one artist
+            if (album.artists.length <= 1) {
+                return [];
+            }
+
+            const albumTracks = album.getTracks();
+
+            // Only one track
+            if (albumTracks.length <= 1) {
+                return [];
+            }
+
+            // Group tracks by their artist(s)
+            const albumTrackMap = new Map<string, Track[]>();
+
+            for (const track of albumTracks) {
+                const trackArtists = track.artists
+                    .map((a) => a.name)
+                    .join(', ');
+
+                if (albumTrackMap.has(trackArtists)) {
+                    albumTrackMap.get(trackArtists)?.push(track);
+                } else {
+                    albumTrackMap.set(trackArtists, [track]);
+                }
+            }
+
+            // All tracks have the same artists
+            if (albumTrackMap.size === 1) {
+                return [];
+            }
+
+            // For each artist(s), take the album cover of the first track
+            for (const [artists, tracks] of albumTrackMap.entries()) {
+                const coverUrl = tracks[0].localTrack.album.images[0].url;
+
+                //console.time('image');
+                const image = await this.getImage(coverUrl);
+                //console.timeEnd('image');
+
+                //console.log('image size: ', image.width, image.height);
+
+                //console.time('image data');
+                const imageData = this.getImageDataFromCanvas(image);
+                //console.timeEnd('image data');
+
+                //console.time('pixelmatch');
+                const tracksWithSameCover = tracksWithCover.find(
+                    (x) =>
+                        this.getImageDifferenceWithPixelMatch(
+                            x.cover,
+                            imageData
+                        ) === 0
+                );
+                //console.timeEnd('pixelmatch');
+
+                if (tracksWithSameCover === undefined) {
+                    // No tracks with the same cover
+                    tracksWithCover.push({
+                        tracks: tracks,
+                        cover: imageData,
+                    });
+                } else {
+                    tracksWithSameCover.tracks.push(...tracks);
+                }
+            }
+        }
+
+        return tracksWithCover;
+    }
+
+    private getArtistsFromString(
         artistNames: string,
         artistImage: string
     ): Artist[] {
         return artistNames
             .split(/(?:,|;)/)
-            .map((a) => new Artist(a.trim(), artistImage));
+            .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
     }
 
-    private static async getBase64Image(imageUrl: string): Promise<string> {
-        let blob = new Blob([imageUrl]);
-        let url = URL.createObjectURL(blob);
-
-        let response = await fetch(url);
-        let resultBlob = await response.blob();
-
+    private async getImage(imageUrl: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
-            let fileReader = new FileReader();
+            const image = new Image();
 
-            fileReader.onload = () => {
-                let b64 = fileReader.result;
-
-                if (b64 === null || b64 instanceof ArrayBuffer) {
-                    reject();
-                } else {
-                    resolve(b64);
-                }
+            image.onload = () => {
+                resolve(image);
             };
 
-            fileReader.onerror = (e) => reject(e);
+            image.onerror = (e) => {
+                console.error(`Couldn't load image "${imageUrl}"`, e);
+                reject(e);
+            };
 
-            fileReader.readAsDataURL(resultBlob);
+            image.src = imageUrl;
         });
     }
 
-    private constructor() {}
+    private getImageDataFromCanvas(img: HTMLImageElement): ImageData {
+        const canvas = document.createElement('canvas');
+
+        // Set a small size for the canvas to make the image comparison faster
+        canvas.width = 50;
+        canvas.height = 50;
+        canvas.style.width = '50px';
+        canvas.style.height = '50px';
+
+        const ctx = canvas.getContext('2d');
+
+        ctx!.drawImage(img, 0, 0, img.width, img.height, 0, 0, 50, 50);
+
+        return ctx!.getImageData(0, 0, 50, 50);
+    }
+
+    private getImageDifferenceWithPixelMatch(
+        imgA: ImageData,
+        imgB: ImageData
+    ): number {
+        const mismatchedPixels = pixelmatch(
+            imgA.data,
+            imgB.data,
+            null,
+            imgA.width,
+            imgA.height,
+            { threshold: 0.1 }
+        );
+
+        return mismatchedPixels;
+    }
 }
