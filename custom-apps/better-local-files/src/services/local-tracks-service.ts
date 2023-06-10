@@ -127,6 +127,8 @@ export class LocalTracksService {
         this._artists = new Map<string, Artist>();
 
         await this.processLocalTracks();
+        // TODO: undefined firsttrack if a song in the cache is changed on disk ?
+        // Add try catch to show error / automatically rebuild the cache
         await this.postProcessAlbums();
 
         this.isInitializedSubject.next(true);
