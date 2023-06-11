@@ -4,6 +4,8 @@ import { SettingsModal } from './components/settings-modal.component.js';
 import { ServicesContainer } from './services/services-container.js';
 import { Locale } from '@shared';
 
+// TODO: Update settings modal screenshot
+
 async function main(): Promise<void> {
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
