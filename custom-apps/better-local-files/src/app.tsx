@@ -10,21 +10,21 @@ import { ArtistsPage } from './components/artists/pages/artists.page';
 import { AlbumsPage } from './components/albums/pages/albums.page';
 import { ArtistPage } from './components/artists/pages/artist.page';
 import { LoadingIcon } from './components/shared/icons/loading';
+import { useObservable } from './hooks/use-observable';
 
 // TODO: Add automatic version checks to the extensions and custom apps + powershell update scripts
 
 function App() {
-    const [isReady, setIsReady] = useState(window.localTracksService.isReady);
+    const isReady = useObservable(
+        window.localTracksService.isReady$,
+        window.localTracksService.isReady
+    );
 
-    useEffect(() => {
-        const subscription = window.localTracksService.isReady$.subscribe(
-            (ready) => {
-                setIsReady(ready);
-            }
-        );
-
-        return () => subscription.unsubscribe();
-    }, []);
+    const processedAlbums = useObservable(
+        window.localTracksService.processedAlbums$,
+        0
+    );
+    const albumCount = useObservable(window.localTracksService.albumCount$, 0);
 
     // No need to await this
     window.localTracksService.init();
@@ -58,7 +58,11 @@ function App() {
         '.main-topBar-topbarContentWrapper'
     );
 
-    // TODO: Add a counter of processed tracks / albums
+    const showTracksProgress = albumCount === 0;
+    const showAlbumsProgress = albumCount > 0;
+
+    // TODO: localize progress labels ?
+
     return (
         <>
             <div className={styles['full-size-container']}>
@@ -74,6 +78,12 @@ function App() {
                             className={`${styles['center-container']} ${styles.padded}`}
                         >
                             <LoadingIcon />
+                            {showTracksProgress && <p>Processing tracks...</p>}
+                            {showAlbumsProgress && (
+                                <p>
+                                    {`Processing album ${processedAlbums} of ${albumCount}...`}
+                                </p>
+                            )}
                         </div>
                     )}
                 </>

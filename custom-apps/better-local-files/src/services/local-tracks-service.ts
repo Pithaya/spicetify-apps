@@ -87,6 +87,16 @@ export class LocalTracksService {
         return this._artists;
     }
 
+    private readonly processedAlbumsSubject: BehaviorSubject<number> =
+        new BehaviorSubject<number>(0);
+    public readonly processedAlbums$: Observable<number> =
+        this.processedAlbumsSubject.asObservable();
+
+    private readonly albumCountSubject: BehaviorSubject<number> =
+        new BehaviorSubject<number>(0);
+    public readonly albumCount$: Observable<number> =
+        this.albumCountSubject.asObservable();
+
     public getArtistTracks(artistUri: string): Track[] {
         return Array.from(this._tracks.values())
             .filter((t) => t.artists.some((a) => a.uri === artistUri))
@@ -127,8 +137,6 @@ export class LocalTracksService {
         this._artists = new Map<string, Artist>();
 
         await this.processLocalTracks();
-        // TODO: undefined firsttrack if a song in the cache is changed on disk ?
-        // Add try catch to show error / automatically rebuild the cache
         await this.postProcessAlbums();
 
         this.isInitializedSubject.next(true);
@@ -205,9 +213,15 @@ export class LocalTracksService {
         const albumsToRemove: string[] = [];
         const albumsToAdd: Album[] = [];
 
+        this.albumCountSubject.next(this._albums.size);
+        let albumIndex = 0;
+
         // Fix different albums with the same name being grouped together
         // Happens when there are albums with the same name but from different artists
         for (const [albumUri, album] of this._albums.entries()) {
+            this.processedAlbumsSubject.next(albumIndex + 1);
+            albumIndex++;
+
             const tracksWithCover: TracksWithCover[] =
                 await this.postProcessAlbum(albumUri, album);
 
