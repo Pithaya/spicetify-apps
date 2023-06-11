@@ -221,6 +221,12 @@ export class LocalTracksService {
 
             // Add a new album for each group of tracks that share the same cover
             for (const [index, tracks] of tracksWithCover.entries()) {
+                if (tracks.tracks.length === 0) {
+                    // No tracks for this cover, skip
+                    // Can happen if all tracks for this cover were removed on disk, but stayed in the cache
+                    continue;
+                }
+
                 const firstTrack = tracks.tracks[0];
                 const albumKey = this.albumKeyFromName(
                     `${album.name} ${index}`
