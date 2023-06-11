@@ -69,7 +69,9 @@ export class ContextMenuService {
         );
 
         Spicetify.showNotification(
-            result,
+            `<div>
+                <p style="font-size:${this.settingsService.notificationFontSize}px;">${result}</p>
+            </div>`,
             false,
             this.settingsService.notificationTimeout
         );

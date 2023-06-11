@@ -11,6 +11,8 @@ import { AlbumsPage } from './components/albums/pages/albums.page';
 import { ArtistPage } from './components/artists/pages/artist.page';
 import { LoadingIcon } from './components/shared/icons/loading';
 
+// TODO: Add automatic version checks to the extensions and custom apps + powershell update scripts
+
 function App() {
     const [isReady, setIsReady] = useState(window.localTracksService.isReady);
 
@@ -56,6 +58,7 @@ function App() {
         '.main-topBar-topbarContentWrapper'
     );
 
+    // TODO: Add a counter of processed tracks / albums
     return (
         <>
             <div className={styles['full-size-container']}>

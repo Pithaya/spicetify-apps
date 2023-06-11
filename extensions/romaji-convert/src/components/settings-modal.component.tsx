@@ -14,6 +14,7 @@ interface IState {
     conversionMode: ConversionMode;
     romajiSystem: RomajiSystem;
     notificationTimeout: number;
+    notificationFontSize: number;
 }
 
 // TODO: Switch to a function component
@@ -32,6 +33,7 @@ export class SettingsModal extends React.Component<IProps, IState> {
             conversionMode: this.settingsService.conversionMode,
             romajiSystem: this.settingsService.romajiSystem,
             notificationTimeout: this.settingsService.notificationTimeout,
+            notificationFontSize: this.settingsService.notificationFontSize,
         };
     }
 
@@ -41,6 +43,8 @@ export class SettingsModal extends React.Component<IProps, IState> {
             marginTop: '0.5rem',
             display: 'block',
         };
+
+        // TODO: input type number look ugly with default theme ?
 
         return (
             <div>
@@ -158,6 +162,24 @@ export class SettingsModal extends React.Component<IProps, IState> {
                         )
                     }
                 />
+
+                <label
+                    htmlFor="kuroshiro.settings.notification-font-size"
+                    style={labelStyle}
+                >
+                    {i18next.t('settings.notificationFontSize.label')}
+                </label>
+                <input
+                    type={'number'}
+                    style={{ borderStyle: 'none', paddingLeft: '10px' }}
+                    id="kuroshiro.settings.notification-font-size"
+                    value={this.state.notificationFontSize}
+                    onChange={(e) =>
+                        this.onNotificationFontSizeChange(
+                            e.target.valueAsNumber
+                        )
+                    }
+                />
             </div>
         );
     }
@@ -188,6 +210,13 @@ export class SettingsModal extends React.Component<IProps, IState> {
         this.settingsService.notificationTimeout = value;
         this.setState({
             notificationTimeout: this.settingsService.notificationTimeout,
+        });
+    }
+
+    private onNotificationFontSizeChange(value: number): void {
+        this.settingsService.notificationFontSize = value;
+        this.setState({
+            notificationFontSize: this.settingsService.notificationFontSize,
         });
     }
 }

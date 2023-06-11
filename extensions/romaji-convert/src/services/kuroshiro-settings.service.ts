@@ -12,6 +12,8 @@ export class KuroshiroSettingsService {
     private readonly romajiSystemSettingId: string = 'kuroshiro:romaji-system';
     private readonly notificationTimeoutId: string =
         'kuroshiro:notification-timeout';
+    private readonly notificationFontSizeId: string =
+        'kuroshiro:notification-font-size';
 
     public get targetSyllabary(): TargetSyllabary {
         return (
@@ -59,6 +61,20 @@ export class KuroshiroSettingsService {
     public set notificationTimeout(value: number) {
         Spicetify.LocalStorage.set(
             this.notificationTimeoutId,
+            value.toString()
+        );
+    }
+
+    public get notificationFontSize(): number {
+        const storageValue = Spicetify.LocalStorage.get(
+            this.notificationFontSizeId
+        );
+        return storageValue === null ? 16 : Number.parseInt(storageValue);
+    }
+
+    public set notificationFontSize(value: number) {
+        Spicetify.LocalStorage.set(
+            this.notificationFontSizeId,
             value.toString()
         );
     }

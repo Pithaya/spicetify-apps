@@ -4,6 +4,8 @@ import { SettingsModal } from './components/settings-modal.component.js';
 import { ServicesContainer } from './services/services-container.js';
 import { Locale } from '@shared';
 
+// TODO: Update settings modal screenshot
+
 async function main(): Promise<void> {
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -54,6 +56,9 @@ async function main(): Promise<void> {
                         notificationTimeout: {
                             label: 'Converted text display time, in seconds',
                         },
+                        notificationFontSize: {
+                            label: 'Font size of the converted text, in pixels',
+                        },
                     },
                     contextMenu: {
                         name: 'Convert to {{syllabary, lowercase}}',
@@ -92,6 +97,9 @@ async function main(): Promise<void> {
                         },
                         notificationTimeout: {
                             label: "Temps d'affichage du texte converti, en secondes",
+                        },
+                        notificationFontSize: {
+                            label: "Taille d'affichage du texte converti, en pixels",
                         },
                     },
                     contextMenu: {
