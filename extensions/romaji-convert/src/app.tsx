@@ -54,6 +54,9 @@ async function main(): Promise<void> {
                         notificationTimeout: {
                             label: 'Converted text display time, in seconds',
                         },
+                        notificationFontSize: {
+                            label: 'Font size of the converted text, in pixels',
+                        },
                     },
                     contextMenu: {
                         name: 'Convert to {{syllabary, lowercase}}',
@@ -92,6 +95,9 @@ async function main(): Promise<void> {
                         },
                         notificationTimeout: {
                             label: "Temps d'affichage du texte converti, en secondes",
+                        },
+                        notificationFontSize: {
+                            label: "Taille d'affichage du texte converti, en pixels",
                         },
                     },
                     contextMenu: {
