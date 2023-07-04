@@ -48,12 +48,14 @@ async function main() {
     reactDom.render(
         reactDom.createPortal(
             <NavBarLink
-                icon={<Crown size={20} className="made-for-you-icon" />}
+                icon={
+                    <Crown size={24} className="made-for-you-icon home-icon" />
+                }
                 activeIcon={
                     <Crown
-                        size={20}
+                        size={24}
                         fill="currentColor"
-                        className="made-for-you-icon"
+                        className="made-for-you-icon home-active-icon"
                     />
                 }
                 label={i18next.t('forYou')}
