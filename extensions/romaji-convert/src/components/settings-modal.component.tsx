@@ -153,7 +153,7 @@ export class SettingsModal extends React.Component<IProps, IState> {
                 </label>
                 <input
                     type={'number'}
-                    style={{ borderStyle: 'none', paddingLeft: '10px' }}
+                    className="x-settings-input"
                     id="kuroshiro.settings.notification-timeout"
                     value={this.state.notificationTimeout / 1000}
                     onChange={(e) =>
@@ -171,7 +171,7 @@ export class SettingsModal extends React.Component<IProps, IState> {
                 </label>
                 <input
                     type={'number'}
-                    style={{ borderStyle: 'none', paddingLeft: '10px' }}
+                    className="x-settings-input"
                     id="kuroshiro.settings.notification-font-size"
                     value={this.state.notificationFontSize}
                     onChange={(e) =>
