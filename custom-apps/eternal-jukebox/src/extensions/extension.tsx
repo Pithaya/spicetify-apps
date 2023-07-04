@@ -1,8 +1,9 @@
-import { waitForElement } from '@shared';
+import { addUpdateChecker, waitForElement } from '@shared';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PlaybarButton } from '../components/playbar-button.component';
 import { Jukebox } from '../models/jukebox';
+import { VERSION } from '../version';
 
 // TODO: Add i18n
 
@@ -23,6 +24,8 @@ import { Jukebox } from '../models/jukebox';
             reactDom.createPortal(<PlaybarButton />, element),
             document.createElement('div')
         );
+
+        await addUpdateChecker(VERSION, 'eternal-jukebox');
     } catch (error) {
         console.error(error);
         Spicetify.showNotification(
