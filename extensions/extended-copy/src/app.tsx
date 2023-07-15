@@ -14,6 +14,7 @@ import {
 import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
 import i18next from 'i18next';
 
+// TODO: Uncaught TypeError: Cannot read properties of undefined (reading 'TRACK')
 const locale: Locale = (Spicetify as any).Locale;
 const supportedTypes = [
     Spicetify.URI.Type.TRACK,

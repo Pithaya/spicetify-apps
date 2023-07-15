@@ -99,13 +99,13 @@ export class LocalTracksService {
     /**
      * Clears the cache.
      */
-    public clearCache(): void {
+    public async clearCache(): Promise<void> {
         this.isInitializedSubject.next(false);
 
         this.storageService.cache = [];
         this.storageService.hasCache = true;
 
-        this.isInitializedSubject.next(true);
+        await this.init();
     }
 
     /**

@@ -26,8 +26,9 @@ function App() {
     );
     const albumCount = useObservable(window.localTracksService.albumCount$, 0);
 
-    // No need to await this
-    window.localTracksService.init();
+    useEffect(() => {
+        window.localTracksService.init();
+    }, []);
 
     const history = Spicetify.Platform.History as History;
     const location = history.location;
