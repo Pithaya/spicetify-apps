@@ -10,17 +10,25 @@ import { VERSION } from '../version';
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    const menuItem = new Spicetify.Menu.Item(
+    const rebuildMenuItem = new Spicetify.Menu.Item(
         'Rebuild local album cache',
         false,
         () => window.localTracksService.reset()
     );
 
+    const clearCacheMenuItem = new Spicetify.Menu.Item(
+        'Clear local album cache',
+        false,
+        () => window.localTracksService.clearCache()
+    );
+
     const handlePathnameChange = (pathname: string) => {
         if (pathname.includes('better-local-files')) {
-            menuItem.register();
+            rebuildMenuItem.register();
+            clearCacheMenuItem.register();
         } else {
-            menuItem.deregister();
+            rebuildMenuItem.deregister();
+            clearCacheMenuItem.deregister();
         }
     };
 
