@@ -4,13 +4,12 @@ import { HistoryEntry, Platform } from '../platform';
 async function getRemoteVersion(appName: string): Promise<string> {
     const branch = 'main';
     const response = await fetch(
-        `https://raw.githubusercontent.com/Pithaya/spicetify-apps/${branch}/custom-apps/${appName}/src/version.ts`
+        `https://raw.githubusercontent.com/Pithaya/spicetify-apps/${branch}/custom-apps/${appName}/package.json`
     );
 
-    const text = await response.text();
-    const matches = text.match(/export const version = '(.+)';/);
+    const packageJson = await response.json();
 
-    return matches?.[1] ?? '0.0.0';
+    return packageJson.version;
 }
 
 async function isUpToDate(
@@ -23,7 +22,7 @@ async function isUpToDate(
 
 /**
  * Add a listener to the history object to check for updates when the user navigates to the custom app.
- * This will show a message on first navigation to the custom app.
+ * This will show a message on first navigation to the custom app only.
  * @param localVersion The current local version of the custom app.
  * @param appName The name of the custom app.
  * @param updateMessage The message to show when an update is available.

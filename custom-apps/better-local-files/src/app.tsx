@@ -11,6 +11,10 @@ import { AlbumsPage } from './components/albums/pages/albums.page';
 import { ArtistPage } from './components/artists/pages/artist.page';
 import { LoadingIcon } from './components/shared/icons/loading';
 import { useObservable } from './hooks/use-observable';
+import whatsNew from 'spcr-whats-new';
+import { version } from '../package.json';
+import { CHANGE_NOTES } from './change-notes';
+import ReactMarkdown from 'react-markdown';
 
 // TODO: Add automatic version checks to the extensions and custom apps + powershell update scripts
 
@@ -28,6 +32,14 @@ function App() {
 
     useEffect(() => {
         window.localTracksService.init();
+
+        const markdown = <ReactMarkdown children={CHANGE_NOTES} />;
+
+        whatsNew('better-local-files', version, {
+            title: `New in v${version}`,
+            content: markdown,
+            isLarge: true,
+        });
     }, []);
 
     const history = Spicetify.Platform.History as History;

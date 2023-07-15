@@ -1,6 +1,6 @@
 {
     "name": "eternal-jukebox",
-    "version": "0.1.0",
+    "version": "1.0.0-beta.1",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
@@ -22,7 +22,9 @@
     },
     "dependencies": {
         "lucide-react": "^0.115.0",
+        "react-markdown": "^8.0.7",
         "rxjs": "^7.6.0",
+        "spcr-whats-new": "^1.0.1",
         "tinycolor2": "^1.6.0"
     }
 }

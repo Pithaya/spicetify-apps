@@ -1,6 +1,6 @@
 import { Platform, addUpdateChecker } from '@shared';
 import { LocalTracksService } from '../services/local-tracks-service';
-import { VERSION } from '../version';
+import { version } from '../../package.json';
 
 (async () => {
     // Necessary to share the same instance between the extension and the custom app
@@ -38,5 +38,5 @@ import { VERSION } from '../version';
         handlePathnameChange(event.pathname);
     });
 
-    await addUpdateChecker(VERSION, 'better-local-files');
+    await addUpdateChecker(version, 'better-local-files');
 })();

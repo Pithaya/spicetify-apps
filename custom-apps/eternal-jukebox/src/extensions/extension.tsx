@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { PlaybarButton } from '../components/playbar-button.component';
 import { Jukebox } from '../models/jukebox';
-import { VERSION } from '../version';
+import { version } from '../../package.json';
 
 // TODO: Add i18n
 
@@ -25,7 +25,7 @@ import { VERSION } from '../version';
             document.createElement('div')
         );
 
-        await addUpdateChecker(VERSION, 'eternal-jukebox');
+        await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
         console.error(error);
         Spicetify.showNotification(
