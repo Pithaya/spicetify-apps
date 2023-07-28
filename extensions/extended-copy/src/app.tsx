@@ -14,23 +14,20 @@ import {
 import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
 import i18next from 'i18next';
 
-// TODO: Uncaught TypeError: Cannot read properties of undefined (reading 'TRACK')
-const locale: Locale = (Spicetify as any).Locale;
-const supportedTypes = [
-    Spicetify.URI.Type.TRACK,
-    Spicetify.URI.Type.ALBUM,
-    Spicetify.URI.Type.ARTIST,
-    Spicetify.URI.Type.PLAYLIST,
-    Spicetify.URI.Type.PLAYLIST_V2,
-    Spicetify.URI.Type.SHOW,
-    Spicetify.URI.Type.EPISODE,
-];
+let locale: Locale;
+let supportedTypes: string[];
+
+// TODO: wg endpoints are getting deprecated, replace them with graphql or platform apis
 
 async function getData(
     uriString: string
 ): Promise<Track | Album | Artist | Playlist | Show | Episode | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
     const id = getId(uri);
+
+    if (id === null) {
+        return null;
+    }
 
     if (Spicetify.URI.isTrack(uri)) {
         return await getTrack(id);
@@ -62,6 +59,10 @@ async function getData(
 async function getName(uriString: string): Promise<string | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
     const id = getId(uri);
+
+    if (id === null) {
+        return null;
+    }
 
     if (Spicetify.URI.isTrack(uri)) {
         return (await getTrack(id))?.name ?? null;
@@ -116,6 +117,17 @@ async function main() {
     while (!Spicetify?.Platform) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
+
+    locale = (Spicetify as any).Locale;
+    supportedTypes = [
+        Spicetify.URI.Type.TRACK,
+        Spicetify.URI.Type.ALBUM,
+        Spicetify.URI.Type.ARTIST,
+        Spicetify.URI.Type.PLAYLIST,
+        Spicetify.URI.Type.PLAYLIST_V2,
+        Spicetify.URI.Type.SHOW,
+        Spicetify.URI.Type.EPISODE,
+    ];
 
     await i18next.init({
         lng: locale.getLocale(),
