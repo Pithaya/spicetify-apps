@@ -1312,6 +1312,8 @@ declare namespace Spicetify {
     const React: any;
     /** React DOM instance to render and mount components */
     const ReactDOM: any;
+    /** React DOM Server instance to render components to string */
+    const ReactDOMServer: any;
 
     /** Stock React components exposed from Spotify library */
     namespace ReactComponent {
@@ -1671,6 +1673,69 @@ declare namespace Spicetify {
              */
             titleSemanticColor?: SemanticColor;
         };
+        type SliderProps = {
+            /**
+             * Label for the slider.
+             */
+            labelText?: string;
+            /**
+             * The current value of the slider.
+             */
+            value: number;
+            /**
+             * The minimum value of the slider.
+             */
+            min: number;
+            /**
+             * The maximum value of the slider.
+             */
+            max: number;
+            /**
+             * The step value of the slider.
+             */
+            step: number;
+            /**
+             * Whether or not the slider is disabled/can be interacted with.
+             * @default true
+             */
+            isInteractive?: boolean;
+            /**
+             * Whether or not the active style of the slider should be shown.
+             * This is equivalent to the slider being focused/hovered.
+             * @default false
+             */
+            forceActiveStyles?: boolean;
+            /**
+             * Callback function that is called when the slider starts being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragStart: (value: number) => void;
+            /**
+             * Callback function that is called when the slider is being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragMove: (value: number) => void;
+            /**
+             * Callback function that is called when the slider stops being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragEnd: (value: number) => void;
+            /**
+             * Callback function that is called when the slider incremented a step.
+             *
+             * @deprecated Use `onDrag` props instead.
+             */
+            onStepForward?: () => void;
+            /**
+             * Callback function that is called when the slider decremented a step.
+             *
+             * @deprecated Use `onDrag` props instead.
+             */
+            onStepBackward?: () => void;
+        };
         /**
          * Generic context menu provider
          *
@@ -1712,6 +1777,7 @@ declare namespace Spicetify {
         const PodcastShowMenu: any;
         const ArtistMenu: any;
         const PlaylistMenu: any;
+        const TrackMenu: any;
         /**
          * Component to display tooltip when hovering over element
          * Useful for accessibility
@@ -1764,6 +1830,15 @@ declare namespace Spicetify {
          * @see Spicetify.ReactComponent.PanelHeaderProps
          */
         const PanelHeader: any;
+        /**
+         * Component to render Spotify slider
+         *
+         * Used in progress bar, volume slider, crossfade settings, etc.
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.SliderProps
+         */
+        const Slider: any;
     }
 
     /**
@@ -2303,4 +2378,85 @@ declare namespace Spicetify {
      * @link https://github.com/TanStack/query/tree/v3
      */
     const ReactQuery: any;
+
+    /**
+     * Analyse and extract color presets from an image. Works for any valid image URL/URI.
+     * @param image Spotify URI to an image, or an image URL.
+     */
+    function extractColorPresets(image: string | string[]): Promise<
+        {
+            colorRaw: Color;
+            colorLight: Color;
+            colorDark: Color;
+            isFallback: boolean;
+        }[]
+    >;
+
+    interface hsl {
+        h: number;
+        s: number;
+        l: number;
+    }
+    interface hsv {
+        h: number;
+        s: number;
+        v: number;
+    }
+    interface rgb {
+        r: number;
+        g: number;
+        b: number;
+    }
+    type CSSColors = 'HEX' | 'HEXA' | 'HSL' | 'HSLA' | 'RGB' | 'RGBA';
+    /**
+     * Spotify's internal color class
+     */
+    class Color {
+        constructor(rgb: rgb, hsl: hsl, hsv: hsv, alpha?: number);
+
+        static BLACK: Color;
+        static WHITE: Color;
+        static CSSFormat: Record<CSSColors, number> & Record<number, CSSColors>;
+
+        a: number;
+        hsl: hsl;
+        hsv: hsv;
+        rgb: rgb;
+
+        /**
+         * Convert CSS representation to Color
+         * @param cssColor CSS representation of the color. Must not contain spaces.
+         * @param alpha Alpha value of the color. Defaults to 1.
+         * @return Color object
+         * @throws {Error} If the CSS color is invalid or unsupported
+         */
+        static fromCSS(cssColor: string, alpha?: number): Color;
+        static fromHSL(hsl: hsl, alpha?: number): Color;
+        static fromHSV(hsv: hsv, alpha?: number): Color;
+        static fromRGB(rgb: rgb, alpha?: number): Color;
+        static fromHex(hex: string, alpha?: number): Color;
+
+        /**
+         * Change the contrast of the color against another so that
+         * the contrast between them is at least `strength`.
+         */
+        contrastAdjust(against: Color, strength?: number): Color;
+
+        /**
+         * Stringify JSON result
+         */
+        stringify(): string;
+
+        /**
+         * Convert to CSS representation
+         * @param colorFormat CSS color format to convert to
+         * @return CSS representation of the color
+         */
+        toCSS(colorFormat: number): string;
+
+        /**
+         * Return RGBA representation of the color
+         */
+        toString(): string;
+    }
 }
