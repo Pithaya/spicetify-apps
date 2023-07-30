@@ -1,4 +1,5 @@
-import { Platform, addUpdateChecker } from '@shared';
+import { Platform } from '@shared/platform';
+import { addUpdateChecker } from '@shared/utils';
 import { LocalTracksService } from '../services/local-tracks-service';
 import { version } from '../../package.json';
 

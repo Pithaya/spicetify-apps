@@ -1,4 +1,4 @@
-import { getSelectedElementName } from '@shared';
+import { getSelectedElementName } from '@shared/utils';
 import { KuroshiroSettingsService } from './kuroshiro-settings.service';
 import { KuroshiroService } from './kuroshiro.service';
 import { ServicesContainer } from './services-container';

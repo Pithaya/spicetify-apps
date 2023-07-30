@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from '@shared';
+import { Platform } from '@shared/platform';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';

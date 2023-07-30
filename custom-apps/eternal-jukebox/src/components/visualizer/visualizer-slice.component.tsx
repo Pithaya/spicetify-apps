@@ -1,4 +1,4 @@
-import { Platform } from '@shared';
+import { Platform } from '@shared/platform';
 import React, { useState } from 'react';
 import styles from '../../css/app.module.scss';
 import { IBeatDrawData } from '../../models/visualization/beat-draw-data.interface';

@@ -1,4 +1,4 @@
-import { Platform, Playlist } from '@shared';
+import { Platform, Playlist } from '@shared/platform';
 import React, { useEffect, useState } from 'react';
 
 export interface PlaylistSelectionMenuProps {

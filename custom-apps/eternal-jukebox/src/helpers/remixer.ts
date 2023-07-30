@@ -1,4 +1,4 @@
-import { AudioAnalysis } from '@shared';
+import { AudioAnalysis } from '@shared/cosmos';
 import {
     ChildQuantum,
     hasOverlappingSegments,

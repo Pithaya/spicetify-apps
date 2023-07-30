@@ -1,7 +1,4 @@
-import { addUpdateChecker, waitForElement } from '@shared';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { PlaybarButton } from '../components/playbar-button.component';
+import { addUpdateChecker, waitForElement } from '@shared/utils';
 import { Jukebox } from '../models/jukebox';
 import { version } from '../../package.json';
 
@@ -17,13 +14,8 @@ import { version } from '../../package.json';
     try {
         const element = await waitForElement('.player-controls__right');
 
-        const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
-
-        // TODO: createRoot + root.render() if React updates to v18
-        reactDom.render(
-            reactDom.createPortal(<PlaybarButton />, element),
-            document.createElement('div')
-        );
+        const reactHelper = await import('../helpers/react-helper');
+        reactHelper.ReactHelper.registerPaybarButton(element);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {

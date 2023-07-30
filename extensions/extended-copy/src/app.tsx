@@ -1,16 +1,15 @@
 import {
     Album,
     Artist,
-    ClipboardAPI,
     getAlbum,
     getArtist,
-    getId,
     getPlaylist,
     getShow,
-    Locale,
     Playlist,
     Show,
-} from '@shared';
+} from '@shared/cosmos';
+import { ClipboardAPI, Locale } from '@shared/platform';
+import { getId } from '@shared/utils';
 import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
 import i18next from 'i18next';
 

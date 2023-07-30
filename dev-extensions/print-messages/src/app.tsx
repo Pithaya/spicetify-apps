@@ -1,4 +1,4 @@
-import { registerPrintLatestMessagesItem } from '@shared';
+import { registerPrintLatestMessagesItem } from '@shared/debug';
 
 async function main() {
     while (!Spicetify?.Platform) {

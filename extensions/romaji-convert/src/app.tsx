@@ -2,7 +2,7 @@ import React from 'react';
 import i18next from 'i18next';
 import { SettingsModal } from './components/settings-modal.component.js';
 import { ServicesContainer } from './services/services-container.js';
-import { Locale } from '@shared';
+import { Locale } from '@shared/platform';
 
 // TODO: Update settings modal screenshot
 

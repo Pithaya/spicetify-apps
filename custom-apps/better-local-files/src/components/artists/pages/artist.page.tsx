@@ -1,4 +1,4 @@
-import { History } from '@shared';
+import { History } from '@shared/platform';
 import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';

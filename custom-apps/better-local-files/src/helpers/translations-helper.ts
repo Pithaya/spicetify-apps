@@ -1,4 +1,4 @@
-import { Translations } from '@shared';
+import { Translations } from '@shared/platform';
 
 export function getTranslation(keys: string[], ...params: any[]): string {
     const translations = Spicetify.Platform.Translations as Translations;

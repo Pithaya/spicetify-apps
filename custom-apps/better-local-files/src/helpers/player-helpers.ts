@@ -1,4 +1,4 @@
-import { LocalTrack } from '@shared';
+import { LocalTrack } from '@shared/platform';
 
 /**
  * Plays a local track with the given context.

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@shared": ["libs/shared/src"],
+            "@shared/*": ["libs/shared/src/*"],
             "@spotify-web-api": ["libs/spotify-web-api/src"]
         }
     }

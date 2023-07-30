@@ -11,7 +11,8 @@ import { JukeboxSettings } from './jukebox-settings.js';
 import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
-import { AudioAnalysis, getAudioAnalysis, getId } from '@shared';
+import { AudioAnalysis, getAudioAnalysis } from '@shared/cosmos';
+import { getId } from '@shared/utils';
 import { SettingsService } from '../services/settings-service';
 
 export interface StatsChangedEvent {

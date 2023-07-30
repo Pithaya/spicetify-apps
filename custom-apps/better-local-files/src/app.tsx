@@ -1,7 +1,7 @@
 import styles from './css/app.module.scss';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { History } from '@shared';
+import { History } from '@shared/platform';
 import { Routes, topBarItems } from './constants/constants';
 import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
 import { TracksPage } from './components/tracks/pages/tracks.page';

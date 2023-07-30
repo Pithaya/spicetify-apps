@@ -1,4 +1,4 @@
-import { History } from '@shared';
+import { History } from '@shared/platform';
 
 // TODO: Use the uri in the url to fix navigation between artist pages
 

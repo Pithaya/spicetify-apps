@@ -1,4 +1,4 @@
-import { Locale } from '@shared';
+import { Locale } from '@shared/platform';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, { Children, PropsWithChildren, useRef } from 'react';

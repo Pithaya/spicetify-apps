@@ -2,7 +2,7 @@ import { sort } from '../helpers/sort-helper';
 import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
-import { Platform } from '@shared';
+import { Platform } from '@shared/platform';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { StorageService } from './storage-service';

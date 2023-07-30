@@ -1,4 +1,4 @@
-import { Segment } from '@shared';
+import { Segment } from '@shared/cosmos';
 import { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';

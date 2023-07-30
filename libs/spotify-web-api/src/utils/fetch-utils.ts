@@ -1,4 +1,4 @@
-import { Session } from '@shared';
+import { Session } from '@shared/platform';
 
 export async function get<T>(url: string): Promise<T> {
     const session = (Spicetify.Platform as any).Session as Session;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayerAPI } from '@shared';
+import { PlayerAPI } from '@shared/platform';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';

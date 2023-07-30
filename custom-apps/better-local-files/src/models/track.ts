@@ -1,4 +1,4 @@
-import { LocalTrack } from '@shared';
+import { LocalTrack } from '@shared/platform';
 import { Album } from './album';
 import { Artist } from './artist';
 
