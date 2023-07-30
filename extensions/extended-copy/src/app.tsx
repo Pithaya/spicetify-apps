@@ -1,26 +1,34 @@
 import {
-    Album,
-    Artist,
-    getAlbum,
-    getArtist,
-    getPlaylist,
-    getShow,
+    ClipboardAPI,
+    Locale,
+    Platform,
     Playlist,
-    Show,
-} from '@shared/cosmos';
-import { ClipboardAPI, Locale } from '@shared/platform';
+    ShowMetadata,
+} from '@shared/platform';
 import { getId } from '@shared/utils';
-import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
+import {
+    AlbumNameAndTracksData,
+    ArtistMinimalData,
+    EpisodeNameData,
+    GraphQLClient,
+    TrackNameData,
+} from '@shared/graphQL';
 import i18next from 'i18next';
 
 let locale: Locale;
-let supportedTypes: string[];
-
-// TODO: wg endpoints are getting deprecated, replace them with graphql or platform apis
+let supportedTypes: string[] = [];
 
 async function getData(
     uriString: string
-): Promise<Track | Album | Artist | Playlist | Show | Episode | null> {
+): Promise<
+    | TrackNameData
+    | AlbumNameAndTracksData
+    | ArtistMinimalData
+    | Playlist
+    | ShowMetadata
+    | EpisodeNameData
+    | null
+> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
     const id = getId(uri);
 
@@ -29,27 +37,31 @@ async function getData(
     }
 
     if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(id);
+        return await GraphQLClient.getTrackName(uri);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return await getAlbum(id);
+        return await GraphQLClient.getAlbumNameAndTracks(uri, 0, 0);
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return await getArtist(id);
+        return await GraphQLClient.queryArtistMinimal(uri);
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await getPlaylist(id);
+        return await Platform.PlaylistAPI.getPlaylist(
+            uriString,
+            {},
+            { filter: '', limit: 0, offset: 0, sort: undefined }
+        );
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return await getShow(id);
+        return await Platform.ShowAPI.getMetadata(uriString);
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(id);
+        return await GraphQLClient.getEpisodeName(uri);
     }
 
     return null;
@@ -64,27 +76,35 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isTrack(uri)) {
-        return (await getTrack(id))?.name ?? null;
+        return (await GraphQLClient.getTrackName(uri)).trackUnion.name;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return (await getAlbum(id)).name;
+        return (await GraphQLClient.getAlbumNameAndTracks(uri, 0, 0)).albumUnion
+            .name;
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return (await getArtist(id)).info.name;
+        return (await GraphQLClient.queryArtistMinimal(uri)).artistUnion.profile
+            .name;
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return (await getPlaylist(id)).playlist.name;
+        return (
+            await Platform.PlaylistAPI.getPlaylist(
+                uriString,
+                {},
+                { filter: '', limit: 0, offset: 0, sort: undefined }
+            )
+        ).metadata.name;
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return (await getShow(id)).header.showMetadata.name;
+        return (await Platform.ShowAPI.getMetadata(uriString)).name;
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await getEpisode(id))?.name ?? null;
+        return (await GraphQLClient.getEpisodeName(uri)).episodeUnionV2.name;
     }
 
     return null;

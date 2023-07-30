@@ -9,6 +9,7 @@ import { Session } from './session';
 import { Translations } from './translations';
 import { UserAPI } from './user';
 import { History } from './history';
+import { ShowAPI } from './show';
 
 type Transport = any;
 type EventSender = any;
@@ -33,7 +34,6 @@ type RecaptchaLoggerAPI = any;
 type RecentlyPlayedAPI = any;
 type ReportAPI = any;
 type SegmentsAPI = any;
-type ShowAPI = any;
 type UpdateAPI = any;
 type VideoAPI = any;
 type EnhanceAPI = any;

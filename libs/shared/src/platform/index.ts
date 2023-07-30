@@ -6,5 +6,5 @@ export * from './local-files';
 export * from './translations';
 export * from './player';
 export * from './playlist';
-export * from './rootlist';
 export * from './platform';
+export * from './show';
