@@ -1,4 +1,5 @@
 import { Platform, Playlist } from '@shared/platform';
+import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import React, { useEffect, useState } from 'react';
 
 export interface PlaylistSelectionMenuProps {
@@ -34,7 +35,7 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
     }
 
     return (
-        <Spicetify.ReactComponent.Menu>
+        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
             {playlists.map((p) => {
                 return (
                     <Spicetify.ReactComponent.MenuItem

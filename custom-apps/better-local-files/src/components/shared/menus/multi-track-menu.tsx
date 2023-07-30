@@ -4,6 +4,7 @@ import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
+import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 
 export interface MultiTrackMenuProps {
     tracks: Track[];
@@ -17,7 +18,7 @@ export function MultiTrackMenu(props: MultiTrackMenuProps) {
     }
 
     return (
-        <Spicetify.ReactComponent.Menu>
+        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
             <Spicetify.ReactComponent.MenuItem
                 divider="after"
                 onClick={addToQueue}
