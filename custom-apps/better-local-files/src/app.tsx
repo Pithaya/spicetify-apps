@@ -1,20 +1,20 @@
-import styles from './css/app.module.scss';
-import React, { useEffect, useState } from 'react';
+import { getPlatform } from '@shared/utils';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { History } from '@shared/platform';
-import { Routes, topBarItems } from './constants/constants';
-import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
-import { TracksPage } from './components/tracks/pages/tracks.page';
-import { AlbumPage } from './components/albums/pages/album.page';
-import { ArtistsPage } from './components/artists/pages/artists.page';
-import { AlbumsPage } from './components/albums/pages/albums.page';
-import { ArtistPage } from './components/artists/pages/artist.page';
-import { LoadingIcon } from './components/shared/icons/loading';
-import { useObservable } from './hooks/use-observable';
+import ReactMarkdown from 'react-markdown';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
-import ReactMarkdown from 'react-markdown';
+import { AlbumPage } from './components/albums/pages/album.page';
+import { AlbumsPage } from './components/albums/pages/albums.page';
+import { ArtistPage } from './components/artists/pages/artist.page';
+import { ArtistsPage } from './components/artists/pages/artists.page';
+import { LoadingIcon } from './components/shared/icons/loading';
+import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
+import { TracksPage } from './components/tracks/pages/tracks.page';
+import { Routes, topBarItems } from './constants/constants';
+import styles from './css/app.module.scss';
+import { useObservable } from './hooks/use-observable';
 
 // TODO: Add automatic version checks to the extensions and custom apps + powershell update scripts
 
@@ -42,7 +42,7 @@ function App() {
         });
     }, []);
 
-    const history = Spicetify.Platform.History as History;
+    const history = getPlatform().History;
     const location = history.location;
 
     let currentPage = <></>;

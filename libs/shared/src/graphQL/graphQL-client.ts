@@ -1,7 +1,7 @@
 import { AlbumData } from './models/album-data';
 import { GraphQLResponse } from './models/response';
 import { IsErrorResponse, ThrowWithErrorMessage } from './utils/graphQL-utils';
-import { Locale } from '../platform';
+import { Locale } from '../platform/locale';
 import { TrackNameData } from './models/track-name-data';
 import { EpisodeNameData } from './models/episode-name-data';
 import { ArtistMinimalData } from './models/artist-minimal-data';

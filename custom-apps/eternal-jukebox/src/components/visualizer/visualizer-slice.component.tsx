@@ -1,7 +1,7 @@
-import { Platform } from '@shared/platform';
 import React, { useState } from 'react';
 import styles from '../../css/app.module.scss';
 import { IBeatDrawData } from '../../models/visualization/beat-draw-data.interface';
+import { getPlatform } from '@shared/utils';
 
 interface IProps {
     drawData: IBeatDrawData;
@@ -23,7 +23,9 @@ export function VisualizerSlice(props: IProps) {
             d={props.drawData.drawCommand}
             onMouseOver={() => setIsHovered(true)}
             onMouseOut={() => setIsHovered(false)}
-            onClick={() => Platform.PlayerAPI.seekTo(props.drawData.beat.start)}
+            onClick={() =>
+                getPlatform().PlayerAPI.seekTo(props.drawData.beat.start)
+            }
         >
             <title>Beat {props.drawData.beat.index}</title>
         </path>

@@ -1,11 +1,10 @@
-import { waitForElement } from '@shared/utils';
+import { waitForElement, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 
 async function main() {
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
+    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
     const locale = (Spicetify as any).Locale;
 
     await i18next.init({

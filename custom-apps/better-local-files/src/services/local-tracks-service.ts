@@ -2,11 +2,11 @@ import { sort } from '../helpers/sort-helper';
 import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
-import { Platform } from '@shared/platform';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { StorageService } from './storage-service';
 import { CachedAlbum } from '../models/cached-album';
+import { getPlatform } from '@shared/utils';
 
 /**
  * A list of tracks with an associated cover.
@@ -159,7 +159,7 @@ export class LocalTracksService {
      * Process the local tracks to fill the tracks, albums and artists maps.
      */
     private async processLocalTracks(): Promise<void> {
-        const localTracks = await Platform.LocalFilesAPI.getTracks();
+        const localTracks = await getPlatform().LocalFilesAPI.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album

@@ -1,7 +1,7 @@
-import { Session } from '@shared/platform';
+import { getPlatform } from '@shared/utils';
 
 export async function get<T>(url: string): Promise<T> {
-    const session = (Spicetify.Platform as any).Session as Session;
+    const session = getPlatform().Session;
 
     const response = await fetch(url, {
         headers: {

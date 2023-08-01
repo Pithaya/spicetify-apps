@@ -1,5 +1,4 @@
 import React from 'react';
-import { Platform } from '@shared/platform';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
@@ -10,6 +9,7 @@ import {
 import { ArtistSelectionMenu } from './artist-selection-menu';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
+import { getPlatform } from '@shared/utils';
 
 export interface IProps {
     track: Track;
@@ -19,7 +19,7 @@ export interface IProps {
 
 export function RowMenu(props: IProps) {
     function addToQueue() {
-        Platform.PlayerAPI.addToQueue([{ uri: props.track.uri }]);
+        getPlatform().PlayerAPI.addToQueue([{ uri: props.track.uri }]);
     }
 
     return (

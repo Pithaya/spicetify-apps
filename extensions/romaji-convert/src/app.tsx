@@ -2,14 +2,13 @@ import React from 'react';
 import i18next from 'i18next';
 import { SettingsModal } from './components/settings-modal.component.js';
 import { ServicesContainer } from './services/services-container.js';
-import { Locale } from '@shared/platform';
+import { Locale } from '@shared/platform/locale';
+import { waitForSpicetify } from '@shared/utils';
 
 // TODO: Update settings modal screenshot
 
 async function main(): Promise<void> {
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
     const react = Spicetify.React as typeof React;
 
@@ -17,6 +16,7 @@ async function main(): Promise<void> {
     ServicesContainer.kuroshiro.init();
 
     // Init translations
+    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
     const locale: Locale = (Spicetify as any).Locale;
 
     await i18next.init({

@@ -1,5 +1,4 @@
-import { Platform } from '@shared/platform';
-import { addUpdateChecker } from '@shared/utils';
+import { addUpdateChecker, getPlatform, waitForSpicetify } from '@shared/utils';
 import { LocalTracksService } from '../services/local-tracks-service';
 import { version } from '../../package.json';
 
@@ -7,9 +6,7 @@ import { version } from '../../package.json';
     // Necessary to share the same instance between the extension and the custom app
     window.localTracksService = new LocalTracksService();
 
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
     const rebuildMenuItem = new Spicetify.Menu.Item(
         'Rebuild local album cache',
@@ -33,9 +30,9 @@ import { version } from '../../package.json';
         }
     };
 
-    handlePathnameChange(Platform.History.location.pathname);
+    handlePathnameChange(getPlatform().History.location.pathname);
 
-    Platform.History.listen((event) => {
+    getPlatform().History.listen((event) => {
         handlePathnameChange(event.pathname);
     });
 

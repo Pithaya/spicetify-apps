@@ -1,4 +1,3 @@
-import { Platform } from '@shared/platform';
 import {
     distinctUntilChanged,
     fromEvent,
@@ -11,6 +10,7 @@ import { Beat } from './models/graph/beat';
 import { Edge } from './models/graph/edge';
 import { JukeboxSettings } from './models/jukebox-settings';
 import { JukeboxSongState } from './models/jukebox-song-state';
+import { getPlatform } from '@shared/utils';
 
 // Used to print debug messages.
 const DEBUG = false;
@@ -253,7 +253,7 @@ export class Driver {
         if (DEBUG) {
             console.time('seek');
         }
-        await Platform.PlayerAPI.seekTo(playerPositionAfterJump);
+        await getPlatform().PlayerAPI.seekTo(playerPositionAfterJump);
 
         if (DEBUG) {
             console.timeEnd('seek');

@@ -1,4 +1,8 @@
-import { addUpdateChecker, waitForElement } from '@shared/utils';
+import {
+    addUpdateChecker,
+    waitForElement,
+    waitForSpicetify,
+} from '@shared/utils';
 import { Jukebox } from '../models/jukebox';
 import { version } from '../../package.json';
 
@@ -7,9 +11,7 @@ import { version } from '../../package.json';
 (async () => {
     window.jukebox = new Jukebox();
 
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
     try {
         const element = await waitForElement('.player-controls__right');

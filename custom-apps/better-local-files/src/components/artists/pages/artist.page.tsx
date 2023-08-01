@@ -1,4 +1,3 @@
-import { History } from '@shared/platform';
 import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
@@ -6,6 +5,7 @@ import { ArtistTrackList } from '../track-list/artist-track-list';
 import { Header, headerImageFallback } from '../../shared/header';
 import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getPlatform } from '@shared/utils';
 
 function ArtistHeader(props: { artist: Artist }) {
     return (
@@ -27,7 +27,7 @@ function ArtistHeader(props: { artist: Artist }) {
 }
 
 export function ArtistPage() {
-    const history = Spicetify.Platform.History as History;
+    const history = getPlatform().History;
 
     const artistUri = (history.location.state as any).uri ?? null;
 

@@ -1,18 +1,14 @@
 import {
-    ClipboardAPI,
-    Locale,
-    Platform,
-    Playlist,
-    ShowMetadata,
-} from '@shared/platform';
-import { getId } from '@shared/utils';
-import {
     AlbumNameAndTracksData,
     ArtistMinimalData,
     EpisodeNameData,
     GraphQLClient,
     TrackNameData,
 } from '@shared/graphQL';
+import { Locale } from '@shared/platform/locale';
+import { Playlist } from '@shared/platform/playlist';
+import { ShowMetadata } from '@shared/platform/show';
+import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 
 let locale: Locale;
@@ -49,7 +45,7 @@ async function getData(
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await Platform.PlaylistAPI.getPlaylist(
+        return await getPlatform().PlaylistAPI.getPlaylist(
             uriString,
             {},
             { filter: '', limit: 0, offset: 0, sort: undefined }
@@ -57,7 +53,7 @@ async function getData(
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return await Platform.ShowAPI.getMetadata(uriString);
+        return await getPlatform().ShowAPI.getMetadata(uriString);
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
@@ -91,7 +87,7 @@ async function getName(uriString: string): Promise<string | null> {
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
         return (
-            await Platform.PlaylistAPI.getPlaylist(
+            await getPlatform().PlaylistAPI.getPlaylist(
                 uriString,
                 {},
                 { filter: '', limit: 0, offset: 0, sort: undefined }
@@ -100,7 +96,7 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return (await Platform.ShowAPI.getMetadata(uriString)).name;
+        return (await getPlatform().ShowAPI.getMetadata(uriString)).name;
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
@@ -112,7 +108,7 @@ async function getName(uriString: string): Promise<string | null> {
 
 function copy(text: string | any): void {
     Spicetify.showNotification(i18next.t('copied'));
-    (Spicetify.Platform.ClipboardAPI as ClipboardAPI).copy(text);
+    getPlatform().ClipboardAPI.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
@@ -133,10 +129,9 @@ function shouldAdd(uris: string[]): boolean {
 }
 
 async function main() {
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
+    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
     locale = (Spicetify as any).Locale;
     supportedTypes = [
         Spicetify.URI.Type.TRACK,
