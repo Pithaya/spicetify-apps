@@ -1,16 +1,11 @@
-import React from 'react';
 import i18next from 'i18next';
-import { SettingsModal } from './components/settings-modal.component.js';
 import { ServicesContainer } from './services/services-container.js';
 import { Locale } from '@shared/platform/locale';
 import { waitForSpicetify } from '@shared/utils';
-
-// TODO: Update settings modal screenshot
+import { MENU_ICON } from './models/constants';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
-
-    const react = Spicetify.React as typeof React;
 
     // Init services
     ServicesContainer.kuroshiro.init();
@@ -115,13 +110,19 @@ async function main(): Promise<void> {
         return value.toLowerCase();
     });
 
+    const reactHelper = await import('./helpers/react-helper');
+
     // Add settings menu
-    new Spicetify.Menu.Item(i18next.t('settings.title'), false, () =>
-        Spicetify.PopupModal.display({
-            title: i18next.t('settings.title'),
-            content: react.createElement(SettingsModal) as any,
-            isLarge: true,
-        })
+    new Spicetify.Menu.Item(
+        i18next.t('settings.title'),
+        false,
+        () =>
+            Spicetify.PopupModal.display({
+                title: i18next.t('settings.title'),
+                content: reactHelper.ReactHelper.createSettingsModal(),
+                isLarge: true,
+            }),
+        MENU_ICON
     ).register();
 
     // Add context menu
