@@ -2,8 +2,11 @@ import {
     AlbumNameAndTracksData,
     ArtistMinimalData,
     EpisodeNameData,
-    GraphQLClient,
     TrackNameData,
+    getAlbumNameAndTracks,
+    getEpisodeName,
+    getTrackName,
+    queryArtistMinimal,
 } from '@shared/graphQL';
 import { Locale } from '@shared/platform/locale';
 import { Playlist } from '@shared/platform/playlist';
@@ -33,15 +36,15 @@ async function getData(
     }
 
     if (Spicetify.URI.isTrack(uri)) {
-        return await GraphQLClient.getTrackName(uri);
+        return await getTrackName(uri);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return await GraphQLClient.getAlbumNameAndTracks(uri, 0, 0);
+        return await getAlbumNameAndTracks(uri, 0, 0);
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return await GraphQLClient.queryArtistMinimal(uri);
+        return await queryArtistMinimal(uri);
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
@@ -57,7 +60,7 @@ async function getData(
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await GraphQLClient.getEpisodeName(uri);
+        return await getEpisodeName(uri);
     }
 
     return null;
@@ -72,17 +75,15 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isTrack(uri)) {
-        return (await GraphQLClient.getTrackName(uri)).trackUnion.name;
+        return (await getTrackName(uri)).trackUnion.name;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return (await GraphQLClient.getAlbumNameAndTracks(uri, 0, 0)).albumUnion
-            .name;
+        return (await getAlbumNameAndTracks(uri, 0, 0)).albumUnion.name;
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return (await GraphQLClient.queryArtistMinimal(uri)).artistUnion.profile
-            .name;
+        return (await queryArtistMinimal(uri)).artistUnion.profile.name;
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
@@ -100,7 +101,7 @@ async function getName(uriString: string): Promise<string | null> {
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await GraphQLClient.getEpisodeName(uri)).episodeUnionV2.name;
+        return (await getEpisodeName(uri)).episodeUnionV2.name;
     }
 
     return null;
