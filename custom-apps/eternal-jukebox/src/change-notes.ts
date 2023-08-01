@@ -1,3 +1,3 @@
 export const CHANGE_NOTES = `
-- Fix bug when adding the play bar button.
+* A notification will show if a new update is available.
 `;
