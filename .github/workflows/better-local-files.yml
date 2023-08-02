@@ -24,7 +24,8 @@ jobs:
                   cache: 'npm'
                   cache-dependency-path: ./custom-apps/better-local-files/package-lock.json
             - name: Install shared dependencies
-              run: cd ./libs/shared && npm ci
+              working-directory: ./libs/shared
+              run: npm ci
             - name: Install dependencies
               run: npm ci
             - name: Build
