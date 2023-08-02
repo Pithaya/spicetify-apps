@@ -1,4 +1,4 @@
-import { LocalTrack } from '@shared';
+import { LocalTrack } from '@shared/platform/local-files';
 
 /**
  * Plays a local track with the given context.
@@ -11,6 +11,7 @@ export function playTrack(trackUri: string, context: LocalTrack[]): void {
         return;
     }
 
+    // TODO: Type and use Platform.PlayerAPI
     (Spicetify.Player as any).origin.play(
         {
             uri: 'spotify:internal:local-files',

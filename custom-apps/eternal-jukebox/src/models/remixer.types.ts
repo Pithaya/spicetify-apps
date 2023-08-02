@@ -1,4 +1,4 @@
-import { Section, Segment, TimeInterval } from '@shared';
+import { Section, Segment, TimeInterval } from '@shared/cosmos';
 import {
     ChildQuantum,
     hasOverlappingSegments,

@@ -1,9 +1,8 @@
-import { listIcons } from '@shared';
+import { listIcons } from '@shared/debug';
+import { waitForSpicetify } from '@shared/utils';
 
 async function main() {
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
     listIcons();
 }

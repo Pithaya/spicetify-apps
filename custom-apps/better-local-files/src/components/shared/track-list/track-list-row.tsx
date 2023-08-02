@@ -1,11 +1,8 @@
-import { Locale } from '@shared';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, { Children, PropsWithChildren, useRef } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
-
-const locale: Locale = (Spicetify as any).Locale;
 
 export interface IProps {
     track: Track;

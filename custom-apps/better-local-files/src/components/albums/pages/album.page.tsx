@@ -1,4 +1,3 @@
-import { History } from '@shared';
 import React from 'react';
 import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
@@ -9,6 +8,7 @@ import {
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Album } from 'custom-apps/better-local-files/src/models/album';
+import { getPlatform } from '@shared/utils';
 
 function AlbumHeader(props: { album: Album }) {
     return (
@@ -74,7 +74,7 @@ function AlbumHeader(props: { album: Album }) {
 }
 
 export function AlbumPage() {
-    const history = Spicetify.Platform.History as History;
+    const history = getPlatform().History;
 
     const albumUri = (history.location.state as any).uri ?? null;
 

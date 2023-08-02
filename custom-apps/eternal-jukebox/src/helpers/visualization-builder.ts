@@ -1,6 +1,6 @@
 import tinycolor from 'tinycolor2';
 import { Beat } from '../models/graph/beat';
-import { Segment } from '@shared';
+import { Segment } from '@shared/cosmos';
 import { Point } from '../models/visualization/point';
 import { getPercentOfValue, getPointFromPercent } from '../utils/math-utils';
 import { IBeatDrawData } from '../models/visualization/beat-draw-data.interface';

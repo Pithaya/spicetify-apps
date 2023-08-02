@@ -1,7 +1,7 @@
-import { Translations } from '@shared';
+import { getPlatform } from '@shared/utils';
 
 export function getTranslation(keys: string[], ...params: any[]): string {
-    const translations = Spicetify.Platform.Translations as Translations;
+    const translations = getPlatform().Translations;
 
     let valueObject: any | string = translations;
 

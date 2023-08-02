@@ -5,7 +5,10 @@ import {
     SelectedSortOption,
     SortOption,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import {
+    HeaderKey,
+    SPOTIFY_MENU_CLASSES,
+} from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
@@ -17,7 +20,7 @@ export interface IProps {
 
 export function SortMenu(props: IProps) {
     const menu = (
-        <Spicetify.ReactComponent.Menu>
+        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
             <li>
                 <span
                     className={`${styles['sort-menu-header']} main-contextMenu-menuHeading ellipsis-one-line`}

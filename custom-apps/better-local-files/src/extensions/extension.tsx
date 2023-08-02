@@ -1,31 +1,40 @@
-import { Platform } from '@shared';
+import { addUpdateChecker, getPlatform, waitForSpicetify } from '@shared/utils';
 import { LocalTracksService } from '../services/local-tracks-service';
+import { version } from '../../package.json';
 
 (async () => {
     // Necessary to share the same instance between the extension and the custom app
     window.localTracksService = new LocalTracksService();
 
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
-    const menuItem = new Spicetify.Menu.Item(
+    const rebuildMenuItem = new Spicetify.Menu.Item(
         'Rebuild local album cache',
         false,
         () => window.localTracksService.reset()
     );
 
+    const clearCacheMenuItem = new Spicetify.Menu.Item(
+        'Clear local album cache',
+        false,
+        () => window.localTracksService.clearCache()
+    );
+
     const handlePathnameChange = (pathname: string) => {
         if (pathname.includes('better-local-files')) {
-            menuItem.register();
+            rebuildMenuItem.register();
+            clearCacheMenuItem.register();
         } else {
-            menuItem.deregister();
+            rebuildMenuItem.deregister();
+            clearCacheMenuItem.deregister();
         }
     };
 
-    handlePathnameChange(Platform.History.location.pathname);
+    handlePathnameChange(getPlatform().History.location.pathname);
 
-    Platform.History.listen((event) => {
+    getPlatform().History.listen((event) => {
         handlePathnameChange(event.pathname);
     });
+
+    await addUpdateChecker(version, 'better-local-files');
 })();

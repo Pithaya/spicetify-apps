@@ -32,3 +32,6 @@ export const topBarItems: TopBarItem[] = [
 ];
 
 export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';
+
+// TODO: Move this somewhere else ?
+export const SPOTIFY_MENU_CLASSES = 'encore-dark-theme main-contextMenu-menu';

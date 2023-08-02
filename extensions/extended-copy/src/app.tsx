@@ -1,58 +1,66 @@
 import {
-    Album,
-    Artist,
-    ClipboardAPI,
-    getAlbum,
-    getArtist,
-    getId,
-    getPlaylist,
-    getShow,
-    Locale,
-    Playlist,
-    Show,
-} from '@shared';
-import { Episode, getEpisode, getTrack, Track } from '@spotify-web-api';
+    AlbumNameAndTracksData,
+    ArtistMinimalData,
+    EpisodeNameData,
+    TrackNameData,
+    getAlbumNameAndTracks,
+    getEpisodeName,
+    getTrackName,
+    queryArtistMinimal,
+} from '@shared/graphQL';
+import { Locale } from '@shared/platform/locale';
+import { Playlist } from '@shared/platform/playlist';
+import { ShowMetadata } from '@shared/platform/show';
+import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 
-const locale: Locale = (Spicetify as any).Locale;
-const supportedTypes = [
-    Spicetify.URI.Type.TRACK,
-    Spicetify.URI.Type.ALBUM,
-    Spicetify.URI.Type.ARTIST,
-    Spicetify.URI.Type.PLAYLIST,
-    Spicetify.URI.Type.PLAYLIST_V2,
-    Spicetify.URI.Type.SHOW,
-    Spicetify.URI.Type.EPISODE,
-];
+let locale: Locale;
+let supportedTypes: string[] = [];
 
 async function getData(
     uriString: string
-): Promise<Track | Album | Artist | Playlist | Show | Episode | null> {
+): Promise<
+    | TrackNameData
+    | AlbumNameAndTracksData
+    | ArtistMinimalData
+    | Playlist
+    | ShowMetadata
+    | EpisodeNameData
+    | null
+> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
     const id = getId(uri);
 
+    if (id === null) {
+        return null;
+    }
+
     if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(id);
+        return await getTrackName(uri);
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return await getAlbum(id);
+        return await getAlbumNameAndTracks(uri, 0, 0);
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return await getArtist(id);
+        return await queryArtistMinimal(uri);
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await getPlaylist(id);
+        return await getPlatform().PlaylistAPI.getPlaylist(
+            uriString,
+            {},
+            { filter: '', limit: 0, offset: 0, sort: undefined }
+        );
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return await getShow(id);
+        return await getPlatform().ShowAPI.getMetadata(uriString);
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(id);
+        return await getEpisodeName(uri);
     }
 
     return null;
@@ -62,28 +70,38 @@ async function getName(uriString: string): Promise<string | null> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
     const id = getId(uri);
 
+    if (id === null) {
+        return null;
+    }
+
     if (Spicetify.URI.isTrack(uri)) {
-        return (await getTrack(id))?.name ?? null;
+        return (await getTrackName(uri)).trackUnion.name;
     }
 
     if (Spicetify.URI.isAlbum(uri)) {
-        return (await getAlbum(id)).name;
+        return (await getAlbumNameAndTracks(uri, 0, 0)).albumUnion.name;
     }
 
     if (Spicetify.URI.isArtist(uri)) {
-        return (await getArtist(id)).info.name;
+        return (await queryArtistMinimal(uri)).artistUnion.profile.name;
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return (await getPlaylist(id)).playlist.name;
+        return (
+            await getPlatform().PlaylistAPI.getPlaylist(
+                uriString,
+                {},
+                { filter: '', limit: 0, offset: 0, sort: undefined }
+            )
+        ).metadata.name;
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return (await getShow(id)).header.showMetadata.name;
+        return (await getPlatform().ShowAPI.getMetadata(uriString)).name;
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
-        return (await getEpisode(id))?.name ?? null;
+        return (await getEpisodeName(uri)).episodeUnionV2.name;
     }
 
     return null;
@@ -91,7 +109,7 @@ async function getName(uriString: string): Promise<string | null> {
 
 function copy(text: string | any): void {
     Spicetify.showNotification(i18next.t('copied'));
-    (Spicetify.Platform.ClipboardAPI as ClipboardAPI).copy(text);
+    getPlatform().ClipboardAPI.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
@@ -112,9 +130,19 @@ function shouldAdd(uris: string[]): boolean {
 }
 
 async function main() {
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
+
+    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
+    locale = (Spicetify as any).Locale;
+    supportedTypes = [
+        Spicetify.URI.Type.TRACK,
+        Spicetify.URI.Type.ALBUM,
+        Spicetify.URI.Type.ARTIST,
+        Spicetify.URI.Type.PLAYLIST,
+        Spicetify.URI.Type.PLAYLIST_V2,
+        Spicetify.URI.Type.SHOW,
+        Spicetify.URI.Type.EPISODE,
+    ];
 
     await i18next.init({
         lng: locale.getLocale(),

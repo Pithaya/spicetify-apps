@@ -2,35 +2,30 @@ import { sort } from '../helpers/sort-helper';
 import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
-import { Platform } from '@shared';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { StorageService } from './storage-service';
+import { CachedAlbum } from '../models/cached-album';
+import { getPlatform } from '@shared/utils';
 
-const HAS_CACHE_KEY = 'local-files:has-cache';
-const MERGED_ALBUMS = 'local-files:merged-albums';
-
-type CachedAlbum = {
-    /**
-     * Album URI.
-     */
-    uri: string;
-
-    /**
-     * List of tracks URI to separate for this album.
-     */
-    tracks: string[][];
-};
-
+/**
+ * A list of tracks with an associated cover.
+ */
 type TracksWithCover = {
     tracks: Track[];
     cover: ImageData;
 };
 
 export class LocalTracksService {
+    private readonly storageService: StorageService = new StorageService();
+
     private readonly isInitializedSubject: BehaviorSubject<boolean> =
         new BehaviorSubject<boolean>(false);
     private isInitializing: boolean = false;
 
+    /**
+     * Indicates if the service data is initialized.
+     */
     public readonly isReady$: Observable<boolean> =
         this.isInitializedSubject.asObservable();
 
@@ -38,53 +33,20 @@ export class LocalTracksService {
         return this.isInitializedSubject.value;
     }
 
-    public get hasCache(): boolean {
-        let storedValue = localStorage.getItem(HAS_CACHE_KEY);
-
-        // Set to true by default to avoid a long first load
-        if (storedValue === null) {
-            const stringified = JSON.stringify(true);
-            localStorage.setItem(HAS_CACHE_KEY, stringified);
-            storedValue = stringified;
-        }
-
-        return JSON.parse(storedValue);
-    }
-
-    public set hasCache(value: boolean) {
-        localStorage.setItem(HAS_CACHE_KEY, JSON.stringify(value));
-    }
-
-    public get cache(): CachedAlbum[] {
-        let storedValue = localStorage.getItem(MERGED_ALBUMS);
-
-        if (storedValue === null) {
-            const stringified = JSON.stringify([]);
-            localStorage.setItem(MERGED_ALBUMS, stringified);
-            storedValue = stringified;
-        }
-
-        return JSON.parse(storedValue);
-    }
-
-    public set cache(value: CachedAlbum[]) {
-        localStorage.setItem(MERGED_ALBUMS, JSON.stringify(value));
-    }
-
-    private _tracks: Map<string, Track> = new Map<string, Track>();
-    private _albums: Map<string, Album> = new Map<string, Album>();
-    private _artists: Map<string, Artist> = new Map<string, Artist>();
+    private tracks: Map<string, Track> = new Map<string, Track>();
+    private albums: Map<string, Album> = new Map<string, Album>();
+    private artists: Map<string, Artist> = new Map<string, Artist>();
 
     public getTracks(): Readonly<Map<string, Track>> {
-        return this._tracks;
+        return this.tracks;
     }
 
     public getAlbums(): Readonly<Map<string, Album>> {
-        return this._albums;
+        return this.albums;
     }
 
     public getArtists(): Readonly<Map<string, Artist>> {
-        return this._artists;
+        return this.artists;
     }
 
     private readonly processedAlbumsSubject: BehaviorSubject<number> =
@@ -97,8 +59,15 @@ export class LocalTracksService {
     public readonly albumCount$: Observable<number> =
         this.albumCountSubject.asObservable();
 
+    constructor() {}
+
+    /**
+     * Get a list of tracks for an artist.
+     * @param artistUri The artist URI.
+     * @returns The list of tracks for this artist.
+     */
     public getArtistTracks(artistUri: string): Track[] {
-        return Array.from(this._tracks.values())
+        return Array.from(this.tracks.values())
             .filter((t) => t.artists.some((a) => a.uri === artistUri))
             .sort(
                 (t1, t2) =>
@@ -108,43 +77,89 @@ export class LocalTracksService {
             );
     }
 
-    constructor() {}
-
+    /**
+     * Get a proper display name for an album.
+     * @param name The name of the album.
+     * @returns The name of the album or 'Untitled' if the name is empty.
+     */
     private getDisplayName(name: string): string {
+        // TODO: Localize "Untitled", but always keep it in English for the URI.
         return name === '' ? 'Untitled' : name;
     }
 
+    /**
+     * Create a URI from the album name.
+     * @param albumName The display name of the album.
+     * @returns A Spotify URI for this album.
+     */
     private albumKeyFromName(albumName: string): string {
         return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
     }
 
-    public async reset(): Promise<void> {
+    /**
+     * Clears the cache.
+     */
+    public async clearCache(): Promise<void> {
         this.isInitializedSubject.next(false);
-        this.hasCache = false;
+
+        this.storageService.cache = [];
+        this.storageService.hasCache = true;
 
         await this.init();
     }
 
+    /**
+     * Clear the cache and rebuild it.
+     */
+    public async reset(): Promise<void> {
+        this.isInitializedSubject.next(false);
+
+        this.storageService.cache = [];
+        this.storageService.hasCache = false;
+
+        await this.init();
+    }
+
+    /**
+     * Initialize the service. Should only be called once.
+     */
     public async init(): Promise<void> {
+        // Prevent button spam
         if (this.isReady || this.isInitializing) {
             return;
         }
 
         this.isInitializing = true;
 
-        this._tracks = new Map<string, Track>();
-        this._albums = new Map<string, Album>();
-        this._artists = new Map<string, Artist>();
+        this.tracks = new Map<string, Track>();
+        this.albums = new Map<string, Album>();
+        this.artists = new Map<string, Artist>();
 
-        await this.processLocalTracks();
-        await this.postProcessAlbums();
+        try {
+            await this.processLocalTracks();
+            await this.postProcessAlbums();
+        } catch (e) {
+            console.error(e);
+            Spicetify.showNotification(
+                `Error while processing local files; clearing the cache: ${e}`,
+                true,
+                5000
+            );
+
+            // Cache is probably in error, clear it.
+            this.storageService.cache = [];
+            this.storageService.hasCache = true;
+        }
 
         this.isInitializedSubject.next(true);
         this.isInitializing = false;
     }
 
+    /**
+     * Process the local tracks to fill the tracks, albums and artists maps.
+     */
     private async processLocalTracks(): Promise<void> {
-        const localTracks = await Platform.LocalFilesAPI.getTracks();
+        const localTracks = await getPlatform().LocalFilesAPI.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album
@@ -154,16 +169,16 @@ export class LocalTracksService {
             const albumName = this.getDisplayName(localTrack.album.name);
             const albumKey = this.albumKeyFromName(albumName);
 
-            if (!this._albums.has(albumKey)) {
+            if (!this.albums.has(albumKey)) {
                 album = new Album(
                     albumKey,
                     albumName,
                     localTrack.album.images[0].url
                 );
 
-                this._albums.set(albumKey, album);
+                this.albums.set(albumKey, album);
             } else {
-                album = this._albums.get(albumKey)!;
+                album = this.albums.get(albumKey)!;
             }
 
             // Add the track artists
@@ -172,8 +187,8 @@ export class LocalTracksService {
             );
 
             for (let artist of trackArtists) {
-                if (!this._artists.has(artist.uri)) {
-                    this._artists.set(artist.uri, artist);
+                if (!this.artists.has(artist.uri)) {
+                    this.artists.set(artist.uri, artist);
                 }
 
                 if (!album.artists.some((a) => a.uri === artist.uri)) {
@@ -182,19 +197,9 @@ export class LocalTracksService {
             }
 
             // Add the track
-            const track: Track = {
-                addedAt: localTrack.addedAt,
-                duration: localTrack.duration.milliseconds,
-                uri: localTrack.uri,
-                name: localTrack.name,
-                discNumber: localTrack.discNumber,
-                trackNumber: localTrack.trackNumber,
-                artists: trackArtists,
-                album: album,
-                localTrack: localTrack,
-            };
+            const track: Track = new Track(localTrack, album, trackArtists);
 
-            this._tracks.set(track.uri, track);
+            this.tracks.set(track.uri, track);
 
             if (!album.discs.has(localTrack.discNumber)) {
                 album.discs.set(localTrack.discNumber, []);
@@ -204,28 +209,32 @@ export class LocalTracksService {
         }
     }
 
+    /**
+     * Post process the albums using the cache.
+     */
     private async postProcessAlbums(): Promise<void> {
         // Cached albums to process
-        const hasCache = this.hasCache;
+        const hasCache = this.storageService.hasCache;
         const newCache: CachedAlbum[] = [];
 
         // Temp arrays to avoid editing the map while iterating it
         const albumsToRemove: string[] = [];
         const albumsToAdd: Album[] = [];
 
-        this.albumCountSubject.next(this._albums.size);
+        this.albumCountSubject.next(this.albums.size);
         let albumIndex = 0;
 
         // Fix different albums with the same name being grouped together
         // Happens when there are albums with the same name but from different artists
-        for (const [albumUri, album] of this._albums.entries()) {
+        for (const [albumUri, album] of this.albums.entries()) {
             this.processedAlbumsSubject.next(albumIndex + 1);
             albumIndex++;
 
-            const tracksWithCover: TracksWithCover[] =
+            // Get the album from the cache, or process it.
+            const tracksWithCoverList: TracksWithCover[] =
                 await this.postProcessAlbum(albumUri, album);
 
-            if (tracksWithCover.length <= 1) {
+            if (tracksWithCoverList.length <= 1) {
                 // All artists belong on this album, do nothing
                 continue;
             }
@@ -234,14 +243,17 @@ export class LocalTracksService {
             albumsToRemove.push(albumUri);
 
             // Add a new album for each group of tracks that share the same cover
-            for (const [index, tracks] of tracksWithCover.entries()) {
-                if (tracks.tracks.length === 0) {
+            for (const [
+                index,
+                tracksWithCover,
+            ] of tracksWithCoverList.entries()) {
+                if (tracksWithCover.tracks.length === 0) {
                     // No tracks for this cover, skip
                     // Can happen if all tracks for this cover were removed on disk, but stayed in the cache
                     continue;
                 }
 
-                const firstTrack = tracks.tracks[0];
+                const firstTrack = tracksWithCover.tracks[0];
                 const albumKey = this.albumKeyFromName(
                     `${album.name} ${index}`
                 );
@@ -259,7 +271,7 @@ export class LocalTracksService {
                 }
 
                 // Update the album for the tracks and set the discs
-                for (const track of tracks.tracks) {
+                for (const track of tracksWithCover.tracks) {
                     track.album = newAlbum;
 
                     if (!newAlbum.discs.has(track.localTrack.discNumber)) {
@@ -276,7 +288,7 @@ export class LocalTracksService {
 
             newCache.push({
                 uri: albumUri,
-                tracks: tracksWithCover.map((tracksWithCover) => {
+                tracks: tracksWithCoverList.map((tracksWithCover) => {
                     return tracksWithCover.tracks.map((track) => {
                         return track.uri;
                     });
@@ -289,22 +301,22 @@ export class LocalTracksService {
 
         // Set the cache
         if (!hasCache) {
-            this.cache = newCache;
-            this.hasCache = true;
+            this.storageService.cache = newCache;
+            this.storageService.hasCache = true;
         }
 
         // Remove the merged album
         for (const key of albumsToRemove) {
-            this._albums.delete(key);
+            this.albums.delete(key);
         }
 
         // Add the new albums
         for (const album of albumsToAdd) {
-            this._albums.set(album.uri, album);
+            this.albums.set(album.uri, album);
         }
 
         // Sort album tracks
-        for (const [albumUri, album] of this._albums.entries()) {
+        for (const [albumUri, album] of this.albums.entries()) {
             for (const [discNumber, tracks] of album.discs.entries()) {
                 album.discs.set(
                     discNumber,
@@ -316,12 +328,19 @@ export class LocalTracksService {
         }
     }
 
+    /**
+     * Post process the album to fix different albums with the same name being grouped together.
+     * Will get the processed album from the cache is the cache is set.
+     * @param albumUri The album uri.
+     * @param album The album.
+     * @returns A list of tracks with the same cover.
+     */
     private async postProcessAlbum(
         albumUri: string,
         album: Album
     ): Promise<TracksWithCover[]> {
-        const hasCache = this.hasCache;
-        const cache: CachedAlbum[] = this.cache;
+        const hasCache = this.storageService.hasCache;
+        const cache: CachedAlbum[] = this.storageService.cache;
 
         let tracksWithCover: TracksWithCover[] = [];
 
@@ -332,12 +351,12 @@ export class LocalTracksService {
                 tracksWithCover = cachedAlbum.tracks.map((trackList) => ({
                     cover: null!,
                     tracks: trackList
-                        .filter((trackUri) => this._tracks.has(trackUri))
-                        .map((trackUri) => this._tracks.get(trackUri)!),
+                        .filter((trackUri) => this.tracks.has(trackUri))
+                        .map((trackUri) => this.tracks.get(trackUri)!),
                 }));
             }
 
-            // Cache has been processed and this album is not in it: do nothing, we'll return an empty array
+            // If cache has been processed and this album is not in it: nothing to do
         } else {
             // No cache: process this album
 
@@ -377,17 +396,10 @@ export class LocalTracksService {
             for (const [artists, tracks] of albumTrackMap.entries()) {
                 const coverUrl = tracks[0].localTrack.album.images[0].url;
 
-                //console.time('image');
                 const image = await this.getImage(coverUrl);
-                //console.timeEnd('image');
 
-                //console.log('image size: ', image.width, image.height);
-
-                //console.time('image data');
                 const imageData = this.getImageDataFromCanvas(image);
-                //console.timeEnd('image data');
 
-                //console.time('pixelmatch');
                 const tracksWithSameCover = tracksWithCover.find(
                     (x) =>
                         this.getImageDifferenceWithPixelMatch(
@@ -395,7 +407,6 @@ export class LocalTracksService {
                             imageData
                         ) === 0
                 );
-                //console.timeEnd('pixelmatch');
 
                 if (tracksWithSameCover === undefined) {
                     // No tracks with the same cover
@@ -412,6 +423,13 @@ export class LocalTracksService {
         return tracksWithCover;
     }
 
+    /**
+     * Get a list of artists from a string.
+     * The string can contain multiple artists separated by a comma or a semicolon.
+     * @param artistNames The string containing the artists.
+     * @param artistImage The image to use for the artist.
+     * @returns A list of artists.
+     */
     private getArtistsFromString(
         artistNames: string,
         artistImage: string
@@ -421,6 +439,11 @@ export class LocalTracksService {
             .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
     }
 
+    /**
+     * Load an image from an url.
+     * @param imageUrl The image url.
+     * @returns The image element.
+     */
     private async getImage(imageUrl: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             const image = new Image();
@@ -438,6 +461,11 @@ export class LocalTracksService {
         });
     }
 
+    /**
+     * Get image data for an image element by using a canvas.
+     * @param img The image element.
+     * @returns The image data.
+     */
     private getImageDataFromCanvas(img: HTMLImageElement): ImageData {
         const canvas = document.createElement('canvas');
 
@@ -454,6 +482,12 @@ export class LocalTracksService {
         return ctx!.getImageData(0, 0, 50, 50);
     }
 
+    /**
+     * Get the difference between two images, using pixelmatch.
+     * @param imgA The first image.
+     * @param imgB The second image.
+     * @returns The number of mismatched pixels. If 0, the images are the same.
+     */
     private getImageDifferenceWithPixelMatch(
         imgA: ImageData,
         imgB: ImageData

@@ -1,28 +1,25 @@
-import { waitForElement } from '@shared';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { PlaybarButton } from '../components/playbar-button.component';
+import {
+    addUpdateChecker,
+    waitForElement,
+    waitForSpicetify,
+} from '@shared/utils';
 import { Jukebox } from '../models/jukebox';
+import { version } from '../../package.json';
 
 // TODO: Add i18n
 
 (async () => {
     window.jukebox = new Jukebox();
 
-    while (!Spicetify?.Platform) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+    await waitForSpicetify();
 
     try {
         const element = await waitForElement('.player-controls__right');
 
-        const reactDom = Spicetify.ReactDOM as typeof ReactDOM;
+        const reactHelper = await import('../helpers/react-helper');
+        reactHelper.ReactHelper.registerPaybarButton(element);
 
-        // TODO: createRoot + root.render() if React updates to v18
-        reactDom.render(
-            reactDom.createPortal(<PlaybarButton />, element),
-            document.createElement('div')
-        );
+        await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
         console.error(error);
         Spicetify.showNotification(

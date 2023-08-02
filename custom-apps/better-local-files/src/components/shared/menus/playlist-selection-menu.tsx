@@ -1,4 +1,6 @@
-import { Platform, Playlist } from '@shared';
+import { Folder, Playlist } from '@shared/platform/rootlist';
+import { getPlatform } from '@shared/utils';
+import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import React, { useEffect, useState } from 'react';
 
 export interface PlaylistSelectionMenuProps {
@@ -6,9 +8,9 @@ export interface PlaylistSelectionMenuProps {
 }
 
 export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
-    const playlistAPI = Platform.PlaylistAPI;
-    const rootlistAPI = Platform.RootlistAPI;
-    const userAPI = Platform.UserAPI;
+    const playlistAPI = getPlatform().PlaylistAPI;
+    const rootlistAPI = getPlatform().RootlistAPI;
+    const userAPI = getPlatform().UserAPI;
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
@@ -17,13 +19,15 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
             const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
-            const userPlaylists = rootlistFolder.items
-                .flatMap((i) => (i.type === 'playlist' ? i : i.items))
-                .filter(
-                    (p) => p.type === 'playlist' && p.owner.uri === user.uri
-                );
+            const isPlaylist = (item: Folder | Playlist): item is Playlist =>
+                item.type === 'playlist';
 
-            setPlaylists(userPlaylists as Playlist[]);
+            const userPlaylists: Playlist[] = rootlistFolder.items
+                .flatMap((i) => (i.type === 'playlist' ? i : i.items))
+                .filter(isPlaylist)
+                .filter((p) => p.owner.uri === user.uri);
+
+            setPlaylists(userPlaylists);
         }
 
         getPlaylists();
@@ -34,7 +38,7 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
     }
 
     return (
-        <Spicetify.ReactComponent.Menu>
+        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
             {playlists.map((p) => {
                 return (
                     <Spicetify.ReactComponent.MenuItem
