@@ -1,6 +1,5 @@
 import i18next from 'i18next';
 import { ServicesContainer } from './services/services-container.js';
-import { Locale } from '@shared/platform/locale';
 import { waitForSpicetify } from '@shared/utils';
 import { MENU_ICON } from './models/constants';
 
@@ -11,8 +10,7 @@ async function main(): Promise<void> {
     ServicesContainer.kuroshiro.init();
 
     // Init translations
-    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
-    const locale: Locale = (Spicetify as any).Locale;
+    const locale: typeof Spicetify.Locale = Spicetify.Locale;
 
     await i18next.init({
         lng: locale.getLocale(),

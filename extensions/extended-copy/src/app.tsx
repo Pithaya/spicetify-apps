@@ -8,13 +8,12 @@ import {
     getTrackName,
     queryArtistMinimal,
 } from '@shared/graphQL';
-import { Locale } from '@shared/platform/locale';
 import { Playlist } from '@shared/platform/playlist';
 import { ShowMetadata } from '@shared/platform/show';
 import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 
-let locale: Locale;
+let locale: typeof Spicetify.Locale;
 let supportedTypes: string[] = [];
 
 async function getData(
@@ -132,8 +131,7 @@ function shouldAdd(uris: string[]): boolean {
 async function main() {
     await waitForSpicetify();
 
-    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
-    locale = (Spicetify as any).Locale;
+    locale = Spicetify.Locale;
     supportedTypes = [
         Spicetify.URI.Type.TRACK,
         Spicetify.URI.Type.ALBUM,
