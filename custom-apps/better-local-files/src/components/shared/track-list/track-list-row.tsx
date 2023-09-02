@@ -17,6 +17,10 @@ export interface IProps {
 export function TrackListRow(props: PropsWithChildren<IProps>) {
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
+    const dragHandler = Spicetify.ReactHook.DragHandler(
+        [props.track.uri],
+        props.track.name
+    );
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
@@ -34,6 +38,8 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                         aria-selected={props.selected}
                         onClick={props.onClick}
                         onDoubleClick={props.onDoubleClick}
+                        draggable="true"
+                        onDragStart={dragHandler}
                     >
                         <div
                             className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${
@@ -41,7 +47,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                             } ${
                                 props.selected ? 'main-trackList-selected' : ''
                             }`}
-                            draggable="true"
+                            draggable="false"
                             role="presentation"
                         >
                             <div
@@ -107,7 +113,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                                 width="14"
                                                 height="14"
                                                 alt=""
-                                                src="/images/equaliser-green.svg"
+                                                src="/images/equaliser-animated-green.gif"
                                             />
                                             <Spicetify.ReactComponent.TooltipWrapper
                                                 label={getTranslation([
