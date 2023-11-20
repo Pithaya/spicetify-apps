@@ -1,6 +1,11 @@
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
-import React, { Children, PropsWithChildren, useRef } from 'react';
+import React, {
+    Children,
+    MouseEventHandler,
+    PropsWithChildren,
+    useRef,
+} from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
 
@@ -10,17 +15,20 @@ export interface IProps {
     selected: boolean;
     active: boolean;
     playing: boolean;
-    onClick: () => void;
+    onClick: MouseEventHandler<HTMLDivElement>;
     onDoubleClick: () => void;
+    dragHandler: (
+        event: React.DragEvent,
+        uris?: string[],
+        label?: string,
+        contextUri?: string,
+        sectionIndex?: number
+    ) => void;
 }
 
 export function TrackListRow(props: PropsWithChildren<IProps>) {
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
-    const dragHandler = Spicetify.ReactHook.DragHandler(
-        [props.track.uri],
-        props.track.name
-    );
 
     const placeholder = <div style={{ height: '54px' }}></div>;
 
@@ -39,7 +47,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                         onClick={props.onClick}
                         onDoubleClick={props.onDoubleClick}
                         draggable="true"
-                        onDragStart={dragHandler}
+                        onDragStart={props.dragHandler}
                     >
                         <div
                             className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${
