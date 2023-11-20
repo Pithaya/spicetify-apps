@@ -29,31 +29,29 @@ export const headerImageFallback = `
     </svg>
 </div>`;
 
-export function Header(props: HeaderProps) {
+export function Header(props: Readonly<HeaderProps>) {
     return (
-        <>
-            <div className={`${styles.header}`}>
-                <div className={styles['image-container']}>{props.image}</div>
-                <div className={styles['text-container']}>
-                    {props.subtitle && (
-                        <h2 className="main-entityHeader-subtitle main-entityHeader-small main-entityHeader-uppercase main-entityHeader-bold">
-                            {props.subtitle}
-                        </h2>
-                    )}
-                    <h1
-                        className="main-entityHeader-title"
-                        style={{ fontSize: props.titleFontSize }}
-                    >
-                        {props.title}
-                    </h1>
-                    {props.metadata && (
-                        <div className="main-entityHeader-metaData">
-                            {props.metadata}
-                        </div>
-                    )}
-                    {props.additionalText}
-                </div>
+        <div className={`${styles.header}`}>
+            <div className={styles['image-container']}>{props.image}</div>
+            <div className={styles['text-container']}>
+                {props.subtitle && (
+                    <h2 className="main-entityHeader-subtitle main-entityHeader-small main-entityHeader-uppercase main-entityHeader-bold">
+                        {props.subtitle}
+                    </h2>
+                )}
+                <h1
+                    className="main-entityHeader-title"
+                    style={{ fontSize: props.titleFontSize }}
+                >
+                    {props.title}
+                </h1>
+                {props.metadata && (
+                    <div className="main-entityHeader-metaData">
+                        {props.metadata}
+                    </div>
+                )}
+                {props.additionalText}
             </div>
-        </>
+        </div>
     );
 }

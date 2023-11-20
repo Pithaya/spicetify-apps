@@ -187,9 +187,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                     action="toggle"
                                     menu={<RowMenu track={props.track} />}
                                 >
-                                    <button
-                                        type="button"
-                                        aria-haspopup="menu"
+                                    <Spicetify.ReactComponent.ButtonTertiary
                                         aria-label={getTranslation(
                                             ['more.label.track'],
                                             props.track.name,
@@ -197,21 +195,21 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                                 .map((a) => a.name)
                                                 .join(', ')
                                         )}
-                                        className="main-moreButton-button main-trackList-rowMoreButton"
-                                        tabIndex={-1}
-                                    >
-                                        <svg
-                                            role="img"
-                                            height="16"
-                                            width="16"
-                                            aria-hidden="true"
-                                            viewBox="0 0 16 16"
-                                            data-encore-id="icon"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                                        </svg>
-                                    </button>
+                                        aria-haspopup="menu"
+                                        iconOnly={() => (
+                                            <svg
+                                                role="img"
+                                                height="16"
+                                                width="16"
+                                                aria-hidden="true"
+                                                viewBox="0 0 16 16"
+                                                data-encore-id="icon"
+                                                fill="currentColor"
+                                            >
+                                                <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                                            </svg>
+                                        )}
+                                    ></Spicetify.ReactComponent.ButtonTertiary>
                                 </Spicetify.ReactComponent.ContextMenu>
                             </div>
                         </div>

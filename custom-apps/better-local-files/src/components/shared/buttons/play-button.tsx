@@ -1,35 +1,28 @@
-import styles from '../../../css/app.module.scss';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { Play } from 'lucide-react';
+import { getTranslation } from '../../../helpers/translations-helper';
 
 export interface IProps {
     onClick: () => void;
-    size: number;
-    iconSize: number;
 }
 
-export function PlayButton(props: IProps) {
-    const style: CSSProperties = {
-        height: `${props.size}px`,
-        width: `${props.size}px`,
-        borderRadius: `${props.size / 2}px`,
-    };
-
+export function PlayButton(props: Readonly<IProps>) {
     return (
-        <button
-            className={styles['play-button']}
-            aria-label="Lecture"
-            onClick={(e) => {
+        <Spicetify.ReactComponent.ButtonPrimary
+            aria-label={getTranslation(['play'])}
+            buttonSize={'lg'}
+            onClick={(e: any) => {
                 e.stopPropagation();
                 props.onClick();
             }}
-            style={style}
-        >
-            <Play
-                fill="var(--spice-main)"
-                stroke="var(--spice-main)"
-                size={props.iconSize}
-            ></Play>
-        </button>
+            iconOnly={() => (
+                <Play
+                    fill="var(--spice-main)"
+                    stroke="var(--spice-main)"
+                    size={22}
+                    style={{ marginLeft: '2px' }}
+                ></Play>
+            )}
+        ></Spicetify.ReactComponent.ButtonPrimary>
     );
 }
