@@ -10,7 +10,7 @@ import {
 import { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getPlatform } from '@shared/utils';
 
-function AlbumHeader(props: { album: Album }) {
+function AlbumHeader(props: Readonly<{ album: Album }>) {
     return (
         <Header
             image={

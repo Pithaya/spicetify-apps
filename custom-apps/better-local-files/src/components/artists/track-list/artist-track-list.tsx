@@ -17,7 +17,7 @@ export interface IProps {
     tracks: Track[];
 }
 
-export function ArtistTrackList(props: IProps) {
+export function ArtistTrackList(props: Readonly<IProps>) {
     const headers: TrackListHeaderOption[] = [
         {
             key: 'title',
@@ -36,8 +36,7 @@ export function ArtistTrackList(props: IProps) {
                     className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
                 >
                     <PlayButton
-                        size={60}
-                        iconSize={24}
+                        size="lg"
                         onClick={() =>
                             playContext(props.tracks.map((t) => t.localTrack))
                         }

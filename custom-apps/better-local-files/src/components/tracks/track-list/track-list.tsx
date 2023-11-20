@@ -179,8 +179,7 @@ export function TrackList(props: IProps) {
         <>
             <div className={`${styles['action-bar']}`}>
                 <PlayButton
-                    size={60}
-                    iconSize={24}
+                    size="lg"
                     onClick={() =>
                         playContext(orderedTracks.map((t) => t.localTrack))
                     }

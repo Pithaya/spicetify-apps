@@ -74,8 +74,7 @@ export function ArtistCard(props: IProps) {
                                 <div className="main-card-PlayButtonContainer">
                                     <div className="main-playButton-PlayButton">
                                         <PlayButton
-                                            size={42}
-                                            iconSize={20}
+                                            size="md"
                                             onClick={() =>
                                                 props.onPlayClicked(
                                                     props.artist
