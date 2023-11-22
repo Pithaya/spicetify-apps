@@ -135,7 +135,7 @@ export class Jukebox {
      * Initialize and start the jukebox for the current track.
      */
     private async start(): Promise<void> {
-        const currentTrack = Spicetify.Player.data.track;
+        const currentTrack = Spicetify.Player.data.item;
 
         if (currentTrack === undefined) {
             return;

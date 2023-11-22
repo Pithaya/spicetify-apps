@@ -2,17 +2,9 @@
     "name": "shared",
     "version": "1.0.0",
     "private": true,
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "license": "MIT",
-    "dependencies": {
-        "compare-versions": "^6.0.0-rc.2",
-        "lucide-react": "^0.115.0",
-        "typescript": "^4.9.3"
-    },
     "devDependencies": {
-        "@types/react": "^18.0.28",
-        "@types/react-dom": "^18.0.11"
+        "compare-versions": "^6.1.0",
+        "lucide-react": "^0.292.0"
     }
 }

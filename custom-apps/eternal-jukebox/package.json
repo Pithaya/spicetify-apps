@@ -12,18 +12,11 @@
         "unapply": "spicetify config custom_apps eternal-jukebox- && spicetify apply",
         "lint": "npx eslint --ext .tsx,.ts src/"
     },
-    "license": "MIT",
     "devDependencies": {
-        "@types/react": "^18.0.26",
-        "@types/react-dom": "^18.0.9",
-        "@types/tinycolor2": "^1.4.3",
-        "prettier": "^2.8.1",
-        "spicetify-creator": "^1.0.13"
-    },
-    "dependencies": {
-        "lucide-react": "^0.115.0",
-        "react-markdown": "^8.0.7",
-        "rxjs": "^7.6.0",
+        "@types/tinycolor2": "^1.4.6",
+        "lucide-react": "^0.292.0",
+        "react-markdown": "^9.0.1",
+        "rxjs": "^7.8.1",
         "spcr-whats-new": "^1.0.1",
         "tinycolor2": "^1.6.0"
     }
