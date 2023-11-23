@@ -2,11 +2,5 @@
     "name": "spotify-web-api",
     "version": "1.0.0",
     "private": true,
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "license": "MIT",
-    "dependencies": {
-        "typescript": "^4.9.3"
-    }
+    "license": "MIT"
 }

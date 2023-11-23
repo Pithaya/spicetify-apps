@@ -14,12 +14,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/react": "^18.0.26",
-        "@types/react-dom": "^18.0.9",
-        "spicetify-creator": "^1.0.13"
-    },
-    "dependencies": {
-        "i18next": "^22.1.4",
-        "lucide-react": "^0.115.0"
+        "i18next": "^23.7.6",
+        "lucide-react": "^0.292.0"
     }
 }
