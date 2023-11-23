@@ -16,17 +16,15 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
-            - name: Use Node.js 18
-              uses: actions/setup-node@v3
+              uses: actions/checkout@v4
+            - name: Use Node.js 20
+              uses: actions/setup-node@v4
               with:
-                  node-version: 18
+                  node-version: 20
                   cache: 'npm'
-                  cache-dependency-path: ./custom-apps/better-local-files/package-lock.json
-            - name: Install shared dependencies
-              working-directory: ./libs/shared
-              run: npm ci
+                  cache-dependency-path: ./package-lock.json
             - name: Install dependencies
+              working-directory: ./
               run: npm ci
             - name: Build
               run: npm run build-local

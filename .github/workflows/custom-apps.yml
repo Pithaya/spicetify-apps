@@ -15,7 +15,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Create deploy folder
       run: mkdir ./custom-apps/deploy
     - name: Copy manifest
