@@ -15,7 +15,7 @@
     "devDependencies": {
         "@types/tinycolor2": "^1.4.6",
         "lucide-react": "^0.292.0",
-        "react-markdown": "^9.0.1",
+        "react-markdown": "8.0.6",
         "rxjs": "^7.8.1",
         "spcr-whats-new": "^1.0.1",
         "tinycolor2": "^1.6.0"
