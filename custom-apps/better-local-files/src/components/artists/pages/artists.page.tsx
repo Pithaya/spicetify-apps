@@ -1,9 +1,9 @@
-import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import {
+import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import type {
     SelectedSortOption,
     SortOption,
     SortOrder,
@@ -14,7 +14,7 @@ import { SearchInput } from '../../shared/filters/search-input';
 import { SortMenu } from '../../shared/filters/sort-menu';
 import { ArtistCard } from '../cards/artist-card';
 
-export function ArtistsPage() {
+export function ArtistsPage(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -26,41 +26,40 @@ export function ArtistsPage() {
     ];
 
     const artists = Array.from(window.localTracksService.getArtists()).map(
-        ([key, value]) => value
+        ([key, value]) => value,
     );
 
-    function filterArtists(artists: Artist[], search: string) {
+    function filterArtists(artists: Artist[], search: string): Artist[] {
         if (search === '') {
             return artists;
         }
 
         return artists.filter((a) =>
-            a.name.toLowerCase().includes(search.toLowerCase())
+            a.name.toLowerCase().includes(search.toLowerCase()),
         );
     }
 
     const filteredArtists = useMemo(
         () => filterArtists(artists, debouncedSearch),
-        [artists, debouncedSearch]
+        [artists, debouncedSearch],
     );
 
     const [selectedSortOption, setSelectedSortOption] =
         useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
-    function orderArtists(artists: Artist[], option: SelectedSortOption) {
-        switch (option.key) {
-            case 'title':
-                return artists.sort((x, y) =>
-                    sort(x.name, y.name, option.order)
-                );
-            default:
-                return artists;
+    function orderArtists(
+        artists: Artist[],
+        option: SelectedSortOption,
+    ): Artist[] {
+        if (option.key === 'title') {
+            return artists.sort((x, y) => sort(x.name, y.name, option.order));
         }
+        return artists;
     }
 
     const orderedArtists = useMemo(
         () => [...orderArtists(filteredArtists, selectedSortOption)],
-        [filteredArtists, selectedSortOption]
+        [filteredArtists, selectedSortOption],
     );
 
     function toggleOrder(order: SortOrder): SortOrder {
@@ -77,11 +76,11 @@ export function ArtistsPage() {
         }));
     }
 
-    function playArtist(artist: Artist) {
+    function playArtist(artist: Artist): void {
         playContext(
             window.localTracksService
                 .getArtistTracks(artist.uri)
-                .map((t) => t.localTrack)
+                .map((t) => t.localTrack),
         );
     }
 

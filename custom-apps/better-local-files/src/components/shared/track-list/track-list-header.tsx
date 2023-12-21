@@ -1,20 +1,20 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import { SelectedSortOption } from 'custom-apps/better-local-files/src/models/sort-option';
+import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
+import type { SelectedSortOption } from 'custom-apps/better-local-files/src/models/sort-option';
 import { CaretUp } from '../icons/caret-up';
 import { CaretDown } from '../icons/caret-down';
-import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
-export interface TrackListHeaderProps {
+export type Props = {
     headers: TrackListHeaderOption[];
     sortedHeader?: SelectedSortOption;
     onHeaderClicked?: (key: HeaderKey) => void;
-}
+};
 
-export function TrackListHeader(props: TrackListHeaderProps) {
-    function getCaret() {
+export function TrackListHeader(props: Readonly<Props>): JSX.Element {
+    function getCaret(): JSX.Element {
         if (props.sortedHeader === undefined) {
             return <></>;
         }
@@ -30,18 +30,13 @@ export function TrackListHeader(props: TrackListHeaderProps) {
         props.sortedHeader !== undefined ? 'main-trackList-sortable' : '';
 
     return (
-        <div
-            className={`${styles.upper} main-trackList-trackListHeader`}
-            role="presentation"
-        >
+        <div className={`${styles.upper} main-trackList-trackListHeader`}>
             <div
                 className="main-trackList-trackListHeaderRow main-trackList-trackListRowGrid"
-                role="row"
                 aria-rowindex={1}
             >
                 <div
                     className="main-trackList-rowSectionIndex"
-                    role="columnheader"
                     aria-colindex={1}
                     aria-sort="none"
                     tabIndex={-1}
@@ -57,7 +52,6 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                                 ? 'main-trackList-rowSectionStart'
                                 : 'main-trackList-rowSectionVariable'
                         }
-                        role="columnheader"
                         aria-colindex={index + 2}
                         aria-sort={
                             props.sortedHeader &&
@@ -66,14 +60,13 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                                 : 'none'
                         }
                         tabIndex={-1}
-                        onClick={() =>
-                            props.onHeaderClicked &&
-                            props.onHeaderClicked(header.key)
-                        }
                     >
                         <button
                             className={`main-trackList-column ${sortableClass}`}
                             tabIndex={-1}
+                            onClick={() => {
+                                props.onHeaderClicked?.(header.key);
+                            }}
                         >
                             <span className="standalone-ellipsis-one-line">
                                 {header.label}
@@ -87,23 +80,20 @@ export function TrackListHeader(props: TrackListHeaderProps) {
 
                 <div
                     className="main-trackList-rowSectionEnd"
-                    role="columnheader"
                     aria-colindex={props.headers.length + 2}
                     aria-sort="none"
                     tabIndex={-1}
-                    onClick={() =>
-                        props.onHeaderClicked &&
-                        props.onHeaderClicked('duration')
-                    }
                 >
-                    <div
+                    <button
                         aria-label={getTranslation([
                             'tracklist.header.duration',
                         ])}
                         className={`main-trackList-column main-trackList-durationHeader ${sortableClass}`}
+                        onClick={() => {
+                            props.onHeaderClicked?.('duration');
+                        }}
                     >
                         <svg
-                            role="img"
                             height="16"
                             width="16"
                             aria-hidden="true"
@@ -113,7 +103,7 @@ export function TrackListHeader(props: TrackListHeaderProps) {
                             <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8z"></path>
                             <path d="M8 3.25a.75.75 0 01.75.75v3.25H11a.75.75 0 010 1.5H7.25V4A.75.75 0 018 3.25z"></path>
                         </svg>
-                    </div>
+                    </button>
                     {props.sortedHeader &&
                         props.sortedHeader.key === 'duration' &&
                         getCaret()}

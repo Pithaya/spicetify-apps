@@ -1,6 +1,6 @@
-import { LocalTrack } from '@shared/platform/local-files';
-import { Album } from './album';
-import { Artist } from './artist';
+import type { LocalTrack } from '@shared/platform/local-files';
+import type { Album } from './album';
+import type { Artist } from './artist';
 
 /**
  * A processed local track.
@@ -57,6 +57,6 @@ export class Track {
     constructor(
         public readonly localTrack: LocalTrack,
         public album: Album,
-        public readonly artists: Artist[]
+        public readonly artists: Artist[],
     ) {}
 }

@@ -1,11 +1,12 @@
 import styles from '../../../css/app.module.scss';
 import React, { useMemo, useState } from 'react';
 import { TrackListRow } from './track-list-row';
-import { TrackListHeader, TrackListHeaderProps } from './track-list-header';
+import { TrackListHeader } from './track-list-header';
+import type { Props as TrackListHeaderProps } from './track-list-header';
 import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
-import { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import {
-    PlayStatus,
+    type PlayStatus,
     usePlayStatus,
 } from 'custom-apps/better-local-files/src/hooks/use-play-status';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
@@ -15,28 +16,28 @@ export type SubTracksList = {
     tracks: Track[];
 };
 
-export interface TrackListGridProps extends TrackListHeaderProps {
+export type Props = {
     tracks: Track[];
     subtracks: SubTracksList[];
     gridLabel: string;
     useTrackNumber: boolean;
     onPlayTrack: (uri: string) => void;
     getRowContent: (track: Track) => JSX.Element[];
-}
+} & TrackListHeaderProps;
 
 /**
  * Contains the track list header and rows.
  */
-export function TrackListGrid(props: Readonly<TrackListGridProps>) {
+export function TrackListGrid(props: Readonly<Props>): JSX.Element {
     const activeTrackUri = useCurrentPlayerTrackUri();
     const playStatus: PlayStatus = usePlayStatus();
 
     const [selectedTracks, setSelectedTracks] = useState<Map<string, Track>>(
-        new Map<string, Track>()
+        new Map<string, Track>(),
     );
     const dragHandler = useMemo(() => {
         const mapAsArray: [string, Track][] = Array.from(
-            selectedTracks.entries()
+            selectedTracks.entries(),
         );
 
         if (mapAsArray.length === 0) {
@@ -48,9 +49,9 @@ export function TrackListGrid(props: Readonly<TrackListGridProps>) {
             selectedTracks.size > 1
                 ? getTranslation(
                       ['tracklist.drag.multiple.label', 'other'],
-                      selectedTracks.size
+                      selectedTracks.size,
                   )
-                : mapAsArray[0][1].name
+                : mapAsArray[0][1].name,
         );
     }, [selectedTracks]);
 
@@ -58,7 +59,10 @@ export function TrackListGrid(props: Readonly<TrackListGridProps>) {
     // compact : --row-height: 32px;
     // normal : --row-height: 56px
 
-    function handleClick(e: React.MouseEvent<HTMLDivElement>, track: Track) {
+    function handleClick(
+        e: React.MouseEvent<HTMLDivElement>,
+        track: Track,
+    ): void {
         // TODO: Shift only adds tracks to the selection,
         // Between the last selected track and the clicked track
 
@@ -106,8 +110,12 @@ export function TrackListGrid(props: Readonly<TrackListGridProps>) {
                             activeTrackUri === track.uri &&
                             playStatus === 'play'
                         }
-                        onClick={(e) => handleClick(e, track)}
-                        onDoubleClick={() => props.onPlayTrack(track.uri)}
+                        onClick={(e) => {
+                            handleClick(e, track);
+                        }}
+                        onDoubleClick={() => {
+                            props.onPlayTrack(track.uri);
+                        }}
                         dragHandler={dragHandler}
                     >
                         {props.getRowContent(track)}
@@ -133,10 +141,12 @@ export function TrackListGrid(props: Readonly<TrackListGridProps>) {
                                         activeTrackUri === track.uri &&
                                         playStatus === 'play'
                                     }
-                                    onClick={(e) => handleClick(e, track)}
-                                    onDoubleClick={() =>
-                                        props.onPlayTrack(track.uri)
-                                    }
+                                    onClick={(e) => {
+                                        handleClick(e, track);
+                                    }}
+                                    onDoubleClick={() => {
+                                        props.onPlayTrack(track.uri);
+                                    }}
                                     dragHandler={dragHandler}
                                 >
                                     {props.getRowContent(track)}

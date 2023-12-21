@@ -1,9 +1,8 @@
 import React from 'react';
 
-export function MoreIcon() {
+export function MoreIcon(): JSX.Element {
     return (
         <svg
-            role="img"
             height="32"
             width="32"
             aria-hidden="true"

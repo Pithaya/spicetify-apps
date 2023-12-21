@@ -12,34 +12,43 @@ import { ArtistsPage } from './components/artists/pages/artists.page';
 import { LoadingIcon } from './components/shared/icons/loading';
 import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
 import { TracksPage } from './components/tracks/pages/tracks.page';
-import { Routes, topBarItems } from './constants/constants';
+import {
+    ALBUM_ROUTE,
+    ALBUMS_ROUTE,
+    ARTIST_ROUTE,
+    ARTISTS_ROUTE,
+    topBarItems,
+    TRACKS_ROUTE,
+} from './constants/constants';
 import styles from './css/app.module.scss';
-import { useObservable } from './hooks/use-observable';
+import { useObservableEagerState } from 'observable-hooks';
 
-// TODO: Add automatic version checks to the extensions and custom apps + powershell update scripts
+function App(): JSX.Element {
+    const isReady = useObservableEagerState(window.localTracksService.isReady$);
 
-function App() {
-    const isReady = useObservable(
-        window.localTracksService.isReady$,
-        window.localTracksService.isReady
-    );
-
-    const processedAlbums = useObservable(
+    const processedAlbums: number = useObservableEagerState(
         window.localTracksService.processedAlbums$,
-        0
     );
-    const albumCount = useObservable(window.localTracksService.albumCount$, 0);
 
-    useEffect(() => {
-        window.localTracksService.init();
+    const albumCount: number = useObservableEagerState(
+        window.localTracksService.albumCount$,
+    );
 
+    async function init(): Promise<void> {
+        await window.localTracksService.init();
+
+        // eslint-disable-next-line react/no-children-prop
         const markdown = <ReactMarkdown children={CHANGE_NOTES} />;
 
-        whatsNew('better-local-files', version, {
+        await whatsNew('better-local-files', version, {
             title: `New in v${version}`,
             content: markdown,
             isLarge: true,
         });
+    }
+
+    useEffect(() => {
+        void init();
     }, []);
 
     const history = getPlatform().History;
@@ -48,27 +57,27 @@ function App() {
     let currentPage = <></>;
 
     switch (location.pathname) {
-        case Routes.tracks:
+        case TRACKS_ROUTE:
             currentPage = <TracksPage />;
             break;
-        case Routes.album:
+        case ALBUM_ROUTE:
             currentPage = <AlbumPage />;
             break;
-        case Routes.albums:
+        case ALBUMS_ROUTE:
             currentPage = <AlbumsPage />;
             break;
-        case Routes.artist:
+        case ARTIST_ROUTE:
             currentPage = <ArtistPage />;
             break;
-        case Routes.artists:
+        case ARTISTS_ROUTE:
             currentPage = <ArtistsPage />;
             break;
         default:
-            history.replace(Routes.tracks);
+            history.replace(TRACKS_ROUTE);
     }
 
     const topBarContainer = document.querySelector(
-        '.main-topBar-topbarContentWrapper'
+        '.main-topBar-topbarContentWrapper',
     );
 
     const showTracksProgress = albumCount === 0;
@@ -79,40 +88,40 @@ function App() {
     return (
         <>
             <div className={styles['full-size-container']}>
-                <>
-                    {isReady ? (
-                        <div
-                            className={`${styles['stretch-container']} ${styles.padded}`}
-                        >
-                            {currentPage}
-                        </div>
-                    ) : (
-                        <div
-                            className={`${styles['center-container']} ${styles.padded}`}
-                        >
-                            <LoadingIcon />
-                            {showTracksProgress && <p>Processing tracks...</p>}
-                            {showAlbumsProgress && (
-                                <p>
-                                    {`Processing album ${processedAlbums} of ${albumCount}...`}
-                                </p>
-                            )}
-                        </div>
-                    )}
-                </>
+                {isReady ? (
+                    <div
+                        className={`${styles['stretch-container']} ${styles.padded}`}
+                    >
+                        {currentPage}
+                    </div>
+                ) : (
+                    <div
+                        className={`${styles['center-container']} ${styles.padded}`}
+                    >
+                        <LoadingIcon />
+                        {showTracksProgress && <p>Processing tracks...</p>}
+                        {showAlbumsProgress && (
+                            <p>
+                                {`Processing album ${processedAlbums} of ${albumCount}...`}
+                            </p>
+                        )}
+                    </div>
+                )}
             </div>
             {topBarContainer !== null &&
                 ReactDOM.createPortal(
                     <TopBarContent
-                        onItemClicked={(item) => history.push(item.href)}
+                        onItemClicked={(item) => {
+                            history.push(item.href);
+                        }}
                         items={topBarItems}
                         activeItem={
                             topBarItems.find((i) =>
-                                i.href.startsWith(location.pathname)
+                                i.href.startsWith(location.pathname),
                             ) ?? topBarItems[0]
                         }
                     />,
-                    topBarContainer
+                    topBarContainer,
                 )}
         </>
     );

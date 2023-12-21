@@ -1,5 +1,4 @@
 import React from 'react';
-import { Routes } from '../../../constants/constants';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
 import { Header, headerImageFallback } from '../../shared/header';
@@ -7,10 +6,18 @@ import {
     getTranslatedDuration,
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { Album } from 'custom-apps/better-local-files/src/models/album';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getPlatform } from '@shared/utils';
+import {
+    ALBUMS_ROUTE,
+    ARTIST_ROUTE,
+} from 'custom-apps/better-local-files/src/constants/constants';
 
-function AlbumHeader(props: Readonly<{ album: Album }>) {
+type Props = {
+    album: Album;
+};
+
+function AlbumHeader(props: Readonly<Props>): JSX.Element {
     return (
         <Header
             image={
@@ -29,29 +36,36 @@ function AlbumHeader(props: Readonly<{ album: Album }>) {
                 <>
                     {props.album.artists
                         .map((a) => (
-                            <span>
+                            <span key={a.uri}>
                                 <a
                                     href="#"
                                     draggable="false"
-                                    onClick={() =>
-                                        navigateTo(Routes.artist, a.uri)
-                                    }
+                                    onClick={() => {
+                                        navigateTo(ARTIST_ROUTE, a.uri);
+                                    }}
                                 >
                                     {a.name}
                                 </a>
                             </span>
                         ))
                         .reduce(
-                            (accu: JSX.Element[] | null, elem: JSX.Element) => {
+                            (
+                                accu: JSX.Element[] | null,
+                                elem: JSX.Element,
+                                index: number,
+                            ) => {
                                 return accu === null
                                     ? [elem]
                                     : [
                                           ...accu,
-                                          <span className="main-entityHeader-divider"></span>,
+                                          <span
+                                              key={index}
+                                              className="main-entityHeader-divider"
+                                          ></span>,
                                           elem,
                                       ];
                             },
-                            null
+                            null,
                         )}
                     <span className="main-entityHeader-metaDataText">
                         {getTranslation(
@@ -61,7 +75,7 @@ function AlbumHeader(props: Readonly<{ album: Album }>) {
                                     ? 'one'
                                     : 'other',
                             ],
-                            props.album.getTracks().length
+                            props.album.getTracks().length,
                         )}
                     </span>
                     <span className="main-entityHeader-metaDataText">
@@ -73,20 +87,20 @@ function AlbumHeader(props: Readonly<{ album: Album }>) {
     );
 }
 
-export function AlbumPage() {
+export function AlbumPage(): JSX.Element {
     const history = getPlatform().History;
 
     const albumUri = (history.location.state as any).uri ?? null;
 
     if (albumUri === null) {
-        history.replace(Routes.albums);
+        history.replace(ALBUMS_ROUTE);
         return <></>;
     }
 
     const albums = window.localTracksService.getAlbums();
 
     if (!albums.has(albumUri)) {
-        navigateTo(Routes.albums);
+        navigateTo(ALBUMS_ROUTE);
         return <></>;
     }
 

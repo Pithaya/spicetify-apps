@@ -2,7 +2,7 @@ import { addUpdateChecker, getPlatform, waitForSpicetify } from '@shared/utils';
 import { LocalTracksService } from '../services/local-tracks-service';
 import { version } from '../../package.json';
 
-(async () => {
+void (async () => {
     // Necessary to share the same instance between the extension and the custom app
     window.localTracksService = new LocalTracksService();
 
@@ -11,16 +11,20 @@ import { version } from '../../package.json';
     const rebuildMenuItem = new Spicetify.Menu.Item(
         'Rebuild local album cache',
         false,
-        () => window.localTracksService.reset()
+        async () => {
+            await window.localTracksService.reset();
+        },
     );
 
     const clearCacheMenuItem = new Spicetify.Menu.Item(
         'Clear local album cache',
         false,
-        () => window.localTracksService.clearCache()
+        async () => {
+            await window.localTracksService.clearCache();
+        },
     );
 
-    const handlePathnameChange = (pathname: string) => {
+    const handlePathnameChange = (pathname: string): void => {
         if (pathname.includes('better-local-files')) {
             rebuildMenuItem.register();
             clearCacheMenuItem.register();

@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 
-export interface SubmenuItemProps {
+export type Props = {
     label: string;
     submenu: JSX.Element;
-}
+};
 
-export function SubmenuItem(props: SubmenuItemProps) {
+export function SubmenuItem(props: Readonly<Props>): JSX.Element {
     const isMenuOpened = useRef(false);
 
     return (
@@ -17,7 +17,6 @@ export function SubmenuItem(props: SubmenuItemProps) {
             menu={props.submenu}
         >
             <li
-                role="presentation"
                 className="main-contextMenu-menuItem"
                 onMouseEnter={(e) => {
                     e.currentTarget.click();
@@ -38,7 +37,6 @@ export function SubmenuItem(props: SubmenuItemProps) {
                     </span>
                     <span>
                         <svg
-                            role="img"
                             height="16"
                             width="16"
                             aria-hidden="true"

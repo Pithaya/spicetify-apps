@@ -3,9 +3,9 @@ import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
 import pixelmatch from 'pixelmatch';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, type Observable } from 'rxjs';
 import { StorageService } from './storage-service';
-import { CachedAlbum } from '../models/cached-album';
+import type { CachedAlbum } from '../models/cached-album';
 import { getPlatform } from '@shared/utils';
 
 /**
@@ -21,6 +21,7 @@ export class LocalTracksService {
 
     private readonly isInitializedSubject: BehaviorSubject<boolean> =
         new BehaviorSubject<boolean>(false);
+
     private isInitializing: boolean = false;
 
     /**
@@ -51,15 +52,15 @@ export class LocalTracksService {
 
     private readonly processedAlbumsSubject: BehaviorSubject<number> =
         new BehaviorSubject<number>(0);
+
     public readonly processedAlbums$: Observable<number> =
         this.processedAlbumsSubject.asObservable();
 
     private readonly albumCountSubject: BehaviorSubject<number> =
         new BehaviorSubject<number>(0);
+
     public readonly albumCount$: Observable<number> =
         this.albumCountSubject.asObservable();
-
-    constructor() {}
 
     /**
      * Get a list of tracks for an artist.
@@ -182,6 +183,7 @@ export class LocalTracksService {
 
                 this.albums.set(albumKey, album);
             } else {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 album = this.albums.get(albumKey)!;
             }
 
@@ -190,7 +192,7 @@ export class LocalTracksService {
                 this.getArtistsFromString(a.name, album.image),
             );
 
-            for (let artist of trackArtists) {
+            for (const artist of trackArtists) {
                 if (!this.artists.has(artist.uri)) {
                     this.artists.set(artist.uri, artist);
                 }
@@ -268,7 +270,7 @@ export class LocalTracksService {
                     firstTrack.localTrack.album.images[0].url,
                 );
 
-                for (let artist of firstTrack.artists) {
+                for (const artist of firstTrack.artists) {
                     if (!newAlbum.artists.some((a) => a.uri === artist.uri)) {
                         newAlbum.artists.push(artist);
                     }
@@ -300,8 +302,8 @@ export class LocalTracksService {
             });
         }
 
-        //console.log('remove albums:', albumsToRemove);
-        //console.log('add albums:', albumsToAdd);
+        // console.log('remove albums:', albumsToRemove);
+        // console.log('add albums:', albumsToAdd);
 
         // Set the cache
         if (!hasCache) {
@@ -320,11 +322,11 @@ export class LocalTracksService {
         }
 
         // Sort album tracks
-        for (const [albumUri, album] of this.albums.entries()) {
+        for (const album of this.albums.values()) {
             for (const [discNumber, tracks] of album.discs.entries()) {
                 album.discs.set(
                     discNumber,
-                    tracks.sort((t1, t2) =>
+                    tracks.toSorted((t1, t2) =>
                         sort(t1.trackNumber, t2.trackNumber, 'ascending'),
                     ),
                 );
@@ -397,7 +399,7 @@ export class LocalTracksService {
             }
 
             // For each artist(s), take the album cover of the first track
-            for (const [artists, tracks] of albumTrackMap.entries()) {
+            for (const tracks of albumTrackMap.values()) {
                 const coverUrl = tracks[0].localTrack.album.images[0].url;
 
                 let image: HTMLImageElement;
@@ -409,7 +411,7 @@ export class LocalTracksService {
 
                     // Separate these tracks
                     tracksWithCover.push({
-                        tracks: tracks,
+                        tracks,
                         cover: null!,
                     });
 
@@ -429,7 +431,7 @@ export class LocalTracksService {
                 if (tracksWithSameCover === undefined) {
                     // No tracks with the same cover
                     tracksWithCover.push({
-                        tracks: tracks,
+                        tracks,
                         cover: imageData,
                     });
                 } else {
@@ -453,7 +455,7 @@ export class LocalTracksService {
         artistImage: string,
     ): Artist[] {
         return artistNames
-            .split(/(?:,|;)/)
+            .split(/[;,]/)
             .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
     }
 
@@ -463,7 +465,7 @@ export class LocalTracksService {
      * @returns The image element.
      */
     private async getImage(imageUrl: string): Promise<HTMLImageElement> {
-        return new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             const image = new Image();
 
             image.onload = () => {

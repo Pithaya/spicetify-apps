@@ -1,24 +1,22 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { CaretDown } from '../icons/caret-down';
-import {
+import type {
     SelectedSortOption,
     SortOption,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import {
-    HeaderKey,
-    SPOTIFY_MENU_CLASSES,
-} from 'custom-apps/better-local-files/src/constants/constants';
+import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
+import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 
-export interface IProps {
+export type Props = {
     sortOptions: SortOption[];
     selectedSortOption: SelectedSortOption;
     setSelectedSortOption: (key: HeaderKey) => void;
-}
+};
 
-export function SortMenu(props: IProps) {
+export function SortMenu(props: Readonly<Props>): JSX.Element {
     const menu = (
         <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
             <li>
@@ -33,7 +31,9 @@ export function SortMenu(props: IProps) {
             {props.sortOptions.map((o) => (
                 <Spicetify.ReactComponent.MenuItem
                     key={o.key}
-                    onClick={() => props.setSelectedSortOption(o.key)}
+                    onClick={() => {
+                        props.setSelectedSortOption(o.key);
+                    }}
                 >
                     <div className={`${styles['sort-menu-item']}`}>
                         <span>{o.label}</span>
@@ -62,12 +62,11 @@ export function SortMenu(props: IProps) {
             <button
                 className="x-sortBox-sortDropdown"
                 type="button"
-                role="button"
                 aria-expanded="false"
             >
                 <span>
                     {props.sortOptions.find(
-                        (o) => o.key === props.selectedSortOption.key
+                        (o) => o.key === props.selectedSortOption.key,
                     )?.label ?? ''}
                 </span>
                 <CaretDown />

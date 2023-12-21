@@ -1,14 +1,13 @@
-import { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
 import { TrackListRowTitle } from './track-list-row-title';
 
-// TODO: Only relevant props
-interface TrackListRowImageTitleProps {
+type Props = {
     track: Track;
     withArtists: boolean;
-}
+};
 
-export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
+export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
     const imageFallback = `
     <div class="main-trackList-rowImage main-trackList-rowImageFallback">
         <svg
@@ -26,11 +25,8 @@ export function TrackListRowImageTitle(props: TrackListRowImageTitleProps) {
     return (
         <>
             <img
-                aria-hidden="false"
-                draggable="false"
                 loading="eager"
                 src={props.track.localTrack.album.images[0].url}
-                alt="Track image" // TODO: i18n
                 className="main-image-image main-trackList-rowImage main-image-loaded"
                 width="40"
                 height="40"
