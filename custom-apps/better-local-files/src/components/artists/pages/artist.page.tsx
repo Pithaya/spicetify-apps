@@ -7,7 +7,7 @@ import { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { getPlatform } from '@shared/utils';
 
-function ArtistHeader(props: { artist: Artist }) {
+function ArtistHeader(props: Readonly<{ artist: Artist }>) {
     return (
         <Header
             image={

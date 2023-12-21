@@ -51,8 +51,7 @@ export function AlbumTrackList(props: IProps) {
                     className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
                 >
                     <PlayButton
-                        size={60}
-                        iconSize={24}
+                        size="lg"
                         onClick={() =>
                             playContext(orderedTracks.map((t) => t.localTrack))
                         }

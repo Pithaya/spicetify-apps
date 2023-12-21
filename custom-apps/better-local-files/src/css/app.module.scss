@@ -126,19 +126,7 @@
     .main-card-card {
         cursor: pointer;
         height: 100%;
-    }
-}
-
-.play-button {
-    background-color: var(--spice-button-active);
-    border-style: none;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-        transform: scale(1.04);
+        border-radius: 6.3px;
     }
 }
 
@@ -218,4 +206,8 @@
 
 .action-bar-button-container {
     column-gap: 20px;
+}
+
+.display-list {
+    --row-height: 56px;
 }

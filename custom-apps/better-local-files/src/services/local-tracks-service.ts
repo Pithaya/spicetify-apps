@@ -73,7 +73,7 @@ export class LocalTracksService {
                 (t1, t2) =>
                     sort(t1.album.name, t2.album.name, 'ascending') ||
                     sort(t1.discNumber, t2.discNumber, 'ascending') ||
-                    sort(t1.trackNumber, t2.trackNumber, 'ascending')
+                    sort(t1.trackNumber, t2.trackNumber, 'ascending'),
             );
     }
 
@@ -139,12 +139,16 @@ export class LocalTracksService {
             await this.processLocalTracks();
             await this.postProcessAlbums();
         } catch (e) {
-            console.error(e);
-            Spicetify.showNotification(
-                `Error while processing local files; clearing the cache: ${e}`,
-                true,
-                5000
-            );
+            console.error('Error while processing', e);
+
+            let errorMessage =
+                'Error while processing local files; clearing the cache';
+
+            if (e instanceof Error) {
+                errorMessage += `: ${e.message}`;
+            }
+
+            Spicetify.showNotification(errorMessage, true, 5000);
 
             // Cache is probably in error, clear it.
             this.storageService.cache = [];
@@ -173,7 +177,7 @@ export class LocalTracksService {
                 album = new Album(
                     albumKey,
                     albumName,
-                    localTrack.album.images[0].url
+                    localTrack.album.images[0].url,
                 );
 
                 this.albums.set(albumKey, album);
@@ -183,7 +187,7 @@ export class LocalTracksService {
 
             // Add the track artists
             const trackArtists: Artist[] = localTrack.artists.flatMap((a) =>
-                this.getArtistsFromString(a.name, album.image)
+                this.getArtistsFromString(a.name, album.image),
             );
 
             for (let artist of trackArtists) {
@@ -255,13 +259,13 @@ export class LocalTracksService {
 
                 const firstTrack = tracksWithCover.tracks[0];
                 const albumKey = this.albumKeyFromName(
-                    `${album.name} ${index}`
+                    `${album.name} ${index}`,
                 );
 
                 const newAlbum = new Album(
                     albumKey,
                     album.name,
-                    firstTrack.localTrack.album.images[0].url
+                    firstTrack.localTrack.album.images[0].url,
                 );
 
                 for (let artist of firstTrack.artists) {
@@ -321,8 +325,8 @@ export class LocalTracksService {
                 album.discs.set(
                     discNumber,
                     tracks.sort((t1, t2) =>
-                        sort(t1.trackNumber, t2.trackNumber, 'ascending')
-                    )
+                        sort(t1.trackNumber, t2.trackNumber, 'ascending'),
+                    ),
                 );
             }
         }
@@ -337,7 +341,7 @@ export class LocalTracksService {
      */
     private async postProcessAlbum(
         albumUri: string,
-        album: Album
+        album: Album,
     ): Promise<TracksWithCover[]> {
         const hasCache = this.storageService.hasCache;
         const cache: CachedAlbum[] = this.storageService.cache;
@@ -396,7 +400,21 @@ export class LocalTracksService {
             for (const [artists, tracks] of albumTrackMap.entries()) {
                 const coverUrl = tracks[0].localTrack.album.images[0].url;
 
-                const image = await this.getImage(coverUrl);
+                let image: HTMLImageElement;
+
+                try {
+                    image = await this.getImage(coverUrl);
+                } catch (e) {
+                    console.error(`Couldn't load image "${coverUrl}"`, e);
+
+                    // Separate these tracks
+                    tracksWithCover.push({
+                        tracks: tracks,
+                        cover: null!,
+                    });
+
+                    continue;
+                }
 
                 const imageData = this.getImageDataFromCanvas(image);
 
@@ -404,8 +422,8 @@ export class LocalTracksService {
                     (x) =>
                         this.getImageDifferenceWithPixelMatch(
                             x.cover,
-                            imageData
-                        ) === 0
+                            imageData,
+                        ) === 0,
                 );
 
                 if (tracksWithSameCover === undefined) {
@@ -432,7 +450,7 @@ export class LocalTracksService {
      */
     private getArtistsFromString(
         artistNames: string,
-        artistImage: string
+        artistImage: string,
     ): Artist[] {
         return artistNames
             .split(/(?:,|;)/)
@@ -453,7 +471,6 @@ export class LocalTracksService {
             };
 
             image.onerror = (e) => {
-                console.error(`Couldn't load image "${imageUrl}"`, e);
                 reject(e);
             };
 
@@ -490,7 +507,7 @@ export class LocalTracksService {
      */
     private getImageDifferenceWithPixelMatch(
         imgA: ImageData,
-        imgB: ImageData
+        imgB: ImageData,
     ): number {
         const mismatchedPixels = pixelmatch(
             imgA.data,
@@ -498,7 +515,7 @@ export class LocalTracksService {
             null,
             imgA.width,
             imgA.height,
-            { threshold: 0.1 }
+            { threshold: 0.1 },
         );
 
         return mismatchedPixels;

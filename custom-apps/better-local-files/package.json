@@ -7,7 +7,7 @@
         "build": "spicetify-creator",
         "build-local": "spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
-        "launch-watch": "spicetify enable-devtools && spicetify watch -le",
+        "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps better-local-files && spicetify apply",
         "unapply": "spicetify config custom_apps better-local-files- && spicetify apply",
         "lint": "npx eslint --ext .tsx,.ts src/"

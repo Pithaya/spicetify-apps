@@ -1,6 +1,11 @@
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Track } from 'custom-apps/better-local-files/src/models/track';
-import React, { Children, PropsWithChildren, useRef } from 'react';
+import React, {
+    Children,
+    MouseEventHandler,
+    PropsWithChildren,
+    useRef,
+} from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
 
@@ -10,8 +15,15 @@ export interface IProps {
     selected: boolean;
     active: boolean;
     playing: boolean;
-    onClick: () => void;
+    onClick: MouseEventHandler<HTMLDivElement>;
     onDoubleClick: () => void;
+    dragHandler: (
+        event: React.DragEvent,
+        uris?: string[],
+        label?: string,
+        contextUri?: string,
+        sectionIndex?: number
+    ) => void;
 }
 
 export function TrackListRow(props: PropsWithChildren<IProps>) {
@@ -34,6 +46,8 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                         aria-selected={props.selected}
                         onClick={props.onClick}
                         onDoubleClick={props.onDoubleClick}
+                        draggable="true"
+                        onDragStart={props.dragHandler}
                     >
                         <div
                             className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${
@@ -41,7 +55,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                             } ${
                                 props.selected ? 'main-trackList-selected' : ''
                             }`}
-                            draggable="true"
+                            draggable="false"
                             role="presentation"
                         >
                             <div
@@ -107,7 +121,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                                 width="14"
                                                 height="14"
                                                 alt=""
-                                                src="/images/equaliser-green.svg"
+                                                src="/images/equaliser-animated-green.gif"
                                             />
                                             <Spicetify.ReactComponent.TooltipWrapper
                                                 label={getTranslation([
@@ -181,9 +195,7 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                     action="toggle"
                                     menu={<RowMenu track={props.track} />}
                                 >
-                                    <button
-                                        type="button"
-                                        aria-haspopup="menu"
+                                    <Spicetify.ReactComponent.ButtonTertiary
                                         aria-label={getTranslation(
                                             ['more.label.track'],
                                             props.track.name,
@@ -191,21 +203,21 @@ export function TrackListRow(props: PropsWithChildren<IProps>) {
                                                 .map((a) => a.name)
                                                 .join(', ')
                                         )}
-                                        className="main-moreButton-button main-trackList-rowMoreButton"
-                                        tabIndex={-1}
-                                    >
-                                        <svg
-                                            role="img"
-                                            height="16"
-                                            width="16"
-                                            aria-hidden="true"
-                                            viewBox="0 0 16 16"
-                                            data-encore-id="icon"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                                        </svg>
-                                    </button>
+                                        aria-haspopup="menu"
+                                        iconOnly={() => (
+                                            <svg
+                                                role="img"
+                                                height="16"
+                                                width="16"
+                                                aria-hidden="true"
+                                                viewBox="0 0 16 16"
+                                                data-encore-id="icon"
+                                                fill="currentColor"
+                                            >
+                                                <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                                            </svg>
+                                        )}
+                                    ></Spicetify.ReactComponent.ButtonTertiary>
                                 </Spicetify.ReactComponent.ContextMenu>
                             </div>
                         </div>
