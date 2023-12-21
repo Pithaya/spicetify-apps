@@ -87,34 +87,34 @@ export type Playlist = {
 };
 
 export type PlaylistAPI = {
-    add(
+    add: (
         playlistUri: string,
         tracks: string[],
-        options: any | { after: 'end' }
-    ): Promise<void>;
+        options: any | { after: 'end' },
+    ) => Promise<void>;
 
-    applyModifications(
+    applyModifications: (
         playlistUri: string,
         modification: {
             operation: string | 'add';
             uris: string[];
             after: 'end' | string;
-        }
-    ): Promise<void>;
+        },
+    ) => Promise<void>;
 
-    getMetadata(
-        playlistUri: string,
-        playlistParameters: PlaylistParameters
-    ): Promise<Playlist['metadata']>;
-
-    getContents(
-        playlistUri: string,
-        queryParameters: QueryParameters
-    ): Promise<Playlist['contents']>;
-
-    getPlaylist(
+    getMetadata: (
         playlistUri: string,
         playlistParameters: PlaylistParameters,
-        queryParameters: QueryParameters
-    ): Promise<Playlist>;
+    ) => Promise<Playlist['metadata']>;
+
+    getContents: (
+        playlistUri: string,
+        queryParameters: QueryParameters,
+    ) => Promise<Playlist['contents']>;
+
+    getPlaylist: (
+        playlistUri: string,
+        playlistParameters: PlaylistParameters,
+        queryParameters: QueryParameters,
+    ) => Promise<Playlist>;
 };

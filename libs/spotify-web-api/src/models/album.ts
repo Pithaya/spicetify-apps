@@ -1,7 +1,7 @@
-import { Artist, SimplifiedArtist } from './artist';
-import { Image } from './image';
-import { ReleaseDatePrecision } from './release-date';
-import { Restrictions } from './restrictions';
+import type { Artist, SimplifiedArtist } from './artist';
+import type { Image } from './image';
+import type { ReleaseDatePrecision } from './release-date';
+import type { Restrictions } from './restrictions';
 
 export type AlbumType = 'album' | 'single' | 'compilation';
 

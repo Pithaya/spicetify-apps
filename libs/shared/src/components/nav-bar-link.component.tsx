@@ -1,32 +1,21 @@
-import { HistoryEntry } from '../platform/history';
+import type { HistoryEntry } from '../platform/history';
 import React, { useEffect, useState } from 'react';
 import { getPlatform } from '../utils';
 
-export interface NavBarLinkProps {
+export type NavBarLinkProps = {
     icon: JSX.Element;
     activeIcon: JSX.Element;
     href: string;
     label: string;
-}
+};
 
-export function NavBarLink(props: NavBarLinkProps) {
+export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
     const history = getPlatform().History;
     const initialActive = history.location.pathname === props.href;
     const sidebar = document.querySelector<HTMLDivElement>('.Root__nav-bar');
 
     if (sidebar == null) {
-        return <></>;
-    }
-
-    function isSideBarCollapsed(): boolean {
-        return getPlatform().LocalStorageAPI.getItem('ylx-sidebar-state') === 1;
-    }
-
-    function isLibraryXEnabled(sidebar: HTMLElement): boolean {
-        return (
-            sidebar.classList.contains('hasYLXSidebar') ||
-            !!sidebar.querySelector('.main-yourLibraryX-entryPoints')
-        );
+        throw new Error('Could not find sidebar');
     }
 
     const [active, setActive] = useState(initialActive);
@@ -34,7 +23,7 @@ export function NavBarLink(props: NavBarLinkProps) {
     const [isCollapsed, setIsCollapsed] = useState(isSideBarCollapsed());
 
     useEffect(() => {
-        function handleHistoryChange(e: HistoryEntry) {
+        function handleHistoryChange(e: HistoryEntry): void {
             setActive(e.pathname === props.href);
         }
 
@@ -63,7 +52,9 @@ export function NavBarLink(props: NavBarLinkProps) {
             attributeFilter: ['class'],
         });
 
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -74,11 +65,28 @@ export function NavBarLink(props: NavBarLinkProps) {
 
         observer.observe(sidebar);
 
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+        };
     }, []);
 
-    function navigate() {
+    function navigate(): void {
         history.push(props.href);
+    }
+
+    if (sidebar == null) {
+        return <></>;
+    }
+
+    function isSideBarCollapsed(): boolean {
+        return getPlatform().LocalStorageAPI.getItem('ylx-sidebar-state') === 1;
+    }
+
+    function isLibraryXEnabled(sidebar: HTMLElement): boolean {
+        return (
+            sidebar.classList.contains('hasYLXSidebar') ||
+            !!sidebar.querySelector('.main-yourLibraryX-entryPoints')
+        );
     }
 
     if (isLibX) {
@@ -103,24 +111,22 @@ export function NavBarLink(props: NavBarLinkProps) {
         );
 
         return (
-            <>
-                <li
-                    className="main-yourLibraryX-navItem InvalidDropTarget"
-                    data-id={props.href}
-                >
-                    {isCollapsed ? (
-                        <Spicetify.ReactComponent.TooltipWrapper
-                            label={props.label}
-                            showDelay={100}
-                            placement="right"
-                        >
-                            {link}
-                        </Spicetify.ReactComponent.TooltipWrapper>
-                    ) : (
-                        link
-                    )}
-                </li>
-            </>
+            <li
+                className="main-yourLibraryX-navItem InvalidDropTarget"
+                data-id={props.href}
+            >
+                {isCollapsed ? (
+                    <Spicetify.ReactComponent.TooltipWrapper
+                        label={props.label}
+                        showDelay={100}
+                        placement="right"
+                    >
+                        {link}
+                    </Spicetify.ReactComponent.TooltipWrapper>
+                ) : (
+                    link
+                )}
+            </li>
         );
     } else {
         return (

@@ -1,5 +1,5 @@
 function createProxyHandler<T extends object>(
-    objectName: string
+    objectName: string,
 ): ProxyHandler<T> {
     const handler = {
         get(target: T, property: string, receiver: any) {
@@ -13,7 +13,7 @@ function createProxyHandler<T extends object>(
                         property,
                         args,
                         `-->`,
-                        result
+                        result,
                     );
                     return result;
                 };
@@ -22,7 +22,7 @@ function createProxyHandler<T extends object>(
                     `[${objectName}] - GET`,
                     property,
                     '-->',
-                    targetValue
+                    targetValue,
                 );
                 return targetValue;
             }
@@ -41,7 +41,7 @@ export function registerProxy<T>(object: T, objectName: string): void {
     const prototype = Object.create(Object.getPrototypeOf(object));
     Object.setPrototypeOf(
         object,
-        new Proxy(prototype, createProxyHandler(objectName))
+        new Proxy(prototype, createProxyHandler(objectName)),
     );
 
     console.log(`Registered proxy for ${objectName}.`);
@@ -60,10 +60,10 @@ export function registerServicesProxies(): void {
     const servicesMap = new Map<string, any>();
 
     for (const [platformName, platformApi] of Object.entries(
-        Spicetify.Platform
+        Spicetify.Platform,
     )) {
         for (const [name, service] of Object.entries(platformApi as any).filter(
-            ([n, s]) => n.startsWith('_')
+            ([n, s]) => n.startsWith('_'),
         )) {
             const fullName = `${platformName}.${name}`;
             if (!servicesMap.has(name)) {

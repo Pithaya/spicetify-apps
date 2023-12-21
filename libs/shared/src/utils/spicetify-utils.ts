@@ -1,4 +1,4 @@
-import { Platform } from '../platform/platform';
+import type { Platform } from '../platform/platform';
 
 /**
  * Wait for Spicetify to load.

@@ -1,12 +1,6 @@
 import { handleError } from '../helpers';
-import {
-    Album,
-    AlbumPageParameters,
-    ArgumentError,
-    Artist,
-    EmptyPage,
-    Page,
-} from '../models';
+import type { Album, AlbumPageParameters, Artist, Page } from '../models';
+import { ArgumentError, EmptyPage } from '../models';
 import { get } from '../utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
@@ -52,11 +46,11 @@ export async function getArtists(...ids: string[]): Promise<Artist[]> {
  */
 export async function getArtistAlbums(
     id: string,
-    parameters: AlbumPageParameters
+    parameters: AlbumPageParameters,
 ): Promise<Page<Album>> {
     try {
         return await get(
-            `${baseUrl}/${id}/albums?${parameters.toQueryString()}`
+            `${baseUrl}/${id}/albums?${parameters.toQueryString()}`,
         );
     } catch (error: any) {
         handleError(error);

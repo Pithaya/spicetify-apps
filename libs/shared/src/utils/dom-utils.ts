@@ -5,15 +5,16 @@
  * @param parentElement The parent element to observe. If not provided, will use the document body.
  * @returns The element.
  */
-export function waitForElement(
+export async function waitForElement(
     selector: string,
     timeout: number = 5 * 1000,
-    parentElement: HTMLElement | null = null
+    parentElement: HTMLElement | null = null,
 ): Promise<Element> {
-    return new Promise<Element>((resolve, reject) => {
+    return await new Promise<Element>((resolve, reject) => {
         const element: Element | null = document.querySelector(selector);
         if (element !== null) {
-            return resolve(element);
+            resolve(element);
+            return;
         }
 
         const observer = new MutationObserver(() => {
@@ -40,9 +41,9 @@ export function waitForElement(
             // So try one last time to find the element
             const element: Element | null = document.querySelector(selector);
             if (element !== null) {
-                return resolve(element);
+                resolve(element);
             } else {
-                reject(`Couldn't find the element "${selector}".`);
+                reject(new Error(`Couldn't find the element "${selector}".`));
             }
         }, timeout);
     });

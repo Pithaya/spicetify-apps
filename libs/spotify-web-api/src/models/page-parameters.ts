@@ -1,5 +1,3 @@
-import { ArgumentError } from './errors';
-
 export class PageParameters {
     /**
      * The maximum number of items to return.
@@ -26,8 +24,8 @@ export class PageParameters {
 
     constructor(limit: number = 20, offset: number = 0, market?: string) {
         if (limit < 1 || limit > 50) {
-            throw new ArgumentError(
-                'The limit parameter must be more than 1 and less than 50.'
+            throw new Error(
+                'The limit parameter must be more than 1 and less than 50.',
             );
         }
 

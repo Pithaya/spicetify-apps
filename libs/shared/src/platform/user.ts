@@ -7,5 +7,5 @@ export type User = {
 };
 
 export type UserAPI = {
-    getUser(): Promise<User>;
+    getUser: () => Promise<User>;
 };

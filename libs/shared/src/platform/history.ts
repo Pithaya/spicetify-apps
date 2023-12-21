@@ -9,10 +9,10 @@ export type HistoryEntry = {
 export type History = {
     action: string;
 
-    block(): unknown;
-    canGo(x: unknown): unknown;
+    block: () => unknown;
+    canGo: (x: unknown) => unknown;
 
-    createHref(entry: HistoryEntry): string;
+    createHref: (entry: HistoryEntry) => string;
 
     entries: HistoryEntry[];
     length: number;
@@ -22,15 +22,17 @@ export type History = {
      * @param callback The callback to call when the history changes.
      * @returns The unsubscribe callback.
      */
-    listen(callback: (event: HistoryEntry) => void): () => void;
+    listen: (
+        callback: (event: HistoryEntry) => void | Promise<void>,
+    ) => () => void;
 
     location: HistoryEntry;
 
-    push(href: string | HistoryEntry): void;
+    push: (href: string | HistoryEntry) => void;
 
-    replace(href: string | HistoryEntry): void;
+    replace: (href: string | HistoryEntry) => void;
 
-    goForward(): void;
+    goForward: () => void;
 
-    goBack(): void;
+    goBack: () => void;
 };

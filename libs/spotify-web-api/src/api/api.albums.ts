@@ -1,5 +1,5 @@
 import { handleError } from '../helpers';
-import { Album } from '../models';
+import type { Album } from '../models';
 import { get } from '../utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
