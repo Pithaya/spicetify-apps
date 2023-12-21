@@ -24,11 +24,12 @@ export class KuroshiroBuilder {
             await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
+        // eslint-disable-next-line new-cap
         const kuroshiro = new (Kuroshiro as any).default();
 
         this.applyKuromojiFix();
 
-        await kuroshiro.init(new KuromojiAnalyzer({ dictPath: dictPath }));
+        await kuroshiro.init(new KuromojiAnalyzer({ dictPath }));
 
         return kuroshiro;
     }
@@ -45,18 +46,19 @@ export class KuroshiroBuilder {
             return;
         }
 
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         prototype.realOpen = prototype.open;
 
         (prototype as any).open = function (
             method: string,
             url: string,
-            async: boolean
+            async: boolean,
         ) {
             if (url.indexOf(dictPath.replace('https://', 'https:/')) === 0) {
                 this.realOpen(
                     method,
                     url.replace('https:/', 'https://'),
-                    async
+                    async,
                 );
             } else {
                 this.realOpen(method, url, async);

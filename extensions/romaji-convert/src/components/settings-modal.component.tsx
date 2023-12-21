@@ -1,222 +1,180 @@
 import { ConversionMode } from '../models/conversion-mode.enum';
 import { RomajiSystem } from '../models/romaji-system.enum';
 import { TargetSyllabary } from '../models/target-syllabary.enum';
-import { KuroshiroSettingsService } from '../services/kuroshiro-settings.service';
-import { ServicesContainer } from '../services/services-container';
-import { ContextMenuService } from '../services/context-menu.service';
-import React from 'react';
+import { settingsService } from '../services/kuroshiro-settings.service';
+import { contextMenuService } from '../services/context-menu.service';
+import React, { useState } from 'react';
 import i18next from 'i18next';
 
-interface IProps {}
+export function SettingsModal(): JSX.Element {
+    const [targetSyllabary, setTargetSyllabary] = useState(
+        settingsService.targetSyllabary,
+    );
+    const [conversionMode, setConversionMode] = useState(
+        settingsService.conversionMode,
+    );
+    const [romajiSystem, setRomajiSystem] = useState(
+        settingsService.romajiSystem,
+    );
+    const [notificationTimeout, setNotificationTimeout] = useState(
+        settingsService.notificationTimeout,
+    );
+    const [notificationFontSize, setNotificationFontSize] = useState(
+        settingsService.notificationFontSize,
+    );
 
-interface IState {
-    targetSyllabary: TargetSyllabary;
-    conversionMode: ConversionMode;
-    romajiSystem: RomajiSystem;
-    notificationTimeout: number;
-    notificationFontSize: number;
-}
+    const labelStyle: React.CSSProperties = {
+        marginBottom: '0.5rem',
+        marginTop: '0.5rem',
+        display: 'block',
+    };
 
-// TODO: Switch to a function component
-export class SettingsModal extends React.Component<IProps, IState> {
-    private readonly settingsService: KuroshiroSettingsService;
-    private readonly contextMenuService: ContextMenuService;
-
-    constructor(props: any) {
-        super(props);
-
-        this.settingsService = ServicesContainer.settings;
-        this.contextMenuService = ServicesContainer.contextMenu;
-
-        this.state = {
-            targetSyllabary: this.settingsService.targetSyllabary,
-            conversionMode: this.settingsService.conversionMode,
-            romajiSystem: this.settingsService.romajiSystem,
-            notificationTimeout: this.settingsService.notificationTimeout,
-            notificationFontSize: this.settingsService.notificationFontSize,
-        };
+    function onTargetSyllabaryChange(value: TargetSyllabary): void {
+        settingsService.targetSyllabary = value;
+        contextMenuService.registerOrUpdate();
+        setTargetSyllabary(settingsService.targetSyllabary);
     }
 
-    render() {
-        const labelStyle: React.CSSProperties = {
-            marginBottom: '0.5rem',
-            marginTop: '0.5rem',
-            display: 'block',
-        };
-
-        // TODO: input type number look ugly with default theme ?
-
-        return (
-            <div>
-                <label
-                    htmlFor="kuroshiro.settings.target-syllabary"
-                    style={labelStyle}
-                >
-                    {i18next.t('settings.targetSyllabary.label')}
-                </label>
-                <select
-                    className="main-dropDown-dropDown"
-                    id="kuroshiro.settings.target-syllabary"
-                    dir="auto"
-                    value={this.state.targetSyllabary}
-                    onChange={(e) =>
-                        this.onTargetSyllabaryChange(
-                            e.target.value as TargetSyllabary
-                        )
-                    }
-                >
-                    <option value={TargetSyllabary.Hiragana}>
-                        {i18next.t('settings.targetSyllabary.values.hiragana')}
-                    </option>
-                    <option value={TargetSyllabary.Katakana}>
-                        {i18next.t('settings.targetSyllabary.values.katakana')}
-                    </option>
-                    <option value={TargetSyllabary.Romaji}>
-                        {i18next.t('settings.targetSyllabary.values.romaji')}
-                    </option>
-                </select>
-
-                <label
-                    htmlFor="kuroshiro.settings.conversion-mode"
-                    style={labelStyle}
-                >
-                    {i18next.t('settings.conversionMode.label')}
-                </label>
-                <select
-                    className="main-dropDown-dropDown"
-                    id="kuroshiro.settings.conversion-mode"
-                    dir="auto"
-                    value={this.state.conversionMode}
-                    onChange={(e) =>
-                        this.onConversionModeChange(
-                            e.target.value as ConversionMode
-                        )
-                    }
-                >
-                    <option value={ConversionMode.Normal}>
-                        {i18next.t('settings.conversionMode.values.normal')}
-                    </option>
-                    <option value={ConversionMode.Spaced}>
-                        {i18next.t('settings.conversionMode.values.spaced')}
-                    </option>
-                    <option value={ConversionMode.Okurigana}>
-                        {i18next.t('settings.conversionMode.values.okurigana')}
-                    </option>
-                    <option value={ConversionMode.Furigana}>
-                        {i18next.t('settings.conversionMode.values.furigana')}
-                    </option>
-                </select>
-
-                {this.state.targetSyllabary === TargetSyllabary.Romaji && (
-                    <div>
-                        <label
-                            htmlFor="kuroshiro.settings.romaji-system"
-                            style={labelStyle}
-                        >
-                            {i18next.t('settings.romajiSystem.label')}
-                        </label>
-                        <select
-                            className="main-dropDown-dropDown"
-                            id="kuroshiro.settings.romaji-system"
-                            dir="auto"
-                            value={this.state.romajiSystem}
-                            onChange={(e) =>
-                                this.onRomajiSystemChange(
-                                    e.target.value as RomajiSystem
-                                )
-                            }
-                        >
-                            <option value={RomajiSystem.Nippon}>
-                                {i18next.t(
-                                    'settings.romajiSystem.values.nippon'
-                                )}
-                            </option>
-                            <option value={RomajiSystem.Passport}>
-                                {i18next.t(
-                                    'settings.romajiSystem.values.passport'
-                                )}
-                            </option>
-                            <option value={RomajiSystem.Hepburn}>
-                                {i18next.t(
-                                    'settings.romajiSystem.values.hepburn'
-                                )}
-                            </option>
-                        </select>
-                    </div>
-                )}
-
-                <label
-                    htmlFor="kuroshiro.settings.notification-timeout"
-                    style={labelStyle}
-                >
-                    {i18next.t('settings.notificationTimeout.label')}
-                </label>
-                <input
-                    type={'number'}
-                    className="x-settings-input"
-                    id="kuroshiro.settings.notification-timeout"
-                    value={this.state.notificationTimeout / 1000}
-                    onChange={(e) =>
-                        this.onNotificationTimeoutChange(
-                            e.target.valueAsNumber * 1000
-                        )
-                    }
-                />
-
-                <label
-                    htmlFor="kuroshiro.settings.notification-font-size"
-                    style={labelStyle}
-                >
-                    {i18next.t('settings.notificationFontSize.label')}
-                </label>
-                <input
-                    type={'number'}
-                    className="x-settings-input"
-                    id="kuroshiro.settings.notification-font-size"
-                    value={this.state.notificationFontSize}
-                    onChange={(e) =>
-                        this.onNotificationFontSizeChange(
-                            e.target.valueAsNumber
-                        )
-                    }
-                />
-            </div>
-        );
+    function onConversionModeChange(value: ConversionMode): void {
+        settingsService.conversionMode = value;
+        setConversionMode(settingsService.conversionMode);
     }
 
-    private onTargetSyllabaryChange(value: TargetSyllabary): void {
-        this.settingsService.targetSyllabary = value;
-        this.contextMenuService.registerOrUpdate();
-        this.setState({
-            targetSyllabary: this.settingsService.targetSyllabary,
-        });
+    function onRomajiSystemChange(value: RomajiSystem): void {
+        settingsService.romajiSystem = value;
+        setRomajiSystem(settingsService.romajiSystem);
     }
 
-    private onConversionModeChange(value: ConversionMode): void {
-        this.settingsService.conversionMode = value;
-        this.setState({
-            conversionMode: this.settingsService.conversionMode,
-        });
+    function onNotificationTimeoutChange(value: number): void {
+        settingsService.notificationTimeout = value;
+        setNotificationTimeout(settingsService.notificationTimeout);
     }
 
-    private onRomajiSystemChange(value: RomajiSystem): void {
-        this.settingsService.romajiSystem = value;
-        this.setState({
-            romajiSystem: this.settingsService.romajiSystem,
-        });
+    function onNotificationFontSizeChange(value: number): void {
+        settingsService.notificationFontSize = value;
+        setNotificationFontSize(settingsService.notificationFontSize);
     }
 
-    private onNotificationTimeoutChange(value: number): void {
-        this.settingsService.notificationTimeout = value;
-        this.setState({
-            notificationTimeout: this.settingsService.notificationTimeout,
-        });
-    }
+    return (
+        <div>
+            <label
+                htmlFor="kuroshiro.settings.target-syllabary"
+                style={labelStyle}
+            >
+                {i18next.t('settings.targetSyllabary.label')}
+            </label>
+            <select
+                className="main-dropDown-dropDown"
+                id="kuroshiro.settings.target-syllabary"
+                dir="auto"
+                value={targetSyllabary}
+                onChange={(e) => {
+                    onTargetSyllabaryChange(e.target.value as TargetSyllabary);
+                }}
+            >
+                <option value={TargetSyllabary.Hiragana}>
+                    {i18next.t('settings.targetSyllabary.values.hiragana')}
+                </option>
+                <option value={TargetSyllabary.Katakana}>
+                    {i18next.t('settings.targetSyllabary.values.katakana')}
+                </option>
+                <option value={TargetSyllabary.Romaji}>
+                    {i18next.t('settings.targetSyllabary.values.romaji')}
+                </option>
+            </select>
 
-    private onNotificationFontSizeChange(value: number): void {
-        this.settingsService.notificationFontSize = value;
-        this.setState({
-            notificationFontSize: this.settingsService.notificationFontSize,
-        });
-    }
+            <label
+                htmlFor="kuroshiro.settings.conversion-mode"
+                style={labelStyle}
+            >
+                {i18next.t('settings.conversionMode.label')}
+            </label>
+            <select
+                className="main-dropDown-dropDown"
+                id="kuroshiro.settings.conversion-mode"
+                dir="auto"
+                value={conversionMode}
+                onChange={(e) => {
+                    onConversionModeChange(e.target.value as ConversionMode);
+                }}
+            >
+                <option value={ConversionMode.Normal}>
+                    {i18next.t('settings.conversionMode.values.normal')}
+                </option>
+                <option value={ConversionMode.Spaced}>
+                    {i18next.t('settings.conversionMode.values.spaced')}
+                </option>
+                <option value={ConversionMode.Okurigana}>
+                    {i18next.t('settings.conversionMode.values.okurigana')}
+                </option>
+                <option value={ConversionMode.Furigana}>
+                    {i18next.t('settings.conversionMode.values.furigana')}
+                </option>
+            </select>
+
+            {targetSyllabary === TargetSyllabary.Romaji && (
+                <div>
+                    <label
+                        htmlFor="kuroshiro.settings.romaji-system"
+                        style={labelStyle}
+                    >
+                        {i18next.t('settings.romajiSystem.label')}
+                    </label>
+                    <select
+                        className="main-dropDown-dropDown"
+                        id="kuroshiro.settings.romaji-system"
+                        dir="auto"
+                        value={romajiSystem}
+                        onChange={(e) => {
+                            onRomajiSystemChange(
+                                e.target.value as RomajiSystem,
+                            );
+                        }}
+                    >
+                        <option value={RomajiSystem.Nippon}>
+                            {i18next.t('settings.romajiSystem.values.nippon')}
+                        </option>
+                        <option value={RomajiSystem.Passport}>
+                            {i18next.t('settings.romajiSystem.values.passport')}
+                        </option>
+                        <option value={RomajiSystem.Hepburn}>
+                            {i18next.t('settings.romajiSystem.values.hepburn')}
+                        </option>
+                    </select>
+                </div>
+            )}
+
+            <label
+                htmlFor="kuroshiro.settings.notification-timeout"
+                style={labelStyle}
+            >
+                {i18next.t('settings.notificationTimeout.label')}
+            </label>
+            <input
+                type={'number'}
+                className="x-settings-input"
+                id="kuroshiro.settings.notification-timeout"
+                value={notificationTimeout / 1000}
+                onChange={(e) => {
+                    onNotificationTimeoutChange(e.target.valueAsNumber * 1000);
+                }}
+            />
+
+            <label
+                htmlFor="kuroshiro.settings.notification-font-size"
+                style={labelStyle}
+            >
+                {i18next.t('settings.notificationFontSize.label')}
+            </label>
+            <input
+                type={'number'}
+                className="x-settings-input"
+                id="kuroshiro.settings.notification-font-size"
+                value={notificationFontSize}
+                onChange={(e) => {
+                    onNotificationFontSizeChange(e.target.valueAsNumber);
+                }}
+            />
+        </div>
+    );
 }

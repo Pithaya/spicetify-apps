@@ -6,7 +6,7 @@ declare class Kuroshiro {
      * Constructor
      * @constructs Kuroshiro
      */
-    constructor()
+    constructor();
 
     /**
      * Initialize Kuroshiro
@@ -14,7 +14,7 @@ declare class Kuroshiro {
      * @instance
      * @returns {Promise} Promise object represents the result of initialization
      */
-    init(analyzer): Promise<void>
+    init(analyzer): Promise<void>;
 
     /**
      * Convert given string to target syllabary with options available
@@ -29,13 +29,16 @@ declare class Kuroshiro {
      * @param {string} [options.delimiter_end=")"] Delimiter(End)
      * @returns {Promise} Promise object represents the result of conversion
      */
-    convert(str: string, options: {
-        to?: 'hiragana' | 'katakana' | 'romaji'
-        mode?: 'normal' | 'spaced' | 'okurigana' | 'furigana'
-        romajiSystem?: RomanizationSystem
-        delimiter_start?: string
-        delimiter_end?: string
-    }): Promise<string>
+    convert(
+        str: string,
+        options: {
+            to?: 'hiragana' | 'katakana' | 'romaji';
+            mode?: 'normal' | 'spaced' | 'okurigana' | 'furigana';
+            romajiSystem?: RomanizationSystem;
+            delimiter_start?: string;
+            delimiter_end?: string;
+        },
+    ): Promise<string>;
 }
 
 declare namespace Kuroshiro {
@@ -43,8 +46,7 @@ declare namespace Kuroshiro {
 }
 
 declare namespace Util {
-
-    export type RomanizationSystem = "nippon" | "passport" | "hepburn";
+    export type RomanizationSystem = 'nippon' | 'passport' | 'hepburn';
 
     /**
      * Get the type of given string
@@ -150,7 +152,10 @@ declare namespace Util {
      * @param {string} system To which romanization system the given string is converted
      * @return {string} Romaji string
      */
-    export function toRawRomaji(str: string, system: RomanizationSystem): string;
+    export function toRawRomaji(
+        str: string,
+        system: RomanizationSystem,
+    ): string;
     /**
      * Convert kana to hiragana
      *
@@ -172,9 +177,12 @@ declare namespace Util {
      * @param {string} system To which romanization system the given string is converted. ["nippon"|"passport"|"hepburn"]
      * @return {string} Romaji string
      */
-    export function kanaToRomaji(str: string, system: RomanizationSystem): string;
+    export function kanaToRomaji(
+        str: string,
+        system: RomanizationSystem,
+    ): string;
 }
 
 declare module 'kuroshiro' {
-    export default Kuroshiro
+    export default Kuroshiro;
 }

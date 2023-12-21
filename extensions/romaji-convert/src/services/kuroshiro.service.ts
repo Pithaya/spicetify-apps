@@ -1,13 +1,15 @@
 import { KuroshiroBuilder } from '../helpers/kuroshiro-builder';
-import { KuroshiroSettingsService } from './kuroshiro-settings.service';
-import { ServicesContainer } from './services-container';
+import {
+    settingsService,
+    type KuroshiroSettingsService,
+} from './kuroshiro-settings.service';
 
 export class KuroshiroService {
     private kuroshiro: Kuroshiro | null = null;
     private readonly settingsService: KuroshiroSettingsService;
 
     constructor() {
-        this.settingsService = ServicesContainer.settings;
+        this.settingsService = settingsService;
     }
 
     /**
@@ -24,7 +26,7 @@ export class KuroshiroService {
     public async convert(value: string): Promise<string> {
         if (this.kuroshiro === null) {
             console.error(
-                "Property 'kuroshiro' is null. Call 'init' before using the service."
+                "Property 'kuroshiro' is null. Call 'init' before using the service.",
             );
             return '';
         }
@@ -36,3 +38,5 @@ export class KuroshiroService {
         });
     }
 }
+
+export const kuroshiroService: KuroshiroService = new KuroshiroService();
