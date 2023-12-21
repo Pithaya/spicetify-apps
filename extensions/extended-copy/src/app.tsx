@@ -1,15 +1,17 @@
-import {
+import type {
     AlbumNameAndTracksData,
     ArtistMinimalData,
     EpisodeNameData,
     TrackNameData,
+} from '@shared/graphQL';
+import {
     getAlbumNameAndTracks,
     getEpisodeName,
     getTrackName,
     queryArtistMinimal,
 } from '@shared/graphQL';
-import { Playlist } from '@shared/platform/playlist';
-import { ShowMetadata } from '@shared/platform/show';
+import type { Playlist } from '@shared/platform/playlist';
+import type { ShowMetadata } from '@shared/platform/show';
 import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 
@@ -17,7 +19,7 @@ let locale: typeof Spicetify.Locale;
 let supportedTypes: string[] = [];
 
 async function getData(
-    uriString: string
+    uriString: string,
 ): Promise<
     | TrackNameData
     | AlbumNameAndTracksData
@@ -50,7 +52,7 @@ async function getData(
         return await getPlatform().PlaylistAPI.getPlaylist(
             uriString,
             {},
-            { filter: '', limit: 0, offset: 0, sort: undefined }
+            { filter: '', limit: 0, offset: 0, sort: undefined },
         );
     }
 
@@ -90,7 +92,7 @@ async function getName(uriString: string): Promise<string | null> {
             await getPlatform().PlaylistAPI.getPlaylist(
                 uriString,
                 {},
-                { filter: '', limit: 0, offset: 0, sort: undefined }
+                { filter: '', limit: 0, offset: 0, sort: undefined },
             )
         ).metadata.name;
     }
@@ -106,9 +108,9 @@ async function getName(uriString: string): Promise<string | null> {
     return null;
 }
 
-function copy(text: string | any): void {
+async function copy(text: string | any): Promise<void> {
     Spicetify.showNotification(i18next.t('copied'));
-    getPlatform().ClipboardAPI.copy(text);
+    await getPlatform().ClipboardAPI.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
@@ -121,14 +123,12 @@ function checkUriLength(uris: string[]): boolean {
 }
 
 function shouldAdd(uris: string[]): boolean {
-    return uris
+    return !uris
         .map((u) => Spicetify.URI.fromString(u))
-        .some((u) => !supportedTypes.includes(u.type))
-        ? false
-        : true;
+        .some((u) => !supportedTypes.includes(u.type));
 }
 
-async function main() {
+async function main(): Promise<void> {
     await waitForSpicetify();
 
     locale = Spicetify.Locale;
@@ -180,12 +180,12 @@ async function main() {
 
                     const names: string[] = [];
 
-                    for (let uri of uris) {
+                    for (const uri of uris) {
                         const name = await getName(uri);
                         if (name === null) {
                             Spicetify.showNotification(
                                 `Couldn't get name for URI '${uri}'`,
-                                true
+                                true,
                             );
                             return;
                         } else {
@@ -193,34 +193,34 @@ async function main() {
                         }
                     }
 
-                    copy(names.join(locale.getSeparator()));
+                    await copy(names.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 'ID',
-                (uris) => {
+                async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;
                     }
 
                     const ids = uris.map((uri) =>
-                        getId(Spicetify.URI.fromString(uri))
+                        getId(Spicetify.URI.fromString(uri)),
                     );
-                    copy(ids.join(locale.getSeparator()));
+                    await copy(ids.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 'URI',
-                (uris) => {
+                async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;
                     }
 
-                    copy(uris.join(locale.getSeparator()));
+                    await copy(uris.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 i18next.t('data'),
@@ -231,12 +231,12 @@ async function main() {
 
                     const result: any[] = [];
 
-                    for (let uri of uris) {
+                    for (const uri of uris) {
                         const data = await getData(uri);
                         if (data === null) {
                             Spicetify.showNotification(
                                 `Couldn't get data for URI '${uri}'`,
-                                true
+                                true,
                             );
                             return;
                         } else {
@@ -244,12 +244,12 @@ async function main() {
                         }
                     }
 
-                    copy(result);
+                    await copy(result);
                 },
-                () => true
+                () => true,
             ),
         ],
-        (uris) => shouldAdd(uris)
+        (uris) => shouldAdd(uris),
     ).register();
 }
 
