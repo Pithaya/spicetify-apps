@@ -189,7 +189,6 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                     <SearchInput
                         search={search}
                         setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
                         setDebouncedSearch={setDebouncedSearch}
                     />
 

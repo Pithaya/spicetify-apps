@@ -5,8 +5,8 @@ import { navigateTo } from '../../../helpers/history-helper';
 import { PlayButton } from '../../shared/buttons/play-button';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import { TextComponent } from '../../shared/text/text';
 
 export type Props = {
     artist: Artist;
@@ -56,7 +56,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                         }}
                     >
                         <div draggable="true" className="main-card-draggable">
-                            <div className="main-card-imageContainer">
+                            <div className="main-card-imageContainer main-card-imageContainerOld">
                                 <div className="main-cardImage-imageWrapper main-cardImage-circular">
                                     <img
                                         aria-hidden="false"
@@ -85,21 +85,14 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                                 </div>
                             </div>
                             <div className="main-card-cardMetadata">
-                                <span
-                                    draggable="false"
-                                    title={props.artist.name}
-                                    className={`${styles['main-cardHeader-link']} main-cardHeader-link`}
-                                    dir="auto"
+                                <TextComponent
+                                    className={`main-cardHeader-link main-cardHeader-text ${styles['text-full-centered']}`}
+                                    variant="balladBold"
+                                    semanticColor="textBase"
+                                    paddingBottom="4px"
                                 >
-                                    <div className="main-cardHeader-text">
-                                        {props.artist.name}
-                                    </div>
-                                </span>
-                                <div className="main-cardSubHeader-root">
-                                    <span className={styles['text-subdued']}>
-                                        {getTranslation(['artist'])}
-                                    </span>
-                                </div>
+                                    {props.artist.name}
+                                </TextComponent>
                             </div>
                         </div>
                     </div>

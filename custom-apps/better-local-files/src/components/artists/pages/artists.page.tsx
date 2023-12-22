@@ -93,7 +93,6 @@ export function ArtistsPage(): JSX.Element {
                     <SearchInput
                         search={search}
                         setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
                         setDebouncedSearch={setDebouncedSearch}
                     />
 

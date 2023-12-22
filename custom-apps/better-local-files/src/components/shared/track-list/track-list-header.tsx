@@ -1,4 +1,3 @@
-import styles from '../../../css/app.module.scss';
 import React from 'react';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import type { SelectedSortOption } from 'custom-apps/better-local-files/src/models/sort-option';
@@ -6,12 +5,15 @@ import { CaretUp } from '../icons/caret-up';
 import { CaretDown } from '../icons/caret-down';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { TextComponent } from '../text/text';
 
 export type Props = {
     headers: TrackListHeaderOption[];
     sortedHeader?: SelectedSortOption;
     onHeaderClicked?: (key: HeaderKey) => void;
 };
+
+// TODO: responsive
 
 export function TrackListHeader(props: Readonly<Props>): JSX.Element {
     function getCaret(): JSX.Element {
@@ -30,7 +32,7 @@ export function TrackListHeader(props: Readonly<Props>): JSX.Element {
         props.sortedHeader !== undefined ? 'main-trackList-sortable' : '';
 
     return (
-        <div className={`${styles.upper} main-trackList-trackListHeader`}>
+        <div className={`main-trackList-trackListHeader`}>
             <div
                 className="main-trackList-trackListHeaderRow main-trackList-trackListRowGrid"
                 aria-rowindex={1}
@@ -68,9 +70,10 @@ export function TrackListHeader(props: Readonly<Props>): JSX.Element {
                                 props.onHeaderClicked?.(header.key);
                             }}
                         >
-                            <span className="standalone-ellipsis-one-line">
+                            <TextComponent variant="mesto">
                                 {header.label}
-                            </span>
+                            </TextComponent>
+
                             {props.sortedHeader &&
                                 props.sortedHeader.key === header.key &&
                                 getCaret()}
