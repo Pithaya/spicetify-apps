@@ -1,15 +1,15 @@
+import type { Observable } from 'rxjs';
 import {
     distinctUntilChanged,
     fromEvent,
     map,
-    Observable,
     Subject,
     Subscription,
 } from 'rxjs';
-import { Beat } from './models/graph/beat';
-import { Edge } from './models/graph/edge';
+import type { Beat } from './models/graph/beat';
+import type { Edge } from './models/graph/edge';
 import { JukeboxSettings } from './models/jukebox-settings';
-import { JukeboxSongState } from './models/jukebox-song-state';
+import type { JukeboxSongState } from './models/jukebox-song-state';
 import { getPlatform } from '@shared/utils';
 
 // Used to print debug messages.
@@ -54,7 +54,7 @@ export class Driver {
      * The scheduled next beat.
      * TODO: Use this instead of seek on slice click.
      */
-    private nextBeat: Beat | null = null;
+    // private nextBeat: Beat | null = null;
 
     /**
      * Resolver used to wait for the seeking to finish.
@@ -68,13 +68,14 @@ export class Driver {
      */
     private beatsSinceLastBranch: number = 0;
 
-    private onProgressSubject: Subject<void> = new Subject<void>();
+    private readonly onProgressSubject: Subject<void> = new Subject<void>();
+
     public onProgress$: Observable<void> =
         this.onProgressSubject.asObservable();
 
     constructor(
         private readonly songState: JukeboxSongState,
-        private readonly settings: Readonly<JukeboxSettings>
+        private readonly settings: Readonly<JukeboxSettings>,
     ) {}
 
     /**
@@ -86,24 +87,27 @@ export class Driver {
         document.addEventListener('keydown', this.onBounceKeyDown);
         document.addEventListener('keyup', this.onBounceKeyUp);
 
-        let source = fromEvent(Spicetify.Player, 'onprogress');
-        let subscription = source
+        // FIXME: Don't use a subscription
+        const source = fromEvent(Spicetify.Player, 'onprogress');
+        const subscription = source
             .pipe(
                 map((e) => (e as any).data),
-                distinctUntilChanged() // onprogress keeps being fired even on pause
+                distinctUntilChanged(), // onprogress keeps being fired even on pause
             )
-            .subscribe((playerProgress) => this.process(playerProgress));
+            .subscribe((playerProgress) => {
+                void this.process(playerProgress);
+            });
 
         this.playerSubscription.add(subscription);
     }
 
-    private onBounceKeyDown = (event: KeyboardEvent) => {
+    private readonly onBounceKeyDown = (event: KeyboardEvent): void => {
         if (event.key === 'Shift') {
             this.bouncing = true;
         }
     };
 
-    private onBounceKeyUp = (event: KeyboardEvent) => {
+    private readonly onBounceKeyUp = (event: KeyboardEvent): void => {
         if (event.key === 'Shift') {
             this.bouncing = false;
         }
@@ -113,12 +117,12 @@ export class Driver {
      * Process the beats.
      * @param playerProgress Current player progress.
      */
-    private process(playerProgress: number): void {
+    private async process(playerProgress: number): Promise<void> {
         // Necessary as playerProgress callbacks can keep firing
         // with the previous time even after seeking
         if (this.isSeekingResolver !== null) {
             this.logDebug(
-                `Is seeking... ${playerProgress} -> ${this.currentBeat?.start}`
+                `Is seeking... ${playerProgress} -> ${this.currentBeat?.start}`,
             );
 
             if (!this.isSeekingResolver(playerProgress)) {
@@ -134,7 +138,7 @@ export class Driver {
         }
 
         this.logDebug(
-            `Processing with current beat: ${this.currentBeat?.toString()}, player time: ${Spicetify.Player.getProgress()}`
+            `Processing with current beat: ${this.currentBeat?.toString()}, player time: ${Spicetify.Player.getProgress()}`,
         );
 
         if (this.lastBranch !== null) {
@@ -155,21 +159,23 @@ export class Driver {
 
         // Get the new current tile
 
+        const nextEnd = this.currentBeat?.next?.end;
+        const previousStart = this.currentBeat?.previous?.start;
         const outOfSync =
-            (this.currentBeat !== null &&
-                this.currentBeat.next !== null &&
-                playerProgress > this.currentBeat.next.end) ||
-            (this.currentBeat !== null &&
-                this.currentBeat.previous !== null &&
-                playerProgress < this.currentBeat.previous.start);
+            (nextEnd !== null &&
+                nextEnd !== undefined &&
+                playerProgress > nextEnd) ||
+            (previousStart !== null &&
+                previousStart !== undefined &&
+                playerProgress < previousStart);
 
         if (outOfSync) {
             console.error(
-                `Out of sync ! ${playerProgress} - ${this.currentBeat?.toString()}`
+                `Out of sync ! ${playerProgress} - ${this.currentBeat?.toString()}`,
             );
         }
 
-        let lastBeat = this.currentBeat;
+        const lastBeat = this.currentBeat;
         this.currentBeat = this.getNextBeat(playerProgress, outOfSync);
 
         if (this.currentBeat === null) {
@@ -178,14 +184,17 @@ export class Driver {
         }
 
         this.logDebug(
-            `Got next beat: ${this.currentBeat?.index}, with time: ${
-                this.currentBeat?.start
-            } - ${
-                this.currentBeat?.end
-            }, player time: ${Spicetify.Player.getProgress()}`
+            `Got next beat: ${this.currentBeat?.index}, with time: ${this
+                .currentBeat?.start} - ${this.currentBeat
+                ?.end}, player time: ${Spicetify.Player.getProgress()}`,
         );
 
-        this.playBeat(lastBeat, this.currentBeat, playerProgress, outOfSync);
+        await this.playBeat(
+            lastBeat,
+            this.currentBeat,
+            playerProgress,
+            outOfSync,
+        );
 
         this.currentBeat.playCount += 1;
         this.songState.beatsPlayed += 1;
@@ -208,14 +217,14 @@ export class Driver {
         lastBeat: Beat | null,
         currentBeat: Beat,
         playerProgress: number,
-        outOfSync: boolean
+        outOfSync: boolean,
     ): Promise<void> {
         if (lastBeat === null) {
             // This is the first tile we're playing, do nothing
             return;
         }
 
-        if (lastBeat.index + 1 == currentBeat.index || outOfSync) {
+        if (lastBeat.index + 1 === currentBeat.index || outOfSync) {
             // We're playing the next beat: do nothing
             return;
         }
@@ -223,13 +232,14 @@ export class Driver {
         // Instead of playing this beat, jump to another one to play it instead
 
         // Player progression in the 'no-jump' beat
-        let playerOffsetInBeat = Spicetify.Player.getProgress() - lastBeat.end;
+        const playerOffsetInBeat =
+            Spicetify.Player.getProgress() - lastBeat.end;
 
         // Seek to the jumped beat + player offset
-        let playerPositionAfterJump = currentBeat.start + playerOffsetInBeat;
+        const playerPositionAfterJump = currentBeat.start + playerOffsetInBeat;
 
         this.logDebug(
-            `Seek to: ${playerPositionAfterJump}ms, from ${playerProgress}ms, with offset ${playerOffsetInBeat}`
+            `Seek to: ${playerPositionAfterJump}ms, from ${playerProgress}ms, with offset ${playerOffsetInBeat}`,
         );
 
         const isForward =
@@ -246,8 +256,8 @@ export class Driver {
 
         this.logDebug(
             `Time to get there: ${Math.abs(
-                Spicetify.Player.getProgress() - playerProgress
-            )}ms`
+                Spicetify.Player.getProgress() - playerProgress,
+            )}ms`,
         );
 
         if (DEBUG) {
@@ -266,7 +276,7 @@ export class Driver {
      */
     private getNextBeat(
         playerProgress: number,
-        outOfSync: boolean
+        outOfSync: boolean,
     ): Beat | null {
         // Either we have to get the first beat
         // The jukebox can be enabled midway though the song, so search for the current beat
@@ -302,12 +312,12 @@ export class Driver {
 
         // Stopped bouncing: continue where we are
         if (this.bounceSeed != null) {
-            let nextBeat = this.bounceSeed;
+            const nextBeat = this.bounceSeed;
             this.bounceSeed = null;
             return nextBeat;
         }
 
-        let nextIndex = this.currentBeat.index + 1;
+        const nextIndex = this.currentBeat.index + 1;
 
         if (nextIndex >= this.songState.graph.beats.length) {
             // We'll reach the end of the song: disable the driver
@@ -316,7 +326,7 @@ export class Driver {
             return null;
         } else {
             return this.selectRandomNextBeat(
-                this.songState.graph.beats[nextIndex]
+                this.songState.graph.beats[nextIndex],
             );
         }
     }
@@ -327,12 +337,12 @@ export class Driver {
      * @returns The selected next beat.
      */
     private selectRandomNextBeat(nextBeat: Beat): Beat {
-        if (nextBeat.neighbours.length == 0) {
+        if (nextBeat.neighbours.length === 0) {
             return nextBeat;
         }
 
         if (this.shouldRandomBranch(nextBeat)) {
-            let next: Edge = nextBeat.neighbours.shift()!;
+            const next: Edge = nextBeat.neighbours.shift()!;
             nextBeat.neighbours.push(next);
 
             this.beatsSinceLastBranch = 0;
@@ -361,12 +371,12 @@ export class Driver {
      * @param beat The beat.
      * @returns A neighbor for this beat.
      */
-    private selectNextNeighbor(beat: Beat) {
-        if (beat.neighbours.length == 0) {
+    private selectNextNeighbor(beat: Beat): Beat {
+        if (beat.neighbours.length === 0) {
             return beat;
         }
 
-        let next: Edge = beat.neighbours.shift()!;
+        const next: Edge = beat.neighbours.shift()!;
         beat.neighbours.push(next);
 
         this.lastBranch = next;
@@ -382,7 +392,7 @@ export class Driver {
      */
     private shouldRandomBranch(beat: Beat): boolean {
         // Always branch if this is our last opportunity
-        if (beat.index == this.songState.graph.lastBranchPoint) {
+        if (beat.index === this.songState.graph.lastBranchPoint) {
             return true;
         }
 
@@ -401,7 +411,7 @@ export class Driver {
             this.songState.currentRandomBranchChance =
                 this.settings.maxRandomBranchChance;
         }
-        var shouldBranch =
+        const shouldBranch =
             Math.random() < this.songState.currentRandomBranchChance;
         if (shouldBranch) {
             this.songState.currentRandomBranchChance =
@@ -413,7 +423,7 @@ export class Driver {
     /**
      * Stops the driver.
      */
-    public stop() {
+    public stop(): void {
         this.playerSubscription.unsubscribe();
         this.playerSubscription = new Subscription();
 
@@ -421,7 +431,7 @@ export class Driver {
         document.removeEventListener('keyup', this.onBounceKeyUp);
     }
 
-    private logDebug(message: string) {
+    private logDebug(message: string): void {
         if (DEBUG) {
             console.log(message);
         }

@@ -1,7 +1,7 @@
-import { IBeatDrawData } from './beat-draw-data.interface';
-import { IEdgeDrawData } from './edge-draw-data.interface';
+import type { BeatDrawData } from './beat-draw-data';
+import type { EdgeDrawData } from './edge-draw-data';
 
-export interface IGraphDrawData {
-    beats: IBeatDrawData[];
-    edges: IEdgeDrawData[];
-}
+export type GraphDrawData = {
+    beats: BeatDrawData[];
+    edges: EdgeDrawData[];
+};

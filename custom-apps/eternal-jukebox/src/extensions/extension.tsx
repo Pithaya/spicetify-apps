@@ -1,14 +1,17 @@
 import {
     addUpdateChecker,
+    renderElement,
     waitForElement,
     waitForSpicetify,
 } from '@shared/utils';
 import { Jukebox } from '../models/jukebox';
 import { version } from '../../package.json';
+import { PlaybarButton } from '../components/playbar-button.component';
+import React from 'react';
 
 // TODO: Add i18n
 
-(async () => {
+void (async () => {
     window.jukebox = new Jukebox();
 
     await waitForSpicetify();
@@ -16,15 +19,14 @@ import { version } from '../../package.json';
     try {
         const element = await waitForElement('.player-controls__right');
 
-        const reactHelper = await import('../helpers/react-helper');
-        reactHelper.ReactHelper.registerPaybarButton(element);
+        renderElement(<PlaybarButton />, element);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
         console.error(error);
         Spicetify.showNotification(
             'Failed to register the eternal jukebox playbar button',
-            true
+            true,
         );
     }
 })();

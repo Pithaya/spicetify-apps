@@ -1,6 +1,6 @@
-import { Edge } from '../graph/edge';
+import type { Edge } from '../graph/edge';
 
-export interface IEdgeDrawData {
+export type EdgeDrawData = {
     edge: Edge;
 
     strokeWidth: number;
@@ -8,4 +8,4 @@ export interface IEdgeDrawData {
 
     color: string;
     activeColor: string;
-}
+};

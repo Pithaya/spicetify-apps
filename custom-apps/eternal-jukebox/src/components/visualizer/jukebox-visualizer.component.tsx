@@ -2,18 +2,18 @@ import styles from '../../css/app.module.scss';
 import React, { useEffect } from 'react';
 import { VisualizerSlice } from './visualizer-slice.component';
 import { VisualizerEdge } from './visualizer-edge.component';
-import { IGraphState } from '../../models/graph/graph-state';
+import type { GraphState } from '../../models/graph/graph-state';
 import { initSvgDrawData } from '../../helpers/visualization-builder';
 
 // TODO: Update tile height depending on each beat's play count.
 
-interface IProps {
-    state: IGraphState;
-}
+type Props = {
+    state: GraphState;
+};
 
 // Reference: https://dev.to/mustapha/how-to-create-an-interactive-svg-donut-chart-using-angular-19eo
 
-export function JukeboxVisualizer(props: IProps) {
+export function JukeboxVisualizer(props: Readonly<Props>): JSX.Element {
     useEffect(() => {
         const activeBranch = document.querySelector('svg path.is-active');
         if (activeBranch !== null) {

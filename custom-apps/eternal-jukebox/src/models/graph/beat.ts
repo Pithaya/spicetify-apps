@@ -1,4 +1,4 @@
-import { Edge } from './edge';
+import type { Edge } from './edge';
 
 /**
  * Represents a beat of the song in the song graph.

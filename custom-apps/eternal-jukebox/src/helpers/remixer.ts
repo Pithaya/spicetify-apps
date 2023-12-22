@@ -1,11 +1,11 @@
-import { AudioAnalysis } from '@shared/cosmos';
-import {
+import type { AudioAnalysis } from '@shared/cosmos';
+import type {
     ChildQuantum,
     hasOverlappingSegments,
     ParentQuantum,
     Quantum,
 } from '../models/quantum.types';
-import { RemixedAnalysis } from '../models/remixer.types';
+import type { RemixedAnalysis } from '../models/remixer.types';
 
 /**
  * A quanta is an element of the analysis.
@@ -20,16 +20,18 @@ export type QuantaType = keyof Pick<
  * Process the audio analysis and add more data.
  */
 export class Remixer {
-    private analysis: RemixedAnalysis;
+    private readonly analysis: RemixedAnalysis;
 
     constructor(analysis: AudioAnalysis) {
-        this.analysis = {
+        const remixedAnalysis: RemixedAnalysis = {
             bars: analysis.bars,
             beats: analysis.beats,
             sections: analysis.sections,
             segments: analysis.segments,
             tatums: analysis.tatums,
-        } as RemixedAnalysis;
+        };
+
+        this.analysis = remixedAnalysis;
     }
 
     public remixTrack(): RemixedAnalysis {
@@ -40,7 +42,7 @@ export class Remixer {
      * Preprocess the track to make it usable by the jukebox
      * @param track
      */
-    private preprocessTrack() {
+    private preprocessTrack(): RemixedAnalysis {
         const types: QuantaType[] = [
             'sections',
             'bars',
@@ -69,36 +71,21 @@ export class Remixer {
             }
         }
 
-        this.connectQuanta(this.analysis['sections'], this.analysis['bars']);
-        this.connectQuanta(this.analysis['bars'], this.analysis['beats']);
-        this.connectQuanta(this.analysis['beats'], this.analysis['tatums']);
-        this.connectQuanta(this.analysis['tatums'], this.analysis['segments']);
+        this.connectQuanta(this.analysis.sections, this.analysis.bars);
+        this.connectQuanta(this.analysis.bars, this.analysis.beats);
+        this.connectQuanta(this.analysis.beats, this.analysis.tatums);
+        this.connectQuanta(this.analysis.tatums, this.analysis.segments);
 
+        this.connectFirstOverlappingSegment(this.analysis, this.analysis.bars);
+        this.connectFirstOverlappingSegment(this.analysis, this.analysis.beats);
         this.connectFirstOverlappingSegment(
             this.analysis,
-            this.analysis['bars']
-        );
-        this.connectFirstOverlappingSegment(
-            this.analysis,
-            this.analysis['beats']
-        );
-        this.connectFirstOverlappingSegment(
-            this.analysis,
-            this.analysis['tatums']
+            this.analysis.tatums,
         );
 
-        this.connectAllOverlappingSegments(
-            this.analysis,
-            this.analysis['bars']
-        );
-        this.connectAllOverlappingSegments(
-            this.analysis,
-            this.analysis['beats']
-        );
-        this.connectAllOverlappingSegments(
-            this.analysis,
-            this.analysis['tatums']
-        );
+        this.connectAllOverlappingSegments(this.analysis, this.analysis.bars);
+        this.connectAllOverlappingSegments(this.analysis, this.analysis.beats);
+        this.connectAllOverlappingSegments(this.analysis, this.analysis.tatums);
 
         return this.analysis;
     }
@@ -111,7 +98,7 @@ export class Remixer {
      */
     private connectQuanta(
         parentElements: ParentQuantum[],
-        childrenElements: ChildQuantum[]
+        childrenElements: ChildQuantum[],
     ): void {
         let lastProcessedChild = 0;
 
@@ -119,11 +106,11 @@ export class Remixer {
             parentElement.children = [];
 
             for (
-                var childIndex = lastProcessedChild;
+                let childIndex = lastProcessedChild;
                 childIndex < childrenElements.length;
                 childIndex++
             ) {
-                var childElement = childrenElements[childIndex];
+                const childElement = childrenElements[childIndex];
 
                 // If the child element is contained in the parent
                 if (
@@ -152,14 +139,14 @@ export class Remixer {
      */
     private connectFirstOverlappingSegment(
         analysis: RemixedAnalysis,
-        quantaArray: (Quantum & hasOverlappingSegments)[]
-    ) {
+        quantaArray: (Quantum & hasOverlappingSegments)[],
+    ): void {
         let lastProcessedSegment = 0;
         const segments = analysis.segments;
 
-        for (let quanta of quantaArray) {
-            for (var j = lastProcessedSegment; j < segments.length; j++) {
-                var currentSegment = segments[j];
+        for (const quanta of quantaArray) {
+            for (let j = lastProcessedSegment; j < segments.length; j++) {
+                const currentSegment = segments[j];
 
                 if (currentSegment.start >= quanta.start) {
                     quanta.firstOverlappingSegment = currentSegment;
@@ -177,16 +164,16 @@ export class Remixer {
      */
     private connectAllOverlappingSegments(
         analysis: RemixedAnalysis,
-        quantas: (Quantum & hasOverlappingSegments)[]
-    ) {
+        quantas: (Quantum & hasOverlappingSegments)[],
+    ): void {
         let lastProcessedSegment = 0;
         const segments = analysis.segments;
 
         for (const quanta of quantas) {
             quanta.overlappingSegments = [];
 
-            for (var j = lastProcessedSegment; j < segments.length; j++) {
-                var currentSegment = segments[j];
+            for (let j = lastProcessedSegment; j < segments.length; j++) {
+                const currentSegment = segments[j];
 
                 // seg stops before quantum so no
                 if (

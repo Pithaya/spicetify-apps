@@ -1,5 +1,8 @@
 export class Point {
-    constructor(public x: number = 0, public y: number = 0) {}
+    constructor(
+        public x: number = 0,
+        public y: number = 0,
+    ) {}
 
     public toString(): string {
         return `${this.x},${this.y}`;
@@ -11,7 +14,7 @@ export class Point {
 
     public static getDistanceBetweenPoints(
         point1: Point,
-        point2: Point
+        point2: Point,
     ): number {
         const y = point2.x - point1.x;
         const x = point2.y - point1.y;

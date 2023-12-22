@@ -1,7 +1,7 @@
-import { Beat } from '../graph/beat';
-import { Point } from './point';
+import type { Beat } from '../graph/beat';
+import type { Point } from './point';
 
-export interface IBeatDrawData {
+export type BeatDrawData = {
     beat: Beat;
 
     percentFromStart: number;
@@ -19,4 +19,4 @@ export interface IBeatDrawData {
 
     color: string;
     activeColor: string;
-}
+};

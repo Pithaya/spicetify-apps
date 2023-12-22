@@ -1,10 +1,9 @@
 import styles from '../../css/app.module.scss';
-import React, { CSSProperties } from 'react';
+import React, { type CSSProperties } from 'react';
 import { Settings } from 'lucide-react';
-import react from 'react';
 import { SettingsModal } from './settings-modal.component';
 
-export function SettingsButton() {
+export function SettingsButton(): JSX.Element {
     const buttonSize = 50;
     const borderRadius = 15;
     const iconSize = 20;
@@ -15,10 +14,10 @@ export function SettingsButton() {
         borderRadius: `${borderRadius}px`,
     };
 
-    function onClick() {
+    function onClick(): void {
         Spicetify.PopupModal.display({
             title: 'Jukebox settings',
-            content: react.createElement(SettingsModal) as any,
+            content: React.createElement(SettingsModal) as any,
             isLarge: true,
         });
     }
