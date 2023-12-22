@@ -10,6 +10,7 @@ import { useIntersectionObserver } from '../../../hooks/use-intersection-observe
 import { RowMenu } from '../menus/row-menu';
 import { TextComponent } from '../text/text';
 import { SpotifyIcon } from '../icons/spotify-icon';
+import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 
 export type Props = {
     track: Track;
@@ -26,13 +27,20 @@ export type Props = {
         contextUri?: string,
         sectionIndex?: number,
     ) => void;
+    displayType: DisplayType;
 };
 
 export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
 
-    const placeholder = <div style={{ height: '54px' }}></div>;
+    const placeholder = (
+        <div
+            style={{
+                height: props.displayType === 'compact' ? '32px' : '54px',
+            }}
+        ></div>
+    );
 
     // TODO: Set the correct aria-rowindex
     // TODO: Add to playlist menu
@@ -54,9 +62,11 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                 props.active ? 'main-trackList-active' : ''
                             } ${
                                 props.selected ? 'main-trackList-selected' : ''
+                            } ${
+                                props.displayType === 'compact'
+                                    ? 'main-trackList-rowCompactMode'
+                                    : ''
                             }`}
-                            draggable="false"
-                            role="presentation"
                         >
                             <div
                                 className="main-trackList-rowSectionIndex"

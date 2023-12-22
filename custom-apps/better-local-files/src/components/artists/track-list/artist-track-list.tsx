@@ -17,6 +17,8 @@ export type Props = {
     tracks: Track[];
 };
 
+// TODO: Compact display type
+
 export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
     const headers: TrackListHeaderOption[] = [
         {
@@ -73,6 +75,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                         <TrackListRowAlbumLink key={track.uri} track={track} />,
                     ];
                 }}
+                displayType="list"
             ></TrackListGrid>
         </>
     );

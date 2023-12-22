@@ -191,6 +191,10 @@
     --row-height: 56px;
 }
 
+.display-list-compact {
+    --row-height: 32px;
+}
+
 .limit-lines-2 {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

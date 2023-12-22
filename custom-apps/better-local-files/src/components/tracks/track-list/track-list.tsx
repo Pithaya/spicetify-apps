@@ -19,10 +19,16 @@ import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { TextComponent } from '../../shared/text/text';
+import { TrackListRowArtistLink } from '../../shared/track-list/track-list-row-artist-link';
 
 export type Props = {
     tracks: Track[];
 };
+
+// TODO: Get / store global view mode
+// Spicetify.Platform.LocalStorageAPI.items[Spicetify.Platform.LocalStorageAPI.createNamespacedKey("view-mode")]
+
+// TODO: Store sort option
 
 /**
  * Contains the filtering, ordering, and play logic for a list of tracks.
@@ -63,16 +69,35 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     const [selectedDisplayType, setSelectedDisplayType] =
         useState<DisplayType>('list');
 
-    const headers: TrackListHeaderOption[] = [
-        selectedSortOption.key === 'artist'
-            ? {
-                  key: 'artist',
-                  label: getTranslation(['artist']),
-              }
-            : {
-                  key: 'title',
-                  label: getTranslation(['tracklist.header.title']),
-              },
+    const headers: TrackListHeaderOption[] = [];
+
+    if (selectedDisplayType === 'list') {
+        // First header can be artist or title
+        headers.push(
+            selectedSortOption.key === 'artist'
+                ? {
+                      key: 'artist',
+                      label: getTranslation(['artist']),
+                  }
+                : {
+                      key: 'title',
+                      label: getTranslation(['tracklist.header.title']),
+                  },
+        );
+    } else {
+        headers.push(
+            {
+                key: 'title',
+                label: getTranslation(['tracklist.header.title']),
+            },
+            {
+                key: 'artist',
+                label: getTranslation(['artist']),
+            },
+        );
+    }
+
+    headers.push(
         {
             key: 'album',
             label: getTranslation(['tracklist.header.album']),
@@ -81,7 +106,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
             key: 'date',
             label: getTranslation(['tracklist.header.date-added']),
         },
-    ];
+    );
 
     function filterTracks(tracks: Track[], search: string): Track[] {
         if (search === '') {
@@ -154,14 +179,16 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
             if (
                 !fromDropdownMenu &&
                 headerKey === 'title' &&
-                selectedSortOption.order === 'descending'
+                selectedSortOption.order === 'descending' &&
+                selectedDisplayType !== 'compact'
             ) {
                 newKey = 'artist';
                 newOrder = 'ascending';
             } else if (
                 !fromDropdownMenu &&
                 headerKey === 'artist' &&
-                selectedSortOption.order === 'descending'
+                selectedSortOption.order === 'descending' &&
+                selectedDisplayType !== 'compact'
             ) {
                 newKey = 'title';
                 newOrder = 'ascending';
@@ -227,12 +254,35 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                 }}
                 sortedHeader={selectedSortOption}
                 getRowContent={(track) => {
-                    return [
-                        <TrackListRowImageTitle
-                            track={track}
-                            withArtists={true}
-                            key={track.uri}
-                        />,
+                    const contents = [
+                        selectedDisplayType === 'compact' ? (
+                            <TextComponent
+                                className="main-trackList-rowTitle standalone-ellipsis-one-line"
+                                variant="ballad"
+                                semanticColor="textBase"
+                                key={track.uri}
+                            >
+                                {track.name}
+                            </TextComponent>
+                        ) : (
+                            <TrackListRowImageTitle
+                                track={track}
+                                withArtists={true}
+                                key={track.uri}
+                            />
+                        ),
+                    ];
+
+                    if (selectedDisplayType === 'compact') {
+                        contents.push(
+                            <TrackListRowArtistLink
+                                track={track}
+                                key={track.uri}
+                            />,
+                        );
+                    }
+
+                    contents.push(
                         <TrackListRowAlbumLink track={track} key={track.uri} />,
                         <TextComponent
                             variant="mesto"
@@ -241,8 +291,11 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                         >
                             {track.addedAt.toLocaleDateString()}
                         </TextComponent>,
-                    ];
+                    );
+
+                    return contents;
                 }}
+                displayType={selectedDisplayType}
             />
         </>
     );

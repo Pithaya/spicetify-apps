@@ -17,6 +17,8 @@ export type Props = {
     discs: Map<number, Track[]>;
 };
 
+// TODO: Compact display type
+
 export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
     const tracks: Track[] = [];
     const subTracks: SubTracksList[] = [];
@@ -85,6 +87,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                         />,
                     ];
                 }}
+                displayType="list"
             ></TrackListGrid>
         </>
     );

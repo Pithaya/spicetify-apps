@@ -10,6 +10,7 @@ import {
     usePlayStatus,
 } from 'custom-apps/better-local-files/src/hooks/use-play-status';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
@@ -23,6 +24,7 @@ export type Props = {
     useTrackNumber: boolean;
     onPlayTrack: (uri: string) => void;
     getRowContent: (track: Track) => JSX.Element[];
+    displayType: DisplayType;
 } & TrackListHeaderProps;
 
 /**
@@ -96,7 +98,13 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                 onHeaderClicked={props.onHeaderClicked}
             ></TrackListHeader>
 
-            <div className={`${styles['display-list']}`}>
+            <div
+                className={`${
+                    props.displayType === 'compact'
+                        ? styles['display-list-compact']
+                        : styles['display-list']
+                }`}
+            >
                 {props.tracks.map((track, index) => (
                     <TrackListRow
                         key={track.uri}
@@ -117,6 +125,7 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                             props.onPlayTrack(track.uri);
                         }}
                         dragHandler={dragHandler}
+                        displayType={props.displayType}
                     >
                         {props.getRowContent(track)}
                     </TrackListRow>
@@ -148,6 +157,7 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                                         props.onPlayTrack(track.uri);
                                     }}
                                     dragHandler={dragHandler}
+                                    displayType={props.displayType}
                                 >
                                     {props.getRowContent(track)}
                                 </TrackListRow>
