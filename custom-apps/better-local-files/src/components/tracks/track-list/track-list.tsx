@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import type {
+    DisplayType,
     SelectedSortOption,
     SortOption,
     SortOrder,
@@ -57,6 +58,9 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
 
     const [selectedSortOption, setSelectedSortOption] =
         useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+
+    const [selectedDisplayType, setSelectedDisplayType] =
+        useState<DisplayType>('list');
 
     const headers: TrackListHeaderOption[] = [
         selectedSortOption.key === 'artist'
@@ -198,6 +202,9 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                         setSelectedSortOption={(key) => {
                             handleSortOptionChange(key, true);
                         }}
+                        displayTypes={['list', 'compact']}
+                        selectedDisplayType={selectedDisplayType}
+                        setSelectedDisplayType={setSelectedDisplayType}
                     />
                 </div>
             </div>

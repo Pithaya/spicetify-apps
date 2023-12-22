@@ -97,6 +97,9 @@ export function AlbumsPage(): JSX.Element {
                         sortOptions={sortOptions}
                         selectedSortOption={selectedSortOption}
                         setSelectedSortOption={handleSortOptionChange}
+                        displayTypes={['grid']}
+                        selectedDisplayType="grid"
+                        setSelectedDisplayType={() => {}}
                     />
                 </div>
             </div>

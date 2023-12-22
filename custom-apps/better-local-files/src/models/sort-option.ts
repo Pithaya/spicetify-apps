@@ -20,3 +20,14 @@ export type SelectedSortOption = {
     key: HeaderKey;
     order: SortOrder;
 };
+
+/**
+ * Display type to display in the sort dropdown.
+ */
+export type DisplayType = 'list' | 'compact' | 'grid';
+
+export const displayIcons: Record<DisplayType, Spicetify.Icon> = {
+    list: 'list-view',
+    compact: 'menu',
+    grid: 'grid-view',
+};

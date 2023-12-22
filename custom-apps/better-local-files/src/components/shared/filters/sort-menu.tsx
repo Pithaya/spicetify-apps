@@ -1,32 +1,33 @@
-import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { CaretDown } from '../icons/caret-down';
-import type {
-    SelectedSortOption,
-    SortOption,
+import {
+    displayIcons,
+    type DisplayType,
+    type SelectedSortOption,
+    type SortOption,
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { SpotifyIcon } from '../icons/spotify-icon';
+import { MenuItemHeading } from '../menus/menu-item-heading';
+import { MenuItemLabel } from '../menus/menu-item-label';
 
 export type Props = {
     sortOptions: SortOption[];
     selectedSortOption: SelectedSortOption;
     setSelectedSortOption: (key: HeaderKey) => void;
+    displayTypes: DisplayType[];
+    selectedDisplayType: DisplayType;
+    setSelectedDisplayType: (type: DisplayType) => void;
 };
 
 export function SortMenu(props: Readonly<Props>): JSX.Element {
-    const menu = (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
-            <li>
-                <span
-                    className={`${styles['sort-menu-header']} main-contextMenu-menuHeading ellipsis-one-line`}
-                    dir="auto"
-                >
-                    {getTranslation(['drop_down.sort_by'])}
-                </span>
-            </li>
+    const sort = (
+        <>
+            <MenuItemHeading>
+                {getTranslation(['drop_down.sort_by'])}
+            </MenuItemHeading>
 
             {props.sortOptions.map((o) => (
                 <Spicetify.ReactComponent.MenuItem
@@ -34,22 +35,64 @@ export function SortMenu(props: Readonly<Props>): JSX.Element {
                     onClick={() => {
                         props.setSelectedSortOption(o.key);
                     }}
+                    trailingIcon={
+                        props.selectedSortOption.key === o.key &&
+                        (props.selectedSortOption.order === 'ascending' ? (
+                            <ArrowUp />
+                        ) : (
+                            <ArrowDown />
+                        ))
+                    }
+                    style={{
+                        color:
+                            props.selectedSortOption.key === o.key
+                                ? 'var(--spice-button-active)'
+                                : undefined,
+                    }}
                 >
-                    <div className={`${styles['sort-menu-item']}`}>
-                        <span>{o.label}</span>
-                        {props.selectedSortOption.key === o.key &&
-                            (props.selectedSortOption.order === 'ascending' ? (
-                                <ArrowUp
-                                    className={`${styles['sort-menu-caret']}`}
-                                />
-                            ) : (
-                                <ArrowDown
-                                    className={`${styles['sort-menu-caret']}`}
-                                />
-                            ))}
-                    </div>
+                    <MenuItemLabel>{o.label}</MenuItemLabel>
                 </Spicetify.ReactComponent.MenuItem>
             ))}
+        </>
+    );
+
+    const display = (
+        <>
+            <MenuItemHeading>
+                {getTranslation([
+                    'web-player.your-library-x.sort-and-view-picker.view-as',
+                ])}
+            </MenuItemHeading>
+
+            {props.displayTypes.map((displayType) => (
+                <Spicetify.ReactComponent.MenuItem
+                    key={displayType}
+                    onClick={() => {
+                        props.setSelectedDisplayType(displayType);
+                    }}
+                    leadingIcon={
+                        <SpotifyIcon
+                            icon={displayIcons[displayType]}
+                            iconSize={16}
+                        />
+                    }
+                    role="menuitemradio"
+                    aria-checked={props.selectedDisplayType === displayType}
+                >
+                    <MenuItemLabel>
+                        {getTranslation([
+                            `web-player.your-library-x.sort-and-view-picker.${displayType}`,
+                        ])}
+                    </MenuItemLabel>
+                </Spicetify.ReactComponent.MenuItem>
+            ))}
+        </>
+    );
+
+    const menu = (
+        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
+            {props.sortOptions.length > 0 && sort}
+            {props.displayTypes.length > 0 && display}
         </Spicetify.ReactComponent.Menu>
     );
 
@@ -59,17 +102,16 @@ export function SortMenu(props: Readonly<Props>): JSX.Element {
             action="toggle"
             menu={menu}
         >
-            <button
-                className="x-sortBox-sortDropdown"
-                type="button"
-                aria-expanded="false"
-            >
+            <button className="x-sortBox-sortDropdown">
                 <span>
                     {props.sortOptions.find(
                         (o) => o.key === props.selectedSortOption.key,
                     )?.label ?? ''}
                 </span>
-                <CaretDown />
+                <SpotifyIcon
+                    icon={displayIcons[props.selectedDisplayType]}
+                    iconSize={16}
+                />
             </button>
         </Spicetify.ReactComponent.ContextMenu>
     );
