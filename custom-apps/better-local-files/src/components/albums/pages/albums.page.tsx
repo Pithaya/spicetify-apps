@@ -90,7 +90,6 @@ export function AlbumsPage(): JSX.Element {
                     <SearchInput
                         search={search}
                         setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
                         setDebouncedSearch={setDebouncedSearch}
                     />
 

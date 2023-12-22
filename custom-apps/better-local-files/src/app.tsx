@@ -1,7 +1,6 @@
 import { getPlatform } from '@shared/utils';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import ReactMarkdown from 'react-markdown';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
@@ -37,12 +36,17 @@ function App(): JSX.Element {
     async function init(): Promise<void> {
         await window.localTracksService.init();
 
-        // eslint-disable-next-line react/no-children-prop
-        const markdown = <ReactMarkdown children={CHANGE_NOTES} />;
-
         await whatsNew('better-local-files', version, {
             title: `New in v${version}`,
-            content: markdown,
+            content: (
+                <p>
+                    <ul>
+                        {CHANGE_NOTES.map((value) => {
+                            return <li key={value}>{value}</li>;
+                        })}
+                    </ul>
+                </p>
+            ),
             isLarge: true,
         });
     }
