@@ -3,7 +3,7 @@ import { waitForElement, waitForSpicetify } from '@shared/utils';
 import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { renderElement } from '@shared/utils/react-utils';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
@@ -41,25 +41,20 @@ async function main(): Promise<void> {
     styleSheet.innerText = styles;
     document.head.appendChild(styleSheet);
 
-    ReactDOM.render(
-        ReactDOM.createPortal(
-            <NavBarLink
-                icon={
-                    <Crown size={24} className="made-for-you-icon home-icon" />
-                }
-                activeIcon={
-                    <Crown
-                        size={24}
-                        fill="currentColor"
-                        className="made-for-you-icon home-active-icon"
-                    />
-                }
-                label={i18next.t('forYou')}
-                href="/genre/made-for-x-hub"
-            />,
-            element,
-        ),
-        document.createElement('div'),
+    renderElement(
+        <NavBarLink
+            icon={<Crown size={24} className="made-for-you-icon home-icon" />}
+            activeIcon={
+                <Crown
+                    size={24}
+                    fill="currentColor"
+                    className="made-for-you-icon home-active-icon"
+                />
+            }
+            label={i18next.t('forYou')}
+            href="/genre/made-for-x-hub"
+        />,
+        element,
     );
 }
 
