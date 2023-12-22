@@ -1,22 +1,21 @@
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import React from 'react';
 
-export function DiscDivider(props: { discNumber: number }) {
+type Props = {
+    discNumber: number;
+};
+
+export function DiscDivider(props: Readonly<Props>): JSX.Element {
     return (
-        <div
-            className="main-trackList-trackListRowGrid main-trackList-discRow"
-            role="presentation"
-        >
+        <div className="main-trackList-trackListRowGrid main-trackList-discRow">
             <div
                 className="main-trackList-rowSectionIndex"
-                role="gridcell"
                 aria-colindex={1}
                 tabIndex={-1}
             >
                 <div className="main-trackList-rowMarker">
                     <span className="main-trackList-icon">
                         <svg
-                            role="img"
                             height="16"
                             width="16"
                             aria-hidden="true"
@@ -31,7 +30,6 @@ export function DiscDivider(props: { discNumber: number }) {
             </div>
             <div
                 className="main-trackList-rowSectionStart"
-                role="gridcell"
                 aria-colindex={2}
                 tabIndex={-1}
             >
@@ -42,7 +40,7 @@ export function DiscDivider(props: { discNumber: number }) {
                     >
                         {getTranslation(
                             ['tracklist.disc-sperator.title'],
-                            props.discNumber
+                            props.discNumber,
                         )}
                     </div>
                 </div>

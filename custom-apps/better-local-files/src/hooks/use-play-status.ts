@@ -2,27 +2,28 @@ import { useEffect, useState } from 'react';
 
 export type PlayStatus = 'play' | 'pause';
 
-export function usePlayStatus() {
+export function usePlayStatus(): PlayStatus {
     const [playStatus, setPlayStatus] = useState<PlayStatus>(
-        Spicetify.Player?.data?.isPaused ? 'pause' : 'play'
+        Spicetify.Player?.data?.isPaused ? 'pause' : 'play',
     );
 
     useEffect(() => {
-        function handleStatusChange(event?: Event) {
+        function handleStatusChange(event?: Event): void {
             setPlayStatus(
                 ((event as any)?.data as Spicetify.PlayerState).isPaused
                     ? 'pause'
-                    : 'play'
+                    : 'play',
             );
         }
 
         Spicetify.Player.addEventListener('onplaypause', handleStatusChange);
 
-        return () =>
+        return () => {
             Spicetify.Player.removeEventListener(
                 'onplaypause',
-                handleStatusChange
+                handleStatusChange,
             );
+        };
     });
 
     return playStatus;

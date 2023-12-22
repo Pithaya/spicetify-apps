@@ -10,15 +10,16 @@
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps better-local-files && spicetify apply",
         "unapply": "spicetify config custom_apps better-local-files- && spicetify apply",
-        "lint": "npx eslint --ext .tsx,.ts src/"
+        "lint": "npx eslint --ext .tsx,.ts src/",
+        "format": "npx prettier --write src/"
     },
     "license": "MIT",
     "devDependencies": {
         "@types/pixelmatch": "^5.2.4",
-        "lucide-react": "^0.115.0",
+        "lucide-react": "^0.299.0",
+        "observable-hooks": "^4.2.3",
         "pixelmatch": "^5.3.0",
-        "react-markdown": "8.0.6",
-        "rxjs": "^7.8.0",
+        "rxjs": "^7.8.1",
         "spcr-whats-new": "^1.0.1"
     }
 }

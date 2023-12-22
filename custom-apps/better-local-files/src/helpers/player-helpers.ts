@@ -1,4 +1,4 @@
-import { LocalTrack } from '@shared/platform/local-files';
+import type { LocalTrack } from '@shared/platform/local-files';
 
 /**
  * Plays a local track with the given context.
@@ -22,7 +22,7 @@ export function playTrack(trackUri: string, context: LocalTrack[]): void {
             skipTo: {
                 uri: trackUri,
             },
-        }
+        },
     );
 }
 
@@ -41,6 +41,6 @@ export function playContext(context: LocalTrack[]): void {
             pages: [{ items: context }],
         },
         {},
-        {}
+        {},
     );
 }

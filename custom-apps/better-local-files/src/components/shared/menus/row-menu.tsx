@@ -3,23 +3,24 @@ import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import {
-    Routes,
+    ALBUM_ROUTE,
+    ARTIST_ROUTE,
     SPOTIFY_MENU_CLASSES,
 } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArtistSelectionMenu } from './artist-selection-menu';
-import { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
 import { getPlatform } from '@shared/utils';
 
-export interface IProps {
+export type Props = {
     track: Track;
-}
+};
 
 // TODO: multi track selection
 
-export function RowMenu(props: IProps) {
-    function addToQueue() {
-        getPlatform().PlayerAPI.addToQueue([{ uri: props.track.uri }]);
+export function RowMenu(props: Readonly<Props>): JSX.Element {
+    async function addToQueue(): Promise<void> {
+        await getPlatform().PlayerAPI.addToQueue([{ uri: props.track.uri }]);
     }
 
     return (
@@ -33,9 +34,9 @@ export function RowMenu(props: IProps) {
 
             {props.track.artists.length === 1 ? (
                 <Spicetify.ReactComponent.MenuItem
-                    onClick={() =>
-                        navigateTo(Routes.artist, props.track.artists[0].uri)
-                    }
+                    onClick={() => {
+                        navigateTo(ARTIST_ROUTE, props.track.artists[0].uri);
+                    }}
                 >
                     <span>{getTranslation(['contextmenu.go-to-artist'])}</span>
                 </Spicetify.ReactComponent.MenuItem>
@@ -50,7 +51,9 @@ export function RowMenu(props: IProps) {
 
             <Spicetify.ReactComponent.MenuItem
                 divider="after"
-                onClick={() => navigateTo(Routes.album, props.track.album.uri)}
+                onClick={() => {
+                    navigateTo(ALBUM_ROUTE, props.track.album.uri);
+                }}
             >
                 <span>{getTranslation(['contextmenu.go-to-album'])}</span>
             </Spicetify.ReactComponent.MenuItem>

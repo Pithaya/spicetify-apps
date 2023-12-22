@@ -1,13 +1,12 @@
 import React from 'react';
 
-export interface IProps {
+export type Props = {
     className?: string;
-}
+};
 
-export function CaretUp(props: IProps) {
+export function CaretUp(props: Readonly<Props>): JSX.Element {
     return (
         <svg
-            role="img"
             height="16"
             width="16"
             viewBox="0 0 16 16"

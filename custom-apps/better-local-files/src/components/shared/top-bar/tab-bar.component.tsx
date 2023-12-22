@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { TopBarItem } from '../../../models/top-bar-item';
+import type { TopBarItem } from '../../../models/top-bar-item';
 import { TabBarItem } from './tab-bar-item.component';
 import { TabBarMore } from './tab-bar-more.component';
 import styles from '../../../css/app.module.scss';
 
-export interface IProps {
+export type Props = {
     items: TopBarItem[];
     activeItem: TopBarItem;
     onItemClicked: (item: TopBarItem) => void;
     windowSize: number;
-}
+};
 
-export function TabBar(props: IProps) {
+export function TabBar(props: Readonly<Props>): JSX.Element {
     const tabBarRef = React.useRef<HTMLUListElement | null>(null);
     const [childrenSizes, setChildrenSizes] = useState([] as number[]);
     const [availableSpace, setAvailableSpace] = useState(0);
-    const [droplistItem, setDroplistItems] = useState([] as number[]);
+    const [droplistItems, setDroplistItems] = useState([] as number[]);
 
     useEffect(() => {
         if (!tabBarRef.current) return;
@@ -67,7 +67,7 @@ export function TabBar(props: IProps) {
         <nav className={styles['tabBar']}>
             <ul ref={tabBarRef}>
                 {props.items
-                    .filter((_, id) => !droplistItem.includes(id))
+                    .filter((_, id) => !droplistItems.includes(id))
                     .map((item) => (
                         <TabBarItem
                             key={item.key}
@@ -76,10 +76,10 @@ export function TabBar(props: IProps) {
                             onItemClicked={props.onItemClicked}
                         />
                     ))}
-                {droplistItem.length || childrenSizes.length === 0 ? (
+                {droplistItems.length || childrenSizes.length === 0 ? (
                     <TabBarMore
                         items={props.items.filter(
-                            (_, id) => !droplistItem.includes(id)
+                            (_, id) => !droplistItems.includes(id),
                         )}
                         activeItem={props.activeItem}
                         onClick={props.onItemClicked}

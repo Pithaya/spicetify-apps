@@ -1,4 +1,5 @@
-import { ArgumentError, SpotifyError } from './models';
+import type { SpotifyError } from './models';
+import { ArgumentError } from './models';
 
 export function isSpotifyError(error: unknown): error is SpotifyError {
     return (

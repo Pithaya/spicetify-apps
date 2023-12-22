@@ -7,7 +7,7 @@ export function listIcons(): void {
             iconName,
             () => {},
             () => true,
-            `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${icon}</svg>` as any
+            `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${icon}</svg>` as any,
         );
     });
 

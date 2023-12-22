@@ -1,23 +1,18 @@
 import styles from './multi-range-slider.module.scss';
-import React, {
-    useEffect,
-    useState,
-    useCallback,
-    useRef,
-    ChangeEvent,
-} from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 // Adapted from: https://dev.to/sandra_lewis/building-a-multi-range-slider-in-react-from-scratch-4dl1
 
-interface MultiRangeSliderProps {
+type Props = {
     min: number;
     max: number;
     minDefaultValue: number;
     maxDefaultValue: number;
     onChange: (value: { min: number; max: number }) => void;
-}
+};
 
-export function MultiRangeSlider(props: MultiRangeSliderProps) {
+export function MultiRangeSlider(props: Readonly<Props>): JSX.Element {
     const [minVal, setMinVal] = useState(props.minDefaultValue);
     const [maxVal, setMaxVal] = useState(props.maxDefaultValue);
 
@@ -29,7 +24,7 @@ export function MultiRangeSlider(props: MultiRangeSliderProps) {
     const getPercent = useCallback(
         (value: number) =>
             Math.round(((value - props.min) / (props.max - props.min)) * 100),
-        [props.min, props.max]
+        [props.min, props.max],
     );
 
     // Set width of the range to decrease from the left side
@@ -73,7 +68,7 @@ export function MultiRangeSlider(props: MultiRangeSliderProps) {
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const value = Math.min(
                         event.target.valueAsNumber,
-                        maxVal - 1
+                        maxVal - 1,
                     );
                     setMinVal(value);
                     event.target.value = value.toString();
@@ -96,7 +91,7 @@ export function MultiRangeSlider(props: MultiRangeSliderProps) {
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const value = Math.max(
                         event.target.valueAsNumber,
-                        minVal + 1
+                        minVal + 1,
                     );
                     setMaxVal(value);
                     event.target.value = value.toString();

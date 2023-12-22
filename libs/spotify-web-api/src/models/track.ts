@@ -1,6 +1,6 @@
-import { SimplifiedAlbum } from './album';
-import { SimplifiedArtist } from './artist';
-import { Restrictions } from './restrictions';
+import type { SimplifiedAlbum } from './album';
+import type { SimplifiedArtist } from './artist';
+import type { Restrictions } from './restrictions';
 
 /**
  * A track.

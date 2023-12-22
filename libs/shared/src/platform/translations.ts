@@ -1,3 +1,1 @@
-export type Translations = {
-    [translationKey: string]: string;
-};
+export type Translations = Record<string, string>;

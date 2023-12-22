@@ -1,13 +1,13 @@
-import { Folder, Playlist } from '@shared/platform/rootlist';
+import type { Folder, Playlist } from '@shared/platform/rootlist';
 import { getPlatform } from '@shared/utils';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import React, { useEffect, useState } from 'react';
 
-export interface PlaylistSelectionMenuProps {
+export type Props = {
     tracksUri: string[];
-}
+};
 
-export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
+export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
     const playlistAPI = getPlatform().PlaylistAPI;
     const rootlistAPI = getPlatform().RootlistAPI;
     const userAPI = getPlatform().UserAPI;
@@ -15,7 +15,7 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     useEffect(() => {
-        async function getPlaylists() {
+        async function getPlaylists(): Promise<void> {
             const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
@@ -30,10 +30,10 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
             setPlaylists(userPlaylists);
         }
 
-        getPlaylists();
+        void getPlaylists();
     }, []);
 
-    async function addToPlaylist(playlistUri: string) {
+    async function addToPlaylist(playlistUri: string): Promise<void> {
         await playlistAPI.add(playlistUri, props.tracksUri, { after: 'end' });
     }
 
@@ -42,7 +42,10 @@ export function PlaylistSelectionMenu(props: PlaylistSelectionMenuProps) {
             {playlists.map((p) => {
                 return (
                     <Spicetify.ReactComponent.MenuItem
-                        onClick={() => addToPlaylist(p.uri)}
+                        onClick={async () => {
+                            await addToPlaylist(p.uri);
+                        }}
+                        key={p.uri}
                     >
                         <span>{p.name}</span>
                     </Spicetify.ReactComponent.MenuItem>

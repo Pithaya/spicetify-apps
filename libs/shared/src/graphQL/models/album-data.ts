@@ -1,4 +1,4 @@
-import { ImageSource } from './image-source';
+import type { ImageSource } from './image-source';
 
 export type AlbumData = {
     albumUnion: {

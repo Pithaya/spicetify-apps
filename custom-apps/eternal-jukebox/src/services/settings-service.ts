@@ -1,8 +1,7 @@
-import {
-    JukeboxSettings,
-    JukeboxStoredSettings,
-} from '../models/jukebox-settings';
+import { JukeboxSettings } from '../models/jukebox-settings';
+import type { JukeboxStoredSettings } from '../models/jukebox-settings';
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class SettingsService {
     private static readonly settingId: string = 'jukebox:settings';
 

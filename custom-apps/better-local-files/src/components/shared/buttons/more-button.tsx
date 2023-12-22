@@ -2,12 +2,12 @@ import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { MoreIcon } from '../icons/more-icon';
 
-export interface MoreButtonProps {
+export type Props = {
     label: string;
     menu: JSX.Element;
-}
+};
 
-export function MoreButton(props: Readonly<MoreButtonProps>) {
+export function MoreButton(props: Readonly<Props>): JSX.Element {
     return (
         <Spicetify.ReactComponent.TooltipWrapper
             label={props.label}

@@ -1,19 +1,19 @@
 import React from 'react';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import { getPlatform } from '@shared/utils';
 
-export interface MultiTrackMenuProps {
+export type Props = {
     tracks: Track[];
-}
+};
 
-export function MultiTrackMenu(props: MultiTrackMenuProps) {
-    function addToQueue() {
-        getPlatform().PlayerAPI.addToQueue(
-            props.tracks.map((t) => ({ uri: t.uri }))
+export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
+    async function addToQueue(): Promise<void> {
+        await getPlatform().PlayerAPI.addToQueue(
+            props.tracks.map((t) => ({ uri: t.uri })),
         );
     }
 

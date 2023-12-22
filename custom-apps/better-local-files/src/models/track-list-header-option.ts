@@ -1,9 +1,9 @@
-import { HeaderKey } from '../constants/constants';
+import type { HeaderKey } from '../constants/constants';
 
 /**
  * A track list header.
  */
-export interface TrackListHeaderOption {
+export type TrackListHeaderOption = {
     key: HeaderKey;
     label: string;
-}
+};

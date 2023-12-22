@@ -1,11 +1,11 @@
 export type LocalURI = {
     hasBase64Id: false;
 
-    getPath(): string;
-    toString(): string;
-    toURI(): string;
-    toURL(): string;
-    toURLPath(): string;
+    getPath: () => string;
+    toString: () => string;
+    toURI: () => string;
+    toURL: () => string;
+    toURLPath: () => string;
 };
 
 export type LocalTrackURI = LocalURI & {
@@ -64,8 +64,8 @@ export type LocalTrackSortOption = {
 };
 
 export type LocalFilesAPI = {
-    getTracks(
+    getTracks: (
         sort?: LocalTrackSortOption | undefined,
-        search?: string | ''
-    ): Promise<LocalTrack[]>;
+        search?: string | '',
+    ) => Promise<LocalTrack[]>;
 };

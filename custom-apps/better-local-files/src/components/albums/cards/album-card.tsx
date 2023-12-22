@@ -2,23 +2,26 @@ import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { navigateTo } from '../../../helpers/history-helper';
-import { Routes } from '../../../constants/constants';
 import { PlayButton } from '../../shared/buttons/play-button';
-import { Album } from 'custom-apps/better-local-files/src/models/album';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
+import {
+    ALBUM_ROUTE,
+    ARTIST_ROUTE,
+} from 'custom-apps/better-local-files/src/constants/constants';
 
-export interface IProps {
+export type Props = {
     album: Album;
     onPlayClicked: (a: Album) => void;
-}
+};
 
-export function AlbumCard(props: IProps) {
+export function AlbumCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
     const dragHandler = Spicetify.ReactHook.DragHandler(
         props.album.getTracks().map((t) => t.uri),
         props.album.name,
-        props.album.uri
+        props.album.uri,
     );
 
     const placeholder = <div style={{ height: '250px' }}></div>;
@@ -45,10 +48,12 @@ export function AlbumCard(props: IProps) {
         <div
             className={`${styles['main-card-card']} main-card-card`}
             draggable="true"
-            onClick={() => navigateTo(Routes.album, props.album.uri)}
+            onClick={() => {
+                navigateTo(ALBUM_ROUTE, props.album.uri);
+            }}
             onDragStart={dragHandler}
         >
-            <div draggable="false" className="main-card-draggable">
+            <div className="main-card-draggable">
                 <div className="main-card-imageContainer">
                     <div className="main-cardImage-imageWrapper">
                         <img
@@ -88,13 +93,13 @@ export function AlbumCard(props: IProps) {
                     <div className="main-cardSubHeader-root">
                         {props.album.artists
                             .map((a) => (
-                                <span>
+                                <span key={a.uri}>
                                     <a
                                         href="#"
                                         draggable="false"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            navigateTo(Routes.artist, a.uri);
+                                            navigateTo(ARTIST_ROUTE, a.uri);
                                         }}
                                     >
                                         {a.name}
@@ -104,13 +109,13 @@ export function AlbumCard(props: IProps) {
                             .reduce(
                                 (
                                     accu: JSX.Element[] | null,
-                                    elem: JSX.Element
+                                    elem: JSX.Element,
                                 ) => {
                                     return accu === null
                                         ? [elem]
                                         : [...accu, <>{', '}</>, elem];
                                 },
-                                null
+                                null,
                             )}
                     </div>
                 </div>

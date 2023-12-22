@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Icon from the marketplace: spicetify/spicetify-marketplace/src/components/Icons/LoadingIcon.tsx
-export function LoadingIcon() {
+export function LoadingIcon(): JSX.Element {
     return (
         <svg
             width="100px"

@@ -1,4 +1,4 @@
-import { CachedAlbum } from '../models/cached-album';
+import type { CachedAlbum } from '../models/cached-album';
 
 const HAS_CACHE_KEY = 'local-files:has-cache';
 const MERGED_ALBUMS = 'local-files:merged-albums';

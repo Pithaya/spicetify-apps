@@ -83,5 +83,5 @@ export type ShowMetadata = {
 };
 
 export type ShowAPI = {
-    getMetadata(uri: string): Promise<ShowMetadata>;
+    getMetadata: (uri: string) => Promise<ShowMetadata>;
 };

@@ -1,14 +1,14 @@
 import styles from '../../css/app.module.scss';
 import React from 'react';
 
-export interface HeaderProps {
+export type Props = {
     image: JSX.Element;
     title: string | JSX.Element;
     subtitle?: string | JSX.Element;
     metadata?: JSX.Element;
     additionalText?: JSX.Element;
     titleFontSize?: string;
-}
+};
 
 export const headerImageFallback = `
 <div class="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded ${styles['center-container']}">
@@ -29,7 +29,7 @@ export const headerImageFallback = `
     </svg>
 </div>`;
 
-export function Header(props: Readonly<HeaderProps>) {
+export function Header(props: Readonly<Props>): JSX.Element {
     return (
         <div className={`${styles.header}`}>
             <div className={styles['image-container']}>{props.image}</div>

@@ -1,5 +1,5 @@
-import { SongGraph } from './graph/song-graph';
-import { RemixedAnalysis } from './remixer.types';
+import type { SongGraph } from './graph/song-graph';
+import type { RemixedAnalysis } from './remixer.types';
 
 /**
  * Contains the state of the jukebox for the current song.
@@ -39,7 +39,7 @@ export class JukeboxSongState {
     constructor(
         track: Spicetify.ContextTrack,
         analysis: RemixedAnalysis,
-        graph: SongGraph
+        graph: SongGraph,
     ) {
         this.track = track;
         this.analysis = analysis;

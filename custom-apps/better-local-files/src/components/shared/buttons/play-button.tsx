@@ -2,12 +2,12 @@ import React from 'react';
 import { Play } from 'lucide-react';
 import { getTranslation } from '../../../helpers/translations-helper';
 
-export interface IProps {
+export type Props = {
     size: Spicetify.ReactComponent.ButtonProps['buttonSize'];
     onClick: () => void;
-}
+};
 
-export function PlayButton(props: Readonly<IProps>) {
+export function PlayButton(props: Readonly<Props>): JSX.Element {
     let iconSize: number;
     let style: React.CSSProperties;
 

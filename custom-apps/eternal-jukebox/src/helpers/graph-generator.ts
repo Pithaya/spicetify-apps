@@ -1,9 +1,9 @@
-import { Segment } from '@shared/cosmos';
-import { JukeboxSettings } from '../models/jukebox-settings';
+import type { Segment } from '@shared/cosmos';
+import type { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';
 import { Beat } from '../models/graph/beat';
-import { RemixedTimeInterval } from '../models/remixer.types';
+import type { RemixedTimeInterval } from '../models/remixer.types';
 
 /**
  * Graph generator for a song.
@@ -15,12 +15,12 @@ export class GraphGenerator {
     /**
      * All edges in the graph.
      */
-    private allEdges: Edge[] = [];
+    private readonly allEdges: Edge[] = [];
 
     /**
      * Contains all neighbours for each beat.
      */
-    private allNeighbours: Edge[][] = [];
+    private readonly allNeighbours: Edge[][] = [];
 
     /**
      * Minimum distance to consider a branch a long branch.
@@ -39,7 +39,7 @@ export class GraphGenerator {
 
     constructor(
         private readonly settings: Readonly<JukeboxSettings>,
-        private readonly beats: RemixedTimeInterval[]
+        private readonly beats: RemixedTimeInterval[],
     ) {
         this.graph = new SongGraph();
         this.allNeighbours = beats.map(() => []);
@@ -48,7 +48,7 @@ export class GraphGenerator {
 
     public generateGraph(): SongGraph {
         const graphBeats = this.beats.map(
-            (b) => new Beat(b.index, b.start * 1000, b.duration * 1000)
+            (b) => new Beat(b.index, b.start * 1000, b.duration * 1000),
         );
 
         for (const [beatIndex, beat] of graphBeats.entries()) {
@@ -81,11 +81,12 @@ export class GraphGenerator {
     /**
      * Calculate the nearest neighbours using a dynamic branch distance.
      */
-    private dynamicCollectNearestNeighbors() {
+    private dynamicCollectNearestNeighbors(): void {
         let branchCount = 0;
         const targetBranchCount = this.beats.length / 6;
 
-        let threshold = 0;
+        // FIXME: threshold always 0 ?
+        const threshold = 0;
 
         for (
             let threshold = 10;
@@ -123,7 +124,9 @@ export class GraphGenerator {
      * Get all the neighbours from similar segments for the beat.
      * @param currentBeat The current beat.
      */
-    private calculateNearestNeighborsForBeat(currentBeat: RemixedTimeInterval) {
+    private calculateNearestNeighborsForBeat(
+        currentBeat: RemixedTimeInterval,
+    ): void {
         const maxNeighbors = this.maxBranches;
         const maxBranchDistance = this.settings.maxBranchDistance;
 
@@ -156,7 +159,7 @@ export class GraphGenerator {
                     } else {
                         distance = this.getSegmentsDistance(
                             segment,
-                            otherSegment
+                            otherSegment,
                         );
                     }
                 }
@@ -175,7 +178,7 @@ export class GraphGenerator {
                 const edge: Edge = new Edge(
                     this.graph.beats[currentBeat.index],
                     this.graph.beats[otherBeatIndex],
-                    totalDistance
+                    totalDistance,
                 );
                 edges.push(edge);
             }
@@ -206,26 +209,26 @@ export class GraphGenerator {
      * @returns The distance.
      */
     private getSegmentsDistance(segment1: Segment, segment2: Segment): number {
-        const timbreWeight = 1,
-            pitchWeight = 10,
-            loudStartWeight = 1,
-            loudMaxWeight = 1,
-            durationWeight = 100,
-            confidenceWeight = 1;
+        const timbreWeight = 1;
+        const pitchWeight = 10;
+        const loudStartWeight = 1;
+        const loudMaxWeight = 1;
+        const durationWeight = 100;
+        const confidenceWeight = 1;
 
         const timbre = this.getEuclideanDistance(
             segment1.timbre,
-            segment2.timbre
+            segment2.timbre,
         );
         const pitch = this.getEuclideanDistance(
             segment1.pitches,
-            segment2.pitches
+            segment2.pitches,
         );
         const sloudStart = Math.abs(
-            segment1.loudness_start - segment2.loudness_start
+            segment1.loudness_start - segment2.loudness_start,
         );
         const sloudMax = Math.abs(
-            segment1.loudness_max - segment2.loudness_max
+            segment1.loudness_max - segment2.loudness_max,
         );
         const duration = Math.abs(segment1.duration - segment2.duration);
         const confidence = Math.abs(segment1.confidence - segment2.confidence);
@@ -271,7 +274,7 @@ export class GraphGenerator {
         for (const [beatIndex, beat] of this.graph.beats.entries()) {
             beat.neighbours = this.filterNearestNeighbors(
                 beatIndex,
-                maxBranchDistance
+                maxBranchDistance,
             );
 
             if (beat.neighbours.length > 0) {
@@ -290,7 +293,7 @@ export class GraphGenerator {
      */
     private filterNearestNeighbors(
         beatIndex: number,
-        maxBranchDistance: number
+        maxBranchDistance: number,
     ): Edge[] {
         return this.allNeighbours[beatIndex].filter((neighbor) => {
             // TODO: useless ?
@@ -332,7 +335,7 @@ export class GraphGenerator {
         if (this.settings.addLastEdge) {
             this.insertBestBackwardBranch(
                 this.settings.maxBranchDistance,
-                this.longestBackwardBranch() < 50 ? 65 : 55
+                this.longestBackwardBranch() < 50 ? 65 : 55,
             );
         }
 
@@ -359,16 +362,16 @@ export class GraphGenerator {
     private longestBackwardBranch(): number {
         let longest = 0;
 
-        for (let beat of this.graph.beats) {
-            for (let neighbor of beat.neighbours) {
-                let delta = beat.index - neighbor.destination.index;
+        for (const beat of this.graph.beats) {
+            for (const neighbor of beat.neighbours) {
+                const delta = beat.index - neighbor.destination.index;
                 if (delta > longest) {
                     longest = delta;
                 }
             }
         }
 
-        var longestBackwardBranch = (longest * 100) / this.beats.length;
+        const longestBackwardBranch = (longest * 100) / this.beats.length;
         return longestBackwardBranch;
     }
 
@@ -379,9 +382,9 @@ export class GraphGenerator {
      */
     private insertBestBackwardBranch(
         threshold: number,
-        maxBranchDistance: number
+        maxBranchDistance: number,
     ): void {
-        var branches: {
+        const branches: {
             percentDistance: number;
             beatIndex: number;
             otherBeatIndex: number;
@@ -400,7 +403,7 @@ export class GraphGenerator {
                     const percent = (delta * 100) / this.graph.beats.length;
                     branches.push({
                         percentDistance: percent,
-                        beatIndex: beatIndex,
+                        beatIndex,
                         otherBeatIndex: destinationIndex,
                         currentBeat: beat,
                         edge: neighbor,
@@ -438,15 +441,15 @@ export class GraphGenerator {
         const maxIter = 1000;
         const reaches: number[] = this.graph.beats.map((b) => 0);
 
-        for (const [beatIndex, beat] of this.graph.beats.entries()) {
+        this.graph.beats.forEach((beat, beatIndex) => {
             reaches[beatIndex] = this.graph.beats.length - beatIndex;
-        }
+        });
 
         for (let iter = 0; iter < maxIter; iter++) {
             let changeCount = 0;
 
             for (const [beatIndex, beat] of this.graph.beats.entries()) {
-                var changed = false;
+                let changed = false;
 
                 for (const neighbor of beat.neighbours) {
                     const neighborReach = reaches[neighbor.destination.index];
@@ -457,7 +460,7 @@ export class GraphGenerator {
                 }
 
                 if (beatIndex < this.graph.beats.length - 1) {
-                    var nextReach = reaches[beatIndex + 1];
+                    const nextReach = reaches[beatIndex + 1];
                     if (nextReach > reaches[beatIndex]) {
                         reaches[beatIndex] = nextReach;
                         changed = true;
@@ -466,7 +469,7 @@ export class GraphGenerator {
 
                 if (changed) {
                     changeCount++;
-                    for (var i = 0; i < beatIndex; i++) {
+                    for (let i = 0; i < beatIndex; i++) {
                         if (reaches[i] < reaches[beatIndex]) {
                             reaches[i] = reaches[beatIndex];
                         }
@@ -474,7 +477,7 @@ export class GraphGenerator {
                 }
             }
 
-            if (changeCount == 0) {
+            if (changeCount === 0) {
                 break;
             }
         }
@@ -494,7 +497,7 @@ export class GraphGenerator {
         let longestReach = 0;
 
         for (let i = this.graph.beats.length - 1; i >= 0; i--) {
-            let beat = this.graph.beats[i];
+            const beat = this.graph.beats[i];
 
             const distanceToEnd = this.graph.beats.length - i;
 
@@ -502,7 +505,7 @@ export class GraphGenerator {
             // which limits our reach
 
             // reach as percent
-            var reach =
+            const reach =
                 ((reaches[i] - distanceToEnd) * 100) / this.beats.length;
 
             if (reach > longestReach && beat.neighbours.length > 0) {
@@ -526,9 +529,9 @@ export class GraphGenerator {
         const lastIndex: number = this.graph.lastBranchPoint;
 
         for (let i = 0; i < lastIndex; i++) {
-            let beat = this.graph.beats[i];
+            const beat = this.graph.beats[i];
             beat.neighbours = beat.neighbours.filter(
-                (n) => n.destination.index < lastIndex
+                (n) => n.destination.index < lastIndex,
             );
         }
     }
@@ -538,9 +541,9 @@ export class GraphGenerator {
      */
     private filterOutSequentialBranches(): void {
         for (let i = this.graph.beats.length - 1; i >= 1; i--) {
-            let beat = this.graph.beats[i];
+            const beat = this.graph.beats[i];
             beat.neighbours = beat.neighbours.filter(
-                (n) => !this.hasSequentialBranch(beat, n)
+                (n) => !this.hasSequentialBranch(beat, n),
             );
         }
     }
@@ -561,7 +564,7 @@ export class GraphGenerator {
             const branchDistance = beat.index - branch.destination.index;
 
             for (const previousBranch of previous.neighbours) {
-                var previousBranchDistance =
+                const previousBranchDistance =
                     previous.index - previousBranch.destination.index;
                 if (branchDistance === previousBranchDistance) {
                     return true;

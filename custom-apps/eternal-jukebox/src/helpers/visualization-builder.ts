@@ -1,18 +1,18 @@
 import tinycolor from 'tinycolor2';
-import { Beat } from '../models/graph/beat';
-import { Segment } from '@shared/cosmos';
+import type { Beat } from '../models/graph/beat';
+import type { Segment } from '@shared/cosmos';
 import { Point } from '../models/visualization/point';
 import { getPercentOfValue, getPointFromPercent } from '../utils/math-utils';
-import { IBeatDrawData } from '../models/visualization/beat-draw-data.interface';
-import { IEdgeDrawData } from '../models/visualization/edge-draw-data.interface';
-import { IGraphState } from '../models/graph/graph-state';
-import { IGraphDrawData } from '../models/visualization/graph-draw-data';
+import type { BeatDrawData } from '../models/visualization/beat-draw-data';
+import type { EdgeDrawData } from '../models/visualization/edge-draw-data';
+import type { GraphState } from '../models/graph/graph-state';
+import type { GraphDrawData } from '../models/visualization/graph-draw-data';
 
 export function initSvgDrawData(
     svgSize: number,
     halfSize: number,
-    graphState: IGraphState
-): IGraphDrawData {
+    graphState: GraphState,
+): GraphDrawData {
     if (graphState.beats.length === 0) {
         return { beats: [], edges: [] };
     }
@@ -41,7 +41,7 @@ export function initSvgDrawData(
         svgSize,
         tileHeight,
         cmin,
-        cmax
+        cmax,
     );
     const edgesDrawData = getEdgesDrawData(beatsDrawData, halfSize);
 
@@ -49,7 +49,7 @@ export function initSvgDrawData(
 }
 
 function getBeatsDrawData(
-    graphState: IGraphState,
+    graphState: GraphState,
     offset: number,
     totalDuration: number,
     outerCircleRadius: number,
@@ -57,8 +57,8 @@ function getBeatsDrawData(
     svgSize: number,
     tileHeight: number,
     cmin: number[],
-    cmax: number[]
-): IBeatDrawData[] {
+    cmax: number[],
+): BeatDrawData[] {
     return graphState.beats.map((beat) => {
         const percentFromStart = ((beat.start - offset) * 100) / totalDuration;
         const percentOfSong = (beat.duration * 100) / totalDuration;
@@ -67,24 +67,24 @@ function getBeatsDrawData(
         const outerArcStart = getPointFromPercent(
             percentFromStart,
             outerCircleRadius + (beat.isPlaying ? tileHeight : 0),
-            svgSize
+            svgSize,
         );
         const outerArcEnd = getPointFromPercent(
             percentFromStart + percentOfSong,
             outerCircleRadius + (beat.isPlaying ? tileHeight : 0),
-            svgSize
+            svgSize,
         );
 
         // Inner arc
         const innerArcStart = getPointFromPercent(
             percentFromStart,
             innerCircleRadius,
-            svgSize
+            svgSize,
         );
         const innerArcEnd = getPointFromPercent(
             percentFromStart + percentOfSong,
             innerCircleRadius,
-            svgSize
+            svgSize,
         );
 
         const color = getBeatColor(graphState, beat, cmin, cmax);
@@ -94,7 +94,7 @@ function getBeatsDrawData(
         L ${innerArcEnd.toString()}
         A ${innerCircleRadius},${innerCircleRadius} 0 0 1 ${innerArcStart.toString()}`;
 
-        return {
+        const drawData: BeatDrawData = {
             beat,
             percentFromStart,
             percentOfSong,
@@ -102,20 +102,22 @@ function getBeatsDrawData(
             outerArcEnd,
             innerArcStart,
             innerArcEnd,
-            drawCommand: drawCommand,
-            color: color,
+            drawCommand,
+            color,
             activeColor: tinycolor(color)
                 .complement()
                 .saturate(100)
                 .toHexString(),
-        } as IBeatDrawData;
+        };
+
+        return drawData;
     });
 }
 
 function getEdgesDrawData(
-    beatDrawData: IBeatDrawData[],
-    halfSize: number
-): IEdgeDrawData[] {
+    beatDrawData: BeatDrawData[],
+    halfSize: number,
+): EdgeDrawData[] {
     const result = [];
 
     for (const drawData of beatDrawData) {
@@ -125,45 +127,47 @@ function getEdgesDrawData(
 
             const edgeStart = Point.getMiddlePoint(
                 startData.innerArcStart,
-                startData.innerArcEnd
+                startData.innerArcEnd,
             );
             const edgeEnd = Point.getMiddlePoint(
                 endData.innerArcStart,
-                endData.innerArcEnd
+                endData.innerArcEnd,
             );
 
             const startWidth = Point.getDistanceBetweenPoints(
                 startData.innerArcStart,
-                startData.innerArcEnd
+                startData.innerArcEnd,
             );
 
             const endWidth = Point.getDistanceBetweenPoints(
                 endData.innerArcStart,
-                endData.innerArcEnd
+                endData.innerArcEnd,
             );
 
-            result.push({
+            const edgeDrawData: EdgeDrawData = {
                 edge: neighbour,
                 strokeWidth: Math.min(startWidth, endWidth),
                 drawCommand: `
-                    M ${edgeStart.toString()}
-                    Q ${halfSize},${halfSize} ${edgeEnd.toString()}`,
+                        M ${edgeStart.toString()}
+                        Q ${halfSize},${halfSize} ${edgeEnd.toString()}`,
                 color: drawData.color,
                 activeColor: drawData.activeColor,
-            } as IEdgeDrawData);
+            };
+
+            result.push(edgeDrawData);
         }
     }
 
     return result;
 }
 
-function normalizeColor(graphState: IGraphState): number[][] {
+function normalizeColor(graphState: GraphState): number[][] {
     const cmin = [100, 100, 100];
     const cmax = [-100, -100, -100];
 
     for (const segment of graphState.segments) {
         for (let j = 0; j < 3; j++) {
-            let timbre = segment.timbre[j + 1];
+            const timbre = segment.timbre[j + 1];
 
             if (timbre < cmin[j]) {
                 cmin[j] = timbre;
@@ -184,10 +188,10 @@ function normalizeColor(graphState: IGraphState): number[][] {
  * @returns The color.
  */
 function getBeatColor(
-    graphState: IGraphState,
+    graphState: GraphState,
     beat: Beat,
     cmin: number[],
-    cmax: number[]
+    cmax: number[],
 ): string {
     const segment =
         graphState.remixedBeats[beat.index].firstOverlappingSegment ?? null;
@@ -207,13 +211,13 @@ function getBeatColor(
 function getSegmentColor(
     segment: Segment,
     cmin: number[],
-    cmax: number[]
+    cmax: number[],
 ): string {
-    let results = [];
+    const results = [];
 
     for (let i = 0; i < 3; i++) {
         const timbre = segment.timbre[i + 1];
-        var norm = (timbre - cmin[i]) / (cmax[i] - cmin[i]);
+        const norm = (timbre - cmin[i]) / (cmax[i] - cmin[i]);
 
         results[i] = norm;
     }

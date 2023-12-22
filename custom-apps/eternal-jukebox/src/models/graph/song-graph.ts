@@ -1,4 +1,4 @@
-import { Beat } from './beat';
+import type { Beat } from './beat';
 
 /**
  * The generated song graph.

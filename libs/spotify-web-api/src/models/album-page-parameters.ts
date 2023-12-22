@@ -14,7 +14,7 @@ export class AlbumPageParameters extends PageParameters {
             'single',
             'appears_on',
             'compilation',
-        ]
+        ],
     ) {
         super(limit, offset, market);
 
@@ -23,7 +23,7 @@ export class AlbumPageParameters extends PageParameters {
 
     public override toQueryString(): string {
         return `${super.toQueryString()}&include_groups=${this.includeGroups.join(
-            ','
+            ',',
         )}`;
     }
 }

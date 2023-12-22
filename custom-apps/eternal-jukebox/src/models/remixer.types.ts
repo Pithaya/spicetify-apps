@@ -1,5 +1,5 @@
-import { Section, Segment, TimeInterval } from '@shared/cosmos';
-import {
+import type { Section, Segment, TimeInterval } from '@shared/cosmos';
+import type {
     ChildQuantum,
     hasOverlappingSegments,
     ParentQuantum,

@@ -1,4 +1,4 @@
-import { GraphQLResponse } from './response';
+import type { GraphQLResponse } from './response';
 
 export type ErrorResponse = GraphQLResponse<null> & {
     errors: {

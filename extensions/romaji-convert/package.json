@@ -7,21 +7,14 @@
         "build": "spicetify-creator",
         "build-local": "spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
-        "launch-watch": "spicetify enable-devtools && spicetify watch -le",
+        "launch-watch": "spicetify watch -e",
         "apply": "spicetify config extensions romaji-convert.js && spicetify apply",
         "unapply": "spicetify config extensions romaji-convert.js- && spicetify apply",
-        "lint": "npx eslint --ext .tsx,.ts src/"
+        "lint": "npx eslint --ext .tsx,.ts src/",
+        "format": "npx prettier --write src/"
     },
     "license": "MIT",
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^6.12.0",
-        "eslint": "^8.54.0",
-        "eslint-config-prettier": "^9.0.0",
-        "eslint-config-standard-with-typescript": "^40.0.0",
-        "eslint-plugin-import": "^2.29.0",
-        "eslint-plugin-n": "^16.3.1",
-        "eslint-plugin-promise": "^6.1.1",
-        "eslint-plugin-react": "^7.33.2",
         "i18next": "^23.7.6",
         "kuroshiro": "^1.2.0",
         "kuroshiro-analyzer-kuromoji": "^1.1.0"

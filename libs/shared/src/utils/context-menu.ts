@@ -22,7 +22,7 @@ export function getSelectedElementName(): string | null {
     if (selectedElement.matches('.main-trackList-selected')) {
         // Track row: get the name from div
         const trackTitle = selectedElement.querySelector(
-            '.main-trackList-rowTitle'
+            '.main-trackList-rowTitle',
         );
         name = trackTitle?.textContent ?? null;
     } else if (selectedElement.matches('.main-entityHeader-title')) {

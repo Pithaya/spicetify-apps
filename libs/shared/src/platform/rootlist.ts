@@ -1,4 +1,4 @@
-import { User } from './user';
+import type { User } from './user';
 
 export type Folder = {
     type: 'folder';
@@ -23,5 +23,5 @@ export type RootlistFolder = Folder & {
 };
 
 export type RootlistAPI = {
-    getContents(): Promise<RootlistFolder>;
+    getContents: () => Promise<RootlistFolder>;
 };

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import styles from '../../css/app.module.scss';
-import { IEdgeDrawData } from '../../models/visualization/edge-draw-data.interface';
+import type { EdgeDrawData } from '../../models/visualization/edge-draw-data';
 
-interface IProps {
-    drawData: IEdgeDrawData;
-}
+type Props = {
+    drawData: EdgeDrawData;
+};
 
-export function VisualizerEdge(props: IProps) {
+export function VisualizerEdge(props: Readonly<Props>): JSX.Element {
     const [isHovered, setIsHovered] = useState(false);
 
-    function onMouseOver(node: Node) {
+    function onMouseOver(node: Node): void {
         const svg = document.getElementById('#jukebox-graph');
         svg?.firstChild?.appendChild(node);
 
@@ -29,8 +29,12 @@ export function VisualizerEdge(props: IProps) {
             }
             strokeWidth={props.drawData.strokeWidth}
             d={props.drawData.drawCommand}
-            onMouseOver={(event) => onMouseOver(event.target as Node)}
-            onMouseOut={() => setIsHovered(false)}
+            onMouseOver={(event) => {
+                onMouseOver(event.target as Node);
+            }}
+            onMouseOut={() => {
+                setIsHovered(false);
+            }}
         >
             <title>
                 {`${props.drawData.edge.source.index} - ${props.drawData.edge.destination.index}`}

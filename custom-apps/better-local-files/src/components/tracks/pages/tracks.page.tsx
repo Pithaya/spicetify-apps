@@ -4,7 +4,7 @@ import { Folder } from 'lucide-react';
 import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
 
-export function TracksPage() {
+export function TracksPage(): JSX.Element {
     const tracks = Array.from(window.localTracksService.getTracks().values());
 
     return (
@@ -22,7 +22,7 @@ export function TracksPage() {
                                     'tracklist-header.songs-counter',
                                     tracks.length === 1 ? 'one' : 'other',
                                 ],
-                                tracks.length
+                                tracks.length,
                             )}
                         </p>
                     </>

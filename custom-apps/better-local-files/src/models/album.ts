@@ -1,5 +1,5 @@
-import { Artist } from './artist';
-import { Track } from './track';
+import type { Artist } from './artist';
+import type { Track } from './track';
 
 /**
  * A processed local Album.
@@ -24,7 +24,7 @@ export class Album {
     constructor(
         public readonly uri: string,
         public readonly name: string,
-        public readonly image: string
+        public readonly image: string,
     ) {
         this.artists = [];
         this.discs = new Map<number, Track[]>();

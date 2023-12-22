@@ -10,13 +10,4 @@ export type SpotifyError = {
     message: string;
 };
 
-export class ArgumentError {
-    /**
-     * A short description of the cause of the error.
-     */
-    public message: string;
-
-    constructor(message: string) {
-        this.message = message;
-    }
-}
+export class ArgumentError extends Error {}
