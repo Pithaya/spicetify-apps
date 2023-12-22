@@ -15,7 +15,9 @@ export function renderElement(
     element: React.ReactNode,
     container: Element,
 ): void {
-    const containerChild = container.appendChild(document.createElement('div'));
-    const root = (ReactDOM as ReactDom18).createRoot(containerChild);
-    root.render(element);
+    const root = (ReactDOM as ReactDom18).createRoot(
+        document.createElement('div'),
+    );
+    const portal = ReactDOM.createPortal(element, container);
+    root.render(portal);
 }
