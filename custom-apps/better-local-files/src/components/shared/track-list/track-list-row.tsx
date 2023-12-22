@@ -8,6 +8,8 @@ import React, {
 } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
+import { TextComponent } from '../text/text';
+import { SpotifyIcon } from '../icons/spotify-icon';
 
 export type Props = {
     track: Track;
@@ -33,7 +35,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const placeholder = <div style={{ height: '54px' }}></div>;
 
     // TODO: Set the correct aria-rowindex
-
+    // TODO: Add to playlist menu
     return (
         <div ref={rowRef}>
             {visible ? (
@@ -177,11 +179,34 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                 }
                                 tabIndex={-1}
                             >
-                                <div className="main-trackList-rowDuration">
+                                <Spicetify.ReactComponent.ButtonTertiary
+                                    aria-label={getTranslation(
+                                        ['more.label.track'],
+                                        props.track.name,
+                                        props.track.artists
+                                            .map((a) => a.name)
+                                            .join(', '),
+                                    )}
+                                    aria-haspopup="menu"
+                                    iconOnly={() => (
+                                        <SpotifyIcon
+                                            icon="check-alt-fill"
+                                            iconSize={16}
+                                        />
+                                    )}
+                                    buttonSize="sm"
+                                    style={{ padding: 0 }}
+                                ></Spicetify.ReactComponent.ButtonTertiary>
+
+                                <TextComponent
+                                    variant="mesto"
+                                    semanticColor="textSubdued"
+                                    className="main-trackList-rowDuration"
+                                >
                                     {Spicetify.Player.formatTime(
                                         props.track.duration,
                                     )}
-                                </div>
+                                </TextComponent>
 
                                 <Spicetify.ReactComponent.ContextMenu
                                     trigger="click"
@@ -198,16 +223,13 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                         )}
                                         aria-haspopup="menu"
                                         iconOnly={() => (
-                                            <svg
-                                                height="16"
-                                                width="16"
-                                                aria-hidden="true"
-                                                viewBox="0 0 16 16"
-                                                fill="currentColor"
-                                            >
-                                                <path d="M3 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM16 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                                            </svg>
+                                            <SpotifyIcon
+                                                icon="more"
+                                                iconSize={16}
+                                            />
                                         )}
+                                        buttonSize="sm"
+                                        style={{ padding: 0 }}
                                     ></Spicetify.ReactComponent.ButtonTertiary>
                                 </Spicetify.ReactComponent.ContextMenu>
                             </div>

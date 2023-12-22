@@ -17,6 +17,8 @@ type Props = {
     album: Album;
 };
 
+// TODO: Update header
+
 function AlbumHeader(props: Readonly<Props>): JSX.Element {
     return (
         <Header

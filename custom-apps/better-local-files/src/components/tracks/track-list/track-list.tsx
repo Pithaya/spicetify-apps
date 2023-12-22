@@ -18,6 +18,7 @@ import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-i
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { TextComponent } from '../../shared/text/text';
 
 export type Props = {
     tracks: Track[];
@@ -233,9 +234,13 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             key={track.uri}
                         />,
                         <TrackListRowAlbumLink track={track} key={track.uri} />,
-                        <span key={track.uri}>
+                        <TextComponent
+                            variant="mesto"
+                            semanticColor="textSubdued"
+                            key={track.uri}
+                        >
                             {track.addedAt.toLocaleDateString()}
-                        </span>,
+                        </TextComponent>,
                     ];
                 }}
             />
