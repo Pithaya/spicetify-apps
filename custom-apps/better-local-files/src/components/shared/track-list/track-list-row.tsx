@@ -5,12 +5,17 @@ import React, {
     type MouseEventHandler,
     type PropsWithChildren,
     useRef,
+    useState,
+    useEffect,
 } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
 import { TextComponent } from '../text/text';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
+import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
+import { getPlatform } from '@shared/utils';
+import type { LibraryAPIOperationCompleteEvent } from '@shared/platform/library';
 
 export type Props = {
     track: Track;
@@ -33,6 +38,43 @@ export type Props = {
 export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
+    const [isHovered, setIsHovered] = useState(false);
+    const [trackInLibrary, setTrackInLibrary] = useIsInLibrary(props.track.uri);
+
+    async function addToLikedSongs(): Promise<void> {
+        await getPlatform().LibraryAPI.add({ uris: [props.track.uri] });
+    }
+
+    async function removeFromLikedSongs(): Promise<void> {
+        await getPlatform().LibraryAPI.remove({ uris: [props.track.uri] });
+    }
+
+    useEffect(() => {
+        if (!visible) {
+            // Only listen to the event when the row is visible
+            return;
+        }
+
+        const listener = (e: LibraryAPIOperationCompleteEvent): void => {
+            if (e.data.uris.some((u) => u === props.track.uri)) {
+                if (e.data.operation === 'add') {
+                    setTrackInLibrary(true);
+                } else if (e.data.operation === 'remove') {
+                    setTrackInLibrary(false);
+                }
+            }
+        };
+
+        getPlatform()
+            .LibraryAPI.getEvents()
+            .addListener('operation_complete', listener);
+
+        return () => {
+            getPlatform()
+                .LibraryAPI.getEvents()
+                .removeListener('operation_complete', listener);
+        };
+    }, [visible, props.track.uri]);
 
     const placeholder = (
         <div
@@ -42,10 +84,80 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
         ></div>
     );
 
+    const addToLibraryButton = (
+        <Spicetify.ReactComponent.TooltipWrapper
+            label={getTranslation(['save_to_your_liked_songs'])}
+            showDelay={100}
+        >
+            <Spicetify.ReactComponent.ButtonTertiary
+                aria-label={getTranslation(['save_to_your_liked_songs'])}
+                iconOnly={() => <SpotifyIcon icon="plus-alt" iconSize={16} />}
+                buttonSize="sm"
+                style={{
+                    padding: 0,
+                    visibility: isHovered ? undefined : 'hidden',
+                }}
+                onClick={addToLikedSongs}
+            ></Spicetify.ReactComponent.ButtonTertiary>
+        </Spicetify.ReactComponent.TooltipWrapper>
+    );
+
+    const removeFromLibraryButton = (
+        <Spicetify.ReactComponent.TooltipWrapper
+            label={getTranslation(['remove_from_your_liked_songs'])}
+            showDelay={100}
+        >
+            <Spicetify.ReactComponent.ButtonTertiary
+                aria-label={getTranslation(['remove_from_your_liked_songs'])}
+                iconOnly={() => (
+                    <SpotifyIcon icon="check-alt-fill" iconSize={16} />
+                )}
+                buttonSize="sm"
+                style={{
+                    padding: 0,
+                }}
+                onClick={removeFromLikedSongs}
+                semanticColor="essentialBrightAccent"
+            ></Spicetify.ReactComponent.ButtonTertiary>
+        </Spicetify.ReactComponent.TooltipWrapper>
+    );
+
+    const emptyButton = (
+        <Spicetify.ReactComponent.ButtonTertiary
+            iconOnly={() => <></>}
+            buttonSize="sm"
+            style={{
+                padding: 0,
+                visibility: isHovered ? undefined : 'hidden',
+            }}
+        ></Spicetify.ReactComponent.ButtonTertiary>
+    );
+
+    let libraryButton: JSX.Element;
+
+    switch (trackInLibrary) {
+        case true:
+            libraryButton = removeFromLibraryButton;
+            break;
+        case false:
+            libraryButton = addToLibraryButton;
+            break;
+        default:
+            libraryButton = emptyButton;
+            break;
+    }
+
     // TODO: Set the correct aria-rowindex
-    // TODO: Add to playlist menu
     return (
-        <div ref={rowRef}>
+        <div
+            ref={rowRef}
+            onMouseEnter={() => {
+                setIsHovered(true);
+            }}
+            onMouseLeave={() => {
+                setIsHovered(false);
+            }}
+        >
             {visible ? (
                 <Spicetify.ReactComponent.RightClickMenu
                     menu={<RowMenu track={props.track} />}
@@ -189,24 +301,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                 }
                                 tabIndex={-1}
                             >
-                                <Spicetify.ReactComponent.ButtonTertiary
-                                    aria-label={getTranslation(
-                                        ['more.label.track'],
-                                        props.track.name,
-                                        props.track.artists
-                                            .map((a) => a.name)
-                                            .join(', '),
-                                    )}
-                                    aria-haspopup="menu"
-                                    iconOnly={() => (
-                                        <SpotifyIcon
-                                            icon="check-alt-fill"
-                                            iconSize={16}
-                                        />
-                                    )}
-                                    buttonSize="sm"
-                                    style={{ padding: 0 }}
-                                ></Spicetify.ReactComponent.ButtonTertiary>
+                                {libraryButton}
 
                                 <TextComponent
                                     variant="mesto"
@@ -218,30 +313,50 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                     )}
                                 </TextComponent>
 
-                                <Spicetify.ReactComponent.ContextMenu
-                                    trigger="click"
-                                    action="toggle"
-                                    menu={<RowMenu track={props.track} />}
+                                <Spicetify.ReactComponent.TooltipWrapper
+                                    label={getTranslation(
+                                        ['more.label.track'],
+                                        props.track.name,
+                                        props.track.artists
+                                            .map((a) => a.name)
+                                            .join(', '),
+                                    )}
+                                    showDelay={100}
                                 >
-                                    <Spicetify.ReactComponent.ButtonTertiary
-                                        aria-label={getTranslation(
-                                            ['more.label.track'],
-                                            props.track.name,
-                                            props.track.artists
-                                                .map((a) => a.name)
-                                                .join(', '),
-                                        )}
-                                        aria-haspopup="menu"
-                                        iconOnly={() => (
-                                            <SpotifyIcon
-                                                icon="more"
-                                                iconSize={16}
-                                            />
-                                        )}
-                                        buttonSize="sm"
-                                        style={{ padding: 0 }}
-                                    ></Spicetify.ReactComponent.ButtonTertiary>
-                                </Spicetify.ReactComponent.ContextMenu>
+                                    <div>
+                                        <Spicetify.ReactComponent.ContextMenu
+                                            trigger="click"
+                                            action="toggle"
+                                            menu={
+                                                <RowMenu track={props.track} />
+                                            }
+                                        >
+                                            <Spicetify.ReactComponent.ButtonTertiary
+                                                aria-label={getTranslation(
+                                                    ['more.label.track'],
+                                                    props.track.name,
+                                                    props.track.artists
+                                                        .map((a) => a.name)
+                                                        .join(', '),
+                                                )}
+                                                aria-haspopup="menu"
+                                                iconOnly={() => (
+                                                    <SpotifyIcon
+                                                        icon="more"
+                                                        iconSize={16}
+                                                    />
+                                                )}
+                                                buttonSize="sm"
+                                                style={{
+                                                    padding: 0,
+                                                    visibility: isHovered
+                                                        ? undefined
+                                                        : 'hidden',
+                                                }}
+                                            ></Spicetify.ReactComponent.ButtonTertiary>
+                                        </Spicetify.ReactComponent.ContextMenu>
+                                    </div>
+                                </Spicetify.ReactComponent.TooltipWrapper>
                             </div>
                         </div>
                     </div>

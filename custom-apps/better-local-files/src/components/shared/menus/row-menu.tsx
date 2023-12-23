@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { SubmenuItem } from './submenu-item';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
@@ -13,6 +13,7 @@ import { PlaylistSelectionMenu } from './playlist-selection-menu';
 import { getPlatform } from '@shared/utils';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import { addToQueuePath } from '../icons/icons';
+import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
 
 export type Props = {
     track: Track;
@@ -22,20 +23,7 @@ export type Props = {
 // TODO: Update options
 
 export function RowMenu(props: Readonly<Props>): JSX.Element {
-    const [trackInLibrary, setTrackInLibrary] = useState<boolean | undefined>(
-        getPlatform().LibraryAPI.containsSync(props.track.uri),
-    );
-
-    useEffect(() => {
-        if (trackInLibrary === undefined) {
-            getPlatform()
-                .LibraryAPI.contains(props.track.uri)
-                .then((result) => {
-                    setTrackInLibrary(result[0]);
-                })
-                .catch(console.error);
-        }
-    }, [props.track.uri]);
+    const [trackInLibrary] = useIsInLibrary(props.track.uri);
 
     let trackMenuItem: JSX.Element;
 

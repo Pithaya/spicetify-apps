@@ -10,4 +10,35 @@ export type LibraryAPI = {
      */
     containsSync: (uri: string) => boolean | undefined;
     contains: (...uris: string[]) => Promise<boolean[]>;
+
+    getEvents: () => LibraryAPIEventManager;
 };
+
+export type LibraryAPIEventType = 'operation_complete';
+
+export type LibraryAPIEventManager = {
+    addListener: (
+        type: LibraryAPIEventType,
+        listener: (event: LibraryAPIEvent<any>) => void,
+    ) => LibraryAPIEventManager;
+
+    removeListener: (
+        type: LibraryAPIEventType,
+        listener: (event: LibraryAPIEvent<any>) => void,
+    ) => LibraryAPIEventManager;
+};
+
+export type LibraryAPIEvent<T> = {
+    defaultPrevented: boolean;
+    immediateStopped: boolean;
+    stopped: boolean;
+    type: LibraryAPIEventType;
+    data: T;
+};
+
+export type LibraryAPIOperationCompleteEvent = LibraryAPIEvent<{
+    operation: 'add' | 'remove';
+    uris: string[];
+    error: null | unknown;
+    silent: boolean;
+}>;
