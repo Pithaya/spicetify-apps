@@ -19,9 +19,6 @@ export type Props = {
     track: Track;
 };
 
-// TODO: multi track selection (hide go to artist / album in that case) (save to liked if at least one is not saved)
-// TODO: Update options
-
 export function RowMenu(props: Readonly<Props>): JSX.Element {
     const [trackInLibrary] = useIsInLibrary(props.track.uri);
 

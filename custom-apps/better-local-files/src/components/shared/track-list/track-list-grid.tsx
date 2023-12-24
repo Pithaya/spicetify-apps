@@ -57,10 +57,6 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
         );
     }, [selectedTracks]);
 
-    // TODO: Add compact mode
-    // compact : --row-height: 32px;
-    // normal : --row-height: 56px
-
     function handleClick(
         e: React.MouseEvent<HTMLDivElement>,
         track: Track,

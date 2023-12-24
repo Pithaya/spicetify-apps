@@ -22,8 +22,6 @@ export type Props = {
     setSelectedDisplayType: (type: DisplayType) => void;
 };
 
-// TODO: CheckedIcon prop on menu item ?
-
 export function SortMenu(props: Readonly<Props>): JSX.Element {
     const sort = (
         <>
