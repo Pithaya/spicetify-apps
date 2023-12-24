@@ -209,31 +209,37 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
 
     return (
         <>
-            <div className={`${styles['action-bar']}`}>
-                <PlayButton
-                    size="lg"
-                    onClick={() => {
-                        playContext(orderedTracks.map((t) => t.localTrack));
-                    }}
-                />
+            <div className="main-actionBar-ActionBar contentSpacing">
+                <div className="main-actionBar-ActionBarRow">
+                    <div className="main-playButton-PlayButton">
+                        <PlayButton
+                            size="lg"
+                            onClick={() => {
+                                playContext(
+                                    orderedTracks.map((t) => t.localTrack),
+                                );
+                            }}
+                        />
+                    </div>
 
-                <div className={styles['controls']}>
-                    <SearchInput
-                        search={search}
-                        setSearch={setSearch}
-                        setDebouncedSearch={setDebouncedSearch}
-                    />
+                    <div className={`${styles['controls']}`}>
+                        <SearchInput
+                            search={search}
+                            setSearch={setSearch}
+                            setDebouncedSearch={setDebouncedSearch}
+                        />
 
-                    <SortMenu
-                        sortOptions={sortOptions}
-                        selectedSortOption={selectedSortOption}
-                        setSelectedSortOption={(key) => {
-                            handleSortOptionChange(key, true);
-                        }}
-                        displayTypes={['list', 'compact']}
-                        selectedDisplayType={selectedDisplayType}
-                        setSelectedDisplayType={setSelectedDisplayType}
-                    />
+                        <SortMenu
+                            sortOptions={sortOptions}
+                            selectedSortOption={selectedSortOption}
+                            setSelectedSortOption={(key) => {
+                                handleSortOptionChange(key, true);
+                            }}
+                            displayTypes={['list', 'compact']}
+                            selectedDisplayType={selectedDisplayType}
+                            setSelectedDisplayType={setSelectedDisplayType}
+                        />
+                    </div>
                 </div>
             </div>
 

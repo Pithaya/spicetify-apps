@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
-import { Header, headerImageFallback } from '../../shared/header';
+import { Header, HeaderImage } from '../../shared/header';
 import {
     getTranslatedDuration,
     getTranslation,
@@ -12,33 +12,23 @@ import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
+import { TextComponent } from '../../shared/text/text';
 
 type Props = {
     album: Album;
 };
 
-// TODO: Update header
-
 function AlbumHeader(props: Readonly<Props>): JSX.Element {
     return (
         <Header
-            image={
-                <img
-                    src={props.album.image}
-                    alt="album image"
-                    className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
-                    onError={(e) =>
-                        (e.currentTarget.outerHTML = headerImageFallback)
-                    }
-                />
-            }
+            image={<HeaderImage imageSrc={props.album.image} />}
             subtitle={getTranslation(['album'])}
             title={props.album.name}
             metadata={
                 <>
                     {props.album.artists
                         .map((a) => (
-                            <span key={a.uri}>
+                            <TextComponent variant="mestoBold" key={a.uri}>
                                 <a
                                     href="#"
                                     draggable="false"
@@ -48,7 +38,7 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                                 >
                                     {a.name}
                                 </a>
-                            </span>
+                            </TextComponent>
                         ))
                         .reduce(
                             (
@@ -69,7 +59,10 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                             },
                             null,
                         )}
-                    <span className="main-entityHeader-metaDataText">
+                    <TextComponent
+                        variant="mesto"
+                        className="main-entityHeader-metaDataText"
+                    >
                         {getTranslation(
                             [
                                 'tracklist-header.songs-counter',
@@ -79,10 +72,13 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                             ],
                             props.album.getTracks().length,
                         )}
-                    </span>
-                    <span className="main-entityHeader-metaDataText">
+                    </TextComponent>
+                    <TextComponent
+                        variant="mesto"
+                        className="main-entityHeader-metaDataText"
+                    >
                         {getTranslatedDuration(props.album.getDuration())}
-                    </span>
+                    </TextComponent>
                 </>
             }
         />

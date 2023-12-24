@@ -85,8 +85,8 @@ export function ArtistsPage(): JSX.Element {
     }
 
     return (
-        <>
-            <div className={styles['album-header']}>
+        <div className="contentSpacing">
+            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
                 <h1>{getTranslation(['artists'])}</h1>
 
                 <div className={styles['controls']}>
@@ -118,6 +118,6 @@ export function ArtistsPage(): JSX.Element {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }

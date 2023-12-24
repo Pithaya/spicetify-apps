@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigateTo } from '../../../helpers/history-helper';
 import { ArtistTrackList } from '../track-list/artist-track-list';
-import { Header, headerImageFallback } from '../../shared/header';
+import { Header, HeaderImage } from '../../shared/header';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { getPlatform } from '@shared/utils';
@@ -14,16 +14,7 @@ type Props = {
 function ArtistHeader(props: Readonly<Props>): JSX.Element {
     return (
         <Header
-            image={
-                <img
-                    src={props.artist.image}
-                    alt="artist image"
-                    className="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded"
-                    onError={(e) =>
-                        (e.currentTarget.outerHTML = headerImageFallback)
-                    }
-                />
-            }
+            image={<HeaderImage imageSrc={props.artist.image} />}
             subtitle={getTranslation(['artist'])}
             title={props.artist.name}
         />

@@ -84,87 +84,91 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
     }
 
     return (
-        <div
-            role="grid"
-            aria-rowcount={props.tracks.length}
-            aria-colcount={props.headers.length + 2}
-            aria-label={props.gridLabel}
-            className="main-trackList-trackList main-trackList-indexable"
-            tabIndex={0}
-        >
-            <TrackListHeader
-                headers={props.headers}
-                sortedHeader={props.sortedHeader}
-                onHeaderClicked={props.onHeaderClicked}
-            ></TrackListHeader>
-
+        <div className="contentSpacing">
             <div
-                className={`${
-                    props.displayType === 'compact'
-                        ? styles['display-list-compact']
-                        : styles['display-list']
-                }`}
+                role="grid"
+                aria-rowcount={props.tracks.length}
+                aria-colcount={props.headers.length + 2}
+                aria-label={props.gridLabel}
+                className="main-trackList-trackList main-trackList-indexable"
+                tabIndex={0}
             >
-                {props.tracks.map((track, index) => (
-                    <TrackListRow
-                        key={track.uri}
-                        track={track}
-                        index={
-                            props.useTrackNumber ? track.trackNumber : index + 1
-                        }
-                        selected={selectedTracks.has(track.uri)}
-                        active={activeTrackUri === track.uri}
-                        playing={
-                            activeTrackUri === track.uri &&
-                            playStatus === 'play'
-                        }
-                        onClick={(e) => {
-                            handleClick(e, track);
-                        }}
-                        onDoubleClick={() => {
-                            props.onPlayTrack(track.uri);
-                        }}
-                        dragHandler={dragHandler}
-                        displayType={props.displayType}
-                    >
-                        {props.getRowContent(track)}
-                    </TrackListRow>
-                ))}
+                <TrackListHeader
+                    headers={props.headers}
+                    sortedHeader={props.sortedHeader}
+                    onHeaderClicked={props.onHeaderClicked}
+                ></TrackListHeader>
 
-                {props.subtracks.map((sub) => {
-                    return (
-                        <>
-                            {sub.headerRow}
-                            {sub.tracks.map((track, index) => (
-                                <TrackListRow
-                                    key={track.uri}
-                                    track={track}
-                                    index={
-                                        props.useTrackNumber
-                                            ? track.trackNumber
-                                            : index + 1
-                                    }
-                                    selected={selectedTracks.has(track.uri)}
-                                    active={activeTrackUri === track.uri}
-                                    playing={
-                                        activeTrackUri === track.uri &&
-                                        playStatus === 'play'
-                                    }
-                                    onClick={(e) => {
-                                        handleClick(e, track);
-                                    }}
-                                    onDoubleClick={() => {
-                                        props.onPlayTrack(track.uri);
-                                    }}
-                                    dragHandler={dragHandler}
-                                    displayType={props.displayType}
-                                >
-                                    {props.getRowContent(track)}
-                                </TrackListRow>
-                            ))}
-                        </>
-                    );
-                })}
+                <div
+                    className={`${
+                        props.displayType === 'compact'
+                            ? styles['display-list-compact']
+                            : styles['display-list']
+                    }`}
+                >
+                    {props.tracks.map((track, index) => (
+                        <TrackListRow
+                            key={track.uri}
+                            track={track}
+                            index={
+                                props.useTrackNumber
+                                    ? track.trackNumber
+                                    : index + 1
+                            }
+                            selected={selectedTracks.has(track.uri)}
+                            active={activeTrackUri === track.uri}
+                            playing={
+                                activeTrackUri === track.uri &&
+                                playStatus === 'play'
+                            }
+                            onClick={(e) => {
+                                handleClick(e, track);
+                            }}
+                            onDoubleClick={() => {
+                                props.onPlayTrack(track.uri);
+                            }}
+                            dragHandler={dragHandler}
+                            displayType={props.displayType}
+                        >
+                            {props.getRowContent(track)}
+                        </TrackListRow>
+                    ))}
+
+                    {props.subtracks.map((sub) => {
+                        return (
+                            <>
+                                {sub.headerRow}
+                                {sub.tracks.map((track, index) => (
+                                    <TrackListRow
+                                        key={track.uri}
+                                        track={track}
+                                        index={
+                                            props.useTrackNumber
+                                                ? track.trackNumber
+                                                : index + 1
+                                        }
+                                        selected={selectedTracks.has(track.uri)}
+                                        active={activeTrackUri === track.uri}
+                                        playing={
+                                            activeTrackUri === track.uri &&
+                                            playStatus === 'play'
+                                        }
+                                        onClick={(e) => {
+                                            handleClick(e, track);
+                                        }}
+                                        onDoubleClick={() => {
+                                            props.onPlayTrack(track.uri);
+                                        }}
+                                        dragHandler={dragHandler}
+                                        displayType={props.displayType}
+                                    >
+                                        {props.getRowContent(track)}
+                                    </TrackListRow>
+                                ))}
+                            </>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );

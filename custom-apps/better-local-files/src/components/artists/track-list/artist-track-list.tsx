@@ -33,16 +33,19 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
 
     return (
         <>
-            <div className={`${styles['action-bar']}`}>
-                <div
-                    className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
-                >
-                    <PlayButton
-                        size="lg"
-                        onClick={() => {
-                            playContext(props.tracks.map((t) => t.localTrack));
-                        }}
-                    />
+            <div className="main-actionBar-ActionBar contentSpacing">
+                <div className="main-actionBar-ActionBarRow">
+                    <div className="main-playButton-PlayButton">
+                        <PlayButton
+                            size="lg"
+                            onClick={() => {
+                                playContext(
+                                    props.tracks.map((t) => t.localTrack),
+                                );
+                            }}
+                        />
+                    </div>
+
                     <MoreButton
                         label={getTranslation(
                             ['more.label.context'],

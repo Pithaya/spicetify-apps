@@ -17,18 +17,14 @@ export type Props = Spicetify.ReactComponent.TextComponentProps & {
         | 'small'
         | 'li';
 
-    /**
-     * Font size to render.
-     */
-    fontSize?: string;
-
     className?: string;
+    style?: React.CSSProperties;
 };
 
 export function TextComponent(
     props: Readonly<PropsWithChildren<Props>>,
 ): JSX.Element {
-    const { elementType = 'span', children, fontSize, ...rest } = props;
+    const { elementType = 'span', children, ...rest } = props;
 
     let SpicetifyTextComponent;
 
@@ -70,12 +66,8 @@ export function TextComponent(
             break;
     }
 
-    const style: React.CSSProperties = {
-        fontSize,
-    };
-
     return (
-        <SpicetifyTextComponent {...rest} style={style}>
+        <SpicetifyTextComponent {...rest} style={props.style}>
             {children}
         </SpicetifyTextComponent>
     );

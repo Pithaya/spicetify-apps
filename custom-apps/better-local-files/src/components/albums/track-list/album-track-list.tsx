@@ -1,4 +1,3 @@
-import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import { PlayButton } from '../../shared/buttons/play-button';
@@ -16,8 +15,6 @@ export type Props = {
     albumName: string;
     discs: Map<number, Track[]>;
 };
-
-// TODO: Compact display type
 
 export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
     const tracks: Track[] = [];
@@ -46,16 +43,19 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
 
     return (
         <>
-            <div className={`${styles['action-bar']}`}>
-                <div
-                    className={`${styles['flex-centered']} ${styles['action-bar-button-container']}`}
-                >
-                    <PlayButton
-                        size="lg"
-                        onClick={() => {
-                            playContext(orderedTracks.map((t) => t.localTrack));
-                        }}
-                    />
+            <div className="main-actionBar-ActionBar contentSpacing">
+                <div className="main-actionBar-ActionBarRow">
+                    <div className="main-playButton-PlayButton">
+                        <PlayButton
+                            size="lg"
+                            onClick={() => {
+                                playContext(
+                                    orderedTracks.map((t) => t.localTrack),
+                                );
+                            }}
+                        />
+                    </div>
+
                     <MoreButton
                         label={getTranslation(
                             ['more.label.context'],
