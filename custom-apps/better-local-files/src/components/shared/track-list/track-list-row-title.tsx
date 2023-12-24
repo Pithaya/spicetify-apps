@@ -2,6 +2,7 @@ import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/const
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
+import { TextComponent } from '../text/text';
 
 type Props = {
     track: Track;
@@ -11,18 +12,22 @@ type Props = {
 export function TrackListRowTitle(props: Readonly<Props>): JSX.Element {
     return (
         <div className="main-trackList-rowMainContent">
-            <div
-                dir="auto"
+            <TextComponent
                 className="main-trackList-rowTitle standalone-ellipsis-one-line"
+                variant="ballad"
+                semanticColor="textBase"
             >
                 {props.track.name}
-            </div>
+            </TextComponent>
             {props.withArtists && (
-                <span className="main-trackList-rowSubTitle standalone-ellipsis-one-line">
+                <TextComponent
+                    className="main-trackList-rowSubTitle standalone-ellipsis-one-line"
+                    variant="mesto"
+                    semanticColor="textSubdued"
+                >
                     {props.track.artists
                         .map((a) => (
                             <a
-                                draggable="true"
                                 dir="auto"
                                 href="#"
                                 tabIndex={-1}
@@ -42,7 +47,7 @@ export function TrackListRowTitle(props: Readonly<Props>): JSX.Element {
                             },
                             null,
                         )}
-                </span>
+                </TextComponent>
             )}
         </div>
     );

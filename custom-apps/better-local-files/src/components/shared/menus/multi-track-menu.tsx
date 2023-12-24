@@ -5,6 +5,8 @@ import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import { getPlatform } from '@shared/utils';
+import { SpotifyIcon } from '../icons/spotify-icon';
+import { addToQueuePath } from '../icons/icons';
 
 export type Props = {
     tracks: Track[];
@@ -19,13 +21,6 @@ export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
 
     return (
         <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
-            <Spicetify.ReactComponent.MenuItem
-                divider="after"
-                onClick={addToQueue}
-            >
-                <span>{getTranslation(['contextmenu.add-to-queue'])}</span>
-            </Spicetify.ReactComponent.MenuItem>
-
             <SubmenuItem
                 label={getTranslation(['contextmenu.add-to-playlist'])}
                 submenu={
@@ -33,7 +28,17 @@ export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
                         tracksUri={props.tracks.map((t) => t.uri)}
                     />
                 }
+                leadingIcon={<SpotifyIcon icon="plus2px" iconSize={16} />}
             />
+
+            <Spicetify.ReactComponent.MenuItem
+                onClick={addToQueue}
+                leadingIcon={
+                    <SpotifyIcon iconPath={addToQueuePath} iconSize={16} />
+                }
+            >
+                <span>{getTranslation(['contextmenu.add-to-queue'])}</span>
+            </Spicetify.ReactComponent.MenuItem>
         </Spicetify.ReactComponent.Menu>
     );
 }

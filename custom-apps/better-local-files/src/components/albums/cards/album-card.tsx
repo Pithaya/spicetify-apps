@@ -9,6 +9,7 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
+import { TextComponent } from '../../shared/text/text';
 
 export type Props = {
     album: Album;
@@ -54,7 +55,7 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
             onDragStart={dragHandler}
         >
             <div className="main-card-draggable">
-                <div className="main-card-imageContainer">
+                <div className="main-card-imageContainer main-card-imageContainerOld">
                     <div className="main-cardImage-imageWrapper">
                         <img
                             aria-hidden="false"
@@ -80,17 +81,19 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
                     </div>
                 </div>
                 <div className="main-card-cardMetadata">
-                    <span
-                        draggable="false"
-                        title={props.album.name}
-                        className={`${styles['main-cardHeader-link']} main-cardHeader-link`}
-                        dir="auto"
+                    <TextComponent
+                        className="main-cardHeader-link main-cardHeader-text"
+                        variant="balladBold"
+                        semanticColor="textBase"
+                        paddingBottom="4px"
                     >
-                        <div className="main-cardHeader-text">
-                            {props.album.name}
-                        </div>
-                    </span>
-                    <div className="main-cardSubHeader-root">
+                        {props.album.name}
+                    </TextComponent>
+                    <TextComponent
+                        className={`main-cardSubHeader-root ${styles['limit-lines-2']}`}
+                        variant="mesto"
+                        semanticColor="textSubdued"
+                    >
                         {props.album.artists
                             .map((a) => (
                                 <span key={a.uri}>
@@ -117,7 +120,7 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
                                 },
                                 null,
                             )}
-                    </div>
+                    </TextComponent>
                 </div>
             </div>
         </div>

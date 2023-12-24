@@ -11,6 +11,7 @@ import type { UserAPI } from './user';
 import type { History } from './history';
 import type { ShowAPI } from './show';
 import type { LocalStorageAPI } from './local-storage';
+import type { LibraryAPI } from './library';
 
 export type Platform = {
     Session: Session;
@@ -30,7 +31,7 @@ export type Platform = {
     FacebookAPI: unknown;
     FollowAPI: unknown;
     GraphQLLoader: unknown;
-    LibraryAPI: unknown;
+    LibraryAPI: LibraryAPI;
     LocalFilesAPI: LocalFilesAPI;
     OfflineAPI: unknown;
     PlatformData: unknown;

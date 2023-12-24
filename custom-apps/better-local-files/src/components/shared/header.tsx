@@ -1,5 +1,7 @@
 import styles from '../../css/app.module.scss';
 import React from 'react';
+import { TextComponent } from './text/text';
+import useFitText from 'use-fit-text';
 
 export type Props = {
     image: JSX.Element;
@@ -29,28 +31,76 @@ export const headerImageFallback = `
     </svg>
 </div>`;
 
-export function Header(props: Readonly<Props>): JSX.Element {
+export function HeaderImage(
+    props: Readonly<{ imageSrc: string }>,
+): JSX.Element {
     return (
-        <div className={`${styles.header}`}>
-            <div className={styles['image-container']}>{props.image}</div>
-            <div className={styles['text-container']}>
+        <img
+            src={props.imageSrc}
+            className="main-image-image main-entityHeader-image main-entityHeader-shadow main-entityHeader-newEntityHeaders main-image-loaded"
+            onError={(e) => (e.currentTarget.outerHTML = headerImageFallback)}
+        />
+    );
+}
+
+export function Header(props: Readonly<Props>): JSX.Element {
+    const baseFontSize = '6rem';
+
+    // Max height to prevent overflow on long titles / multiple artists
+    const titleMaxHeight = '135px';
+    const metadataMaxHeight = '66px';
+
+    const { fontSize, ref } = useFitText();
+
+    return (
+        <div className="contentSpacing main-entityHeader-container main-entityHeader-nonWrapped main-entityHeader-newEntityHeaders">
+            <div className="main-entityHeader-backgroundColor"></div>
+            <div className="main-entityHeader-backgroundColor main-entityHeader-overlay"></div>
+
+            <div></div>
+
+            <div className="main-entityHeader-imageContainer main-entityHeader-imageContainerNew">
+                <div className="main-entityHeader-image">{props.image}</div>
+            </div>
+
+            <div className="main-entityHeader-headerText">
                 {props.subtitle && (
-                    <h2 className="main-entityHeader-subtitle main-entityHeader-small main-entityHeader-uppercase main-entityHeader-bold">
+                    <TextComponent
+                        variant="mesto"
+                        className="main-entityHeader-pretitle"
+                    >
                         {props.subtitle}
-                    </h2>
+                    </TextComponent>
                 )}
-                <h1
+                <div
+                    dir="auto"
                     className="main-entityHeader-title"
-                    style={{ fontSize: props.titleFontSize }}
+                    style={{
+                        maxHeight: titleMaxHeight,
+                        fontSize: baseFontSize,
+                    }}
+                    ref={ref}
                 >
-                    {props.title}
-                </h1>
+                    <TextComponent
+                        variant="bass"
+                        semanticColor="textBase"
+                        elementType="h1"
+                        style={{
+                            fontSize,
+                        }}
+                    >
+                        {props.title}
+                    </TextComponent>
+                </div>
+
                 {props.metadata && (
-                    <div className="main-entityHeader-metaData">
+                    <div
+                        className="main-entityHeader-metaData"
+                        style={{ maxHeight: metadataMaxHeight }}
+                    >
                         {props.metadata}
                     </div>
                 )}
-                {props.additionalText}
             </div>
         </div>
     );

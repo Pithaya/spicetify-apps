@@ -85,15 +85,14 @@ export function ArtistsPage(): JSX.Element {
     }
 
     return (
-        <>
-            <div className={styles['album-header']}>
+        <div className="contentSpacing">
+            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
                 <h1>{getTranslation(['artists'])}</h1>
 
                 <div className={styles['controls']}>
                     <SearchInput
                         search={search}
                         setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
                         setDebouncedSearch={setDebouncedSearch}
                     />
 
@@ -101,6 +100,9 @@ export function ArtistsPage(): JSX.Element {
                         sortOptions={sortOptions}
                         selectedSortOption={selectedSortOption}
                         setSelectedSortOption={handleSortOptionChange}
+                        displayTypes={['grid']}
+                        selectedDisplayType="grid"
+                        setSelectedDisplayType={() => {}}
                     />
                 </div>
             </div>
@@ -116,6 +118,6 @@ export function ArtistsPage(): JSX.Element {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }

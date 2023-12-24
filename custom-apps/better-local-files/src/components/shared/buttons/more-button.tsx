@@ -1,6 +1,6 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { MoreIcon } from '../icons/more-icon';
+import { SpotifyIcon } from '../icons/spotify-icon';
 
 export type Props = {
     label: string;
@@ -22,7 +22,7 @@ export function MoreButton(props: Readonly<Props>): JSX.Element {
                     <Spicetify.ReactComponent.ButtonTertiary
                         aria-label={props.label}
                         aria-haspopup="menu"
-                        iconOnly={() => <MoreIcon />}
+                        iconOnly={() => <SpotifyIcon icon="more" />}
                     ></Spicetify.ReactComponent.ButtonTertiary>
                 </Spicetify.ReactComponent.ContextMenu>
             </div>

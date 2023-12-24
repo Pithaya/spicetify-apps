@@ -82,8 +82,8 @@ export function AlbumsPage(): JSX.Element {
     }
 
     return (
-        <>
-            <div className={styles['album-header']}>
+        <div className="contentSpacing">
+            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
                 <h1>{getTranslation(['albums'])}</h1>
 
                 <div className={styles['controls']}>
@@ -97,6 +97,9 @@ export function AlbumsPage(): JSX.Element {
                         sortOptions={sortOptions}
                         selectedSortOption={selectedSortOption}
                         setSelectedSortOption={handleSortOptionChange}
+                        displayTypes={['grid']}
+                        selectedDisplayType="grid"
+                        setSelectedDisplayType={() => {}}
                     />
                 </div>
             </div>
@@ -112,6 +115,6 @@ export function AlbumsPage(): JSX.Element {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }

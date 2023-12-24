@@ -11,6 +11,8 @@ export type Props = {
     windowSize: number;
 };
 
+// TODO: More is broken
+
 export function TabBar(props: Readonly<Props>): JSX.Element {
     const tabBarRef = React.useRef<HTMLUListElement | null>(null);
     const [childrenSizes, setChildrenSizes] = useState([] as number[]);

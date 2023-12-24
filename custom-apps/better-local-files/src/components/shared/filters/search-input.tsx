@@ -4,8 +4,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Search } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { useObservableRef, useSubscription } from 'observable-hooks';
-
-// TODO: clear button
+import { SpotifyIcon } from '../icons/spotify-icon';
 
 export type Props = {
     search: string;
@@ -16,7 +15,7 @@ export type Props = {
 export function SearchInput(props: Readonly<Props>): JSX.Element {
     const [search, search$] = useObservableRef(props.search);
     useSubscription(
-        search$.pipe(debounceTime(600), distinctUntilChanged()),
+        search$.pipe(debounceTime(400), distinctUntilChanged()),
         props.setDebouncedSearch,
     );
 
@@ -45,6 +44,16 @@ export function SearchInput(props: Readonly<Props>): JSX.Element {
                     onSearchChange(e.target.value);
                 }}
             />
+
+            <Spicetify.ReactComponent.ButtonTertiary
+                iconOnly={() => <SpotifyIcon icon="x" iconSize={16} />}
+                buttonSize="sm"
+                className={styles['clear-icon']}
+                onClick={() => {
+                    onSearchChange('');
+                }}
+                style={{ visibility: props.search ? 'visible' : 'hidden' }}
+            ></Spicetify.ReactComponent.ButtonTertiary>
         </div>
     );
 }

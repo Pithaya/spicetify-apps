@@ -10,6 +10,7 @@ import {
     usePlayStatus,
 } from 'custom-apps/better-local-files/src/hooks/use-play-status';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
@@ -23,6 +24,7 @@ export type Props = {
     useTrackNumber: boolean;
     onPlayTrack: (uri: string) => void;
     getRowContent: (track: Track) => JSX.Element[];
+    displayType: DisplayType;
 } & TrackListHeaderProps;
 
 /**
@@ -55,10 +57,6 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
         );
     }, [selectedTracks]);
 
-    // TODO: Add compact mode
-    // compact : --row-height: 32px;
-    // normal : --row-height: 56px
-
     function handleClick(
         e: React.MouseEvent<HTMLDivElement>,
         track: Track,
@@ -82,79 +80,91 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
     }
 
     return (
-        <div
-            role="grid"
-            aria-rowcount={props.tracks.length}
-            aria-colcount={props.headers.length + 2}
-            aria-label={props.gridLabel}
-            className="main-trackList-trackList main-trackList-indexable"
-            tabIndex={0}
-        >
-            <TrackListHeader
-                headers={props.headers}
-                sortedHeader={props.sortedHeader}
-                onHeaderClicked={props.onHeaderClicked}
-            ></TrackListHeader>
+        <div className="contentSpacing">
+            <div
+                role="grid"
+                aria-rowcount={props.tracks.length}
+                aria-colcount={props.headers.length + 2}
+                aria-label={props.gridLabel}
+                className="main-trackList-trackList main-trackList-indexable"
+                tabIndex={0}
+            >
+                <TrackListHeader
+                    headers={props.headers}
+                    sortedHeader={props.sortedHeader}
+                    onHeaderClicked={props.onHeaderClicked}
+                ></TrackListHeader>
 
-            <div className={`${styles['display-list']}`}>
-                {props.tracks.map((track, index) => (
-                    <TrackListRow
-                        key={track.uri}
-                        track={track}
-                        index={
-                            props.useTrackNumber ? track.trackNumber : index + 1
-                        }
-                        selected={selectedTracks.has(track.uri)}
-                        active={activeTrackUri === track.uri}
-                        playing={
-                            activeTrackUri === track.uri &&
-                            playStatus === 'play'
-                        }
-                        onClick={(e) => {
-                            handleClick(e, track);
-                        }}
-                        onDoubleClick={() => {
-                            props.onPlayTrack(track.uri);
-                        }}
-                        dragHandler={dragHandler}
-                    >
-                        {props.getRowContent(track)}
-                    </TrackListRow>
-                ))}
+                <div
+                    className={`${
+                        props.displayType === 'compact'
+                            ? styles['display-list-compact']
+                            : styles['display-list']
+                    }`}
+                >
+                    {props.tracks.map((track, index) => (
+                        <TrackListRow
+                            key={track.uri}
+                            track={track}
+                            index={
+                                props.useTrackNumber
+                                    ? track.trackNumber
+                                    : index + 1
+                            }
+                            selected={selectedTracks.has(track.uri)}
+                            active={activeTrackUri === track.uri}
+                            playing={
+                                activeTrackUri === track.uri &&
+                                playStatus === 'play'
+                            }
+                            onClick={(e) => {
+                                handleClick(e, track);
+                            }}
+                            onDoubleClick={() => {
+                                props.onPlayTrack(track.uri);
+                            }}
+                            dragHandler={dragHandler}
+                            displayType={props.displayType}
+                        >
+                            {props.getRowContent(track)}
+                        </TrackListRow>
+                    ))}
 
-                {props.subtracks.map((sub) => {
-                    return (
-                        <>
-                            {sub.headerRow}
-                            {sub.tracks.map((track, index) => (
-                                <TrackListRow
-                                    key={track.uri}
-                                    track={track}
-                                    index={
-                                        props.useTrackNumber
-                                            ? track.trackNumber
-                                            : index + 1
-                                    }
-                                    selected={selectedTracks.has(track.uri)}
-                                    active={activeTrackUri === track.uri}
-                                    playing={
-                                        activeTrackUri === track.uri &&
-                                        playStatus === 'play'
-                                    }
-                                    onClick={(e) => {
-                                        handleClick(e, track);
-                                    }}
-                                    onDoubleClick={() => {
-                                        props.onPlayTrack(track.uri);
-                                    }}
-                                    dragHandler={dragHandler}
-                                >
-                                    {props.getRowContent(track)}
-                                </TrackListRow>
-                            ))}
-                        </>
-                    );
-                })}
+                    {props.subtracks.map((sub) => {
+                        return (
+                            <>
+                                {sub.headerRow}
+                                {sub.tracks.map((track, index) => (
+                                    <TrackListRow
+                                        key={track.uri}
+                                        track={track}
+                                        index={
+                                            props.useTrackNumber
+                                                ? track.trackNumber
+                                                : index + 1
+                                        }
+                                        selected={selectedTracks.has(track.uri)}
+                                        active={activeTrackUri === track.uri}
+                                        playing={
+                                            activeTrackUri === track.uri &&
+                                            playStatus === 'play'
+                                        }
+                                        onClick={(e) => {
+                                            handleClick(e, track);
+                                        }}
+                                        onDoubleClick={() => {
+                                            props.onPlayTrack(track.uri);
+                                        }}
+                                        dragHandler={dragHandler}
+                                        displayType={props.displayType}
+                                    >
+                                        {props.getRowContent(track)}
+                                    </TrackListRow>
+                                ))}
+                            </>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
