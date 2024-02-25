@@ -1,4 +1,5 @@
 export const CHANGE_NOTES = [
-    'New "Clear cache" option in the menu.',
-    'A notification will show if a new update is available.',
+    'Added drag and drop to the track list and album cards',
+    'Select multiple tracks by holding the Ctrl key and clicking on the tracks',
+    'Switch between list and compact display modes',
 ];
