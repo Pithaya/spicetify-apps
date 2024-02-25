@@ -1,12 +1,11 @@
-import { AlbumData } from './models/album-data';
-import { GraphQLResponse } from './models/response';
+import type { AlbumData } from './models/album-data';
+import type { GraphQLResponse } from './models/response';
 import { IsErrorResponse, ThrowWithErrorMessage } from './utils/graphQL-utils';
-import { Locale } from '../platform/locale';
-import { TrackNameData } from './models/track-name-data';
-import { EpisodeNameData } from './models/episode-name-data';
-import { ArtistMinimalData } from './models/artist-minimal-data';
-import { NpvEpisodeData } from './models/npv-episode-data';
-import { AlbumNameAndTracksData } from './models/album-name-and-tracks-data';
+import type { TrackNameData } from './models/track-name-data';
+import type { EpisodeNameData } from './models/episode-name-data';
+import type { ArtistMinimalData } from './models/artist-minimal-data';
+import type { NpvEpisodeData } from './models/npv-episode-data';
+import type { AlbumNameAndTracksData } from './models/album-name-and-tracks-data';
 
 // Decorate
 // ----------------------------------------
@@ -87,22 +86,22 @@ export async function fetchExtractedColorForTrackEntity(): Promise<unknown> {
 
 export async function getAlbum(
     uri: Spicetify.URI,
-    locale: Locale,
+    locale: typeof Spicetify.Locale,
     offset: number,
-    limit: number
+    limit: number,
 ): Promise<AlbumData> {
     if (uri.type !== Spicetify.URI.Type.ALBUM) {
         throw new Error(`URI '${uri.toString()}' is not an album.`);
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['getAlbum'],
+        Spicetify.GraphQL.Definitions.getAlbum,
         {
             uri: uri.toString(),
             locale: locale.getLocale(),
-            offset: offset,
-            limit: limit,
-        }
+            offset,
+            limit,
+        },
     )) as GraphQLResponse<AlbumData>;
 
     if (IsErrorResponse(response)) {
@@ -115,19 +114,19 @@ export async function getAlbum(
 export async function getAlbumNameAndTracks(
     uri: Spicetify.URI,
     offset: number,
-    limit: number
+    limit: number,
 ): Promise<AlbumNameAndTracksData> {
     if (uri.type !== Spicetify.URI.Type.ALBUM) {
         throw new Error(`URI '${uri.toString()}' is not an album.`);
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['getAlbumNameAndTracks'],
+        Spicetify.GraphQL.Definitions.getAlbumNameAndTracks,
         {
             uri: uri.toString(),
-            offset: offset,
-            limit: limit,
-        }
+            offset,
+            limit,
+        },
     )) as GraphQLResponse<AlbumNameAndTracksData>;
 
     if (IsErrorResponse(response)) {
@@ -154,17 +153,17 @@ export async function queryAlbumTracks(): Promise<unknown> {
  * @returns The name of the episode.
  */
 export async function getEpisodeName(
-    uri: Spicetify.URI
+    uri: Spicetify.URI,
 ): Promise<EpisodeNameData> {
     if (uri.type !== Spicetify.URI.Type.EPISODE) {
         throw new Error(`URI '${uri.toString()}' is not an episode.`);
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['getEpisodeName'],
+        Spicetify.GraphQL.Definitions.getEpisodeName,
         {
             uri: uri.toString(),
-        }
+        },
     )) as GraphQLResponse<EpisodeNameData>;
 
     if (IsErrorResponse(response)) {
@@ -175,17 +174,17 @@ export async function getEpisodeName(
 }
 
 export async function queryNpvEpisode(
-    uri: Spicetify.URI
+    uri: Spicetify.URI,
 ): Promise<NpvEpisodeData> {
     if (uri.type !== Spicetify.URI.Type.EPISODE) {
         throw new Error(`URI '${uri.toString()}' is not an episode.`);
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['queryNpvEpisode'],
+        Spicetify.GraphQL.Definitions.queryNpvEpisode,
         {
             uri: uri.toString(),
-        }
+        },
     )) as GraphQLResponse<NpvEpisodeData>;
 
     if (IsErrorResponse(response)) {
@@ -209,10 +208,10 @@ export async function getTrackName(uri: Spicetify.URI): Promise<TrackNameData> {
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['getTrackName'],
+        Spicetify.GraphQL.Definitions.getTrackName,
         {
             uri: uri.toString(),
-        }
+        },
     )) as GraphQLResponse<TrackNameData>;
 
     if (IsErrorResponse(response)) {
@@ -283,17 +282,17 @@ export async function queryArtistRelated(): Promise<unknown> {
  * @returns Minimal informations about the artist.
  */
 export async function queryArtistMinimal(
-    uri: Spicetify.URI
+    uri: Spicetify.URI,
 ): Promise<ArtistMinimalData> {
     if (uri.type !== Spicetify.URI.Type.ARTIST) {
         throw new Error(`URI '${uri.toString()}' is not an artist.`);
     }
 
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions['queryArtistMinimal'],
+        Spicetify.GraphQL.Definitions.queryArtistMinimal,
         {
             uri: uri.toString(),
-        }
+        },
     )) as GraphQLResponse<ArtistMinimalData>;
 
     if (IsErrorResponse(response)) {
@@ -308,7 +307,7 @@ export async function queryArtistMinimal(
  */
 export async function queryNpvArtist(
     artistUri: Spicetify.URI,
-    trackUri: Spicetify.URI
+    trackUri: Spicetify.URI,
 ): Promise<unknown> {
     throw new Error('Method not implemented.');
 }

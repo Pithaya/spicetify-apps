@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import styles from 'css/app.module.scss';
 import { HomeComponent } from './components/home.component';
-import { JukeboxSongState } from './models/jukebox-song-state';
+import type { JukeboxSongState } from './models/jukebox-song-state';
 import { SettingsButton } from './components/settings/settings-button';
 import { version } from '../package.json';
-import ReactMarkdown from 'react-markdown';
 import whatsNew from 'spcr-whats-new';
 import { CHANGE_NOTES } from './change-notes';
+import { useSubscription } from 'observable-hooks';
 
-function App() {
+function App(): JSX.Element {
     const [songState, setSongState] = useState<JukeboxSongState | null>(null);
 
-    useEffect(() => {
-        const subscription = window.jukebox.songState$.subscribe(
-            (songState) => {
-                setSongState(songState);
-            }
-        );
-        return () => subscription.unsubscribe();
-    }, []);
+    useSubscription(window.jukebox.songState$, setSongState);
 
-    useEffect(() => {
-        const markdown = <ReactMarkdown children={CHANGE_NOTES} />;
-
-        whatsNew('eternal-jukebox', version, {
+    async function init(): Promise<void> {
+        await whatsNew('eternal-jukebox', version, {
             title: `New in v${version}`,
-            content: markdown,
+            content: (
+                <p>
+                    <ul>
+                        {CHANGE_NOTES.map((value) => {
+                            return <li key={value}>{value}</li>;
+                        })}
+                    </ul>
+                </p>
+            ),
             isLarge: true,
         });
+    }
+
+    useEffect(() => {
+        void init();
     }, []);
 
     if (window.jukebox.isEnabled) {

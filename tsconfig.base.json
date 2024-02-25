@@ -8,11 +8,11 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "skipLibCheck": true,
-        "lib": ["ES2022", "DOM"],
+        "lib": ["ES2023", "DOM"],
         "baseUrl": ".",
         "paths": {
             "@shared/*": ["libs/shared/src/*"],
-            "@spotify-web-api": ["libs/spotify-web-api/src"]
+            "@spotify-web-api/*": ["libs/spotify-web-api/src/*"]
         }
     }
 }

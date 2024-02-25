@@ -1,7 +1,9 @@
-import { getSelectedElementName } from '@shared/utils';
-import { KuroshiroSettingsService } from './kuroshiro-settings.service';
-import { KuroshiroService } from './kuroshiro.service';
-import { ServicesContainer } from './services-container';
+import { getSelectedElementName } from '@shared/utils/context-menu';
+import {
+    settingsService,
+    type KuroshiroSettingsService,
+} from './kuroshiro-settings.service';
+import { kuroshiroService, type KuroshiroService } from './kuroshiro.service';
 import Kuroshiro from 'kuroshiro';
 import i18next from 'i18next';
 import { MENU_ICON } from '../models/constants';
@@ -25,8 +27,8 @@ export class ContextMenuService {
     private readonly kuroshiroService: KuroshiroService;
 
     constructor() {
-        this.settingsService = ServicesContainer.settings;
-        this.kuroshiroService = ServicesContainer.kuroshiro;
+        this.settingsService = settingsService;
+        this.kuroshiroService = kuroshiroService;
     }
 
     /**
@@ -41,7 +43,9 @@ export class ContextMenuService {
             i18next.t('contextMenu.name', {
                 syllabary: this.settingsService.targetSyllabary,
             }),
-            () => this.convert(),
+            async () => {
+                await this.convert();
+            },
             () => {
                 const selectedName = getSelectedElementName();
                 this.selectedElementName = selectedName ?? '';
@@ -61,7 +65,7 @@ export class ContextMenuService {
             Spicetify.showNotification(i18next.t('contextMenu.error'), true);
         }
 
-        let result = await this.kuroshiroService.convert(
+        const result = await this.kuroshiroService.convert(
             this.selectedElementName,
         );
 
@@ -79,3 +83,5 @@ export class ContextMenuService {
         );
     }
 }
+
+export const contextMenuService: ContextMenuService = new ContextMenuService();

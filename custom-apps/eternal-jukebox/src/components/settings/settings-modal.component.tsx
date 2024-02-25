@@ -1,19 +1,17 @@
 import styles from '../../css/app.module.scss';
 import React, { useEffect, useState } from 'react';
-import {
-    JukeboxSettings,
-    JukeboxStoredSettings,
-} from '../../models/jukebox-settings';
+import type { JukeboxStoredSettings } from '../../models/jukebox-settings';
+import { JukeboxSettings } from '../../models/jukebox-settings';
 import { SettingsService } from '../../services/settings-service';
 import { MultiRangeSlider } from '../shared/multi-range-slider';
 
-export function SettingsModal() {
+export function SettingsModal(): JSX.Element {
     const [settings, setSettings] = useState<JukeboxStoredSettings>(
-        SettingsService.storedSettings
+        SettingsService.storedSettings,
     );
 
     useEffect(() => {
-        let observer = new MutationObserver((records) => {
+        const observer = new MutationObserver((records) => {
             let isPopupRemoved = false;
 
             for (const record of records) {
@@ -25,7 +23,7 @@ export function SettingsModal() {
             }
 
             if (isPopupRemoved) {
-                window.jukebox.reloadSettings();
+                window.jukebox.reloadSettings().catch(console.error);
                 observer.disconnect();
             }
         });
@@ -41,8 +39,8 @@ export function SettingsModal() {
 
     function updateSettingsField(
         field: keyof JukeboxStoredSettings,
-        value: any
-    ) {
+        value: any,
+    ): void {
         if (typeof value !== typeof settings[field]) {
             throw new Error('Value type does not match field type');
         }
@@ -54,7 +52,7 @@ export function SettingsModal() {
         setSettings((previousValue) => ({ ...previousValue, [field]: value }));
     }
 
-    function reset() {
+    function reset(): void {
         setSettings(new JukeboxSettings().toPartial());
     }
 
@@ -73,127 +71,109 @@ export function SettingsModal() {
 
     return (
         <div className={styles['settings-modal']}>
-            <>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="The maximum similarity distance allowed between two beats in order to create a branch."
-                    showDelay={100}
+            <Spicetify.ReactComponent.TooltipWrapper
+                label="The maximum similarity distance allowed between two beats in order to create a branch."
+                showDelay={100}
+            >
+                <label
+                    htmlFor="jukebox.settings.maxBranchDistance"
+                    style={labelStyle}
                 >
-                    <label
-                        htmlFor="jukebox.settings.maxBranchDistance"
-                        style={labelStyle}
-                    >
-                        <b>Branch Similarity Threshold</b>:
-                        {settings.maxBranchDistance}
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
+                    <b>Branch Similarity Threshold</b>:
+                    {settings.maxBranchDistance}
+                </label>
+            </Spicetify.ReactComponent.TooltipWrapper>
 
-                <div className={styles['input-range-container']}>
-                    <input
-                        id="jukebox.settings.maxBranchDistance"
-                        className={styles['w-100']}
-                        type={'range'}
-                        min={JukeboxSettings.rangeMinBranchDistance}
-                        max={JukeboxSettings.rangeMaxBranchDistance}
-                        value={settings.maxBranchDistance}
-                        step={1}
-                        onChange={(e) =>
-                            updateSettingsField(
-                                'maxBranchDistance',
-                                e.target.valueAsNumber
-                            )
-                        }
-                    />
+            <div className={styles['input-range-container']}>
+                <input
+                    id="jukebox.settings.maxBranchDistance"
+                    className={styles['w-100']}
+                    type={'range'}
+                    min={JukeboxSettings.rangeMinBranchDistance}
+                    max={JukeboxSettings.rangeMaxBranchDistance}
+                    value={settings.maxBranchDistance}
+                    step={1}
+                    onChange={(e) => {
+                        updateSettingsField(
+                            'maxBranchDistance',
+                            e.target.valueAsNumber,
+                        );
+                    }}
+                />
 
-                    <div className={styles['range-subtext']}>
-                        <span className={styles['small-text']}>
-                            Higher quality
-                        </span>
-                        <span className={styles['small-text']}>
-                            More branches
-                        </span>
-                    </div>
+                <div className={styles['range-subtext']}>
+                    <span className={styles['small-text']}>Higher quality</span>
+                    <span className={styles['small-text']}>More branches</span>
                 </div>
-            </>
+            </div>
 
-            <>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="The minimum and maximum chance for a branch to be selected each beat."
-                    showDelay={100}
+            <Spicetify.ReactComponent.TooltipWrapper
+                label="The minimum and maximum chance for a branch to be selected each beat."
+                showDelay={100}
+            >
+                <label
+                    htmlFor="jukebox.settings.randomBranchChance"
+                    style={labelStyle}
                 >
-                    <label
-                        htmlFor="jukebox.settings.randomBranchChance"
-                        style={labelStyle}
-                    >
-                        <b>Branch Probability Range</b>:
-                        {` ${Math.round(
-                            settings.minRandomBranchChance * 100
-                        )}% to 
+                    <b>Branch Probability Range</b>:
+                    {` ${Math.round(settings.minRandomBranchChance * 100)}% to 
                 ${Math.round(settings.maxRandomBranchChance * 100)}%`}
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
+                </label>
+            </Spicetify.ReactComponent.TooltipWrapper>
 
-                <div className={styles['input-range-container']}>
-                    <MultiRangeSlider
-                        min={0}
-                        max={100}
-                        minDefaultValue={settings.minRandomBranchChance * 100}
-                        maxDefaultValue={settings.maxRandomBranchChance * 100}
-                        onChange={({ min, max }) => {
-                            updateSettingsField(
-                                'minRandomBranchChance',
-                                min / 100
-                            );
-                            updateSettingsField(
-                                'maxRandomBranchChance',
-                                max / 100
-                            );
-                        }}
-                    />
+            <div className={styles['input-range-container']}>
+                <MultiRangeSlider
+                    min={0}
+                    max={100}
+                    minDefaultValue={settings.minRandomBranchChance * 100}
+                    maxDefaultValue={settings.maxRandomBranchChance * 100}
+                    onChange={({ min, max }) => {
+                        updateSettingsField('minRandomBranchChance', min / 100);
+                        updateSettingsField('maxRandomBranchChance', max / 100);
+                    }}
+                />
 
-                    <div className={styles['range-subtext']}>
-                        <span className={styles['small-text']}>Low</span>
-                        <span className={styles['small-text']}>High</span>
-                    </div>
+                <div className={styles['range-subtext']}>
+                    <span className={styles['small-text']}>Low</span>
+                    <span className={styles['small-text']}>High</span>
                 </div>
-            </>
+            </div>
 
-            <>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="Controls how fast the chance to select a branch will increase."
-                    showDelay={100}
+            <Spicetify.ReactComponent.TooltipWrapper
+                label="Controls how fast the chance to select a branch will increase."
+                showDelay={100}
+            >
+                <label
+                    htmlFor="jukebox.settings.randomBranchChanceDelta"
+                    style={labelStyle}
                 >
-                    <label
-                        htmlFor="jukebox.settings.randomBranchChanceDelta"
-                        style={labelStyle}
-                    >
-                        <b>Branch Probability Ramp-up Speed</b>:
-                        {Math.round(settings.randomBranchChanceDelta * 100)}%
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
+                    <b>Branch Probability Ramp-up Speed</b>:
+                    {Math.round(settings.randomBranchChanceDelta * 100)}%
+                </label>
+            </Spicetify.ReactComponent.TooltipWrapper>
 
-                <div className={styles['input-range-container']}>
-                    <input
-                        id="jukebox.settings.randomBranchChanceDelta"
-                        className={styles['w-100']}
-                        type={'range'}
-                        min={0}
-                        max={100}
-                        value={settings.randomBranchChanceDelta * 100}
-                        step={2}
-                        onChange={(e) =>
-                            updateSettingsField(
-                                'randomBranchChanceDelta',
-                                e.target.valueAsNumber / 100
-                            )
-                        }
-                    />
+            <div className={styles['input-range-container']}>
+                <input
+                    id="jukebox.settings.randomBranchChanceDelta"
+                    className={styles['w-100']}
+                    type={'range'}
+                    min={0}
+                    max={100}
+                    value={settings.randomBranchChanceDelta * 100}
+                    step={2}
+                    onChange={(e) => {
+                        updateSettingsField(
+                            'randomBranchChanceDelta',
+                            e.target.valueAsNumber / 100,
+                        );
+                    }}
+                />
 
-                    <div className={styles['range-subtext']}>
-                        <span className={styles['small-text']}>Slow</span>
-                        <span className={styles['small-text']}>Fast</span>
-                    </div>
+                <div className={styles['range-subtext']}>
+                    <span className={styles['small-text']}>Slow</span>
+                    <span className={styles['small-text']}>Fast</span>
                 </div>
-            </>
+            </div>
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
@@ -214,12 +194,12 @@ export function SettingsModal() {
                         className="x-toggle-input"
                         type="checkbox"
                         checked={settings.addLastEdge}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             updateSettingsField(
                                 'addLastEdge',
-                                !settings.addLastEdge
-                            )
-                        }
+                                !settings.addLastEdge,
+                            );
+                        }}
                     />
                     <span className="x-toggle-indicatorWrapper">
                         <span className="x-toggle-indicator"></span>
@@ -246,12 +226,12 @@ export function SettingsModal() {
                         className="x-toggle-input"
                         type="checkbox"
                         checked={settings.justBackwards}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             updateSettingsField(
                                 'justBackwards',
-                                !settings.justBackwards
-                            )
-                        }
+                                !settings.justBackwards,
+                            );
+                        }}
                     />
                     <span className="x-toggle-indicatorWrapper">
                         <span className="x-toggle-indicator"></span>
@@ -278,12 +258,12 @@ export function SettingsModal() {
                         className="x-toggle-input"
                         type="checkbox"
                         checked={settings.justLongBranches}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             updateSettingsField(
                                 'justLongBranches',
-                                !settings.justLongBranches
-                            )
-                        }
+                                !settings.justLongBranches,
+                            );
+                        }}
                     />
                     <span className="x-toggle-indicatorWrapper">
                         <span className="x-toggle-indicator"></span>
@@ -310,12 +290,12 @@ export function SettingsModal() {
                         className="x-toggle-input"
                         type="checkbox"
                         checked={settings.removeSequentialBranches}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             updateSettingsField(
                                 'removeSequentialBranches',
-                                !settings.removeSequentialBranches
-                            )
-                        }
+                                !settings.removeSequentialBranches,
+                            );
+                        }}
                     />
                     <span className="x-toggle-indicatorWrapper">
                         <span className="x-toggle-indicator"></span>

@@ -1,6 +1,6 @@
 import { Point } from '../models/visualization/point';
 
-export function getPercentOfValue(percent: number, value: number) {
+export function getPercentOfValue(percent: number, value: number): number {
     return (percent * value) / 100;
 }
 
@@ -11,7 +11,7 @@ export function degreesToRadians(degrees: number): number {
 export function getPointFromPercent(
     percent: number,
     radius: number,
-    svgSize: number
+    svgSize: number,
 ): Point {
     const angle = getPercentOfValue(percent, 360);
     const point = getPositionFromAngle(angle);

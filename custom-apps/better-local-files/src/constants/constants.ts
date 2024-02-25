@@ -1,33 +1,30 @@
 import { getTranslation } from '../helpers/translations-helper';
-import { TopBarItem } from '../models/top-bar-item';
+import type { TopBarItem } from '../models/top-bar-item';
 
-const CUSTOM_APP_PATH = '/better-local-files';
+export const CUSTOM_APP_PATH = '/better-local-files';
+export const ALBUM_ROUTE = `${CUSTOM_APP_PATH}/album`;
+export const ALBUMS_ROUTE = `${CUSTOM_APP_PATH}/albums`;
 
-export class Routes {
-    static album = `${CUSTOM_APP_PATH}/album`;
-    static albums = `${CUSTOM_APP_PATH}/albums`;
+export const ARTIST_ROUTE = `${CUSTOM_APP_PATH}/artist`;
+export const ARTISTS_ROUTE = `${CUSTOM_APP_PATH}/artists`;
 
-    static artist = `${CUSTOM_APP_PATH}/artist`;
-    static artists = `${CUSTOM_APP_PATH}/artists`;
-
-    static tracks = `${CUSTOM_APP_PATH}`;
-}
+export const TRACKS_ROUTE = `${CUSTOM_APP_PATH}`;
 
 export const topBarItems: TopBarItem[] = [
     {
         key: 'Tracks',
-        href: Routes.tracks,
+        href: TRACKS_ROUTE,
         label: getTranslation(['search.title.tracks']),
     },
     {
         key: 'Albums',
-        href: Routes.albums,
-        label: getTranslation(['albums']),
+        href: ALBUMS_ROUTE,
+        label: getTranslation(['search.title.albums']),
     },
     {
         key: 'Artists',
-        href: Routes.artists,
-        label: getTranslation(['artists']),
+        href: ARTISTS_ROUTE,
+        label: getTranslation(['search.title.artists']),
     },
 ];
 

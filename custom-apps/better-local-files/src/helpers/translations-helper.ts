@@ -1,7 +1,8 @@
-import { getPlatform } from '@shared/utils';
+import type { Translations } from '@shared/platform/translations';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 
 export function getTranslation(keys: string[], ...params: any[]): string {
-    const translations = getPlatform().Translations;
+    const translations = getPlatformApiOrThrow<Translations>('Translations');
 
     let valueObject: any | string = translations;
 
@@ -11,9 +12,9 @@ export function getTranslation(keys: string[], ...params: any[]): string {
 
     let value = valueObject as string;
 
-    for (const paramIndex in params) {
-        value = value.replace(`{${paramIndex}}`, params[paramIndex]);
-    }
+    params.forEach((param, index) => {
+        value = value.replace(`{${index}}`, params[index]);
+    });
 
     return value;
 }
@@ -23,14 +24,14 @@ export function getTranslatedDuration(duration: number): string {
     const minutes = Math.floor((duration / 1000 / 60) % 60);
     const hours = Math.floor((duration / 1000 / 60 / 60) % 24);
 
-    let parts = [];
+    const parts: string[] = [];
 
     if (hours !== 0) {
         parts.push(
             getTranslation(
                 ['time.hours.short', hours === 1 ? 'one' : 'other'],
-                hours
-            )
+                hours,
+            ),
         );
     }
 
@@ -38,8 +39,8 @@ export function getTranslatedDuration(duration: number): string {
         parts.push(
             getTranslation(
                 ['time.minutes.short', minutes === 1 ? 'one' : 'other'],
-                minutes
-            )
+                minutes,
+            ),
         );
     }
 
@@ -48,8 +49,8 @@ export function getTranslatedDuration(duration: number): string {
         parts.push(
             getTranslation(
                 ['time.seconds.short', seconds === 1 ? 'one' : 'other'],
-                seconds
-            )
+                seconds,
+            ),
         );
     }
 

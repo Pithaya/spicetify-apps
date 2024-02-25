@@ -1,6 +1,6 @@
 import { handleError } from '../helpers';
-import { Episode } from '../models/episode';
-import { get } from '../utils';
+import type { Episode } from '../models/episode';
+import { get } from '../utils/fetch-utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/episodes`;

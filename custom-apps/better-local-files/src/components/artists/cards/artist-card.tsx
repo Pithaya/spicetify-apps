@@ -2,18 +2,18 @@ import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { navigateTo } from '../../../helpers/history-helper';
-import { Routes } from '../../../constants/constants';
 import { PlayButton } from '../../shared/buttons/play-button';
-import { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import { TextComponent } from '../../shared/text/text';
 
-export interface IProps {
+export type Props = {
     artist: Artist;
     onPlayClicked: (a: Artist) => void;
-}
+};
 
-export function ArtistCard(props: IProps) {
+export function ArtistCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
 
@@ -44,19 +44,19 @@ export function ArtistCard(props: IProps) {
                     menu={
                         <MultiTrackMenu
                             tracks={window.localTracksService.getArtistTracks(
-                                props.artist.uri
+                                props.artist.uri,
                             )}
                         />
                     }
                 >
                     <div
                         className={`${styles['main-card-card']} main-card-card`}
-                        onClick={() =>
-                            navigateTo(Routes.artist, props.artist.uri)
-                        }
+                        onClick={() => {
+                            navigateTo(ARTIST_ROUTE, props.artist.uri);
+                        }}
                     >
                         <div draggable="true" className="main-card-draggable">
-                            <div className="main-card-imageContainer">
+                            <div className="main-card-imageContainer main-card-imageContainerOld">
                                 <div className="main-cardImage-imageWrapper main-cardImage-circular">
                                     <img
                                         aria-hidden="false"
@@ -74,33 +74,25 @@ export function ArtistCard(props: IProps) {
                                 <div className="main-card-PlayButtonContainer">
                                     <div className="main-playButton-PlayButton">
                                         <PlayButton
-                                            size={42}
-                                            iconSize={20}
-                                            onClick={() =>
+                                            size="md"
+                                            onClick={() => {
                                                 props.onPlayClicked(
-                                                    props.artist
-                                                )
-                                            }
+                                                    props.artist,
+                                                );
+                                            }}
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div className="main-card-cardMetadata">
-                                <span
-                                    draggable="false"
-                                    title={props.artist.name}
-                                    className={`${styles['main-cardHeader-link']} main-cardHeader-link`}
-                                    dir="auto"
+                                <TextComponent
+                                    className={`main-cardHeader-link main-cardHeader-text ${styles['text-full-centered']}`}
+                                    variant="balladBold"
+                                    semanticColor="textBase"
+                                    paddingBottom="4px"
                                 >
-                                    <div className="main-cardHeader-text">
-                                        {props.artist.name}
-                                    </div>
-                                </span>
-                                <div className="main-cardSubHeader-root">
-                                    <span className={styles['text-subdued']}>
-                                        {getTranslation(['artist'])}
-                                    </span>
-                                </div>
+                                    {props.artist.name}
+                                </TextComponent>
                             </div>
                         </div>
                     </div>

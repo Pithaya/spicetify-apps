@@ -2,30 +2,38 @@ import styles from '../../../css/app.module.scss';
 import React, { useMemo, useState } from 'react';
 import { TrackListGrid } from '../../shared/track-list/track-list-grid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
-import {
+import type {
+    DisplayType,
     SelectedSortOption,
     SortOption,
     SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
+import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { SortMenu } from '../../shared/filters/sort-menu';
 import { SearchInput } from '../../shared/filters/search-input';
 import { PlayButton } from '../../shared/buttons/play-button';
 import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
 import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
-import { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { TextComponent } from '../../shared/text/text';
+import { TrackListRowArtistLink } from '../../shared/track-list/track-list-row-artist-link';
 
-export interface IProps {
+export type Props = {
     tracks: Track[];
-}
+};
+
+// TODO: Get / store global view mode
+// Spicetify.Platform.LocalStorageAPI.items[Spicetify.Platform.LocalStorageAPI.createNamespacedKey("view-mode")]
+
+// TODO: Store sort option
 
 /**
  * Contains the filtering, ordering, and play logic for a list of tracks.
  */
-export function TrackList(props: IProps) {
+export function TrackList(props: Readonly<Props>): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -58,16 +66,38 @@ export function TrackList(props: IProps) {
     const [selectedSortOption, setSelectedSortOption] =
         useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
-    const headers: TrackListHeaderOption[] = [
-        selectedSortOption.key === 'artist'
-            ? {
-                  key: 'artist',
-                  label: getTranslation(['artist']),
-              }
-            : {
-                  key: 'title',
-                  label: getTranslation(['tracklist.header.title']),
-              },
+    const [selectedDisplayType, setSelectedDisplayType] =
+        useState<DisplayType>('list');
+
+    const headers: TrackListHeaderOption[] = [];
+
+    if (selectedDisplayType === 'list') {
+        // First header can be artist or title
+        headers.push(
+            selectedSortOption.key === 'artist'
+                ? {
+                      key: 'artist',
+                      label: getTranslation(['artist']),
+                  }
+                : {
+                      key: 'title',
+                      label: getTranslation(['tracklist.header.title']),
+                  },
+        );
+    } else {
+        headers.push(
+            {
+                key: 'title',
+                label: getTranslation(['tracklist.header.title']),
+            },
+            {
+                key: 'artist',
+                label: getTranslation(['artist']),
+            },
+        );
+    }
+
+    headers.push(
         {
             key: 'album',
             label: getTranslation(['tracklist.header.album']),
@@ -76,9 +106,9 @@ export function TrackList(props: IProps) {
             key: 'date',
             label: getTranslation(['tracklist.header.date-added']),
         },
-    ];
+    );
 
-    function filterTracks(tracks: Track[], search: string) {
+    function filterTracks(tracks: Track[], search: string): Track[] {
         if (search === '') {
             return tracks;
         }
@@ -88,36 +118,36 @@ export function TrackList(props: IProps) {
                 t.name.toLowerCase().includes(search.toLowerCase()) ||
                 t.album.name.toLowerCase().includes(search.toLowerCase()) ||
                 t.artists.some((a) =>
-                    a.name.toLowerCase().includes(search.toLowerCase())
-                )
+                    a.name.toLowerCase().includes(search.toLowerCase()),
+                ),
         );
     }
 
-    function orderTracks(tracks: Track[], option: SelectedSortOption) {
+    function orderTracks(tracks: Track[], option: SelectedSortOption): Track[] {
         switch (option.key) {
             case 'date':
                 return tracks.sort((x, y) =>
-                    sort(x.addedAt, y.addedAt, option.order)
+                    sort(x.addedAt, y.addedAt, option.order),
                 );
             case 'title':
                 return tracks.sort((x, y) =>
-                    sort(x.name, y.name, option.order)
+                    sort(x.name, y.name, option.order),
                 );
             case 'artist':
                 return tracks.sort((x, y) =>
                     sort(
                         x.artists.map((a) => a.name).join(', '),
                         y.artists.map((a) => a.name).join(', '),
-                        option.order
-                    )
+                        option.order,
+                    ),
                 );
             case 'album':
                 return tracks.sort((x, y) =>
-                    sort(x.album.name, y.album.name, option.order)
+                    sort(x.album.name, y.album.name, option.order),
                 );
             case 'duration':
                 return tracks.sort((x, y) =>
-                    sort(x.duration, y.duration, option.order)
+                    sort(x.duration, y.duration, option.order),
                 );
             default:
                 return tracks;
@@ -126,12 +156,12 @@ export function TrackList(props: IProps) {
 
     const filteredTracks = useMemo(
         () => filterTracks(props.tracks, debouncedSearch),
-        [props.tracks, debouncedSearch]
+        [props.tracks, debouncedSearch],
     );
 
     const orderedTracks = useMemo(
         () => [...orderTracks(filteredTracks, selectedSortOption)],
-        [filteredTracks, selectedSortOption]
+        [filteredTracks, selectedSortOption],
     );
 
     function toggleOrder(order: SortOrder): SortOrder {
@@ -140,7 +170,7 @@ export function TrackList(props: IProps) {
 
     function handleSortOptionChange(
         headerKey: HeaderKey,
-        fromDropdownMenu: boolean
+        fromDropdownMenu: boolean,
     ): void {
         setSelectedSortOption((previous) => {
             let newKey: HeaderKey;
@@ -149,14 +179,16 @@ export function TrackList(props: IProps) {
             if (
                 !fromDropdownMenu &&
                 headerKey === 'title' &&
-                selectedSortOption.order === 'descending'
+                selectedSortOption.order === 'descending' &&
+                selectedDisplayType !== 'compact'
             ) {
                 newKey = 'artist';
                 newOrder = 'ascending';
             } else if (
                 !fromDropdownMenu &&
                 headerKey === 'artist' &&
-                selectedSortOption.order === 'descending'
+                selectedSortOption.order === 'descending' &&
+                selectedDisplayType !== 'compact'
             ) {
                 newKey = 'title';
                 newOrder = 'ascending';
@@ -177,30 +209,37 @@ export function TrackList(props: IProps) {
 
     return (
         <>
-            <div className={`${styles['action-bar']}`}>
-                <PlayButton
-                    size={60}
-                    iconSize={24}
-                    onClick={() =>
-                        playContext(orderedTracks.map((t) => t.localTrack))
-                    }
-                />
+            <div className="main-actionBar-ActionBar contentSpacing">
+                <div className="main-actionBar-ActionBarRow">
+                    <div className="main-playButton-PlayButton">
+                        <PlayButton
+                            size="lg"
+                            onClick={() => {
+                                playContext(
+                                    orderedTracks.map((t) => t.localTrack),
+                                );
+                            }}
+                        />
+                    </div>
 
-                <div className={styles['controls']}>
-                    <SearchInput
-                        search={search}
-                        setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
-                        setDebouncedSearch={setDebouncedSearch}
-                    />
+                    <div className={`${styles['controls']}`}>
+                        <SearchInput
+                            search={search}
+                            setSearch={setSearch}
+                            setDebouncedSearch={setDebouncedSearch}
+                        />
 
-                    <SortMenu
-                        sortOptions={sortOptions}
-                        selectedSortOption={selectedSortOption}
-                        setSelectedSortOption={(key) =>
-                            handleSortOptionChange(key, true)
-                        }
-                    />
+                        <SortMenu
+                            sortOptions={sortOptions}
+                            selectedSortOption={selectedSortOption}
+                            setSelectedSortOption={(key) => {
+                                handleSortOptionChange(key, true);
+                            }}
+                            displayTypes={['list', 'compact']}
+                            selectedDisplayType={selectedDisplayType}
+                            setSelectedDisplayType={setSelectedDisplayType}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -209,25 +248,60 @@ export function TrackList(props: IProps) {
                 subtracks={[]}
                 gridLabel={getTranslation(['local-files'])}
                 useTrackNumber={false}
-                onPlayTrack={(uri) =>
+                onPlayTrack={(uri) => {
                     playTrack(
                         uri,
-                        orderedTracks.map((t) => t.localTrack)
-                    )
-                }
+                        orderedTracks.map((t) => t.localTrack),
+                    );
+                }}
                 headers={headers}
-                onHeaderClicked={(key) => handleSortOptionChange(key, false)}
+                onHeaderClicked={(key) => {
+                    handleSortOptionChange(key, false);
+                }}
                 sortedHeader={selectedSortOption}
                 getRowContent={(track) => {
-                    return [
-                        <TrackListRowImageTitle
-                            track={track}
-                            withArtists={true}
-                        />,
-                        <TrackListRowAlbumLink track={track} />,
-                        <span>{track.addedAt.toLocaleDateString()}</span>,
+                    const contents = [
+                        selectedDisplayType === 'compact' ? (
+                            <TextComponent
+                                className="main-trackList-rowTitle standalone-ellipsis-one-line"
+                                variant="ballad"
+                                semanticColor="textBase"
+                                key={track.uri}
+                            >
+                                {track.name}
+                            </TextComponent>
+                        ) : (
+                            <TrackListRowImageTitle
+                                track={track}
+                                withArtists={true}
+                                key={track.uri}
+                            />
+                        ),
                     ];
+
+                    if (selectedDisplayType === 'compact') {
+                        contents.push(
+                            <TrackListRowArtistLink
+                                track={track}
+                                key={track.uri}
+                            />,
+                        );
+                    }
+
+                    contents.push(
+                        <TrackListRowAlbumLink track={track} key={track.uri} />,
+                        <TextComponent
+                            variant="mesto"
+                            semanticColor="textSubdued"
+                            key={track.uri}
+                        >
+                            {track.addedAt.toLocaleDateString()}
+                        </TextComponent>,
+                    );
+
+                    return contents;
                 }}
+                displayType={selectedDisplayType}
             />
         </>
     );

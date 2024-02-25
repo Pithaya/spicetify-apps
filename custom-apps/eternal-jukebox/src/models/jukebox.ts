@@ -1,25 +1,22 @@
 import { Remixer } from '../helpers/remixer';
 import { JukeboxSongState } from './jukebox-song-state';
-import {
-    BehaviorSubject,
-    fromEvent,
-    Observable,
-    Subject,
-    Subscription,
-} from 'rxjs';
-import { JukeboxSettings } from './jukebox-settings.js';
+import type { Observable } from 'rxjs';
+import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
+import type { JukeboxSettings } from './jukebox-settings.js';
 import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
-import { AudioAnalysis } from '@shared/cosmos';
-import { getId } from '@shared/utils';
+import { getId } from '@shared/utils/uri-utils';
 import { SettingsService } from '../services/settings-service';
 
-export interface StatsChangedEvent {
+import { getAudioAnalysis } from '@spotify-web-api/api/api.audio-analysis';
+import type { AudioAnalysis } from '@spotify-web-api/models/audio-analysis';
+
+export type StatsChangedEvent = {
     beatsPlayed: number;
     currentRandomBranchChance: number;
     listenTime: number;
-}
+};
 
 /**
  * Global class to control the jukebox.
@@ -30,8 +27,9 @@ export class Jukebox {
      */
     private _songState: JukeboxSongState | null = null;
 
-    private songStateSubject: BehaviorSubject<JukeboxSongState | null> =
+    private readonly songStateSubject: BehaviorSubject<JukeboxSongState | null> =
         new BehaviorSubject<JukeboxSongState | null>(null);
+
     public songState$: Observable<JukeboxSongState | null> =
         this.songStateSubject.asObservable();
 
@@ -58,9 +56,9 @@ export class Jukebox {
         return this.stateChangedSubject.value;
     }
 
-    public set isEnabled(value: boolean) {
+    public async setEnabled(value: boolean): Promise<void> {
         if (value) {
-            this.enable();
+            await this.enable();
         } else {
             this.disable();
         }
@@ -69,13 +67,15 @@ export class Jukebox {
     private songChangedSubscription: Subscription = new Subscription();
     private driverProcessSubscription: Subscription = new Subscription();
 
-    private statsChangedSubject: Subject<StatsChangedEvent> =
+    private readonly statsChangedSubject: Subject<StatsChangedEvent> =
         new Subject<StatsChangedEvent>();
+
     public statsChanged$: Observable<StatsChangedEvent> =
         this.statsChangedSubject.asObservable();
 
-    private stateChangedSubject: BehaviorSubject<boolean> =
+    private readonly stateChangedSubject: BehaviorSubject<boolean> =
         new BehaviorSubject<boolean>(false);
+
     public stateChanged$: Observable<boolean> =
         this.stateChangedSubject.asObservable();
 
@@ -83,12 +83,12 @@ export class Jukebox {
         this.settings = SettingsService.settings;
     }
 
-    public reloadSettings(): void {
+    public async reloadSettings(): Promise<void> {
         this.settings = SettingsService.settings;
 
         if (this.isEnabled) {
             this.stop();
-            this.start();
+            await this.start();
         }
     }
 
@@ -98,10 +98,11 @@ export class Jukebox {
     public async enable(): Promise<void> {
         this.stateChangedSubject.next(true);
 
-        let source = fromEvent(Spicetify.Player, 'songchange');
-        let subscription = source.subscribe(() => {
+        // FIXME: Don't use a subscription here
+        const source = fromEvent(Spicetify.Player, 'songchange');
+        const subscription = source.subscribe(() => {
             this.stop();
-            this.start();
+            void this.start();
         });
 
         this.songChangedSubscription.add(subscription);
@@ -165,14 +166,14 @@ export class Jukebox {
         let analysis: AudioAnalysis | null = null;
 
         try {
-            analysis = await Spicetify.getAudioData(currentTrack.uri);
+            analysis = await getAudioAnalysis(id);
         } catch {
             // Do nothing
-        } finally {
-            if (analysis === null) {
-                this.disableWithError('No analysis available for this track.');
-                return;
-            }
+        }
+
+        if (analysis === null) {
+            this.disableWithError('No analysis available for this track.');
+            return;
         }
 
         // Preprocess the track
@@ -181,7 +182,7 @@ export class Jukebox {
         // Generate branches
         const branchGenerator = new GraphGenerator(
             this.settings,
-            remixedAnalysis.beats
+            remixedAnalysis.beats,
         );
 
         const graph = branchGenerator.generateGraph();
@@ -189,7 +190,7 @@ export class Jukebox {
         this.songState = new JukeboxSongState(
             currentTrack,
             remixedAnalysis,
-            graph
+            graph,
         );
 
         this.driver = new Driver(this.songState, this.settings);
@@ -204,7 +205,7 @@ export class Jukebox {
                             ? new Date().getTime() - this.songState.startTime
                             : 0,
                 });
-            })
+            }),
         );
         this.driver.start();
     }

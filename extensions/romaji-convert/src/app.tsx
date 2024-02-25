@@ -1,18 +1,19 @@
 import i18next from 'i18next';
-import { ServicesContainer } from './services/services-container.js';
-import { Locale } from '@shared/platform/locale';
-import { waitForSpicetify } from '@shared/utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { MENU_ICON } from './models/constants';
+import { kuroshiroService } from './services/kuroshiro.service';
+import { contextMenuService } from './services/context-menu.service';
+import React from 'react';
+import { SettingsModal } from './components/settings-modal.component';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
 
     // Init services
-    ServicesContainer.kuroshiro.init();
+    await kuroshiroService.init();
 
     // Init translations
-    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
-    const locale: Locale = (Spicetify as any).Locale;
+    const locale: typeof Spicetify.Locale = Spicetify.Locale;
 
     await i18next.init({
         lng: locale.getLocale(),
@@ -110,23 +111,22 @@ async function main(): Promise<void> {
         return value.toLowerCase();
     });
 
-    const reactHelper = await import('./helpers/react-helper');
-
     // Add settings menu
     new Spicetify.Menu.Item(
         i18next.t('settings.title'),
         false,
-        () =>
+        () => {
             Spicetify.PopupModal.display({
                 title: i18next.t('settings.title'),
-                content: reactHelper.ReactHelper.createSettingsModal(),
+                content: React.createElement(SettingsModal) as any,
                 isLarge: true,
-            }),
-        MENU_ICON
+            });
+        },
+        MENU_ICON,
     ).register();
 
     // Add context menu
-    ServicesContainer.contextMenu.registerOrUpdate();
+    contextMenuService.registerOrUpdate();
 }
 
 export default main;

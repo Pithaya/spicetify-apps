@@ -44,6 +44,7 @@ export class JukeboxSettings {
 
     public minRandomBranchChance: number =
         JukeboxSettings.defaultMinRandomBranchChance;
+
     public maxRandomBranchChance: number =
         JukeboxSettings.defaultMaxRandomBranchChance;
 
@@ -83,7 +84,7 @@ export class JukeboxSettings {
     public removeSequentialBranches: boolean = false;
 
     public static fromPartial(
-        storedSettings: JukeboxStoredSettings
+        storedSettings: JukeboxStoredSettings,
     ): JukeboxSettings {
         const settings = new JukeboxSettings();
 

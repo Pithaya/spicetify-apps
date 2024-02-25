@@ -1,4 +1,4 @@
-import { Image } from './image';
+import type { Image } from './image';
 
 /**
  * An artist.

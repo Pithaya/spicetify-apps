@@ -1,14 +1,13 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { MoreIcon } from '../icons/more-icon';
+import { SpotifyIcon } from '../icons/spotify-icon';
 
-export interface MoreButtonProps {
+export type Props = {
     label: string;
     menu: JSX.Element;
-}
+};
 
-// TODO: update aria expanded
-export function MoreButton(props: MoreButtonProps) {
+export function MoreButton(props: Readonly<Props>): JSX.Element {
     return (
         <Spicetify.ReactComponent.TooltipWrapper
             label={props.label}
@@ -20,15 +19,11 @@ export function MoreButton(props: MoreButtonProps) {
                     action="toggle"
                     menu={props.menu}
                 >
-                    <button
-                        type="button"
-                        aria-haspopup="menu"
+                    <Spicetify.ReactComponent.ButtonTertiary
                         aria-label={props.label}
-                        className={`main-moreButton-button ${styles['flex-centered']}`}
-                        aria-expanded="false"
-                    >
-                        <MoreIcon />
-                    </button>
+                        aria-haspopup="menu"
+                        iconOnly={() => <SpotifyIcon icon="more" />}
+                    ></Spicetify.ReactComponent.ButtonTertiary>
                 </Spicetify.ReactComponent.ContextMenu>
             </div>
         </Spicetify.ReactComponent.TooltipWrapper>

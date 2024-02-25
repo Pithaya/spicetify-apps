@@ -2,33 +2,33 @@ import styles from '../css/app.module.scss';
 import React, { useEffect, useState } from 'react';
 import { JukeboxVisualizer } from './visualizer/jukebox-visualizer.component';
 import { millisToMinutesAndSeconds } from '../utils/time-utils';
-import { IGraphState } from '../models/graph/graph-state';
+import { type GraphState } from '../models/graph/graph-state';
 import { SettingsButton } from './settings/settings-button';
 
-interface ITrackState {
+type TrackState = {
     trackName: string;
     artistName: string;
-}
+};
 
-interface IStatsState {
+type StatsState = {
     beatsPlayed: number;
     currentRandomBranchChance: number;
     listenTime: string;
-}
+};
 
-export function HomeComponent() {
-    const [trackState, setTrackState] = useState<ITrackState>({
+export function HomeComponent(): JSX.Element {
+    const [trackState, setTrackState] = useState<TrackState>({
         trackName: '',
         artistName: '',
     });
 
-    const [graphState, setGraphState] = useState<IGraphState>({
+    const [graphState, setGraphState] = useState<GraphState>({
         beats: [],
         remixedBeats: [],
         segments: [],
     });
 
-    const [statsState, setStatsState] = useState<IStatsState>({
+    const [statsState, setStatsState] = useState<StatsState>({
         beatsPlayed: 0,
         listenTime: '0',
         currentRandomBranchChance: 0,
@@ -47,10 +47,12 @@ export function HomeComponent() {
                     segments: songState?.analysis.segments ?? [],
                     remixedBeats: songState?.analysis.beats ?? [],
                 });
-            }
+            },
         );
 
-        return () => subscription.unsubscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
     useEffect(() => {
@@ -63,7 +65,9 @@ export function HomeComponent() {
             });
         });
 
-        return () => subscription.unsubscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
     return (
@@ -89,7 +93,7 @@ export function HomeComponent() {
                 <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>
                 <span>
                     {`Current branch change: ${Math.round(
-                        statsState.currentRandomBranchChance
+                        statsState.currentRandomBranchChance,
                     )}%`}
                 </span>
                 <span>{`Listen Time: ${statsState.listenTime}`}</span>

@@ -1,16 +1,17 @@
 // Last updated: March 2023
 
-import { ClipboardAPI } from './clipboard';
-import { LocalFilesAPI } from './local-files';
-import { PlayerAPI } from './player';
-import { PlaylistAPI } from './playlist';
-import { RootlistAPI } from './rootlist';
-import { Session } from './session';
-import { Translations } from './translations';
-import { UserAPI } from './user';
-import { History } from './history';
-import { ShowAPI } from './show';
-import { LocalStorageAPI } from './local-storage';
+import type { ClipboardAPI } from './clipboard';
+import type { LocalFilesAPI } from './local-files';
+import type { PlayerAPI } from './player';
+import type { PlaylistAPI } from './playlist';
+import type { RootlistAPI } from './rootlist';
+import type { Session } from './session';
+import type { Translations } from './translations';
+import type { UserAPI } from './user';
+import type { History } from './history';
+import type { ShowAPI } from './show';
+import type { LocalStorageAPI } from './local-storage';
+import type { LibraryAPI } from './library';
 
 export type Platform = {
     Session: Session;
@@ -30,7 +31,7 @@ export type Platform = {
     FacebookAPI: unknown;
     FollowAPI: unknown;
     GraphQLLoader: unknown;
-    LibraryAPI: unknown;
+    LibraryAPI: LibraryAPI;
     LocalFilesAPI: LocalFilesAPI;
     OfflineAPI: unknown;
     PlatformData: unknown;

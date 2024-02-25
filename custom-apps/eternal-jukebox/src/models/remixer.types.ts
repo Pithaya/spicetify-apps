@@ -1,5 +1,9 @@
-import { Section, Segment, TimeInterval } from '@shared/cosmos';
-import {
+import type {
+    Section,
+    Segment,
+    TimeInterval,
+} from '@spotify-web-api/models/audio-analysis';
+import type {
     ChildQuantum,
     hasOverlappingSegments,
     ParentQuantum,

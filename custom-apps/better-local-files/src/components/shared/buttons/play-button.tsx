@@ -1,35 +1,22 @@
-import styles from '../../../css/app.module.scss';
-import React, { CSSProperties } from 'react';
-import { Play } from 'lucide-react';
+import React from 'react';
+import { getTranslation } from '../../../helpers/translations-helper';
+import { SpotifyIcon } from '../icons/spotify-icon';
 
-export interface IProps {
+export type Props = {
+    size: Spicetify.ReactComponent.ButtonProps['buttonSize'];
     onClick: () => void;
-    size: number;
-    iconSize: number;
-}
+};
 
-export function PlayButton(props: IProps) {
-    const style: CSSProperties = {
-        height: `${props.size}px`,
-        width: `${props.size}px`,
-        borderRadius: `${props.size / 2}px`,
-    };
-
+export function PlayButton(props: Readonly<Props>): JSX.Element {
     return (
-        <button
-            className={styles['play-button']}
-            aria-label="Lecture"
-            onClick={(e) => {
+        <Spicetify.ReactComponent.ButtonPrimary
+            aria-label={getTranslation(['play'])}
+            buttonSize={props.size}
+            onClick={(e: any) => {
                 e.stopPropagation();
                 props.onClick();
             }}
-            style={style}
-        >
-            <Play
-                fill="var(--spice-main)"
-                stroke="var(--spice-main)"
-                size={props.iconSize}
-            ></Play>
-        </button>
+            iconOnly={() => <SpotifyIcon icon="play" />}
+        ></Spicetify.ReactComponent.ButtonPrimary>
     );
 }

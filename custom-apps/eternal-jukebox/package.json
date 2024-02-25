@@ -1,21 +1,22 @@
 {
     "name": "eternal-jukebox",
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0-beta.2",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
         "build": "spicetify-creator",
         "build-local": "spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
-        "launch-watch": "spicetify enable-devtools && spicetify watch -le",
+        "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps eternal-jukebox && spicetify apply",
         "unapply": "spicetify config custom_apps eternal-jukebox- && spicetify apply",
-        "lint": "npx eslint --ext .tsx,.ts src/"
+        "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
+        "format": "npx prettier --write src/"
     },
     "devDependencies": {
         "@types/tinycolor2": "^1.4.6",
-        "lucide-react": "^0.292.0",
-        "react-markdown": "8.0.6",
+        "lucide-react": "^0.299.0",
+        "observable-hooks": "^4.2.3",
         "rxjs": "^7.8.1",
         "spcr-whats-new": "^1.0.1",
         "tinycolor2": "^1.6.0"

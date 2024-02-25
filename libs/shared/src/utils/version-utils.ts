@@ -1,11 +1,11 @@
 import { compare } from 'compare-versions';
-import { getPlatform } from './spicetify-utils';
-import { HistoryEntry } from '../platform/history';
+import type { History, HistoryEntry } from '../platform/history';
+import { waitForPlatformApi } from './spicetify-utils';
 
 async function getRemoteVersion(appName: string): Promise<string> {
     const branch = 'main';
     const response = await fetch(
-        `https://raw.githubusercontent.com/Pithaya/spicetify-apps/${branch}/custom-apps/${appName}/package.json`
+        `https://raw.githubusercontent.com/Pithaya/spicetify-apps/${branch}/custom-apps/${appName}/package.json`,
     );
 
     const packageJson = await response.json();
@@ -15,7 +15,7 @@ async function getRemoteVersion(appName: string): Promise<string> {
 
 async function isUpToDate(
     localVersion: string,
-    appName: string
+    appName: string,
 ): Promise<boolean> {
     const remoteVersion = await getRemoteVersion(appName);
     return compare(localVersion, remoteVersion, '>=');
@@ -30,16 +30,16 @@ async function isUpToDate(
  */
 export async function addUpdateChecker(
     localVersion: string,
-    appName: string
+    appName: string,
 ): Promise<void> {
-    const history = getPlatform().History;
+    const history = await waitForPlatformApi<History>('History');
 
-    const checkVersion = async () => {
+    const checkVersion: () => Promise<void> = async () => {
         if (!(await isUpToDate(localVersion, appName))) {
             Spicetify.showNotification(
                 '📢 A new version of the custom app is available.',
                 false,
-                5000
+                5000,
             );
         }
     };

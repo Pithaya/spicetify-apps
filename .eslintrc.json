@@ -18,7 +18,25 @@
             "version": "17.0.2"
         }
     },
+    "ignorePatterns": ["**/*.d.ts"],
     "rules": {
-        "@typescript-eslint/strict-boolean-expressions": "false"
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/array-type": ["error", { "default": "array" }],
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+        "@typescript-eslint/dot-notation": [
+            "error",
+            { "allowIndexSignaturePropertyAccess": true }
+        ],
+        "react/jsx-no-undef": "off",
+        "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+                "checksVoidReturn": {
+                    "arguments": false,
+                    "attributes": false
+                }
+            }
+        ]
     }
 }

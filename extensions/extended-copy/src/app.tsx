@@ -1,24 +1,31 @@
+import type { AlbumNameAndTracksData } from '@shared/graphQL/models/album-name-and-tracks-data';
+import type { ArtistMinimalData } from '@shared/graphQL/models/artist-minimal-data';
+import type { EpisodeNameData } from '@shared/graphQL/models/episode-name-data';
+import type { TrackNameData } from '@shared/graphQL/models/track-name-data';
 import {
-    AlbumNameAndTracksData,
-    ArtistMinimalData,
-    EpisodeNameData,
-    TrackNameData,
     getAlbumNameAndTracks,
     getEpisodeName,
     getTrackName,
     queryArtistMinimal,
-} from '@shared/graphQL';
-import { Locale } from '@shared/platform/locale';
-import { Playlist } from '@shared/platform/playlist';
-import { ShowMetadata } from '@shared/platform/show';
-import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
+} from '@shared/graphQL/graphQL-client';
+import type { Playlist, PlaylistAPI } from '@shared/platform/playlist';
+import type { ShowAPI, ShowMetadata } from '@shared/platform/show';
+import type { ClipboardAPI } from '@shared/platform/clipboard';
+import {
+    waitForSpicetify,
+    waitForPlatformApi,
+} from '@shared/utils/spicetify-utils';
+import { getId } from '@shared/utils/uri-utils';
 import i18next from 'i18next';
 
-let locale: Locale;
+let locale: typeof Spicetify.Locale;
 let supportedTypes: string[] = [];
+let showApi: ShowAPI;
+let playlistApi: PlaylistAPI;
+let clipboardApi: ClipboardAPI;
 
 async function getData(
-    uriString: string
+    uriString: string,
 ): Promise<
     | TrackNameData
     | AlbumNameAndTracksData
@@ -48,15 +55,15 @@ async function getData(
     }
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await getPlatform().PlaylistAPI.getPlaylist(
+        return await playlistApi.getPlaylist(
             uriString,
             {},
-            { filter: '', limit: 0, offset: 0, sort: undefined }
+            { filter: '', limit: 0, offset: 0, sort: undefined },
         );
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return await getPlatform().ShowAPI.getMetadata(uriString);
+        return await showApi.getMetadata(uriString);
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
@@ -88,16 +95,16 @@ async function getName(uriString: string): Promise<string | null> {
 
     if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
         return (
-            await getPlatform().PlaylistAPI.getPlaylist(
+            await playlistApi.getPlaylist(
                 uriString,
                 {},
-                { filter: '', limit: 0, offset: 0, sort: undefined }
+                { filter: '', limit: 0, offset: 0, sort: undefined },
             )
         ).metadata.name;
     }
 
     if (Spicetify.URI.isShow(uri)) {
-        return (await getPlatform().ShowAPI.getMetadata(uriString)).name;
+        return (await showApi.getMetadata(uriString)).name;
     }
 
     if (Spicetify.URI.isEpisode(uri)) {
@@ -107,9 +114,9 @@ async function getName(uriString: string): Promise<string | null> {
     return null;
 }
 
-function copy(text: string | any): void {
+async function copy(text: string | any): Promise<void> {
     Spicetify.showNotification(i18next.t('copied'));
-    getPlatform().ClipboardAPI.copy(text);
+    await clipboardApi.copy(text);
 }
 
 function checkUriLength(uris: string[]): boolean {
@@ -122,18 +129,19 @@ function checkUriLength(uris: string[]): boolean {
 }
 
 function shouldAdd(uris: string[]): boolean {
-    return uris
+    return !uris
         .map((u) => Spicetify.URI.fromString(u))
-        .some((u) => !supportedTypes.includes(u.type))
-        ? false
-        : true;
+        .some((u) => !supportedTypes.includes(u.type));
 }
 
-async function main() {
+async function main(): Promise<void> {
     await waitForSpicetify();
 
-    // TODO: Definition coming in https://github.com/spicetify/spicetify-cli/pull/2490
-    locale = (Spicetify as any).Locale;
+    showApi = await waitForPlatformApi<ShowAPI>('ShowAPI');
+    playlistApi = await waitForPlatformApi<PlaylistAPI>('PlaylistAPI');
+    clipboardApi = await waitForPlatformApi<ClipboardAPI>('ClipboardAPI');
+
+    locale = Spicetify.Locale;
     supportedTypes = [
         Spicetify.URI.Type.TRACK,
         Spicetify.URI.Type.ALBUM,
@@ -182,12 +190,12 @@ async function main() {
 
                     const names: string[] = [];
 
-                    for (let uri of uris) {
+                    for (const uri of uris) {
                         const name = await getName(uri);
                         if (name === null) {
                             Spicetify.showNotification(
                                 `Couldn't get name for URI '${uri}'`,
-                                true
+                                true,
                             );
                             return;
                         } else {
@@ -195,34 +203,34 @@ async function main() {
                         }
                     }
 
-                    copy(names.join(locale.getSeparator()));
+                    await copy(names.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 'ID',
-                (uris) => {
+                async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;
                     }
 
                     const ids = uris.map((uri) =>
-                        getId(Spicetify.URI.fromString(uri))
+                        getId(Spicetify.URI.fromString(uri)),
                     );
-                    copy(ids.join(locale.getSeparator()));
+                    await copy(ids.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 'URI',
-                (uris) => {
+                async (uris) => {
                     if (!checkUriLength(uris)) {
                         return;
                     }
 
-                    copy(uris.join(locale.getSeparator()));
+                    await copy(uris.join(locale.getSeparator()));
                 },
-                () => true
+                () => true,
             ),
             new Spicetify.ContextMenu.Item(
                 i18next.t('data'),
@@ -233,12 +241,12 @@ async function main() {
 
                     const result: any[] = [];
 
-                    for (let uri of uris) {
+                    for (const uri of uris) {
                         const data = await getData(uri);
                         if (data === null) {
                             Spicetify.showNotification(
                                 `Couldn't get data for URI '${uri}'`,
-                                true
+                                true,
                             );
                             return;
                         } else {
@@ -246,12 +254,12 @@ async function main() {
                         }
                     }
 
-                    copy(result);
+                    await copy(result);
                 },
-                () => true
+                () => true,
             ),
         ],
-        (uris) => shouldAdd(uris)
+        (uris) => shouldAdd(uris),
     ).register();
 }
 

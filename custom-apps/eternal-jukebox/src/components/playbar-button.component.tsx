@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Infinity } from 'lucide-react';
+import { useSubscription } from 'observable-hooks';
 
-export function PlaybarButton() {
+export function PlaybarButton(): JSX.Element {
     const [isActive, setIsActive] = useState(false);
 
-    useEffect(() => {
-        const subscription = window.jukebox.stateChanged$.subscribe((state) => {
-            setIsActive(state);
-        });
-        return () => subscription.unsubscribe();
-    }, []);
+    useSubscription(window.jukebox.stateChanged$, setIsActive);
 
-    function toggleJukebox(): void {
-        window.jukebox.isEnabled = !window.jukebox.isEnabled;
+    async function toggleJukebox(): Promise<void> {
+        await window.jukebox.setEnabled(!window.jukebox.isEnabled);
     }
 
     return (
@@ -25,9 +21,6 @@ export function PlaybarButton() {
                 className={`main-repeatButton-button ${
                     isActive ? 'main-repeatButton-active' : ''
                 }`}
-                role="checkbox"
-                aria-checked="false"
-                aria-label="Activer jukebox"
                 onClick={toggleJukebox}
             >
                 <Infinity size={24} />

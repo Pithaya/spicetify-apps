@@ -1,14 +1,16 @@
 import styles from '../../css/app.module.scss';
 import React from 'react';
+import { TextComponent } from './text/text';
+import useFitText from 'use-fit-text';
 
-export interface HeaderProps {
+export type Props = {
     image: JSX.Element;
     title: string | JSX.Element;
     subtitle?: string | JSX.Element;
     metadata?: JSX.Element;
     additionalText?: JSX.Element;
     titleFontSize?: string;
-}
+};
 
 export const headerImageFallback = `
 <div class="main-image-image main-entityHeader-image main-entityHeader-shadow main-image-loaded ${styles['center-container']}">
@@ -29,31 +31,77 @@ export const headerImageFallback = `
     </svg>
 </div>`;
 
-export function Header(props: HeaderProps) {
+export function HeaderImage(
+    props: Readonly<{ imageSrc: string }>,
+): JSX.Element {
     return (
-        <>
-            <div className={`${styles.header}`}>
-                <div className={styles['image-container']}>{props.image}</div>
-                <div className={styles['text-container']}>
-                    {props.subtitle && (
-                        <h2 className="main-entityHeader-subtitle main-entityHeader-small main-entityHeader-uppercase main-entityHeader-bold">
-                            {props.subtitle}
-                        </h2>
-                    )}
-                    <h1
-                        className="main-entityHeader-title"
-                        style={{ fontSize: props.titleFontSize }}
+        <img
+            src={props.imageSrc}
+            className="main-image-image main-entityHeader-image main-entityHeader-shadow main-entityHeader-newEntityHeaders main-image-loaded"
+            onError={(e) => (e.currentTarget.outerHTML = headerImageFallback)}
+        />
+    );
+}
+
+export function Header(props: Readonly<Props>): JSX.Element {
+    const baseFontSize = '6rem';
+
+    // Max height to prevent overflow on long titles / multiple artists
+    const titleMaxHeight = '135px';
+    const metadataMaxHeight = '66px';
+
+    const { fontSize, ref } = useFitText();
+
+    return (
+        <div className="contentSpacing main-entityHeader-container main-entityHeader-nonWrapped main-entityHeader-newEntityHeaders">
+            <div className="main-entityHeader-backgroundColor"></div>
+            <div className="main-entityHeader-backgroundColor main-entityHeader-overlay"></div>
+
+            <div></div>
+
+            <div className="main-entityHeader-imageContainer main-entityHeader-imageContainerNew">
+                <div className="main-entityHeader-image">{props.image}</div>
+            </div>
+
+            <div className="main-entityHeader-headerText">
+                {props.subtitle && (
+                    <TextComponent
+                        variant="mesto"
+                        className="main-entityHeader-pretitle"
+                    >
+                        {props.subtitle}
+                    </TextComponent>
+                )}
+                <div
+                    dir="auto"
+                    className="main-entityHeader-title"
+                    style={{
+                        maxHeight: titleMaxHeight,
+                        fontSize: baseFontSize,
+                    }}
+                    ref={ref}
+                >
+                    <TextComponent
+                        variant="bass"
+                        semanticColor="textBase"
+                        elementType="h1"
+                        style={{
+                            fontSize,
+                        }}
                     >
                         {props.title}
-                    </h1>
-                    {props.metadata && (
-                        <div className="main-entityHeader-metaData">
-                            {props.metadata}
-                        </div>
-                    )}
-                    {props.additionalText}
+                    </TextComponent>
                 </div>
+
+                {props.metadata && (
+                    <div
+                        className="main-entityHeader-metaData"
+                        style={{ maxHeight: metadataMaxHeight }}
+                    >
+                        {props.metadata}
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     );
 }

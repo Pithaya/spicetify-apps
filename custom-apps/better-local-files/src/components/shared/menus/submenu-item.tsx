@@ -1,12 +1,32 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
-export interface SubmenuItemProps {
+export type Props = {
     label: string;
     submenu: JSX.Element;
-}
+    leadingIcon?: JSX.Element;
+};
 
-export function SubmenuItem(props: SubmenuItemProps) {
-    const isMenuOpened = useRef(false);
+export function SubmenuItem(props: Readonly<Props>): JSX.Element {
+    // Menu items stop propagation of events, so the context menu doesn't open on click
+    const menuItemString = Spicetify.ReactDOMServer.renderToString(
+        <Spicetify.ReactComponent.MenuItem
+            leadingIcon={props.leadingIcon}
+            trailingIcon={
+                <svg
+                    height="16"
+                    width="16"
+                    aria-hidden="true"
+                    className="main-contextMenu-subMenuIcon"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                >
+                    <path d="M14 10 8 4l-6 6h12z"></path>
+                </svg>
+            }
+        >
+            <span>{props.label}</span>
+        </Spicetify.ReactComponent.MenuItem>,
+    );
 
     return (
         <Spicetify.ReactComponent.ContextMenu
@@ -16,41 +36,14 @@ export function SubmenuItem(props: SubmenuItemProps) {
             renderInline={true}
             menu={props.submenu}
         >
-            <li
-                role="presentation"
-                className="main-contextMenu-menuItem"
-                onMouseEnter={(e) => {
+            <div
+                onMouseEnter={(e: any) => {
                     e.currentTarget.click();
-                    isMenuOpened.current = true;
                 }}
-            >
-                <button
-                    className="main-contextMenu-menuItemButton"
-                    role="menuitem"
-                    tabIndex={-1}
-                >
-                    <span
-                        dir="auto"
-                        className="ellipsis-one-line main-contextMenu-menuItemLabel"
-                        style={{ fontSize: '0.875rem' }}
-                    >
-                        <span>{props.label}</span>
-                    </span>
-                    <span>
-                        <svg
-                            role="img"
-                            height="16"
-                            width="16"
-                            aria-hidden="true"
-                            className="main-contextMenu-subMenuIcon"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                        >
-                            <path d="M14 10 8 4l-6 6h12z"></path>
-                        </svg>
-                    </span>
-                </button>
-            </li>
+                dangerouslySetInnerHTML={{
+                    __html: menuItemString,
+                }}
+            ></div>
         </Spicetify.ReactComponent.ContextMenu>
     );
 }

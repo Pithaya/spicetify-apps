@@ -3,18 +3,18 @@ import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/album-card';
 import { SearchInput } from '../../shared/filters/search-input';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
-import { Album } from 'custom-apps/better-local-files/src/models/album';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import {
+import type {
     SelectedSortOption,
     SortOption,
     SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import { SortMenu } from '../../shared/filters/sort-menu';
-import { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 
-export function AlbumsPage() {
+export function AlbumsPage(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -26,10 +26,10 @@ export function AlbumsPage() {
     ];
 
     const albums = Array.from(window.localTracksService.getAlbums()).map(
-        ([key, value]) => value
+        ([key, value]) => value,
     );
 
-    function filterAlbums(albums: Album[], search: string) {
+    function filterAlbums(albums: Album[], search: string): Album[] {
         if (search === '') {
             return albums;
         }
@@ -38,33 +38,29 @@ export function AlbumsPage() {
             (a) =>
                 a.name.toLowerCase().includes(search.toLowerCase()) ||
                 a.artists.some((a) =>
-                    a.name.toLowerCase().includes(search.toLowerCase())
-                )
+                    a.name.toLowerCase().includes(search.toLowerCase()),
+                ),
         );
     }
 
     const filteredAlbums = useMemo(
         () => filterAlbums(albums, debouncedSearch),
-        [albums, debouncedSearch]
+        [albums, debouncedSearch],
     );
 
     const [selectedSortOption, setSelectedSortOption] =
         useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
 
-    function orderAlbums(albums: Album[], option: SelectedSortOption) {
-        switch (option.key) {
-            case 'title':
-                return albums.sort((x, y) =>
-                    sort(x.name, y.name, option.order)
-                );
-            default:
-                return albums;
+    function orderAlbums(albums: Album[], option: SelectedSortOption): Album[] {
+        if (option.key === 'title') {
+            return albums.sort((x, y) => sort(x.name, y.name, option.order));
         }
+        return albums;
     }
 
     const orderedAlbums = useMemo(
         () => [...orderAlbums(filteredAlbums, selectedSortOption)],
-        [filteredAlbums, selectedSortOption]
+        [filteredAlbums, selectedSortOption],
     );
 
     function toggleOrder(order: SortOrder): SortOrder {
@@ -81,20 +77,19 @@ export function AlbumsPage() {
         }));
     }
 
-    function playAlbum(album: Album) {
+    function playAlbum(album: Album): void {
         playContext(album.getTracks().map((t) => t.localTrack));
     }
 
     return (
-        <>
-            <div className={styles['album-header']}>
+        <div className="contentSpacing">
+            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
                 <h1>{getTranslation(['albums'])}</h1>
 
                 <div className={styles['controls']}>
                     <SearchInput
                         search={search}
                         setSearch={setSearch}
-                        debouncedSearch={debouncedSearch}
                         setDebouncedSearch={setDebouncedSearch}
                     />
 
@@ -102,6 +97,9 @@ export function AlbumsPage() {
                         sortOptions={sortOptions}
                         selectedSortOption={selectedSortOption}
                         setSelectedSortOption={handleSortOptionChange}
+                        displayTypes={['grid']}
+                        selectedDisplayType="grid"
+                        setSelectedDisplayType={() => {}}
                     />
                 </div>
             </div>
@@ -117,6 +115,6 @@ export function AlbumsPage() {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }

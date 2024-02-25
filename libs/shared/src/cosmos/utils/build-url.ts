@@ -1,4 +1,4 @@
-import { QueryParameter } from '../models/query-parameters';
+import type { QueryParameter } from '../models/query-parameters';
 
 export function buildQueryString<T>(parameters: QueryParameter<T>): string {
     const parts: string[] = [];
@@ -6,7 +6,7 @@ export function buildQueryString<T>(parameters: QueryParameter<T>): string {
     if (parameters.sort !== undefined && parameters.sort.length > 0) {
         const options = parameters.sort
             .map((o) =>
-                o.desc === true ? `${String(o.property)} DESC` : o.property
+                o.desc === true ? `${String(o.property)} DESC` : o.property,
             )
             .join(',');
 
@@ -34,7 +34,7 @@ export function buildQueryString<T>(parameters: QueryParameter<T>): string {
 
 export function buildUrl<T>(
     url: string,
-    parameters?: QueryParameter<T>
+    parameters?: QueryParameter<T>,
 ): string {
     const queryString =
         parameters !== undefined ? '?' + buildQueryString(parameters) : '';

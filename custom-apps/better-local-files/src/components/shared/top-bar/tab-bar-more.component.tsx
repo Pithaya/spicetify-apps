@@ -1,47 +1,37 @@
 import React from 'react';
-import styles from '../../../css/app.module.scss';
-import { TopBarItem } from '../../../models/top-bar-item';
-import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
+import type { TopBarItem } from '../../../models/top-bar-item';
 
-export interface IProps {
+export type Props = {
     items: TopBarItem[];
     activeItem: TopBarItem;
     onClick: (item: TopBarItem) => void;
-}
+    size: number;
+};
 
-export function TabBarMore(props: IProps) {
-    const menu = (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
-            {props.items
-                .filter((i) => i !== props.activeItem)
-                .map((item) => (
-                    <Spicetify.ReactComponent.MenuItem
-                        onClick={() => props.onClick(item)}
-                    >
-                        <span>{item.label}</span>
-                    </Spicetify.ReactComponent.MenuItem>
-                ))}
-        </Spicetify.ReactComponent.Menu>
-    );
-
+export function TabBarMore(props: Readonly<Props>): JSX.Element {
+    const style: React.CSSProperties = {
+        width: `${props.size}px`,
+    };
     return (
-        <li>
-            <Spicetify.ReactComponent.ContextMenu
-                trigger="click"
-                action="toggle"
-                menu={menu}
+        <li id="more-button" style={style}>
+            <Spicetify.ReactComponent.Dropdown
+                value={props.activeItem.key}
+                disabled={false}
+                onSelect={(value: string) => {
+                    const item = props.items.find((i) => i.key === value);
+                    if (item) {
+                        props.onClick(item);
+                    }
+                }}
             >
-                <button
-                    role="navigation"
-                    aria-current="page"
-                    className={styles['active']}
-                    draggable="false"
-                >
-                    <span className="main-type-mestoBold">
-                        {props.activeItem.label}
-                    </span>
-                </button>
-            </Spicetify.ReactComponent.ContextMenu>
+                {props.items.map((item) => {
+                    return (
+                        <option key={item.key} value={item.key}>
+                            {item.label}
+                        </option>
+                    );
+                })}
+            </Spicetify.ReactComponent.Dropdown>
         </li>
     );
 }
