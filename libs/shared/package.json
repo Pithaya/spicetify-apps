@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "lint": "npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
         "format": "npx prettier --write src/"
     },
     "license": "MIT",
