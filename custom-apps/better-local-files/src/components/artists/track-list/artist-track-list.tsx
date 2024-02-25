@@ -1,4 +1,3 @@
-import styles from '../../../css/app.module.scss';
 import React from 'react';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import { PlayButton } from '../../shared/buttons/play-button';

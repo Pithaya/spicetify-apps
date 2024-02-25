@@ -1,5 +1,7 @@
-import type { Folder, Playlist } from '@shared/platform/rootlist';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import type { PlaylistAPI } from '@shared/platform/playlist';
+import type { Folder, Playlist, RootlistAPI } from '@shared/platform/rootlist';
+import type { UserAPI } from '@shared/platform/user';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import React, { useEffect, useState } from 'react';
 
@@ -8,9 +10,9 @@ export type Props = {
 };
 
 export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
-    const playlistAPI = getPlatform().PlaylistAPI;
-    const rootlistAPI = getPlatform().RootlistAPI;
-    const userAPI = getPlatform().UserAPI;
+    const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+    const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
+    const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 

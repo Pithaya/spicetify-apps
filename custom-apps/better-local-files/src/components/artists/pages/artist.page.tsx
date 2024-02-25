@@ -4,8 +4,9 @@ import { ArtistTrackList } from '../track-list/artist-track-list';
 import { Header, HeaderImage } from '../../shared/header';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import type { History } from '@shared/platform/history';
 
 type Props = {
     artist: Artist;
@@ -22,7 +23,7 @@ function ArtistHeader(props: Readonly<Props>): JSX.Element {
 }
 
 export function ArtistPage(): JSX.Element {
-    const history = getPlatform().History;
+    const history = getPlatformApiOrThrow<History>('History');
 
     const artistUri = (history.location.state as any).uri ?? null;
 

@@ -1,9 +1,9 @@
-import type { Section, Segment, TimeInterval } from '@shared/cosmos';
+import type { Segment } from '@spotify-web-api/models/audio-analysis';
 
 /**
  * A quantum is a part of the audio analysis.
  */
-export type Quantum = (TimeInterval | Section | Segment) & {
+export type Quantum = {
     /**
      * Index in quanta array.
      */

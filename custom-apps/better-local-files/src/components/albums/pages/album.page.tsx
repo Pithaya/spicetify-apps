@@ -7,12 +7,13 @@ import {
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
 import { TextComponent } from '../../shared/text/text';
+import type { History } from '@shared/platform/history';
 
 type Props = {
     album: Album;
@@ -86,7 +87,7 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
 }
 
 export function AlbumPage(): JSX.Element {
-    const history = getPlatform().History;
+    const history = getPlatformApiOrThrow<History>('History');
 
     const albumUri = (history.location.state as any).uri ?? null;
 

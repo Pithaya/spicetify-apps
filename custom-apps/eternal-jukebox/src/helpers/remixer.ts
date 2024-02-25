@@ -1,11 +1,21 @@
-import type { AudioAnalysis } from '@shared/cosmos';
+import type {
+    AudioAnalysis,
+    Section,
+    Segment,
+    TimeInterval,
+} from '@spotify-web-api/models/audio-analysis';
 import type {
     ChildQuantum,
     hasOverlappingSegments,
     ParentQuantum,
     Quantum,
 } from '../models/quantum.types';
-import type { RemixedAnalysis } from '../models/remixer.types';
+import type {
+    RemixedAnalysis,
+    RemixedSection,
+    RemixedSegment,
+    RemixedTimeInterval,
+} from '../models/remixer.types';
 
 /**
  * A quanta is an element of the analysis.
@@ -24,14 +34,53 @@ export class Remixer {
 
     constructor(analysis: AudioAnalysis) {
         const remixedAnalysis: RemixedAnalysis = {
-            bars: analysis.bars,
-            beats: analysis.beats,
-            sections: analysis.sections,
-            segments: analysis.segments,
-            tatums: analysis.tatums,
+            bars: analysis.bars.map((bar) => this.toRemixed(bar)),
+            beats: analysis.beats.map((beat) => this.toRemixed(beat)),
+            sections: analysis.sections.map((section) =>
+                this.toRemixedSection(section),
+            ),
+            segments: analysis.segments.map((segment) =>
+                this.toRemixedSegment(segment),
+            ),
+            tatums: analysis.tatums.map((tatum) => this.toRemixed(tatum)),
         };
 
         this.analysis = remixedAnalysis;
+    }
+
+    private toRemixed(timeInterval: TimeInterval): RemixedTimeInterval {
+        return {
+            ...timeInterval,
+            firstOverlappingSegment: undefined!,
+            overlappingSegments: [],
+            children: [],
+            parent: undefined!,
+            indexInParent: 0,
+            prev: undefined!,
+            next: undefined!,
+            index: 0,
+        };
+    }
+
+    private toRemixedSection(section: Section): RemixedSection {
+        return {
+            ...section,
+            children: [],
+            prev: undefined!,
+            next: undefined!,
+            index: 0,
+        };
+    }
+
+    private toRemixedSegment(segment: Segment): RemixedSegment {
+        return {
+            ...segment,
+            parent: undefined!,
+            indexInParent: 0,
+            prev: undefined!,
+            next: undefined!,
+            index: 0,
+        };
     }
 
     public remixTrack(): RemixedAnalysis {
@@ -97,8 +146,8 @@ export class Remixer {
      * @param child
      */
     private connectQuanta(
-        parentElements: ParentQuantum[],
-        childrenElements: ChildQuantum[],
+        parentElements: (TimeInterval & ParentQuantum)[],
+        childrenElements: (TimeInterval & ChildQuantum)[],
     ): void {
         let lastProcessedChild = 0;
 
@@ -139,7 +188,7 @@ export class Remixer {
      */
     private connectFirstOverlappingSegment(
         analysis: RemixedAnalysis,
-        quantaArray: (Quantum & hasOverlappingSegments)[],
+        quantaArray: (TimeInterval & Quantum & hasOverlappingSegments)[],
     ): void {
         let lastProcessedSegment = 0;
         const segments = analysis.segments;
@@ -164,7 +213,7 @@ export class Remixer {
      */
     private connectAllOverlappingSegments(
         analysis: RemixedAnalysis,
-        quantas: (Quantum & hasOverlappingSegments)[],
+        quantas: (TimeInterval & Quantum & hasOverlappingSegments)[],
     ): void {
         let lastProcessedSegment = 0;
         const segments = analysis.segments;

@@ -10,10 +10,12 @@ import {
 import { ArtistSelectionMenu } from './artist-selection-menu';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import { addToQueuePath } from '../icons/icons';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
+import type { LibraryAPI } from '@shared/platform/library';
+import type { PlayerAPI } from '@shared/platform/player';
 
 export type Props = {
     track: Track;
@@ -63,15 +65,21 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
     }
 
     async function addToLikedSongs(): Promise<void> {
-        await getPlatform().LibraryAPI.add({ uris: [props.track.uri] });
+        await getPlatformApiOrThrow<LibraryAPI>('LibraryAPI').add({
+            uris: [props.track.uri],
+        });
     }
 
     async function removeFromLikedSongs(): Promise<void> {
-        await getPlatform().LibraryAPI.remove({ uris: [props.track.uri] });
+        await getPlatformApiOrThrow<LibraryAPI>('LibraryAPI').remove({
+            uris: [props.track.uri],
+        });
     }
 
     async function addToQueue(): Promise<void> {
-        await getPlatform().PlayerAPI.addToQueue([{ uri: props.track.uri }]);
+        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').addToQueue([
+            { uri: props.track.uri },
+        ]);
     }
 
     return (

@@ -10,7 +10,8 @@ import type { Beat } from './models/graph/beat';
 import type { Edge } from './models/graph/edge';
 import { JukeboxSettings } from './models/jukebox-settings';
 import type { JukeboxSongState } from './models/jukebox-song-state';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type { PlayerAPI } from '@shared/platform/player';
 
 // Used to print debug messages.
 const DEBUG = false;
@@ -263,7 +264,9 @@ export class Driver {
         if (DEBUG) {
             console.time('seek');
         }
-        await getPlatform().PlayerAPI.seekTo(playerPositionAfterJump);
+        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').seekTo(
+            playerPositionAfterJump,
+        );
 
         if (DEBUG) {
             console.timeEnd('seek');
@@ -392,6 +395,7 @@ export class Driver {
      */
     private shouldRandomBranch(beat: Beat): boolean {
         // Always branch if this is our last opportunity
+        // TODO: Make this configurable
         if (beat.index === this.songState.graph.lastBranchPoint) {
             return true;
         }

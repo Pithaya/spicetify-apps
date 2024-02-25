@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import whatsNew from 'spcr-whats-new';
@@ -21,6 +21,7 @@ import {
 } from './constants/constants';
 import styles from './css/app.module.scss';
 import { useObservableEagerState } from 'observable-hooks';
+import type { History } from '@shared/platform/history';
 
 function App(): JSX.Element {
     const isReady = useObservableEagerState(window.localTracksService.isReady$);
@@ -55,7 +56,7 @@ function App(): JSX.Element {
         void init();
     }, []);
 
-    const history = getPlatform().History;
+    const history = getPlatformApiOrThrow<History>('History');
     const location = history.location;
 
     let currentPage = <></>;

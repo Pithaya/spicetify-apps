@@ -1,4 +1,5 @@
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import type { LibraryAPI } from '@shared/platform/library';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { useEffect, useState } from 'react';
 
 export function useIsInLibrary(
@@ -7,14 +8,15 @@ export function useIsInLibrary(
     boolean | undefined,
     React.Dispatch<React.SetStateAction<boolean | undefined>>,
 ] {
+    const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
     const [trackInLibrary, setTrackInLibrary] = useState<boolean | undefined>(
-        getPlatform().LibraryAPI.containsSync(uri),
+        libraryApi.containsSync(uri),
     );
 
     useEffect(() => {
         if (trackInLibrary === undefined) {
-            getPlatform()
-                .LibraryAPI.contains(uri)
+            libraryApi
+                .contains(uri)
                 .then((result) => {
                     setTrackInLibrary(result[0]);
                 })

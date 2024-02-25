@@ -1,7 +1,8 @@
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import type { Translations } from '@shared/platform/translations';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 
 export function getTranslation(keys: string[], ...params: any[]): string {
-    const translations = getPlatform().Translations;
+    const translations = getPlatformApiOrThrow<Translations>('Translations');
 
     let valueObject: any | string = translations;
 

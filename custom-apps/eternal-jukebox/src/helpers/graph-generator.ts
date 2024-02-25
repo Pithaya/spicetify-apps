@@ -1,4 +1,4 @@
-import type { Segment } from '@shared/cosmos';
+import type { Segment } from '@spotify-web-api/models/audio-analysis';
 import type { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';

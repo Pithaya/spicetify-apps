@@ -1,6 +1,6 @@
 import tinycolor from 'tinycolor2';
 import type { Beat } from '../models/graph/beat';
-import type { Segment } from '@shared/cosmos';
+import type { Segment } from '@spotify-web-api/models/audio-analysis';
 import { Point } from '../models/visualization/point';
 import { getPercentOfValue, getPointFromPercent } from '../utils/math-utils';
 import type { BeatDrawData } from '../models/visualization/beat-draw-data';

@@ -14,8 +14,11 @@ import { TextComponent } from '../text/text';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
-import { getPlatform } from '@shared/utils/spicetify-utils';
-import type { LibraryAPIOperationCompleteEvent } from '@shared/platform/library';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type {
+    LibraryAPI,
+    LibraryAPIOperationCompleteEvent,
+} from '@shared/platform/library';
 
 export type Props = {
     track: Track;
@@ -41,12 +44,18 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const [isHovered, setIsHovered] = useState(false);
     const [trackInLibrary, setTrackInLibrary] = useIsInLibrary(props.track.uri);
 
+    const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+
     async function addToLikedSongs(): Promise<void> {
-        await getPlatform().LibraryAPI.add({ uris: [props.track.uri] });
+        await libraryApi.add({
+            uris: [props.track.uri],
+        });
     }
 
     async function removeFromLikedSongs(): Promise<void> {
-        await getPlatform().LibraryAPI.remove({ uris: [props.track.uri] });
+        await libraryApi.remove({
+            uris: [props.track.uri],
+        });
     }
 
     useEffect(() => {
@@ -65,13 +74,11 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
             }
         };
 
-        getPlatform()
-            .LibraryAPI.getEvents()
-            .addListener('operation_complete', listener);
+        libraryApi.getEvents().addListener('operation_complete', listener);
 
         return () => {
-            getPlatform()
-                .LibraryAPI.getEvents()
+            libraryApi
+                .getEvents()
                 .removeListener('operation_complete', listener);
         };
     }, [visible, props.track.uri]);

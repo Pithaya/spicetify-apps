@@ -1,6 +1,7 @@
-import type { HistoryEntry } from '../platform/history';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type { History, HistoryEntry } from '../platform/history';
 import React, { useEffect, useState } from 'react';
-import { getPlatform } from '../utils';
+import type { LocalStorageAPI } from '@shared/platform/local-storage';
 
 export type NavBarLinkProps = {
     icon: JSX.Element;
@@ -10,7 +11,7 @@ export type NavBarLinkProps = {
 };
 
 export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
-    const history = getPlatform().History;
+    const history = getPlatformApiOrThrow<History>('History');
     const initialActive = history.location.pathname === props.href;
     const sidebar = document.querySelector<HTMLDivElement>('.Root__nav-bar');
 
@@ -79,7 +80,11 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
     }
 
     function isSideBarCollapsed(): boolean {
-        return getPlatform().LocalStorageAPI.getItem('ylx-sidebar-state') === 1;
+        return (
+            getPlatformApiOrThrow<LocalStorageAPI>('LocalStorageAPI').getItem(
+                'ylx-sidebar-state',
+            ) === 1
+        );
     }
 
     function isLibraryXEnabled(sidebar: HTMLElement): boolean {

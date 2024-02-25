@@ -6,7 +6,8 @@ import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, type Observable } from 'rxjs';
 import { StorageService } from './storage-service';
 import type { CachedAlbum } from '../models/cached-album';
-import { getPlatform } from '@shared/utils/spicetify-utils';
+import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import type { LocalFilesAPI } from '@shared/platform/local-files';
 
 /**
  * A list of tracks with an associated cover.
@@ -164,7 +165,9 @@ export class LocalTracksService {
      * Process the local tracks to fill the tracks, albums and artists maps.
      */
     private async processLocalTracks(): Promise<void> {
-        const localTracks = await getPlatform().LocalFilesAPI.getTracks();
+        const localFilesApi =
+            await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
+        const localTracks = await localFilesApi.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album
