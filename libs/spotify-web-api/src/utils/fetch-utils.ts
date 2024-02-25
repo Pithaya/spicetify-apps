@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 export async function get<T>(url: string): Promise<T> {
     const session = getPlatform().Session;

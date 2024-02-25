@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 export function getTranslation(keys: string[], ...params: any[]): string {
     const translations = getPlatform().Translations;

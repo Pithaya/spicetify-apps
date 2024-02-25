@@ -4,7 +4,7 @@ import { getTranslation } from 'custom-apps/better-local-files/src/helpers/trans
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import { addToQueuePath } from '../icons/icons';
 

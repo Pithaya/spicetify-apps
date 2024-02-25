@@ -1,4 +1,5 @@
-import { addUpdateChecker, getPlatform, waitForSpicetify } from '@shared/utils';
+import { getPlatform, waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { addUpdateChecker } from '@shared/utils/version-utils';
 import { LocalTracksService } from '../services/local-tracks-service';
 import { version } from '../../package.json';
 

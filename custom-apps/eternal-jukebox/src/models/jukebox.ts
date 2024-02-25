@@ -6,9 +6,11 @@ import type { JukeboxSettings } from './jukebox-settings.js';
 import { GraphGenerator } from '../helpers/graph-generator.js';
 
 import { Driver } from '../driver';
-import type { AudioAnalysis } from '@shared/cosmos';
-import { getId } from '@shared/utils';
+import { getId } from '@shared/utils/uri-utils';
 import { SettingsService } from '../services/settings-service';
+
+import { getAudioAnalysis } from '@spotify-web-api/api/api.audio-analysis';
+import type { AudioAnalysis } from '@spotify-web-api/models/audio-analysis';
 
 export type StatsChangedEvent = {
     beatsPlayed: number;
@@ -164,7 +166,7 @@ export class Jukebox {
         let analysis: AudioAnalysis | null = null;
 
         try {
-            analysis = await Spicetify.getAudioData(currentTrack.uri);
+            analysis = await getAudioAnalysis(id);
         } catch {
             // Do nothing
         }

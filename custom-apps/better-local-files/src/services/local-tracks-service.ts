@@ -6,7 +6,7 @@ import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, type Observable } from 'rxjs';
 import { StorageService } from './storage-service';
 import type { CachedAlbum } from '../models/cached-album';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 /**
  * A list of tracks with an associated cover.

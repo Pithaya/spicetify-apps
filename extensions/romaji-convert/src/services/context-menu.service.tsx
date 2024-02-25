@@ -1,4 +1,4 @@
-import { getSelectedElementName } from '@shared/utils';
+import { getSelectedElementName } from '@shared/utils/context-menu';
 import {
     settingsService,
     type KuroshiroSettingsService,

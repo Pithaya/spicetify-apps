@@ -14,7 +14,7 @@ import { TextComponent } from '../text/text';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import type { LibraryAPIOperationCompleteEvent } from '@shared/platform/library';
 
 export type Props = {

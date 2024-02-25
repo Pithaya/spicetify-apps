@@ -7,7 +7,7 @@ import {
     getTranslation,
 } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,

@@ -10,7 +10,7 @@ import {
 import { ArtistSelectionMenu } from './artist-selection-menu';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './playlist-selection-menu';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import { addToQueuePath } from '../icons/icons';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';

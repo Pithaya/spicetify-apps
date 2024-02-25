@@ -1,5 +1,5 @@
 import type { Folder, Playlist } from '@shared/platform/rootlist';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import React, { useEffect, useState } from 'react';
 

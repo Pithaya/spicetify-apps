@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../../css/app.module.scss';
 import type { BeatDrawData } from '../../models/visualization/beat-draw-data';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 type Props = {
     drawData: BeatDrawData;

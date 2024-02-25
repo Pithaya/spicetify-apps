@@ -2,6 +2,7 @@ import type { Platform } from '../platform/platform';
 
 /**
  * Wait for Spicetify to load.
+ * FIXME: Spicetify.Platform is empty when first defined
  */
 export async function waitForSpicetify(): Promise<void> {
     while (!Spicetify?.Platform) {

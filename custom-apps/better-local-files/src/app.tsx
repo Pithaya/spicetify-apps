@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import whatsNew from 'spcr-whats-new';

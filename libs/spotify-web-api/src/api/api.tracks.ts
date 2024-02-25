@@ -1,7 +1,7 @@
 import { handleError } from '../helpers';
 import type { Track } from '../models/track';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
-import { get } from '../utils';
+import { get } from '../utils/fetch-utils';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/tracks`;
 

@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { waitForSpicetify } from '@shared/utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { MENU_ICON } from './models/constants';
 import { kuroshiroService } from './services/kuroshiro.service';
 import { contextMenuService } from './services/context-menu.service';

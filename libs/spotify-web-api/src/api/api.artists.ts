@@ -1,7 +1,11 @@
 import { handleError } from '../helpers';
-import type { Album, AlbumPageParameters, Artist, Page } from '../models';
-import { ArgumentError, EmptyPage } from '../models';
-import { get } from '../utils';
+import type { Album } from '../models/album';
+import type { AlbumPageParameters } from '../models/album-page-parameters';
+import type { Artist } from '../models/artist';
+import type { Page } from '../models/page';
+import { ArgumentError } from '../models/errors';
+import { EmptyPage } from '../models/page';
+import { get } from '../utils/fetch-utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/artists`;

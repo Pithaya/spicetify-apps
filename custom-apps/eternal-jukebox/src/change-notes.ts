@@ -1,3 +1,1 @@
-export const CHANGE_NOTES = [
-    'A notification will show if a new update is available.',
-];
+export const CHANGE_NOTES = ['Fix "No analysis available for this track".'];

@@ -1,9 +1,7 @@
-import {
-    addUpdateChecker,
-    renderElement,
-    waitForElement,
-    waitForSpicetify,
-} from '@shared/utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { waitForElement } from '@shared/utils/dom-utils';
+import { renderElement } from '@shared/utils/react-utils';
+import { addUpdateChecker } from '@shared/utils/version-utils';
 import { Jukebox } from '../models/jukebox';
 import { version } from '../../package.json';
 import { PlaybarButton } from '../components/playbar-button.component';

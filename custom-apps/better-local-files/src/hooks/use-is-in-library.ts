@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useEffect, useState } from 'react';
 
 export function useIsInLibrary(

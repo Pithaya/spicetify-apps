@@ -190,10 +190,6 @@ declare namespace Spicetify {
 		playbackId: string;
 		sessionId: string;
 		signals?: any[];
-		/**
-		 * @deprecated Use `item` instead. This will be removed in the future.
-		 */
-		track: PlayerTrack;
 	};
 	type PlayerContext = {
 		uri: string;
@@ -1774,11 +1770,11 @@ declare namespace Spicetify {
 			/**
 			 * Label of the element for screen readers.
 			 */
-			["aria-label"]?: string;
+			"aria-label"?: string;
 			/**
 			 * ID of an element that describes the button for screen readers.
 			 */
-			["aria-labelledby"]?: string;
+			"aria-labelledby"?: string;
 			/**
 			 * Unsafely set the color set for the button.
 			 * Values from the colorSet will be pasted into the CSS.

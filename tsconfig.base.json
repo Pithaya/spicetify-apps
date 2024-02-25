@@ -12,7 +12,7 @@
         "baseUrl": ".",
         "paths": {
             "@shared/*": ["libs/shared/src/*"],
-            "@spotify-web-api": ["libs/spotify-web-api/src"]
+            "@spotify-web-api/*": ["libs/spotify-web-api/src/*"]
         }
     }
 }

@@ -1,5 +1,6 @@
 import { NavBarLink } from '@shared/components/nav-bar-link.component';
-import { waitForElement, waitForSpicetify } from '@shared/utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { waitForElement } from '@shared/utils/dom-utils';
 import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';

@@ -10,7 +10,7 @@ import type { Beat } from './models/graph/beat';
 import type { Edge } from './models/graph/edge';
 import { JukeboxSettings } from './models/jukebox-settings';
 import type { JukeboxSongState } from './models/jukebox-song-state';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 // Used to print debug messages.
 const DEBUG = false;

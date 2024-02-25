@@ -1,4 +1,4 @@
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 // TODO: Use the uri in the url to fix navigation between artist pages
 // TODO: type the state

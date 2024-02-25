@@ -1,18 +1,17 @@
-import type {
-    AlbumNameAndTracksData,
-    ArtistMinimalData,
-    EpisodeNameData,
-    TrackNameData,
-} from '@shared/graphQL';
+import type { AlbumNameAndTracksData } from '@shared/graphQL/models/album-name-and-tracks-data';
+import type { ArtistMinimalData } from '@shared/graphQL/models/artist-minimal-data';
+import type { EpisodeNameData } from '@shared/graphQL/models/episode-name-data';
+import type { TrackNameData } from '@shared/graphQL/models/track-name-data';
 import {
     getAlbumNameAndTracks,
     getEpisodeName,
     getTrackName,
     queryArtistMinimal,
-} from '@shared/graphQL';
+} from '@shared/graphQL/graphQL-client';
 import type { Playlist } from '@shared/platform/playlist';
 import type { ShowMetadata } from '@shared/platform/show';
-import { getId, getPlatform, waitForSpicetify } from '@shared/utils';
+import { getPlatform, waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { getId } from '@shared/utils/uri-utils';
 import i18next from 'i18next';
 
 let locale: typeof Spicetify.Locale;

@@ -4,7 +4,7 @@ import { ArtistTrackList } from '../track-list/artist-track-list';
 import { Header, HeaderImage } from '../../shared/header';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { getPlatform } from '@shared/utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
 
 type Props = {
