@@ -43,18 +43,22 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
         );
 
         if (mapAsArray.length === 0) {
-            return Spicetify.ReactHook.DragHandler([], '');
+            return Spicetify.ReactHook.DragHandler({
+                itemUris: [],
+                dragLabelText: '',
+            });
         }
 
-        return Spicetify.ReactHook.DragHandler(
-            mapAsArray.map((t) => t[0]),
-            selectedTracks.size > 1
-                ? getTranslation(
-                      ['tracklist.drag.multiple.label', 'other'],
-                      selectedTracks.size,
-                  )
-                : mapAsArray[0][1].name,
-        );
+        return Spicetify.ReactHook.DragHandler({
+            itemUris: mapAsArray.map((t) => t[0]),
+            dragLabelText:
+                selectedTracks.size > 1
+                    ? getTranslation(
+                          ['tracklist.drag.multiple.label', 'other'],
+                          selectedTracks.size,
+                      )
+                    : mapAsArray[0][1].name,
+        });
     }, [selectedTracks]);
 
     function handleClick(

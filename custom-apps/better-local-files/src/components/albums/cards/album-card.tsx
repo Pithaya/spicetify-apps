@@ -19,11 +19,11 @@ export type Props = {
 export function AlbumCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
-    const dragHandler = Spicetify.ReactHook.DragHandler(
-        props.album.getTracks().map((t) => t.uri),
-        props.album.name,
-        props.album.uri,
-    );
+    const dragHandler = Spicetify.ReactHook.DragHandler({
+        itemUris: props.album.getTracks().map((t) => t.uri),
+        dragLabelText: props.album.name,
+        contextUri: props.album.uri,
+    });
 
     const placeholder = <div style={{ height: '250px' }}></div>;
     const imageFallback = `
@@ -48,7 +48,7 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
     const card = (
         <div
             className={`${styles['main-card-card']} main-card-card`}
-            draggable="true"
+            draggable
             onClick={() => {
                 navigateTo(ALBUM_ROUTE, props.album.uri);
             }}

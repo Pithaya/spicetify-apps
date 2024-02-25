@@ -2208,11 +2208,15 @@ declare namespace Spicetify {
 		 *
 		 */
 		function DragHandler(
-			uris?: string[],
-			label?: string,
-			contextUri?: string,
-			sectionIndex?: number,
-			dropOriginUri?: string
+			params: {
+				itemUris?: string[], 
+				itemMimeTypes?: (unknown | undefined)[], 
+				dragLabelText?: string, 
+				contextUri?: string, 
+				sectionId?: number, 
+				dropOriginUri?: string, 
+				itemIds?: unknown
+			} 
 		): (event: React.DragEvent, uris?: string[], label?: string, contextUri?: string, sectionIndex?: number) => void;
 
 		/**
