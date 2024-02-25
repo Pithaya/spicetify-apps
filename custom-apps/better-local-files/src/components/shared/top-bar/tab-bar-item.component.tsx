@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../../../css/app.module.scss';
 import type { TopBarItem } from '../../../models/top-bar-item';
+import { TextComponent } from '../text/text';
 
 export type Props = {
     item: TopBarItem;
@@ -20,7 +21,9 @@ export function TabBarItem(props: Readonly<Props>): JSX.Element {
                 className={props.active ? styles['active'] : ''}
                 draggable="false"
             >
-                <span className="main-type-mestoBold">{props.item.label}</span>
+                <TextComponent variant="mestoBold">
+                    {props.item.label}
+                </TextComponent>
             </button>
         </li>
     );

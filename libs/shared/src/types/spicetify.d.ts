@@ -1315,604 +1315,616 @@ declare namespace Spicetify {
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {
-		type ContextMenuProps = {
-			/**
-			 * Decide whether to use the global singleton context menu (rendered in <body>)
-			 * or a new inline context menu (rendered in a sibling
-			 * element to `children`)
-			 */
-			renderInline?: boolean;
-			/**
-			 * Determins what will trigger the context menu. For example, a click, or a right-click
-			 */
-			trigger?: "click" | "right-click";
-			/**
-			 * Determins is the context menu should open or toggle when triggered
-			 */
-			action?: "toggle" | "open";
-			/**
-			 * The preferred placement of the context menu when it opens.
-			 * Relative to trigger element.
-			 */
-			placement?:
-				| "top"
-				| "top-start"
-				| "top-end"
-				| "right"
-				| "right-start"
-				| "right-end"
-				| "bottom"
-				| "bottom-start"
-				| "bottom-end"
-				| "left"
-				| "left-start"
-				| "left-end";
-			/**
-			 * The x and y offset distances at which the context menu should open.
-			 * Relative to trigger element and `position`.
-			 */
-			offset?: [number, number];
-			/**
-			 * Will stop the client from scrolling while the context menu is open
-			 */
-			preventScrollingWhileOpen?: boolean;
-			/**
-			 * The menu UI to render inside of the context menu.
-			 */
-			menu:
-				| typeof Spicetify.ReactComponent.Menu
-				| typeof Spicetify.ReactComponent.AlbumMenu
-				| typeof Spicetify.ReactComponent.PodcastShowMenu
-				| typeof Spicetify.ReactComponent.ArtistMenu
-				| typeof Spicetify.ReactComponent.PlaylistMenu;
-			/**
-			 * A child of the context menu. Should be `<button>`, `<a>`,
-			 * a custom react component that forwards a ref to a `<button>` or `<a>`,
-			 * or a function. If a function is passed it will be called with
-			 * (`isOpen`, `handleContextMenu`, `ref`) as arguments.
-			 */
-			children: Element | ((isOpen?: boolean, handleContextMenu?: (e: MouseEvent) => void, ref?: (e: Element) => void) => Element);
-		};
-		type MenuProps = {
-			/**
-			 * Function that is called when the menu is closed
-			 */
-			onClose?: () => void;
-			/**
-			 * Function that provides the element that focus should jump to when the menu
-			 * is opened
-			 */
-			getInitialFocusElement?: (el: HTMLElement | null) => HTMLElement | undefined | null;
-		};
-		type MenuItemProps = {
-			/**
-			 * Function that runs when `MenuItem` is clicked
-			 */
-			onClick?: React.MouseEventHandler<HTMLButtonElement>;
-			/**
-			 * Indicates if `MenuItem` is disabled. Disabled items will not cause
-			 * the `Menu` to close when clicked.
-			 */
-			disabled?: boolean;
-			/**
-			 * Indicate that a divider line should be added `before` or `after` this `MenuItem`
-			 */
-			divider?: "before" | "after" | "both";
-			/**
-			 * React component icon that will be rendered at the end of the `MenuItem`
-			 * @deprecated Since Spotify `1.2.8`. Use `leadingIcon` or `trailingIcon` instead
-			 */
-			icon?: React.ReactNode;
-			/**
-			 * React component icon that will be rendered at the start of the `MenuItem`
-			 * @since Spotify `1.2.8`
-			 */
-			leadingIcon?: React.ReactNode;
-			/**
-			 * React component icon that will be rendered at the end of the `MenuItem`
-			 * @since Spotify `1.2.8`
-			 */
-			trailingIcon?: React.ReactNode;
-		};
-		type TooltipProps = {
-			/**
-			 * Label to display in the tooltip
-			 */
-			label: string;
-			/**
-			 * The child element that the tooltip will be attached to
-			 * and will display when hovered over
-			 */
-			children: React.ReactNode;
-			/**
-			 * Decide whether to use the global singleton tooltip (rendered in `<body>`)
-			 * or a new inline tooltip (rendered in a sibling
-			 * element to `children`)
-			 */
-			renderInline?: boolean;
-			/**
-			 * Delay in milliseconds before the tooltip is displayed
-			 * after the user hovers over the child element
-			 */
-			showDelay?: number;
-			/**
-			 * Determine whether the tooltip should be displayed
-			 */
-			disabled?: boolean;
-			/**
-			 * The preferred placement of the context menu when it opens.
-			 * Relative to trigger element.
-			 * @default 'top'
-			 */
-			placement?:
-				| "top"
-				| "top-start"
-				| "top-end"
-				| "right"
-				| "right-start"
-				| "right-end"
-				| "bottom"
-				| "bottom-start"
-				| "bottom-end"
-				| "left"
-				| "left-start"
-				| "left-end";
-			/**
-			 * Class name to apply to the tooltip
-			 */
-			labelClassName?: string;
-		};
-		type IconComponentProps = {
-			/**
-			 * Icon size
-			 * @default 24
-			 */
-			iconSize?: number;
-			/**
-			 * Icon color
-			 * Might not be used by component
-			 * @default 'currentColor'
-			 */
-			color?: string;
-			/**
-			 * Semantic color name
-			 * Matches color variables used in xpui
-			 * @default Inherit from parent
-			 */
-			semanticColor?: SemanticColor;
-			/**
-			 * Icon title
-			 * @default ''
-			 */
-			title?: string;
-			/**
-			 * Title ID (internal)
-			 */
-			titleId?: string;
-			/**
-			 * Icon description
-			 */
-			desc?: string;
-			/**
-			 * Description ID (internal)
-			 */
-			descId?: string;
-			/**
-			 * Auto mirror icon
-			 * @default false
-			 */
-			autoMirror?: boolean;
-		};
-		type TextComponentProps = {
-			/**
-			 * Text color
-			 * Might not be used by component
-			 * @default 'currentColor'
-			 */
-			color?: string;
-			/**
-			 * Semantic color name
-			 * Matches color variables used in xpui
-			 * @default Inherit from parent
-			 */
-			semanticColor?: SemanticColor;
-			/**
-			 * Text style variant
-			 * @default 'viola'
-			 */
-			variant?: Variant;
-			/**
-			 * Bottom padding size
-			 */
-			paddingBottom?: string;
-			/**
-			 * Font weight
-			 */
-			weight?: "book" | "bold" | "black";
-		};
-		type ConfirmDialogProps = {
-			/**
-			 * Boolean to determine if the dialog should be opened
-			 * @default true
-			 */
-			isOpen?: boolean;
-			/**
-			 * Whether to allow inline HTML in component text
-			 * @default false
-			 */
-			allowHTML?: boolean;
-			/**
-			 * Dialog title. Can be inline HTML if `allowHTML` is true
-			 */
-			titleText: string;
-			/**
-			 * Dialog description. Can be inline HTML if `allowHTML` is true
-			 */
-			descriptionText?: string;
-			/**
-			 * Confirm button text
-			 */
-			confirmText?: string;
-			/**
-			 * Cancel button text
-			 */
-			cancelText?: string;
-			/**
-			 * Confirm button aria-label
-			 */
-			confirmLabel?: string;
-			/**
-			 * Function to run when confirm button is clicked
-			 * The dialog does not close automatically, a handler must be included.
-			 * @param {React.MouseEvent<HTMLButtonElement>} event
-			 */
-			onConfirm?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-			/**
-			 * Function to run when cancel button is clicked.
-			 * The dialog does not close automatically, a handler must be included.
-			 * @param {React.MouseEvent<HTMLButtonElement>} event
-			 */
-			onClose?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-			/**
-			 * Function to run when dialog is clicked outside of.
-			 * By default, this will run `onClose`.
-			 * A handler must be included to close the dialog.
-			 * @param {React.MouseEvent<HTMLButtonElement>} event
-			 */
-			onOutside?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-		};
-		type PanelSkeletonProps = {
-			/**
-			 * Aria label for the panel. Does not set the panel header content.
-			 */
-			label?: string;
-			/**
-			 * Item URI of the panel. Used as reference for Spotify's internal Event Factory.
-			 *
-			 * @deprecated Since Spotify `1.2.17`
-			 */
-			itemUri?: string;
-			/**
-			 * Additional class name to apply to the panel.
-			 *
-			 * @deprecated Since Spotify `1.2.12`
-			 */
-			className?: string;
-			/**
-			 * Additional styles to apply to the panel.
-			 */
-			style?: React.CSSProperties;
-			/**
-			 * Children to render inside the panel.
-			 */
-			children?: React.ReactNode;
-		};
-		type PanelContentProps = {
-			/**
-			 * Additional class name to apply to the panel.
-			 */
-			className?: string;
-			/**
-			 * Children to render inside the panel.
-			 */
-			children?: React.ReactNode;
-		};
-		type PanelHeaderProps = {
-			/**
-			 * Href for the header link.
-			 * Can be either a URI for a path within the app, or a URL for an external link.
-			 */
-			link?: string;
-			/**
-			 * Title of the header.
-			 */
-			title?: string;
-			/**
-			 * Panel ID. Used to toggle panel open/closed state.
-			 */
-			panel: number;
-			/**
-			 * Whether or not the panel contains advertisements.
-			 * @default false
-			 */
-			isAdvert?: boolean;
-			/**
-			 * Actions to render in the header.
-			 */
-			actions?: React.ReactNode | React.ReactNode[];
-			/**
-			 * Function to call when clicking on the close button.
-			 * Called before the panel is closed.
-			 */
-			onClose?: () => void;
-			/**
-			 * Prevent the panel from closing when clicking on the header close button.
-			 * @default false
-			 */
-			preventDefaultClose?: boolean;
-			/**
-			 * Function to call when clicking on the header back button.
-			 * If not provided, the back button will not be rendered.
-			 */
-			onBack?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-			/**
-			 * Font variant for the header title.
-			 * @default "balladBold"
-			 */
-			titleVariant?: Variant;
-			/**
-			 * Semantic color name for the header title.
-			 * @default "textBase"
-			 */
-			titleSemanticColor?: SemanticColor;
-		};
-		type SliderProps = {
-			/**
-			 * Label for the slider.
-			 */
-			labelText?: string;
-			/**
-			 * The current value of the slider.
-			 */
-			value: number;
-			/**
-			 * The minimum value of the slider.
-			 */
-			min: number;
-			/**
-			 * The maximum value of the slider.
-			 */
-			max: number;
-			/**
-			 * The step value of the slider.
-			 */
-			step: number;
-			/**
-			 * Whether or not the slider is disabled/can be interacted with.
-			 * @default true
-			 */
-			isInteractive?: boolean;
-			/**
-			 * Whether or not the active style of the slider should be shown.
-			 * This is equivalent to the slider being focused/hovered.
-			 * @default false
-			 */
-			forceActiveStyles?: boolean;
-			/**
-			 * Callback function that is called when the slider starts being dragged.
-			 *
-			 * @param {number} value The current value of the slider in percent.
-			 */
-			onDragStart: (value: number) => void;
-			/**
-			 * Callback function that is called when the slider is being dragged.
-			 *
-			 * @param {number} value The current value of the slider in percent.
-			 */
-			onDragMove: (value: number) => void;
-			/**
-			 * Callback function that is called when the slider stops being dragged.
-			 *
-			 * @param {number} value The current value of the slider in percent.
-			 */
-			onDragEnd: (value: number) => void;
-			/**
-			 * Callback function that is called when the slider incremented a step.
-			 *
-			 * @deprecated Use `onDrag` props instead.
-			 */
-			onStepForward?: () => void;
-			/**
-			 * Callback function that is called when the slider decremented a step.
-			 *
-			 * @deprecated Use `onDrag` props instead.
-			 */
-			onStepBackward?: () => void;
-		};
-		type ButtonProps = {
-			component: any;
-			/**
-			 * Color set for the button.
-			 * @default "brightAccent"
-			 */
-			colorSet?: ColorSet;
-			/**
-			 * Size for the button.
-			 * @default "md"
-			 */
-			buttonSize?: "sm" | "md" | "lg";
-			/**
-			 * Size for the button.
-			 * @deprecated Use `buttonSize` prop instead, as it will take precedence.
-			 * @default "medium"
-			 */
-			size?: "small" | "medium" | "large";
-			/**
-			 * Unused by Spotify. Usage unknown.
-			 */
-			fullWidth?: any;
-			/**
-			 * React component to render for an icon placed before children. Component, not element!
-			 */
-			iconLeading?: (props: any) => any | string;
-			/**
-			 * React component to render for an icon placed after children. Component, not element!
-			 */
-			iconTrailing?: (props: any) => any | string;
-			/**
-			 * React component to render for an icon used as button body. Component, not element!
-			 */
-			iconOnly?: (props: any) => any | string;
-			/**
-			 * Additional class name to apply to the button.
-			 */
-			className?: string;
-			/**
-			 * Label of the element for screen readers.
-			 */
-			"aria-label"?: string;
-			/**
-			 * ID of an element that describes the button for screen readers.
-			 */
-			"aria-labelledby"?: string;
-			/**
-			 * Unsafely set the color set for the button.
-			 * Values from the colorSet will be pasted into the CSS.
-			 */
-			UNSAFE_colorSet?: ColorSetBody;
-			onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseEnter?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseLeave?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseDown?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseUp?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onFocus?: (event: FocusEvent<HTMLButtonElement>) => void;
-			onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
-		};
-		/**
-		 * Generic context menu provider
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ContextMenuProps
-		 */
-		const ContextMenu: any;
-		/**
-		 * Wrapper of ReactComponent.ContextMenu with props: action = 'toggle' and trigger = 'right-click'
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ContextMenuProps
-		 */
-		const RightClickMenu: any;
-		/**
-		 * Outer layer contain ReactComponent.MenuItem(s)
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.MenuProps
-		 */
-		const Menu: any;
-		/**
-		 * Component to construct menu item
-		 * Used as ReactComponent.Menu children
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.MenuItemProps
-		 */
-		const MenuItem: any;
-		/**
-		 * Tailored ReactComponent.Menu for specific type of object
-		 *
-		 * Props: {
-		 *      uri: string;
-		 *      onRemoveCallback?: (uri: string) => void;
-		 * }
-		 */
-		const AlbumMenu: any;
-		const PodcastShowMenu: any;
-		const ArtistMenu: any;
-		const PlaylistMenu: any;
-		const TrackMenu: any;
-		/**
-		 * Component to display tooltip when hovering over element
-		 * Useful for accessibility
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.TooltipProps
-		 */
-		const TooltipWrapper: any;
-		/**
-		 * Component to render Spotify-style icon
-		 * @since Spotify `1.1.95`
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.IconComponentProps
-		 */
-		const IconComponent: any;
-		/**
-		 * Component to render Spotify-style text
-		 * @since Spotify `1.1.95`
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.TextComponentProps
-		 */
-		const TextComponent: any;
-		/**
-		 * Component to render Spotify-style confirm dialog
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ConfirmDialogProps
-		 */
-		const ConfirmDialog: any;
-		/**
-		 * Component to render Spotify-style panel skeleton
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.PanelSkeletonProps
-		 */
-		const PanelSkeleton: any;
-		/**
-		 * Component to render Spotify-style panel content
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.PanelContentProps
-		 */
-		const PanelContent: any;
-		/**
-		 * Component to render Spotify-style panel header
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.PanelHeaderProps
-		 */
-		const PanelHeader: any;
-		/**
-		 * Component to render Spotify slider
-		 *
-		 * Used in progress bar, volume slider, crossfade settings, etc.
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.SliderProps
-		 */
-		const Slider: any;
-		/**
-		 * Component to render Spotify primary button
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
-		 */
-		const ButtonPrimary: any;
-		/**
-		 * Component to render Spotify secondary button
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
-		 */
-		const ButtonSecondary: any;
-		/**
-		 * Component to render Spotify tertiary button
-		 *
-		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
-		 */
-		const ButtonTertiary: any;
-	}
+        type ContextMenuProps = {
+            /**
+             * Decide whether to use the global singleton context menu (rendered in <body>)
+             * or a new inline context menu (rendered in a sibling
+             * element to `children`)
+             */
+            renderInline?: boolean;
+            /**
+             * Determins what will trigger the context menu. For example, a click, or a right-click
+             */
+            trigger?: 'click' | 'right-click';
+            /**
+             * Determins is the context menu should open or toggle when triggered
+             */
+            action?: 'toggle' | 'open';
+            /**
+             * The preferred placement of the context menu when it opens.
+             * Relative to trigger element.
+             */
+            placement?:
+                | 'top'
+                | 'top-start'
+                | 'top-end'
+                | 'right'
+                | 'right-start'
+                | 'right-end'
+                | 'bottom'
+                | 'bottom-start'
+                | 'bottom-end'
+                | 'left'
+                | 'left-start'
+                | 'left-end';
+            /**
+             * The x and y offset distances at which the context menu should open.
+             * Relative to trigger element and `position`.
+             */
+            offset?: [number, number];
+            /**
+             * Will stop the client from scrolling while the context menu is open
+             */
+            preventScrollingWhileOpen?: boolean;
+            /**
+             * The menu UI to render inside of the context menu.
+             */
+            menu:
+                | typeof Spicetify.ReactComponent.Menu
+                | typeof Spicetify.ReactComponent.AlbumMenu
+                | typeof Spicetify.ReactComponent.PodcastShowMenu
+                | typeof Spicetify.ReactComponent.ArtistMenu
+                | typeof Spicetify.ReactComponent.PlaylistMenu;
+            /**
+             * A child of the context menu. Should be `<button>`, `<a>`,
+             * a custom react component that forwards a ref to a `<button>` or `<a>`,
+             * or a function. If a function is passed it will be called with
+             * (`isOpen`, `handleContextMenu`, `ref`) as arguments.
+             */
+            children:
+                | Element
+                | ((
+                      isOpen?: boolean,
+                      handleContextMenu?: (e: MouseEvent) => void,
+                      ref?: (e: Element) => void,
+                  ) => Element);
+        };
+        type MenuProps = {
+            /**
+             * Function that is called when the menu is closed
+             */
+            onClose?: () => void;
+            /**
+             * Function that provides the element that focus should jump to when the menu
+             * is opened
+             */
+            getInitialFocusElement?: (
+                el: HTMLElement | null,
+            ) => HTMLElement | undefined | null;
+        };
+        type MenuItemProps = {
+            /**
+             * Function that runs when `MenuItem` is clicked
+             */
+            onClick?: React.MouseEventHandler<HTMLButtonElement>;
+            /**
+             * Indicates if `MenuItem` is disabled. Disabled items will not cause
+             * the `Menu` to close when clicked.
+             */
+            disabled?: boolean;
+            /**
+             * Indicate that a divider line should be added `before` or `after` this `MenuItem`
+             */
+            divider?: 'before' | 'after' | 'both';
+            /**
+             * React component icon that will be rendered at the end of the `MenuItem`
+             * @deprecated Since Spotify `1.2.8`. Use `leadingIcon` or `trailingIcon` instead
+             */
+            icon?: React.ReactNode;
+            /**
+             * React component icon that will be rendered at the start of the `MenuItem`
+             * @since Spotify `1.2.8`
+             */
+            leadingIcon?: React.ReactNode;
+            /**
+             * React component icon that will be rendered at the end of the `MenuItem`
+             * @since Spotify `1.2.8`
+             */
+            trailingIcon?: React.ReactNode;
+        };
+        type TooltipProps = {
+            /**
+             * Label to display in the tooltip
+             */
+            label: string;
+            /**
+             * The child element that the tooltip will be attached to
+             * and will display when hovered over
+             */
+            children: React.ReactNode;
+            /**
+             * Decide whether to use the global singleton tooltip (rendered in `<body>`)
+             * or a new inline tooltip (rendered in a sibling
+             * element to `children`)
+             */
+            renderInline?: boolean;
+            /**
+             * Delay in milliseconds before the tooltip is displayed
+             * after the user hovers over the child element
+             */
+            showDelay?: number;
+            /**
+             * Determine whether the tooltip should be displayed
+             */
+            disabled?: boolean;
+            /**
+             * The preferred placement of the context menu when it opens.
+             * Relative to trigger element.
+             * @default 'top'
+             */
+            placement?:
+                | 'top'
+                | 'top-start'
+                | 'top-end'
+                | 'right'
+                | 'right-start'
+                | 'right-end'
+                | 'bottom'
+                | 'bottom-start'
+                | 'bottom-end'
+                | 'left'
+                | 'left-start'
+                | 'left-end';
+            /**
+             * Class name to apply to the tooltip
+             */
+            labelClassName?: string;
+        };
+        type IconComponentProps = {
+            /**
+             * Icon size
+             * @default 24
+             */
+            iconSize?: number;
+            /**
+             * Icon color
+             * Might not be used by component
+             * @default 'currentColor'
+             */
+            color?: string;
+            /**
+             * Semantic color name
+             * Matches color variables used in xpui
+             * @default Inherit from parent
+             */
+            semanticColor?: SemanticColor;
+            /**
+             * Icon title
+             * @default ''
+             */
+            title?: string;
+            /**
+             * Title ID (internal)
+             */
+            titleId?: string;
+            /**
+             * Icon description
+             */
+            desc?: string;
+            /**
+             * Description ID (internal)
+             */
+            descId?: string;
+            /**
+             * Auto mirror icon
+             * @default false
+             */
+            autoMirror?: boolean;
+        };
+        type TextComponentProps = {
+            /**
+             * Text color
+             * Might not be used by component
+             * @default 'currentColor'
+             */
+            color?: string;
+            /**
+             * Semantic color name
+             * Matches color variables used in xpui
+             * @default Inherit from parent
+             */
+            semanticColor?: SemanticColor;
+            /**
+             * Text style variant
+             * @default 'viola'
+             */
+            variant?: Variant;
+            /**
+             * Bottom padding size
+             */
+            paddingBottom?: string;
+            /**
+             * Font weight
+             */
+            weight?: 'book' | 'bold' | 'black';
+        };
+        type ConfirmDialogProps = {
+            /**
+             * Boolean to determine if the dialog should be opened
+             * @default true
+             */
+            isOpen?: boolean;
+            /**
+             * Whether to allow inline HTML in component text
+             * @default false
+             */
+            allowHTML?: boolean;
+            /**
+             * Dialog title. Can be inline HTML if `allowHTML` is true
+             */
+            titleText: string;
+            /**
+             * Dialog description. Can be inline HTML if `allowHTML` is true
+             */
+            descriptionText?: string;
+            /**
+             * Confirm button text
+             */
+            confirmText?: string;
+            /**
+             * Cancel button text
+             */
+            cancelText?: string;
+            /**
+             * Confirm button aria-label
+             */
+            confirmLabel?: string;
+            /**
+             * Function to run when confirm button is clicked
+             * The dialog does not close automatically, a handler must be included.
+             * @param {React.MouseEvent<HTMLButtonElement>} event
+             */
+            onConfirm?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+            /**
+             * Function to run when cancel button is clicked.
+             * The dialog does not close automatically, a handler must be included.
+             * @param {React.MouseEvent<HTMLButtonElement>} event
+             */
+            onClose?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+            /**
+             * Function to run when dialog is clicked outside of.
+             * By default, this will run `onClose`.
+             * A handler must be included to close the dialog.
+             * @param {React.MouseEvent<HTMLButtonElement>} event
+             */
+            onOutside?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+        };
+        type PanelSkeletonProps = {
+            /**
+             * Aria label for the panel. Does not set the panel header content.
+             */
+            label?: string;
+            /**
+             * Item URI of the panel. Used as reference for Spotify's internal Event Factory.
+             *
+             * @deprecated Since Spotify `1.2.17`
+             */
+            itemUri?: string;
+            /**
+             * Additional class name to apply to the panel.
+             *
+             * @deprecated Since Spotify `1.2.12`
+             */
+            className?: string;
+            /**
+             * Additional styles to apply to the panel.
+             */
+            style?: React.CSSProperties;
+            /**
+             * Children to render inside the panel.
+             */
+            children?: React.ReactNode;
+        };
+        type PanelContentProps = {
+            /**
+             * Additional class name to apply to the panel.
+             */
+            className?: string;
+            /**
+             * Children to render inside the panel.
+             */
+            children?: React.ReactNode;
+        };
+        type PanelHeaderProps = {
+            /**
+             * Href for the header link.
+             * Can be either a URI for a path within the app, or a URL for an external link.
+             */
+            link?: string;
+            /**
+             * Title of the header.
+             */
+            title?: string;
+            /**
+             * Panel ID. Used to toggle panel open/closed state.
+             */
+            panel: number;
+            /**
+             * Whether or not the panel contains advertisements.
+             * @default false
+             */
+            isAdvert?: boolean;
+            /**
+             * Actions to render in the header.
+             */
+            actions?: React.ReactNode | React.ReactNode[];
+            /**
+             * Function to call when clicking on the close button.
+             * Called before the panel is closed.
+             */
+            onClose?: () => void;
+            /**
+             * Prevent the panel from closing when clicking on the header close button.
+             * @default false
+             */
+            preventDefaultClose?: boolean;
+            /**
+             * Function to call when clicking on the header back button.
+             * If not provided, the back button will not be rendered.
+             */
+            onBack?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+            /**
+             * Font variant for the header title.
+             * @default "balladBold"
+             */
+            titleVariant?: Variant;
+            /**
+             * Semantic color name for the header title.
+             * @default "textBase"
+             */
+            titleSemanticColor?: SemanticColor;
+        };
+        type SliderProps = {
+            /**
+             * Label for the slider.
+             */
+            labelText?: string;
+            /**
+             * The current value of the slider.
+             */
+            value: number;
+            /**
+             * The minimum value of the slider.
+             */
+            min: number;
+            /**
+             * The maximum value of the slider.
+             */
+            max: number;
+            /**
+             * The step value of the slider.
+             */
+            step: number;
+            /**
+             * Whether or not the slider is disabled/can be interacted with.
+             * @default true
+             */
+            isInteractive?: boolean;
+            /**
+             * Whether or not the active style of the slider should be shown.
+             * This is equivalent to the slider being focused/hovered.
+             * @default false
+             */
+            forceActiveStyles?: boolean;
+            /**
+             * Callback function that is called when the slider starts being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragStart: (value: number) => void;
+            /**
+             * Callback function that is called when the slider is being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragMove: (value: number) => void;
+            /**
+             * Callback function that is called when the slider stops being dragged.
+             *
+             * @param {number} value The current value of the slider in percent.
+             */
+            onDragEnd: (value: number) => void;
+            /**
+             * Callback function that is called when the slider incremented a step.
+             *
+             * @deprecated Use `onDrag` props instead.
+             */
+            onStepForward?: () => void;
+            /**
+             * Callback function that is called when the slider decremented a step.
+             *
+             * @deprecated Use `onDrag` props instead.
+             */
+            onStepBackward?: () => void;
+        };
+        type ButtonProps = {
+            component: any;
+            /**
+             * Color set for the button.
+             * @default "brightAccent"
+             */
+            colorSet?: ColorSet;
+            /**
+             * Size for the button.
+             * @default "md"
+             */
+            buttonSize?: 'sm' | 'md' | 'lg';
+            /**
+             * Size for the button.
+             * @deprecated Use `buttonSize` prop instead, as it will take precedence.
+             * @default "medium"
+             */
+            size?: 'small' | 'medium' | 'large';
+            /**
+             * Unused by Spotify. Usage unknown.
+             */
+            fullWidth?: any;
+            /**
+             * React component to render for an icon placed before children. Component, not element!
+             */
+            iconLeading?: (props: any) => any | string;
+            /**
+             * React component to render for an icon placed after children. Component, not element!
+             */
+            iconTrailing?: (props: any) => any | string;
+            /**
+             * React component to render for an icon used as button body. Component, not element!
+             */
+            iconOnly?: (props: any) => any | string;
+            /**
+             * Additional class name to apply to the button.
+             */
+            className?: string;
+            /**
+             * Label of the element for screen readers.
+             */
+            'aria-label'?: string;
+            /**
+             * ID of an element that describes the button for screen readers.
+             */
+            'aria-labelledby'?: string;
+            /**
+             * Unsafely set the color set for the button.
+             * Values from the colorSet will be pasted into the CSS.
+             */
+            UNSAFE_colorSet?: ColorSetBody;
+            onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+            onMouseEnter?: (event: MouseEvent<HTMLButtonElement>) => void;
+            onMouseLeave?: (event: MouseEvent<HTMLButtonElement>) => void;
+            onMouseDown?: (event: MouseEvent<HTMLButtonElement>) => void;
+            onMouseUp?: (event: MouseEvent<HTMLButtonElement>) => void;
+            onFocus?: (event: FocusEvent<HTMLButtonElement>) => void;
+            onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
+        };
+        /**
+         * Generic context menu provider
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ContextMenuProps
+         */
+        const ContextMenu: any;
+        /**
+         * Wrapper of ReactComponent.ContextMenu with props: action = 'toggle' and trigger = 'right-click'
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ContextMenuProps
+         */
+        const RightClickMenu: any;
+        /**
+         * Outer layer contain ReactComponent.MenuItem(s)
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.MenuProps
+         */
+        const Menu: any;
+        /**
+         * Component to construct menu item
+         * Used as ReactComponent.Menu children
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.MenuItemProps
+         */
+        const MenuItem: any;
+        /**
+         * Tailored ReactComponent.Menu for specific type of object
+         *
+         * Props: {
+         *      uri: string;
+         *      onRemoveCallback?: (uri: string) => void;
+         * }
+         */
+        const AlbumMenu: any;
+        const PodcastShowMenu: any;
+        const ArtistMenu: any;
+        const PlaylistMenu: any;
+        const TrackMenu: any;
+        /**
+         * Component to display tooltip when hovering over element
+         * Useful for accessibility
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.TooltipProps
+         */
+        const TooltipWrapper: any;
+        /**
+         * Component to render Spotify-style icon
+         * @since Spotify `1.1.95`
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.IconComponentProps
+         */
+        const IconComponent: any;
+        /**
+         * Component to render Spotify-style text
+         * @since Spotify `1.1.95`
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.TextComponentProps
+         */
+        const TextComponent: any;
+        /**
+         * Component to render Spotify-style confirm dialog
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ConfirmDialogProps
+         */
+        const ConfirmDialog: any;
+        /**
+         * Component to render Spotify-style panel skeleton
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.PanelSkeletonProps
+         */
+        const PanelSkeleton: any;
+        /**
+         * Component to render Spotify-style panel content
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.PanelContentProps
+         */
+        const PanelContent: any;
+        /**
+         * Component to render Spotify-style panel header
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.PanelHeaderProps
+         */
+        const PanelHeader: any;
+        /**
+         * Component to render Spotify slider
+         *
+         * Used in progress bar, volume slider, crossfade settings, etc.
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.SliderProps
+         */
+        const Slider: any;
+        /**
+         * Component to render Spotify primary button
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ButtonProps
+         */
+        const ButtonPrimary: any;
+        /**
+         * Component to render Spotify secondary button
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ButtonProps
+         */
+        const ButtonSecondary: any;
+        /**
+         * Component to render Spotify tertiary button
+         *
+         * Props:
+         * @see Spicetify.ReactComponent.ButtonProps
+         */
+        const ButtonTertiary: any;
+        /**
+         * Dropdown menu
+         */
+        const Dropdown: any;
+    }
 
 	/**
 	 * Add button in top bar next to navigation buttons

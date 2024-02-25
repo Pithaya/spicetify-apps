@@ -37,9 +37,10 @@
     ul {
         display: flex;
         flex-direction: row;
+        align-items: stretch;
 
         li {
-            pointer-events: auto;
+            pointer-events: all;
 
             button {
                 border-radius: 4px;
@@ -55,6 +56,10 @@
                     border-radius: 4px;
                 }
             }
+        }
+
+        select {
+            height: 100%;
         }
     }
 }

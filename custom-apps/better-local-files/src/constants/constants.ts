@@ -19,12 +19,12 @@ export const topBarItems: TopBarItem[] = [
     {
         key: 'Albums',
         href: ALBUMS_ROUTE,
-        label: getTranslation(['albums']),
+        label: getTranslation(['search.title.albums']),
     },
     {
         key: 'Artists',
         href: ARTISTS_ROUTE,
-        label: getTranslation(['artists']),
+        label: getTranslation(['search.title.artists']),
     },
 ];
 
