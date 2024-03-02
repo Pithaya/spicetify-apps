@@ -304,7 +304,12 @@ export function SettingsModal(): JSX.Element {
             </div>
 
             <div className={styles['flex-center']}>
-                <button onClick={reset}>Reset</button>
+                <Spicetify.ReactComponent.ButtonPrimary
+                    buttonSize={'sm'}
+                    onClick={reset}
+                >
+                    Reset
+                </Spicetify.ReactComponent.ButtonPrimary>
             </div>
         </div>
     );
