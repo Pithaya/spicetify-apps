@@ -9,17 +9,24 @@ export async function waitForElement(
     selector: string,
     timeout: number = 5 * 1000,
     parentElement: HTMLElement | null = null,
+    debug = false,
 ): Promise<Element> {
     return await new Promise<Element>((resolve, reject) => {
-        const element: Element | null = document.querySelector(selector);
+        let element: Element | null = document.querySelector(selector);
         if (element !== null) {
+            if (debug) {
+                console.log('found element in querySelector');
+            }
             resolve(element);
             return;
         }
 
         const observer = new MutationObserver(() => {
-            const element: Element | null = document.querySelector(selector);
+            element = document.querySelector(selector);
             if (element !== null) {
+                if (debug) {
+                    console.log('found element in observer');
+                }
                 resolve(element);
                 observer.disconnect();
             }
@@ -35,11 +42,20 @@ export async function waitForElement(
         });
 
         setTimeout(() => {
+            // Observer found the element already
+            if (element !== null) {
+                return;
+            }
+
+            if (debug) {
+                console.log('trying to find element from querySelector again');
+            }
+
             observer.disconnect();
 
-            // Sometimes the observer do not work ?
+            // Sometimes the observer does not work ?
             // So try one last time to find the element
-            const element: Element | null = document.querySelector(selector);
+            element = document.querySelector(selector);
             if (element !== null) {
                 resolve(element);
             } else {
