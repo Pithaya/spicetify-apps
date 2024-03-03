@@ -1,5 +1,5 @@
 import type { Segment } from '@spotify-web-api/models/audio-analysis';
-import type { JukeboxSettings } from '../models/jukebox-settings';
+import { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';
 import { Beat } from '../models/graph/beat';
@@ -85,12 +85,11 @@ export class GraphGenerator {
         let branchCount = 0;
         const targetBranchCount = this.beats.length / 6;
 
-        // FIXME: threshold always 0 ?
-        const threshold = 0;
+        let threshold;
 
         for (
-            let threshold = 10;
-            threshold < this.settings.maxBranchDistance;
+            threshold = 10;
+            threshold < JukeboxSettings.rangeMaxBranchDistance;
             threshold += 5
         ) {
             branchCount = this.collectNearestNeighbors(threshold);

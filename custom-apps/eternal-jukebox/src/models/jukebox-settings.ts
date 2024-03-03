@@ -5,7 +5,7 @@ export class JukeboxSettings {
     public static readonly minBeatsBeforeBranching: number = 5;
 
     // ========
-    // Branch distance
+    // Branch distance / Similarity threshold
     // ========
 
     /**
