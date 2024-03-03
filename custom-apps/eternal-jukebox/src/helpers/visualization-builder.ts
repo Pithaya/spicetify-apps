@@ -16,29 +16,30 @@ export const svgSize = 100;
 export const halfSize = svgSize / 2;
 
 /**
- * Minimum height for a tile.
- */
-const minTileHeight = 2;
-
-/**
- * Maximum height for a tile.
- */
-const maxTileHeight = 10;
-
-/**
  * Inner circle radius.
  */
 const innerCircleRadius = 40;
 
 /**
+ * Minimum height for a tile.
+ */
+const minTileHeight = 2;
+
+/**
  * How much a tile should grow per beat.
  */
-const tileHeightIncrementPerBeat = 0.1;
+const tileHeightIncrementPerBeat = 0.2;
 
 /**
  * How much a tile should grow when it's playing.
  */
-const isPlayingAdditionalTileHeight = 2;
+const isPlayingAdditionalTileHeight = 1;
+
+/**
+ * Maximum height for a tile (8).
+ */
+const maxTileHeight =
+    halfSize - (innerCircleRadius + isPlayingAdditionalTileHeight);
 
 export function initSvgDrawData(graphState: GraphState): GraphDrawData {
     if (graphState.beats.length === 0) {
