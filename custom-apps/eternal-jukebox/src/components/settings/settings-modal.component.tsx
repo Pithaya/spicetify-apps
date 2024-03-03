@@ -77,14 +77,20 @@ export function SettingsModal(): JSX.Element {
             >
                 <label
                     htmlFor="jukebox.settings.maxBranchDistance"
-                    style={labelStyle}
+                    style={{
+                        ...labelStyle,
+                        opacity: settings.useDynamicBranchDistance ? 0.5 : 1,
+                    }}
                 >
                     <b>Branch Similarity Threshold</b>:
                     {settings.maxBranchDistance}
                 </label>
             </Spicetify.ReactComponent.TooltipWrapper>
 
-            <div className={styles['input-range-container']}>
+            <div
+                className={styles['input-range-container']}
+                style={{ opacity: settings.useDynamicBranchDistance ? 0.5 : 1 }}
+            >
                 <input
                     id="jukebox.settings.maxBranchDistance"
                     className={styles['w-100']}
@@ -99,12 +105,45 @@ export function SettingsModal(): JSX.Element {
                             e.target.valueAsNumber,
                         );
                     }}
+                    disabled={settings.useDynamicBranchDistance}
                 />
 
                 <div className={styles['range-subtext']}>
                     <span className={styles['small-text']}>Higher quality</span>
                     <span className={styles['small-text']}>More branches</span>
                 </div>
+            </div>
+
+            <div className={styles['checkbox-container']}>
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If true, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
+                    showDelay={100}
+                >
+                    <label
+                        htmlFor="jukebox.settings.useDynamicBranchDistance"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Use dynamic branch distance</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
+
+                <label className="x-toggle-wrapper">
+                    <input
+                        id="jukebox.settings.useDynamicBranchDistance"
+                        className="x-toggle-input"
+                        type="checkbox"
+                        checked={settings.useDynamicBranchDistance}
+                        onChange={(e) => {
+                            updateSettingsField(
+                                'useDynamicBranchDistance',
+                                !settings.useDynamicBranchDistance,
+                            );
+                        }}
+                    />
+                    <span className="x-toggle-indicatorWrapper">
+                        <span className="x-toggle-indicator"></span>
+                    </span>
+                </label>
             </div>
 
             <Spicetify.ReactComponent.TooltipWrapper
