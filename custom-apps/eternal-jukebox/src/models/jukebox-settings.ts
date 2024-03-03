@@ -83,6 +83,11 @@ export class JukeboxSettings {
      */
     public removeSequentialBranches: boolean = false;
 
+    /**
+     * If true, always branch at the last possible point.
+     */
+    public alwaysFollowLastBranch: boolean = true;
+
     public static fromPartial(
         storedSettings: JukeboxStoredSettings,
     ): JukeboxSettings {
@@ -100,6 +105,7 @@ export class JukeboxSettings {
         settings.justLongBranches = storedSettings.justLongBranches;
         settings.removeSequentialBranches =
             storedSettings.removeSequentialBranches;
+        settings.alwaysFollowLastBranch = storedSettings.alwaysFollowLastBranch;
 
         return settings;
     }
@@ -115,6 +121,7 @@ export class JukeboxSettings {
             justBackwards: this.justBackwards,
             justLongBranches: this.justLongBranches,
             removeSequentialBranches: this.removeSequentialBranches,
+            alwaysFollowLastBranch: this.alwaysFollowLastBranch,
         };
     }
 }
@@ -130,4 +137,5 @@ export type JukeboxStoredSettings = Pick<
     | 'justBackwards'
     | 'justLongBranches'
     | 'removeSequentialBranches'
+    | 'alwaysFollowLastBranch'
 >;

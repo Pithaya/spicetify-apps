@@ -171,7 +171,7 @@ export class Jukebox {
             // Do nothing
         }
 
-        if (analysis === null) {
+        if (analysis === null || analysis.beats.length === 0) {
             this.disableWithError('No analysis available for this track.');
             return;
         }
