@@ -116,7 +116,7 @@ export function SettingsModal(): JSX.Element {
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
-                    label="If true, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
+                    label="If checked, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
                     showDelay={100}
                 >
                     <label
@@ -216,7 +216,7 @@ export function SettingsModal(): JSX.Element {
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
-                    label="If true, optimize by adding a good last edge."
+                    label="If checked, optimize by adding a good last edge."
                     showDelay={100}
                 >
                     <label
@@ -248,7 +248,7 @@ export function SettingsModal(): JSX.Element {
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
-                    label="If true, only add backward branches."
+                    label="If checked, only add backward branches."
                     showDelay={100}
                 >
                     <label
@@ -280,7 +280,7 @@ export function SettingsModal(): JSX.Element {
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
-                    label="If true, only add long branches."
+                    label="If checked, only add long branches."
                     showDelay={100}
                 >
                     <label
@@ -312,7 +312,7 @@ export function SettingsModal(): JSX.Element {
 
             <div className={styles['checkbox-container']}>
                 <Spicetify.ReactComponent.TooltipWrapper
-                    label="If true, remove consecutive branches of the same distance."
+                    label="If checked, remove consecutive branches of the same distance."
                     showDelay={100}
                 >
                     <label
@@ -342,7 +342,42 @@ export function SettingsModal(): JSX.Element {
                 </label>
             </div>
 
-            <div className={styles['flex-center']}>
+            <div className={styles['checkbox-container']}>
+                <Spicetify.ReactComponent.TooltipWrapper
+                    label="If checked, always follow the last possible branch. Note that setting this to false will result in songs not looping indefinitely."
+                    showDelay={100}
+                >
+                    <label
+                        htmlFor="jukebox.settings.alwaysFollowLastBranch"
+                        style={checkboxLabelStyle}
+                    >
+                        <b>Always follow the last branch</b>:
+                    </label>
+                </Spicetify.ReactComponent.TooltipWrapper>
+
+                <label className="x-toggle-wrapper">
+                    <input
+                        id="jukebox.settings.alwaysFollowLastBranch"
+                        className="x-toggle-input"
+                        type="checkbox"
+                        checked={settings.alwaysFollowLastBranch}
+                        onChange={(e) => {
+                            updateSettingsField(
+                                'alwaysFollowLastBranch',
+                                !settings.alwaysFollowLastBranch,
+                            );
+                        }}
+                    />
+                    <span className="x-toggle-indicatorWrapper">
+                        <span className="x-toggle-indicator"></span>
+                    </span>
+                </label>
+            </div>
+
+            <div
+                className={styles['flex-center']}
+                style={{ marginTop: '20px' }}
+            >
                 <Spicetify.ReactComponent.ButtonPrimary
                     buttonSize={'sm'}
                     onClick={reset}

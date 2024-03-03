@@ -9,8 +9,6 @@ import {
     svgSize,
 } from '../../helpers/visualization-builder';
 
-// TODO: Update tile height depending on each beat's play count.
-
 type Props = {
     state: GraphState;
 };

@@ -394,9 +394,11 @@ export class Driver {
      * @returns True if the beat should branch.
      */
     private shouldRandomBranch(beat: Beat): boolean {
-        // Always branch if this is our last opportunity
-        // TODO: Make this configurable
-        if (beat.index === this.songState.graph.lastBranchPoint) {
+        // Branch if this is our last opportunity
+        if (
+            beat.index === this.songState.graph.lastBranchPoint &&
+            this.settings.alwaysFollowLastBranch
+        ) {
             return true;
         }
 
