@@ -3,7 +3,11 @@ import React, { useEffect } from 'react';
 import { VisualizerSlice } from './visualizer-slice.component';
 import { VisualizerEdge } from './visualizer-edge.component';
 import type { GraphState } from '../../models/graph/graph-state';
-import { initSvgDrawData } from '../../helpers/visualization-builder';
+import {
+    halfSize,
+    initSvgDrawData,
+    svgSize,
+} from '../../helpers/visualization-builder';
 
 // TODO: Update tile height depending on each beat's play count.
 
@@ -25,11 +29,7 @@ export function JukeboxVisualizer(props: Readonly<Props>): JSX.Element {
         return <div>Loading...</div>;
     }
 
-    // TODO: Could be responsive
-    const svgSize = 600;
-    const halfSize = svgSize / 2;
-
-    const drawData = initSvgDrawData(svgSize, halfSize, props.state);
+    const drawData = initSvgDrawData(props.state);
 
     function pathToFront(node: Node): void {
         const svg = document.getElementById('#jukebox-graph');
@@ -37,31 +37,27 @@ export function JukeboxVisualizer(props: Readonly<Props>): JSX.Element {
     }
 
     return (
-        <div>
-            <svg
-                id="#jukebox-graph"
-                height={svgSize}
-                width={svgSize}
-                viewBox={`0 0 ${svgSize} ${svgSize}`}
-                className={styles['jukebox-graph']}
+        <svg
+            id="#jukebox-graph"
+            viewBox={`0 0 ${svgSize} ${svgSize}`}
+            className={styles['jukebox-graph']}
+        >
+            <g
+                transform={`scale(-1,1) translate(${-svgSize}, 0) rotate(-90,${halfSize},${halfSize}) `}
             >
-                <g
-                    transform={`scale(-1,1) translate(${-svgSize}, 0) rotate(-90,${halfSize},${halfSize}) `}
-                >
-                    {drawData.beats.map((currentData) => (
-                        <VisualizerSlice
-                            key={currentData.beat.index}
-                            drawData={currentData}
-                        />
-                    ))}
-                    {drawData.edges.map((currentData) => (
-                        <VisualizerEdge
-                            key={`${currentData.edge.source.index}-${currentData.edge.destination.index}`}
-                            drawData={currentData}
-                        />
-                    ))}
-                </g>
-            </svg>
-        </div>
+                {drawData.beats.map((currentData) => (
+                    <VisualizerSlice
+                        key={currentData.beat.index}
+                        drawData={currentData}
+                    />
+                ))}
+                {drawData.edges.map((currentData) => (
+                    <VisualizerEdge
+                        key={`${currentData.edge.source.index}-${currentData.edge.destination.index}`}
+                        drawData={currentData}
+                    />
+                ))}
+            </g>
+        </svg>
     );
 }
