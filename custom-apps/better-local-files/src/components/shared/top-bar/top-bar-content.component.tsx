@@ -12,7 +12,7 @@ export type Props = {
 
 export function TopBarContent(props: Readonly<Props>): JSX.Element {
     const resizeHost = document.querySelector(
-        '.Root__main-view .os-resize-observer-host',
+        '.main-view-container__scroll-node',
     );
     if (!resizeHost) {
         throw new Error('Could not find resize host');
