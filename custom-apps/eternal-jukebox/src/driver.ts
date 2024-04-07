@@ -402,27 +402,39 @@ export class Driver {
             return true;
         }
 
+        // Don't branch too fast
         if (
             this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
         ) {
             return false;
         }
 
-        this.songState.currentRandomBranchChance +=
-            this.settings.randomBranchChanceDelta;
+        // TODO: Set this on the song state and calculate only once
+        const currentPlayTime = new Date().getTime() - this.songState.startTime;
+
+        // Is it time to stop branching ?
         if (
-            this.songState.currentRandomBranchChance >
-            this.settings.maxRandomBranchChance
+            this.settings.maxJukeboxPlayTime > 0 &&
+            currentPlayTime > this.settings.maxJukeboxPlayTime
         ) {
-            this.songState.currentRandomBranchChance =
-                this.settings.maxRandomBranchChance;
+            this.songState.currentRandomBranchChance = 0;
+            return false;
         }
+
+        this.songState.currentRandomBranchChance = Math.min(
+            this.songState.currentRandomBranchChance +
+                this.settings.randomBranchChanceDelta,
+            this.settings.maxRandomBranchChance,
+        );
+
         const shouldBranch =
             Math.random() < this.songState.currentRandomBranchChance;
+
         if (shouldBranch) {
             this.songState.currentRandomBranchChance =
                 this.settings.minRandomBranchChance;
         }
+
         return shouldBranch;
     }
 

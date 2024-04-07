@@ -12,7 +12,7 @@ import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '../../shared/text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 import type { History } from '@shared/platform/history';
 
 type Props = {

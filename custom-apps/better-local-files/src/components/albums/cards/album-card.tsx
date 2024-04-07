@@ -9,7 +9,7 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '../../shared/text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     album: Album;

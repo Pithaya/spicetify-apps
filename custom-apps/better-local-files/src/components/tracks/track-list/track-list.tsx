@@ -18,8 +18,8 @@ import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-i
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { TextComponent } from '../../shared/text/text';
 import { TrackListRowArtistLink } from '../../shared/track-list/track-list-row-artist-link';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     tracks: Track[];

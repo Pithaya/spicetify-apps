@@ -105,41 +105,6 @@
     }
 }
 
-.settings-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: var(--spice-subtext);
-    background-color: var(--spice-sidebar);
-
-    border: none;
-
-    &:hover {
-        transition: background-color 0.5s ease;
-        background-color: var(--spice-button-disabled);
-        cursor: pointer;
-    }
-}
-
-.settings-modal {
-    input[type='range'] {
-        padding: 0;
-        accent-color: var(--spice-text);
-        width: 300px;
-    }
-}
-
-.range-subtext {
-    display: flex;
-    justify-content: space-between;
-    width: 300px;
-}
-
 .small-text {
     font-size: small;
-}
-
-.checkbox-container {
-    display: flex;
 }

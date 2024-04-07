@@ -1,4 +1,4 @@
-import { NavBarLink } from '@shared/components/nav-bar-link.component';
+import { NavBarLink } from '@shared/components/navbar/nav-bar-link.component';
 import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { waitForElement } from '@shared/utils/dom-utils';
 import i18next from 'i18next';

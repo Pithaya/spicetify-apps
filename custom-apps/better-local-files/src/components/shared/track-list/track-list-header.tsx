@@ -5,7 +5,7 @@ import { CaretUp } from '../icons/caret-up';
 import { CaretDown } from '../icons/caret-down';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { TextComponent } from '../text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     headers: TrackListHeaderOption[];

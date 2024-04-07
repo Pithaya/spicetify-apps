@@ -1,19 +1,16 @@
 .container {
     height: 16px;
+    position: relative;
+    margin: 2px;
 }
 
 .slider {
     position: relative;
-    width: 300px;
 }
 
 .slider__track,
 .slider__range {
     position: absolute;
-}
-
-.slider__track,
-.slider__range {
     border-radius: 3px;
     height: 8px;
 
@@ -48,8 +45,8 @@
     pointer-events: none;
     position: absolute;
     height: 0;
-    width: 300px;
     outline: none;
+    top: 0px;
 }
 
 .thumb--zindex-3 {

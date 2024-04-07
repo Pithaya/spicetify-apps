@@ -3,8 +3,8 @@ import { getTranslation } from 'custom-apps/better-local-files/src/helpers/trans
 import { Folder } from 'lucide-react';
 import { Header } from '../../shared/header';
 import { TrackList } from '../track-list/track-list';
-import { TextComponent } from '../../shared/text/text';
 import styles from '../../../css/app.module.scss';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export function TracksPage(): JSX.Element {
     const tracks = Array.from(window.localTracksService.getTracks().values());

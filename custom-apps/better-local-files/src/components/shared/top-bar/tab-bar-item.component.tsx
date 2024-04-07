@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../../css/app.module.scss';
 import type { TopBarItem } from '../../../models/top-bar-item';
-import { TextComponent } from '../text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     item: TopBarItem;

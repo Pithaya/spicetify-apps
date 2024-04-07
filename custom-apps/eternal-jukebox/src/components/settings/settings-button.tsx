@@ -1,4 +1,4 @@
-import styles from '../../css/app.module.scss';
+import styles from './settings-button.module.scss';
 import React, { type CSSProperties } from 'react';
 import { Settings } from 'lucide-react';
 import { SettingsModal } from './settings-modal.component';

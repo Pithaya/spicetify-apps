@@ -60,6 +60,15 @@ export class JukeboxSettings {
         JukeboxSettings.defaultRandomBranchChanceDelta;
 
     // ========
+    // Values
+    // ========
+
+    /**
+     * Max play time.
+     */
+    public maxJukeboxPlayTime: number = 0;
+
+    // ========
     // Booleans
     // ========
 
@@ -106,6 +115,7 @@ export class JukeboxSettings {
         settings.removeSequentialBranches =
             storedSettings.removeSequentialBranches;
         settings.alwaysFollowLastBranch = storedSettings.alwaysFollowLastBranch;
+        settings.maxJukeboxPlayTime = storedSettings.maxJukeboxPlayTime;
 
         return settings;
     }
@@ -122,6 +132,7 @@ export class JukeboxSettings {
             justLongBranches: this.justLongBranches,
             removeSequentialBranches: this.removeSequentialBranches,
             alwaysFollowLastBranch: this.alwaysFollowLastBranch,
+            maxJukeboxPlayTime: this.maxJukeboxPlayTime,
         };
     }
 }
@@ -138,4 +149,5 @@ export type JukeboxStoredSettings = Pick<
     | 'justLongBranches'
     | 'removeSequentialBranches'
     | 'alwaysFollowLastBranch'
+    | 'maxJukeboxPlayTime'
 >;

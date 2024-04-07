@@ -1,9 +1,12 @@
-import styles from '../../css/app.module.scss';
+import styles from './settings-modal.module.scss';
 import React, { useEffect, useState } from 'react';
 import type { JukeboxStoredSettings } from '../../models/jukebox-settings';
 import { JukeboxSettings } from '../../models/jukebox-settings';
 import { SettingsService } from '../../services/settings-service';
 import { MultiRangeSlider } from '../shared/multi-range-slider';
+import { TextComponent } from '@shared/components/ui/text/text';
+import { CheckBoxContainer } from '@shared/components/settings/checkbox-container/checkbox-container';
+import { SliderContainer } from '@shared/components/settings/slider-container/slider-container';
 
 export function SettingsModal(): JSX.Element {
     const [settings, setSettings] = useState<JukeboxStoredSettings>(
@@ -56,328 +59,173 @@ export function SettingsModal(): JSX.Element {
         setSettings(new JukeboxSettings().toPartial());
     }
 
-    const labelStyle: React.CSSProperties = {
-        marginBottom: '0.5rem',
-        marginTop: '0.5rem',
-        display: 'block',
-    };
-
-    const checkboxLabelStyle: React.CSSProperties = {
-        marginBottom: '0.5rem',
-        marginTop: '0.5rem',
-        display: 'inline-block',
-        marginRight: '0.5rem',
-    };
-
     return (
         <div className={styles['settings-modal']}>
-            <Spicetify.ReactComponent.TooltipWrapper
-                label="The maximum similarity distance allowed between two beats in order to create a branch."
-                showDelay={100}
-            >
-                <label
-                    htmlFor="jukebox.settings.maxBranchDistance"
-                    style={{
-                        ...labelStyle,
-                        opacity: settings.useDynamicBranchDistance ? 0.5 : 1,
-                    }}
-                >
-                    <b>Branch Similarity Threshold</b>:
-                    {settings.maxBranchDistance}
-                </label>
-            </Spicetify.ReactComponent.TooltipWrapper>
-
-            <div
-                className={styles['input-range-container']}
+            <SliderContainer
+                label={
+                    'Branch Similarity Threshold: ' + settings.maxBranchDistance
+                }
+                subLabel="The maximum similarity distance allowed between two beats in order to create a branch."
+                slider={
+                    <input
+                        id="jukebox.settings.maxBranchDistance"
+                        type={'range'}
+                        min={JukeboxSettings.rangeMinBranchDistance}
+                        max={JukeboxSettings.rangeMaxBranchDistance}
+                        value={settings.maxBranchDistance}
+                        step={1}
+                        onChange={(e) => {
+                            updateSettingsField(
+                                'maxBranchDistance',
+                                e.target.valueAsNumber,
+                            );
+                        }}
+                        disabled={settings.useDynamicBranchDistance}
+                    />
+                }
+                minLabel="Higher quality"
+                maxLabel="More branches"
                 style={{ opacity: settings.useDynamicBranchDistance ? 0.5 : 1 }}
-            >
-                <input
-                    id="jukebox.settings.maxBranchDistance"
-                    className={styles['w-100']}
-                    type={'range'}
-                    min={JukeboxSettings.rangeMinBranchDistance}
-                    max={JukeboxSettings.rangeMaxBranchDistance}
-                    value={settings.maxBranchDistance}
-                    step={1}
-                    onChange={(e) => {
-                        updateSettingsField(
-                            'maxBranchDistance',
-                            e.target.valueAsNumber,
-                        );
-                    }}
-                    disabled={settings.useDynamicBranchDistance}
-                />
+            />
 
-                <div className={styles['range-subtext']}>
-                    <span className={styles['small-text']}>Higher quality</span>
-                    <span className={styles['small-text']}>More branches</span>
-                </div>
-            </div>
+            <CheckBoxContainer
+                inputId="jukebox.settings.useDynamicBranchDistance"
+                label="Use dynamic branch distance"
+                subLabel="If checked, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
+                value={settings.useDynamicBranchDistance}
+                onChange={(newValue) => {
+                    updateSettingsField('useDynamicBranchDistance', newValue);
+                }}
+            />
 
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.useDynamicBranchDistance"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Use dynamic branch distance</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.useDynamicBranchDistance"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.useDynamicBranchDistance}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'useDynamicBranchDistance',
-                                !settings.useDynamicBranchDistance,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <Spicetify.ReactComponent.TooltipWrapper
-                label="The minimum and maximum chance for a branch to be selected each beat."
-                showDelay={100}
-            >
-                <label
-                    htmlFor="jukebox.settings.randomBranchChance"
-                    style={labelStyle}
-                >
-                    <b>Branch Probability Range</b>:
-                    {` ${Math.round(settings.minRandomBranchChance * 100)}% to 
+            <SliderContainer
+                label={`Branch Probability Range: ${Math.round(
+                    settings.minRandomBranchChance * 100,
+                )}% to 
                 ${Math.round(settings.maxRandomBranchChance * 100)}%`}
-                </label>
-            </Spicetify.ReactComponent.TooltipWrapper>
+                subLabel="The minimum and maximum chance for a branch to be selected each beat."
+                slider={
+                    <MultiRangeSlider
+                        min={0}
+                        max={100}
+                        minDefaultValue={settings.minRandomBranchChance * 100}
+                        maxDefaultValue={settings.maxRandomBranchChance * 100}
+                        onChange={({ min, max }) => {
+                            updateSettingsField(
+                                'minRandomBranchChance',
+                                min / 100,
+                            );
+                            updateSettingsField(
+                                'maxRandomBranchChance',
+                                max / 100,
+                            );
+                        }}
+                    />
+                }
+                minLabel="Low"
+                maxLabel="High"
+            />
 
-            <div className={styles['input-range-container']}>
-                <MultiRangeSlider
-                    min={0}
-                    max={100}
-                    minDefaultValue={settings.minRandomBranchChance * 100}
-                    maxDefaultValue={settings.maxRandomBranchChance * 100}
-                    onChange={({ min, max }) => {
-                        updateSettingsField('minRandomBranchChance', min / 100);
-                        updateSettingsField('maxRandomBranchChance', max / 100);
-                    }}
-                />
+            <SliderContainer
+                label={`Branch Probability Ramp-up Speed: ${Math.round(
+                    settings.randomBranchChanceDelta * 100,
+                )}%`}
+                subLabel="Controls how fast the chance to select a branch will increase."
+                slider={
+                    <input
+                        id="jukebox.settings.randomBranchChanceDelta"
+                        type={'range'}
+                        min={0}
+                        max={100}
+                        value={settings.randomBranchChanceDelta * 100}
+                        step={2}
+                        onChange={(e) => {
+                            updateSettingsField(
+                                'randomBranchChanceDelta',
+                                e.target.valueAsNumber / 100,
+                            );
+                        }}
+                    />
+                }
+                minLabel="Slow"
+                maxLabel="Fast"
+            />
 
-                <div className={styles['range-subtext']}>
-                    <span className={styles['small-text']}>Low</span>
-                    <span className={styles['small-text']}>High</span>
-                </div>
-            </div>
+            <CheckBoxContainer
+                inputId="jukebox.settings.addLastEdge"
+                label="Loop extension optimization"
+                subLabel="If checked, optimize by adding a good last edge."
+                value={settings.addLastEdge}
+                onChange={(newValue) => {
+                    updateSettingsField('addLastEdge', newValue);
+                }}
+            />
 
-            <Spicetify.ReactComponent.TooltipWrapper
-                label="Controls how fast the chance to select a branch will increase."
-                showDelay={100}
-            >
-                <label
-                    htmlFor="jukebox.settings.randomBranchChanceDelta"
-                    style={labelStyle}
-                >
-                    <b>Branch Probability Ramp-up Speed</b>:
-                    {Math.round(settings.randomBranchChanceDelta * 100)}%
-                </label>
-            </Spicetify.ReactComponent.TooltipWrapper>
+            <CheckBoxContainer
+                inputId="jukebox.settings.justBackwards"
+                label="Allow only backward branches"
+                subLabel="If checked, only add backward branches."
+                value={settings.justBackwards}
+                onChange={(newValue) => {
+                    updateSettingsField('justBackwards', newValue);
+                }}
+            />
 
-            <div className={styles['input-range-container']}>
+            <CheckBoxContainer
+                inputId="jukebox.settings.justLongBranches"
+                label="Allow only long branches"
+                subLabel="If checked, only add long branches."
+                value={settings.justLongBranches}
+                onChange={(newValue) => {
+                    updateSettingsField('justLongBranches', newValue);
+                }}
+            />
+
+            <CheckBoxContainer
+                inputId="jukebox.settings.removeSequentialBranches"
+                label="Remove sequential branches"
+                subLabel="If checked, remove consecutive branches of the same distance."
+                value={settings.removeSequentialBranches}
+                onChange={(newValue) => {
+                    updateSettingsField('removeSequentialBranches', newValue);
+                }}
+            />
+
+            <CheckBoxContainer
+                inputId="jukebox.settings.alwaysFollowLastBranch"
+                label="Always follow the last branch"
+                subLabel="If checked, always follow the last possible branch. Note that setting this to false will result in songs not looping indefinitely."
+                value={settings.alwaysFollowLastBranch}
+                onChange={(newValue) => {
+                    updateSettingsField('alwaysFollowLastBranch', newValue);
+                }}
+            />
+
+            <div>
+                <TextComponent elementType="h3" variant="violaBold">
+                    Maximum play time for a song, in seconds
+                </TextComponent>
+                <TextComponent elementType="p" semanticColor="textSubdued">
+                    After the listen time reaches this value, the jukebox will
+                    stop branching and continue to the next song where it will
+                    activate again. Set this to 0 for no limit.
+                </TextComponent>
                 <input
-                    id="jukebox.settings.randomBranchChanceDelta"
-                    className={styles['w-100']}
-                    type={'range'}
-                    min={0}
-                    max={100}
-                    value={settings.randomBranchChanceDelta * 100}
-                    step={2}
+                    type={'number'}
+                    className="x-settings-input"
+                    style={{ marginTop: '1rem' }}
+                    id="jukebox.settings.maxJukeboxPlayTime"
+                    value={settings.maxJukeboxPlayTime / 1000}
                     onChange={(e) => {
                         updateSettingsField(
-                            'randomBranchChanceDelta',
-                            e.target.valueAsNumber / 100,
+                            'maxJukeboxPlayTime',
+                            e.target.valueAsNumber * 1000,
                         );
                     }}
                 />
-
-                <div className={styles['range-subtext']}>
-                    <span className={styles['small-text']}>Slow</span>
-                    <span className={styles['small-text']}>Fast</span>
-                </div>
             </div>
 
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, optimize by adding a good last edge."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.addLastEdge"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Loop extension optimization</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.addLastEdge"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.addLastEdge}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'addLastEdge',
-                                !settings.addLastEdge,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, only add backward branches."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.justBackwards"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Allow only reverse branches</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.justBackwards"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.justBackwards}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'justBackwards',
-                                !settings.justBackwards,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, only add long branches."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.justLongBranches"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Allow only long branches</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.justLongBranches"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.justLongBranches}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'justLongBranches',
-                                !settings.justLongBranches,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, remove consecutive branches of the same distance."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.removeSequentialBranches"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Remove sequential branches</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.removeSequentialBranches"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.removeSequentialBranches}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'removeSequentialBranches',
-                                !settings.removeSequentialBranches,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <div className={styles['checkbox-container']}>
-                <Spicetify.ReactComponent.TooltipWrapper
-                    label="If checked, always follow the last possible branch. Note that setting this to false will result in songs not looping indefinitely."
-                    showDelay={100}
-                >
-                    <label
-                        htmlFor="jukebox.settings.alwaysFollowLastBranch"
-                        style={checkboxLabelStyle}
-                    >
-                        <b>Always follow the last branch</b>:
-                    </label>
-                </Spicetify.ReactComponent.TooltipWrapper>
-
-                <label className="x-toggle-wrapper">
-                    <input
-                        id="jukebox.settings.alwaysFollowLastBranch"
-                        className="x-toggle-input"
-                        type="checkbox"
-                        checked={settings.alwaysFollowLastBranch}
-                        onChange={(e) => {
-                            updateSettingsField(
-                                'alwaysFollowLastBranch',
-                                !settings.alwaysFollowLastBranch,
-                            );
-                        }}
-                    />
-                    <span className="x-toggle-indicatorWrapper">
-                        <span className="x-toggle-indicator"></span>
-                    </span>
-                </label>
-            </div>
-
-            <div
-                className={styles['flex-center']}
-                style={{ marginTop: '20px' }}
-            >
+            <div className={styles['reset-button-container']}>
                 <Spicetify.ReactComponent.ButtonPrimary
                     buttonSize={'sm'}
                     onClick={reset}

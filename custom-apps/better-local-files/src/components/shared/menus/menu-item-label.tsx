@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import { TextComponent } from '../text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export function MenuItemLabel(props: Readonly<PropsWithChildren>): JSX.Element {
     return (

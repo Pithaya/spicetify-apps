@@ -1,6 +1,6 @@
 import styles from '../../css/app.module.scss';
 import React from 'react';
-import { TextComponent } from './text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 import useFitText from 'use-fit-text';
 
 export type Props = {

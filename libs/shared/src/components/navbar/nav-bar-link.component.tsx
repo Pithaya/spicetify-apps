@@ -1,5 +1,5 @@
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { History, HistoryEntry } from '../platform/history';
+import type { History, HistoryEntry } from '../../platform/history';
 import React, { useEffect, useState } from 'react';
 import type { LocalStorageAPI } from '@shared/platform/local-storage';
 

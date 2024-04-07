@@ -6,7 +6,7 @@ import { PlayButton } from '../../shared/buttons/play-button';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
 import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '../../shared/text/text';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     artist: Artist;

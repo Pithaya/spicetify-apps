@@ -10,7 +10,6 @@ import React, {
 } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { RowMenu } from '../menus/row-menu';
-import { TextComponent } from '../text/text';
 import { SpotifyIcon } from '../icons/spotify-icon';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
@@ -19,6 +18,7 @@ import type {
     LibraryAPI,
     LibraryAPIOperationCompleteEvent,
 } from '@shared/platform/library';
+import { TextComponent } from '@shared/components/ui/text/text';
 
 export type Props = {
     track: Track;
