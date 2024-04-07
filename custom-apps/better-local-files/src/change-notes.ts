@@ -1,1 +1,1 @@
-export const CHANGE_NOTES = ['Fix error "Cannot read properties of undefined"'];
+export const CHANGE_NOTES = ['Fix the app crashing on load'];
