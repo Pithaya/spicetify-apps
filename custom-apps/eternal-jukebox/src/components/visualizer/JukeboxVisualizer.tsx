@@ -1,7 +1,7 @@
-import styles from '../../css/app.module.scss';
+import styles from './JukeboxVisualizer.module.scss';
 import React, { useEffect } from 'react';
-import { VisualizerSlice } from './visualizer-slice.component';
-import { VisualizerEdge } from './visualizer-edge.component';
+import { VisualizerSlice } from './VisualizerSlice';
+import { VisualizerEdge } from './VisualizerEdge';
 import type { GraphState } from '../../models/graph/graph-state';
 import {
     halfSize,

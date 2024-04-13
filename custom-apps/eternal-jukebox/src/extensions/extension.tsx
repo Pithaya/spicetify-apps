@@ -4,7 +4,7 @@ import { renderElement } from '@shared/utils/react-utils';
 import { addUpdateChecker } from '@shared/utils/version-utils';
 import { Jukebox } from '../models/jukebox';
 import { version } from '../../package.json';
-import { PlaybarButton } from '../components/playbar-button.component';
+import { PlaybarButton } from '../components/PlaybarButton';
 import React from 'react';
 
 // TODO: Add i18n

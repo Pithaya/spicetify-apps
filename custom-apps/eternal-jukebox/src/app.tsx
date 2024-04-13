@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from 'css/app.module.scss';
-import { HomeComponent } from './components/home.component';
+import { Home } from './components/Home';
 import type { JukeboxSongState } from './models/jukebox-song-state';
-import { SettingsButton } from './components/settings/settings-button';
+import { SettingsButton } from './components/settings/SettingsButton';
 import { version } from '../package.json';
 import whatsNew from 'spcr-whats-new';
 import { CHANGE_NOTES } from './change-notes';
@@ -37,7 +37,7 @@ function App(): JSX.Element {
         if (songState !== null) {
             return (
                 <div className={styles['full-size-container']}>
-                    <HomeComponent />
+                    <Home />
                 </div>
             );
         } else {

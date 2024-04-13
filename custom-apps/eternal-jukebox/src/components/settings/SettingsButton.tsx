@@ -1,7 +1,7 @@
-import styles from './settings-button.module.scss';
+import styles from './SettingsButton.module.scss';
 import React, { type CSSProperties } from 'react';
 import { Settings } from 'lucide-react';
-import { SettingsModal } from './settings-modal.component';
+import { SettingsModal } from './SettingsModal';
 
 export function SettingsButton(): JSX.Element {
     const buttonSize = 50;

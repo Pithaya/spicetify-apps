@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styles from '../../css/app.module.scss';
 import type { BeatDrawData } from '../../models/visualization/beat-draw-data';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { PlayerAPI } from '@shared/platform/player';
@@ -15,7 +14,6 @@ export function VisualizerSlice(props: Readonly<Props>): JSX.Element {
 
     return (
         <path
-            className={styles['beat-path']}
             fill={
                 props.drawData.beat.isPlaying || isHovered
                     ? props.drawData.activeColor

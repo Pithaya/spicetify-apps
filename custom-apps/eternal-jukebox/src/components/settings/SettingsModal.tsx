@@ -1,12 +1,12 @@
-import styles from './settings-modal.module.scss';
+import styles from './SettingsModal.module.scss';
 import React, { useEffect, useState } from 'react';
 import type { JukeboxStoredSettings } from '../../models/jukebox-settings';
 import { JukeboxSettings } from '../../models/jukebox-settings';
 import { SettingsService } from '../../services/settings-service';
-import { MultiRangeSlider } from '../shared/multi-range-slider';
-import { TextComponent } from '@shared/components/ui/text/text';
-import { CheckBoxContainer } from '@shared/components/settings/checkbox-container/checkbox-container';
-import { SliderContainer } from '@shared/components/settings/slider-container/slider-container';
+import { MultiRangeSlider } from '@shared/components/inputs/MultiRangeSlider/MultiRangeSlider';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { CheckboxContainer } from '@shared/components/settings/CheckboxContainer/CheckboxContainer';
+import { SliderContainer } from '@shared/components/settings/SliderContainer/SliderContainer';
 
 export function SettingsModal(): JSX.Element {
     const [settings, setSettings] = useState<JukeboxStoredSettings>(
@@ -88,7 +88,7 @@ export function SettingsModal(): JSX.Element {
                 style={{ opacity: settings.useDynamicBranchDistance ? 0.5 : 1 }}
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.useDynamicBranchDistance"
                 label="Use dynamic branch distance"
                 subLabel="If checked, will calculate the branch similarity threshold automatically to try to get as many quality branch as possible."
@@ -151,7 +151,7 @@ export function SettingsModal(): JSX.Element {
                 maxLabel="Fast"
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.addLastEdge"
                 label="Loop extension optimization"
                 subLabel="If checked, optimize by adding a good last edge."
@@ -161,7 +161,7 @@ export function SettingsModal(): JSX.Element {
                 }}
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.justBackwards"
                 label="Allow only backward branches"
                 subLabel="If checked, only add backward branches."
@@ -171,7 +171,7 @@ export function SettingsModal(): JSX.Element {
                 }}
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.justLongBranches"
                 label="Allow only long branches"
                 subLabel="If checked, only add long branches."
@@ -181,7 +181,7 @@ export function SettingsModal(): JSX.Element {
                 }}
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.removeSequentialBranches"
                 label="Remove sequential branches"
                 subLabel="If checked, remove consecutive branches of the same distance."
@@ -191,7 +191,7 @@ export function SettingsModal(): JSX.Element {
                 }}
             />
 
-            <CheckBoxContainer
+            <CheckboxContainer
                 inputId="jukebox.settings.alwaysFollowLastBranch"
                 label="Always follow the last branch"
                 subLabel="If checked, always follow the last possible branch. Note that setting this to false will result in songs not looping indefinitely."

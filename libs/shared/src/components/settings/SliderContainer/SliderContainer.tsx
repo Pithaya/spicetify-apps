@@ -1,5 +1,5 @@
-import { TextComponent } from '@shared/components/ui/text/text';
-import styles from './slider-container.module.scss';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import styles from './SliderContainer.module.scss';
 import React from 'react';
 
 export type Props = {

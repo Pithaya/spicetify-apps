@@ -1,9 +1,9 @@
-import styles from '../css/app.module.scss';
+import styles from './Home.module.scss';
 import React, { useEffect, useState } from 'react';
-import { JukeboxVisualizer } from './visualizer/jukebox-visualizer.component';
+import { JukeboxVisualizer } from './visualizer/JukeboxVisualizer';
 import { millisToMinutesAndSeconds } from '../utils/time-utils';
 import { type GraphState } from '../models/graph/graph-state';
-import { SettingsButton } from './settings/settings-button';
+import { SettingsButton } from './settings/SettingsButton';
 
 type TrackState = {
     trackName: string;
@@ -16,7 +16,7 @@ type StatsState = {
     listenTime: string;
 };
 
-export function HomeComponent(): JSX.Element {
+export function Home(): JSX.Element {
     const [trackState, setTrackState] = useState<TrackState>({
         trackName: '',
         artistName: '',

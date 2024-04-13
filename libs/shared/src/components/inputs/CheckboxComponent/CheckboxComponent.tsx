@@ -6,7 +6,7 @@ type Props = {
     onChange: (value: boolean) => void;
 };
 
-export function CheckBoxComponent(props: Readonly<Props>): JSX.Element {
+export function CheckboxComponent(props: Readonly<Props>): JSX.Element {
     return (
         <label className="x-toggle-wrapper">
             <input

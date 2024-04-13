@@ -1,4 +1,4 @@
-import styles from './multi-range-slider.module.scss';
+import styles from './MultiRangeSlider.module.scss';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 

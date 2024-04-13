@@ -1,0 +1,50 @@
+.container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.jukebox-header {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
+    width: 100%;
+
+    .side {
+        flex-grow: 1;
+
+        display: flex;
+        align-items: start;
+        justify-content: end;
+
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .center {
+        * {
+            text-align: center;
+        }
+    }
+}
+
+.visualizer-container {
+    flex-grow: 1;
+}
+
+.stats {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    span {
+        flex-grow: 1;
+        flex-basis: 0;
+        text-align: center;
+    }
+}

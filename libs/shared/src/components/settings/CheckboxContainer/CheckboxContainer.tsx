@@ -1,6 +1,6 @@
-import { TextComponent } from '@shared/components/ui/text/text';
-import { CheckBoxComponent } from '@shared/components/inputs/checkbox/checkbox';
-import styles from './checkbox-container.module.scss';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { CheckboxComponent } from '@shared/components/inputs/CheckboxComponent/CheckboxComponent';
+import styles from './CheckboxContainer.module.scss';
 import React from 'react';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
  * @param props Props for the component.
  * @returns The component.
  */
-export function CheckBoxContainer(props: Readonly<Props>): JSX.Element {
+export function CheckboxContainer(props: Readonly<Props>): JSX.Element {
     return (
         <div className={styles['checkbox-container']}>
             <div>
@@ -28,7 +28,7 @@ export function CheckBoxContainer(props: Readonly<Props>): JSX.Element {
                 </TextComponent>
             </div>
 
-            <CheckBoxComponent
+            <CheckboxComponent
                 inputId={props.inputId}
                 value={props.value}
                 onChange={props.onChange}
