@@ -26,7 +26,9 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
         <>
             <img
                 loading="eager"
-                src={props.track.localTrack.album.images[0].url}
+                src={
+                    props.track.localTrack.album.images[0]?.url ?? imageFallback
+                }
                 className="main-image-image main-trackList-rowImage main-image-loaded"
                 width="40"
                 height="40"
