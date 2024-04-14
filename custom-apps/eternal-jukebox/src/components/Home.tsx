@@ -72,20 +72,17 @@ export function Home(): JSX.Element {
 
     return (
         <div className={styles.container}>
-            <div className={styles['jukebox-header']}>
-                <span className={styles['side']}></span>
-                <div className={styles['center']}>
-                    <h1>{trackState.trackName}</h1>
-                    <p>by</p>
-                    <h2>{trackState.artistName}</h2>
-                </div>
-
-                <div className={styles['side']}>
-                    <SettingsButton />
-                </div>
+            <div className={styles['title']}>
+                <h1>{trackState.trackName}</h1>
+                <p>by</p>
+                <h2>{trackState.artistName}</h2>
             </div>
 
-            <div className={styles['visualizer-container']}>
+            <div className={styles['button']}>
+                <SettingsButton />
+            </div>
+
+            <div className={styles['content']}>
                 <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
             </div>
 
