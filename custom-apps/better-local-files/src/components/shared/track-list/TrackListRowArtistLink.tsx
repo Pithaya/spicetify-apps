@@ -1,5 +1,5 @@
 import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
+import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';

@@ -1806,6 +1806,10 @@ declare namespace Spicetify {
 		 * @see Spicetify.ReactComponent.ButtonProps
 		 */
 		const ButtonTertiary: any;
+		 /**
+         * Dropdown menu
+         */
+        const Dropdown: any;
 	}
 
 	/**

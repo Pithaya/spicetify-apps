@@ -1,7 +1,7 @@
 import styles from '../../../css/app.module.scss';
 import React, { useMemo, useState } from 'react';
 import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
-import { playContext, playTrack } from '../../../helpers/player-helpers';
+import { playContext, playTrack } from '../../../utils/player.utils';
 import type {
     DisplayType,
     SelectedSortOption,
@@ -15,9 +15,9 @@ import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { PlayButton } from '../../shared/buttons/PlayButton';
 import { TrackListRowAlbumLink } from '../../shared/track-list/TrackListRowAlbumLink';
 import { TrackListRowImageTitle } from '../../shared/track-list/TrackListRowImageTitle';
-import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import { TrackListRowArtistLink } from '../../shared/track-list/TrackListRowArtistLink';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 

@@ -2,7 +2,7 @@ import {
     ARTIST_ROUTE,
     SPOTIFY_MENU_CLASSES,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
+import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import React from 'react';
 
 export type Props = {

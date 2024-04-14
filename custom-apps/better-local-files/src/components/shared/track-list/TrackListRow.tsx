@@ -1,4 +1,4 @@
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, {
     Children,

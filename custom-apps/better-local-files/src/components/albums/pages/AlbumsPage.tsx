@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { AlbumCard } from '../cards/AlbumCard';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
-import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
+import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import type {
     SelectedSortOption,
     SortOption,
@@ -12,7 +12,7 @@ import type {
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
-import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
+import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 
 export function AlbumsPage(): JSX.Element {
     const [search, setSearch] = useState('');

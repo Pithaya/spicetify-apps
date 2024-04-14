@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { navigateTo } from '../../../helpers/history-helper';
+import { navigateTo } from '../../../utils/history.utils';
 import { PlayButton } from '../../shared/buttons/PlayButton';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
@@ -26,24 +26,27 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
     });
 
     const placeholder = <div style={{ height: '250px' }}></div>;
-    const imageFallback = `
-    <div class="main-image-image main-cardImage-image main-image-loading main-image-loaded ${styles['center-container']}">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80"
-            height="80"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+    const imageFallback = (
+        <div
+            className={`main-image-image main-cardImage-image main-image-loading main-image-loaded ${styles['center-container']}`}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="80"
+                height="80"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             >
                 <path d="M9 18V5l12-2v13"></path>
                 <circle cx="6" cy="18" r="3"></circle>
                 <circle cx="18" cy="16" r="3"></circle>
-        </svg>
-    </div>`;
+            </svg>
+        </div>
+    );
 
     const card = (
         <div
@@ -61,17 +64,24 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
             <div className="main-card-draggable">
                 <div className="main-card-imageContainer main-card-imageContainerOld">
                     <div className="main-cardImage-imageWrapper">
-                        <img
-                            aria-hidden="false"
-                            draggable="false"
-                            loading="lazy"
-                            src={props.album.image}
-                            alt="album image"
-                            className="main-image-image main-cardImage-image main-image-loading main-image-loaded"
-                            onError={(e) =>
-                                (e.currentTarget.outerHTML = imageFallback)
-                            }
-                        />
+                        {props.album.image !== '' ? (
+                            <img
+                                aria-hidden="false"
+                                draggable="false"
+                                loading="lazy"
+                                src={props.album.image}
+                                alt="album image"
+                                className="main-image-image main-cardImage-image main-image-loading main-image-loaded"
+                                onError={(e) =>
+                                    (e.currentTarget.outerHTML =
+                                        Spicetify.ReactDOMServer.renderToString(
+                                            imageFallback,
+                                        ))
+                                }
+                            />
+                        ) : (
+                            imageFallback
+                        )}
                     </div>
                     <div className="main-card-PlayButtonContainer">
                         <div className="main-playButton-PlayButton">

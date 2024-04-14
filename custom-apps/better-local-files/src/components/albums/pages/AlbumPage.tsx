@@ -1,11 +1,11 @@
 import React from 'react';
-import { navigateTo } from '../../../helpers/history-helper';
-import { AlbumTrackList } from '../track-list/album-track-list';
+import { navigateTo } from '../../../utils/history.utils';
+import { AlbumTrackList } from '../track-list/AlbumTrackList';
 import { Header, HeaderImage } from '../../shared/Header';
 import {
     getTranslatedDuration,
     getTranslation,
-} from 'custom-apps/better-local-files/src/helpers/translations-helper';
+} from 'custom-apps/better-local-files/src/utils/translations.utils';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {

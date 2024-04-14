@@ -9,7 +9,7 @@ import {
     type PlayStatus,
     usePlayStatus,
 } from 'custom-apps/better-local-files/src/hooks/use-play-status';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 
 export type SubTracksList = {

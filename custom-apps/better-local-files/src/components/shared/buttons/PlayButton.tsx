@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTranslation } from '../../../helpers/translations-helper';
+import { getTranslation } from '../../../utils/translations.utils';
 import { SpotifyIcon } from '../icons/SpotifyIcon';
 
 export type Props = {

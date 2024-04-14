@@ -1,8 +1,8 @@
 import React from 'react';
-import { playContext, playTrack } from '../../../helpers/player-helpers';
+import { playContext, playTrack } from '../../../utils/player.utils';
 import { PlayButton } from '../../shared/buttons/PlayButton';
 import { MoreButton } from '../../shared/buttons/MoreButton';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
 import { TrackListRowImageTitle } from '../../shared/track-list/TrackListRowImageTitle';

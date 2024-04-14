@@ -1,4 +1,4 @@
-import { getTranslation } from '../helpers/translations-helper';
+import { getTranslation } from '../utils/translations.utils';
 import type { TopBarItem } from '../models/top-bar-item';
 
 export const CUSTOM_APP_PATH = '/better-local-files';

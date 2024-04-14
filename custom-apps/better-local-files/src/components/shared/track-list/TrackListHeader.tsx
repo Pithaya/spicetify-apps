@@ -4,7 +4,7 @@ import type { SelectedSortOption } from 'custom-apps/better-local-files/src/mode
 import { CaretUp } from '../icons/CaretUp';
 import { CaretDown } from '../icons/CaretDown';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
@@ -14,6 +14,8 @@ export type Props = {
 };
 
 // TODO: responsive
+// < 800px: remove added at
+// < 540px: remove album
 
 export function TrackListHeader(props: Readonly<Props>): JSX.Element {
     function getCaret(): JSX.Element {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { SubmenuItem } from './SubmenuItem';
-import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
+import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
