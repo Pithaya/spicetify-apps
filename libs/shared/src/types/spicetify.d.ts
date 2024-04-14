@@ -2207,17 +2207,29 @@ declare namespace Spicetify {
 		 * @return Function to handle drag event. Should be passed to `onDragStart` prop of the element. All parameters passed onto the hook will be passed onto the handler unless declared otherwise.
 		 *
 		 */
-		function DragHandler(
-			params: {
-				itemUris?: string[], 
-				itemMimeTypes?: (unknown | undefined)[], 
-				dragLabelText?: string, 
-				contextUri?: string, 
-				sectionId?: number, 
-				dropOriginUri?: string, 
-				itemIds?: unknown
-			} 
-		): (event: React.DragEvent, uris?: string[], label?: string, contextUri?: string, sectionIndex?: number) => void;
+		function DragHandler(params: {
+            itemUris?: string[];
+            itemMimeTypes?: (unknown | undefined)[];
+            dragLabelText?: string;
+            contextUri?: string;
+            sectionId?: number;
+            dropOriginUri?: string;
+            itemIds?: unknown;
+        }): {
+            draggable: boolean;
+            onDragStart: (
+                event: React.DragEvent,
+                params?: {
+                    itemUris?: string[];
+                    itemMimeTypes?: (unknown | undefined)[];
+                    dragLabelText?: string;
+                    contextUri?: string;
+                    sectionId?: number;
+                    dropOriginUri?: string;
+                    itemIds?: unknown;
+                },
+            ) => void;
+        };
 
 		/**
 		 * React Hook to use panel state

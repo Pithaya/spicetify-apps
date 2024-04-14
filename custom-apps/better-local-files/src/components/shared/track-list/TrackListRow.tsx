@@ -28,13 +28,21 @@ export type Props = {
     playing: boolean;
     onClick: MouseEventHandler<HTMLDivElement>;
     onDoubleClick: () => void;
-    dragHandler: (
-        event: React.DragEvent,
-        uris?: string[],
-        label?: string,
-        contextUri?: string,
-        sectionIndex?: number,
-    ) => void;
+    dragHandler: {
+        draggable: boolean;
+        onDragStart: (
+            event: React.DragEvent,
+            params?: {
+                itemUris?: string[];
+                itemMimeTypes?: (unknown | undefined)[];
+                dragLabelText?: string;
+                contextUri?: string;
+                sectionId?: number;
+                dropOriginUri?: string;
+                itemIds?: unknown;
+            },
+        ) => void;
+    };
     displayType: DisplayType;
 };
 
@@ -174,7 +182,11 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                         onClick={props.onClick}
                         onDoubleClick={props.onDoubleClick}
                         draggable="true"
-                        onDragStart={props.dragHandler}
+                        onDragStart={(e) => {
+                            if (props.dragHandler.draggable) {
+                                props.dragHandler.onDragStart(e);
+                            }
+                        }}
                     >
                         <div
                             className={`main-trackList-trackListRow main-trackList-trackListRowGrid ${

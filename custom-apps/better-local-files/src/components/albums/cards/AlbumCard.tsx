@@ -52,7 +52,11 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
             onClick={() => {
                 navigateTo(ALBUM_ROUTE, props.album.uri);
             }}
-            onDragStart={dragHandler}
+            onDragStart={(e) => {
+                if (dragHandler.draggable) {
+                    dragHandler.onDragStart(e);
+                }
+            }}
         >
             <div className="main-card-draggable">
                 <div className="main-card-imageContainer main-card-imageContainerOld">
