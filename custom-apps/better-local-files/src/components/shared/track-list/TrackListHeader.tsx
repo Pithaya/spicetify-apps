@@ -1,11 +1,11 @@
 import React from 'react';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import type { SelectedSortOption } from 'custom-apps/better-local-files/src/models/sort-option';
-import { CaretUp } from '../icons/caret-up';
-import { CaretDown } from '../icons/caret-down';
+import { CaretUp } from '../icons/CaretUp';
+import { CaretDown } from '../icons/CaretDown';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     headers: TrackListHeaderOption[];

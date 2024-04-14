@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigateTo } from '../../../helpers/history-helper';
-import { ArtistTrackList } from '../track-list/artist-track-list';
-import { Header, HeaderImage } from '../../shared/header';
+import { ArtistTrackList } from '../track-list/ArtistTrackList';
+import { Header, HeaderImage } from '../../shared/Header';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';

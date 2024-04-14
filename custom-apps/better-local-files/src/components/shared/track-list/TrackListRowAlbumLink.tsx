@@ -2,7 +2,7 @@ import { ALBUM_ROUTE } from 'custom-apps/better-local-files/src/constants/consta
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 type Props = {
     track: Track;

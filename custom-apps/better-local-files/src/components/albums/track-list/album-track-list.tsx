@@ -1,15 +1,15 @@
 import React from 'react';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
-import { PlayButton } from '../../shared/buttons/play-button';
-import type { SubTracksList } from '../../shared/track-list/track-list-grid';
-import { TrackListGrid } from '../../shared/track-list/track-list-grid';
-import { TrackListRowTitle } from '../../shared/track-list/track-list-row-title';
+import { PlayButton } from '../../shared/buttons/PlayButton';
+import type { SubTracksList } from '../../shared/track-list/TrackListGrid';
+import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
+import { TrackListRowTitle } from '../../shared/track-list/TrackListRowTitle';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import { DiscDivider } from './disc-divider';
-import { MoreButton } from '../../shared/buttons/more-button';
+import { MoreButton } from '../../shared/buttons/MoreButton';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
+import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
 
 export type Props = {
     albumName: string;

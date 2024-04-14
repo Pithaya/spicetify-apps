@@ -1,15 +1,15 @@
 import React from 'react';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
-import { PlayButton } from '../../shared/buttons/play-button';
-import { MoreButton } from '../../shared/buttons/more-button';
+import { PlayButton } from '../../shared/buttons/PlayButton';
+import { MoreButton } from '../../shared/buttons/MoreButton';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import { TrackListGrid } from '../../shared/track-list/track-list-grid';
-import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
-import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
+import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
+import { TrackListRowImageTitle } from '../../shared/track-list/TrackListRowImageTitle';
+import { TrackListRowAlbumLink } from '../../shared/track-list/TrackListRowAlbumLink';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
+import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
 
 export type Props = {
     artist: Artist;

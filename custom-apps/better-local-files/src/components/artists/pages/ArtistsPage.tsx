@@ -10,9 +10,9 @@ import type {
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
-import { SearchInput } from '../../shared/filters/search-input';
-import { SortMenu } from '../../shared/filters/sort-menu';
-import { ArtistCard } from '../cards/artist-card';
+import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
+import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
+import { ArtistCard } from '../cards/ArtistCard';
 
 export function ArtistsPage(): JSX.Element {
     const [search, setSearch] = useState('');
@@ -86,7 +86,9 @@ export function ArtistsPage(): JSX.Element {
 
     return (
         <div className="contentSpacing">
-            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
+            <div
+                className={`${styles['details-page-header']} ${styles['pad-top']}`}
+            >
                 <h1>{getTranslation(['artists'])}</h1>
 
                 <div className={styles['controls']}>
@@ -108,7 +110,7 @@ export function ArtistsPage(): JSX.Element {
             </div>
 
             <div
-                className={`${styles['album-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
+                className={`${styles['card-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
                 {orderedArtists.map((a) => (
                     <ArtistCard

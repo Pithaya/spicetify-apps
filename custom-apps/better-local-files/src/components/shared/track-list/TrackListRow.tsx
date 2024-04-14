@@ -9,8 +9,8 @@ import React, {
     useEffect,
 } from 'react';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { RowMenu } from '../menus/row-menu';
-import { SpotifyIcon } from '../icons/spotify-icon';
+import { RowMenu } from '../menus/RowMenu';
+import { SpotifyIcon } from '../icons/SpotifyIcon';
 import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
@@ -18,7 +18,7 @@ import type {
     LibraryAPI,
     LibraryAPIOperationCompleteEvent,
 } from '@shared/platform/library';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     track: Track;

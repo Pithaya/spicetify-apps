@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigateTo } from '../../../helpers/history-helper';
 import { AlbumTrackList } from '../track-list/album-track-list';
-import { Header, HeaderImage } from '../../shared/header';
+import { Header, HeaderImage } from '../../shared/Header';
 import {
     getTranslatedDuration,
     getTranslation,
@@ -12,7 +12,7 @@ import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import type { History } from '@shared/platform/history';
 
 type Props = {

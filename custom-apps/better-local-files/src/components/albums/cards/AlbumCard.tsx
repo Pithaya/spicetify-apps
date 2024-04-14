@@ -2,14 +2,14 @@ import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
 import { navigateTo } from '../../../helpers/history-helper';
-import { PlayButton } from '../../shared/buttons/play-button';
+import { PlayButton } from '../../shared/buttons/PlayButton';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { MultiTrackMenu } from '../../shared/menus/multi-track-menu';
+import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
 import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     album: Album;

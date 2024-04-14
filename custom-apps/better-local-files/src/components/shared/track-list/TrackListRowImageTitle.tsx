@@ -1,6 +1,6 @@
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
-import { TrackListRowTitle } from './track-list-row-title';
+import { TrackListRowTitle } from './TrackListRowTitle';
 
 type Props = {
     track: Track;

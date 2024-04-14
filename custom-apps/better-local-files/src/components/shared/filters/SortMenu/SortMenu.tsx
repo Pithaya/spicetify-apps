@@ -9,9 +9,9 @@ import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constan
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { SpotifyIcon } from '../icons/spotify-icon';
-import { MenuItemHeading } from '../menus/menu-item-heading';
-import { MenuItemLabel } from '../menus/menu-item-label';
+import { SpotifyIcon } from '../../icons/SpotifyIcon';
+import { MenuItemHeading } from '../../menus/MenuItemHeading';
+import { MenuItemLabel } from '../../menus/MenuItemLabel';
 
 export type Props = {
     sortOptions: SortOption[];

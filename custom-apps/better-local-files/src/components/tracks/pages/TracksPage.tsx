@@ -1,10 +1,10 @@
 import React from 'react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { Folder } from 'lucide-react';
-import { Header } from '../../shared/header';
-import { TrackList } from '../track-list/track-list';
+import { Header } from '../../shared/Header';
+import { TrackList } from '../track-list/TrackList';
 import styles from '../../../css/app.module.scss';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export function TracksPage(): JSX.Element {
     const tracks = Array.from(window.localTracksService.getTracks().values());

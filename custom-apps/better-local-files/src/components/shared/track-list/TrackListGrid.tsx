@@ -1,8 +1,8 @@
-import styles from '../../../css/app.module.scss';
+import styles from './TrackListGrid.module.scss';
 import React, { useMemo, useState } from 'react';
-import { TrackListRow } from './track-list-row';
-import { TrackListHeader } from './track-list-header';
-import type { Props as TrackListHeaderProps } from './track-list-header';
+import { TrackListRow } from './TrackListRow';
+import { TrackListHeader } from './TrackListHeader';
+import type { Props as TrackListHeaderProps } from './TrackListHeader';
 import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import {

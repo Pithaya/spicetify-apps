@@ -1,5 +1,5 @@
 import React from 'react';
-import { SubmenuItem } from './submenu-item';
+import { SubmenuItem } from './SubmenuItem';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { navigateTo } from 'custom-apps/better-local-files/src/helpers/history-helper';
 import {
@@ -7,11 +7,11 @@ import {
     ARTIST_ROUTE,
     SPOTIFY_MENU_CLASSES,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { ArtistSelectionMenu } from './artist-selection-menu';
+import { ArtistSelectionMenu } from './ArtistSelectionMenu';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { PlaylistSelectionMenu } from './playlist-selection-menu';
+import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SpotifyIcon } from '../icons/spotify-icon';
+import { SpotifyIcon } from '../icons/SpotifyIcon';
 import { addToQueuePath } from '../icons/icons';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
 import type { LibraryAPI } from '@shared/platform/library';

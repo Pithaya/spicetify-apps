@@ -1,6 +1,6 @@
 import styles from '../../../css/app.module.scss';
 import React, { useMemo, useState } from 'react';
-import { TrackListGrid } from '../../shared/track-list/track-list-grid';
+import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
 import { playContext, playTrack } from '../../../helpers/player-helpers';
 import type {
     DisplayType,
@@ -10,16 +10,16 @@ import type {
 } from 'custom-apps/better-local-files/src/models/sort-option';
 import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
-import { SortMenu } from '../../shared/filters/sort-menu';
-import { SearchInput } from '../../shared/filters/search-input';
-import { PlayButton } from '../../shared/buttons/play-button';
-import { TrackListRowAlbumLink } from '../../shared/track-list/track-list-row-album-link';
-import { TrackListRowImageTitle } from '../../shared/track-list/track-list-row-image-title';
+import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
+import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
+import { PlayButton } from '../../shared/buttons/PlayButton';
+import { TrackListRowAlbumLink } from '../../shared/track-list/TrackListRowAlbumLink';
+import { TrackListRowImageTitle } from '../../shared/track-list/TrackListRowImageTitle';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
-import { TrackListRowArtistLink } from '../../shared/track-list/track-list-row-artist-link';
-import { TextComponent } from '@shared/components/ui/text/text';
+import { TrackListRowArtistLink } from '../../shared/track-list/TrackListRowArtistLink';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     tracks: Track[];

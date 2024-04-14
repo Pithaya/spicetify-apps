@@ -4,13 +4,13 @@ import ReactDOM from 'react-dom';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
-import { AlbumPage } from './components/albums/pages/album.page';
-import { AlbumsPage } from './components/albums/pages/albums.page';
-import { ArtistPage } from './components/artists/pages/artist.page';
-import { ArtistsPage } from './components/artists/pages/artists.page';
-import { LoadingIcon } from './components/shared/icons/loading';
-import { TopBarContent } from './components/shared/top-bar/top-bar-content.component';
-import { TracksPage } from './components/tracks/pages/tracks.page';
+import { AlbumPage } from './components/albums/pages/AlbumPage';
+import { AlbumsPage } from './components/albums/pages/AlbumsPage';
+import { ArtistPage } from './components/artists/pages/ArtistPage';
+import { ArtistsPage } from './components/artists/pages/ArtistsPage';
+import { LoadingIcon } from './components/shared/icons/Loading';
+import { TopBarContent } from './components/shared/top-bar/TopBarContent';
+import { TracksPage } from './components/tracks/pages/TracksPage';
 import {
     ALBUM_ROUTE,
     ALBUMS_ROUTE,

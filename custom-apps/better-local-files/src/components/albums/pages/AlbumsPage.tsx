@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
-import { AlbumCard } from '../cards/album-card';
-import { SearchInput } from '../../shared/filters/search-input';
+import { AlbumCard } from '../cards/AlbumCard';
+import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { playContext } from 'custom-apps/better-local-files/src/helpers/player-helpers';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
@@ -10,7 +10,7 @@ import type {
     SortOption,
     SortOrder,
 } from 'custom-apps/better-local-files/src/models/sort-option';
-import { SortMenu } from '../../shared/filters/sort-menu';
+import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { sort } from 'custom-apps/better-local-files/src/helpers/sort-helper';
 
@@ -83,7 +83,9 @@ export function AlbumsPage(): JSX.Element {
 
     return (
         <div className="contentSpacing">
-            <div className={`${styles['album-header']} ${styles['pad-top']}`}>
+            <div
+                className={`${styles['details-page-header']} ${styles['pad-top']}`}
+            >
                 <h1>{getTranslation(['albums'])}</h1>
 
                 <div className={styles['controls']}>
@@ -105,7 +107,7 @@ export function AlbumsPage(): JSX.Element {
             </div>
 
             <div
-                className={`${styles['album-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
+                className={`${styles['card-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
                 {orderedAlbums.map((a) => (
                     <AlbumCard

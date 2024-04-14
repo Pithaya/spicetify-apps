@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { TopBarItem } from '../../../models/top-bar-item';
-import { TabBar } from './tab-bar.component';
+import { TabBar } from './TabBar';
 
 export type Props = {
     items: TopBarItem[];

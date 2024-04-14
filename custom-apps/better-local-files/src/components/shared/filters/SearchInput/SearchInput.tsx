@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from '../../../css/app.module.scss';
+import styles from './SearchInput.module.scss';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Search } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/helpers/translations-helper';
 import { useObservableRef, useSubscription } from 'observable-hooks';
-import { SpotifyIcon } from '../icons/spotify-icon';
+import { SpotifyIcon } from '../../icons/SpotifyIcon';
 
 export type Props = {
     search: string;
