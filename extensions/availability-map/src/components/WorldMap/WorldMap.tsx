@@ -4,9 +4,10 @@ import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { Feature, FeatureCollection, GeoJsonProperties } from 'geojson';
 import { topology } from './topology';
+import { getName } from 'i18n-iso-countries';
 
 export type Props = {
-    allMarkets: string[];
+    locale: string;
     trackMarkets: string[];
 };
 
@@ -47,14 +48,19 @@ export function WorldMap(props: Readonly<Props>): JSX.Element {
         <svg preserveAspectRatio="xMidYMid" viewBox="0 0 700 450">
             <g className="countries">
                 {geographies.map((d, i) => (
-                    <path
+                    <Spicetify.ReactComponent.TooltipWrapper
+                        label={getName(d.properties?.code, props.locale)}
+                        showDelay={100}
                         key={d.properties?.name + '-' + d.properties?.code}
-                        d={geoPath().projection(projection)(d) ?? undefined}
-                        className={`${d.properties?.name}-${d.properties
-                            ?.code} ${styles[getClass(d.properties)]}`}
-                        fill="transparent"
-                        strokeWidth={0.5}
-                    />
+                    >
+                        <path
+                            d={geoPath().projection(projection)(d) ?? undefined}
+                            className={`${d.properties?.name}-${d.properties
+                                ?.code} ${styles[getClass(d.properties)]}`}
+                            fill="transparent"
+                            strokeWidth={0.5}
+                        />
+                    </Spicetify.ReactComponent.TooltipWrapper>
                 ))}
             </g>
         </svg>
