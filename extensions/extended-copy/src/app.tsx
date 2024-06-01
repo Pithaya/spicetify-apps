@@ -1,3 +1,4 @@
+import React from 'react';
 import type { AlbumNameAndTracksData } from '@shared/graphQL/models/album-name-and-tracks-data';
 import type { ArtistMinimalData } from '@shared/graphQL/models/artist-minimal-data';
 import type { EpisodeNameData } from '@shared/graphQL/models/episode-name-data';
@@ -17,6 +18,7 @@ import {
 } from '@shared/utils/spicetify-utils';
 import { getId } from '@shared/utils/uri-utils';
 import i18next from 'i18next';
+import { Clipboard } from 'lucide-react';
 
 let locale: typeof Spicetify.Locale;
 let supportedTypes: string[] = [];
@@ -129,9 +131,9 @@ function checkUriLength(uris: string[]): boolean {
 }
 
 function shouldAdd(uris: string[]): boolean {
-    return !uris
+    return uris
         .map((u) => Spicetify.URI.fromString(u))
-        .some((u) => !supportedTypes.includes(u.type));
+        .every((u) => supportedTypes.includes(u.type));
 }
 
 async function main(): Promise<void> {
@@ -260,6 +262,10 @@ async function main(): Promise<void> {
             ),
         ],
         (uris) => shouldAdd(uris),
+        false,
+        Spicetify.ReactDOMServer.renderToString(
+            <Clipboard size={16} color="var(--text-subdued)" strokeWidth={1} />,
+        ),
     ).register();
 }
 

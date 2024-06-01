@@ -1265,24 +1265,30 @@ declare namespace Spicetify {
 		 * `Item`s in `subItems` array shouldn't be registered.
 		 */
 		class SubMenu {
-			constructor(name: string, subItems: Iterable<Item>, shouldAdd?: ShouldAddCallback, disabled?: boolean);
-			name: string;
-			disabled: boolean;
-			/**
-			 * A function returning boolean determines whether item should be prepended.
-			 */
-			shouldAdd: ShouldAddCallback;
-			addItem: (item: Item) => void;
-			removeItem: (item: Item) => void;
-			/**
-			 * SubMenu is only available in Context Menu when method "register" is called.
-			 */
-			register: () => void;
-			/**
-			 * Stop SubMenu to be prepended into Context Menu.
-			 */
-			deregister: () => void;
-		}
+            constructor(
+                name: string,
+                subItems: Iterable<Item>,
+                shouldAdd?: ShouldAddCallback,
+                disabled?: boolean,
+                icon?: Icon | string,
+            );
+            name: string;
+            disabled: boolean;
+            /**
+             * A function returning boolean determines whether item should be prepended.
+             */
+            shouldAdd: ShouldAddCallback;
+            addItem: (item: Item) => void;
+            removeItem: (item: Item) => void;
+            /**
+             * SubMenu is only available in Context Menu when method "register" is called.
+             */
+            register: () => void;
+            /**
+             * Stop SubMenu to be prepended into Context Menu.
+             */
+            deregister: () => void;
+        }
 	}
 
 	/**
