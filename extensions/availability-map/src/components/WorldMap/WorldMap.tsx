@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './WorldMap.module.scss';
 import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { Feature, FeatureCollection, GeoJsonProperties } from 'geojson';
@@ -29,21 +30,17 @@ const projection = geoMercator().fitSize(
 export function WorldMap(props: Readonly<Props>): JSX.Element {
     const geographies: Feature[] = featureCollection.features;
 
-    const getFill = (properties?: GeoJsonProperties): string => {
+    const getClass = (properties?: GeoJsonProperties): string => {
         const countryProperies: CountryProperties = {
             name: properties?.name as string,
             code: properties?.code as string,
         };
 
-        if (!props.allMarkets.includes(countryProperies.code)) {
-            return 'red';
-        }
-
         if (props.trackMarkets.includes(countryProperies.code)) {
-            return 'green';
+            return 'country-active';
         }
 
-        return 'rgba(38,50,56,0.1)';
+        return 'country';
     };
 
     return (
@@ -53,11 +50,9 @@ export function WorldMap(props: Readonly<Props>): JSX.Element {
                     <path
                         key={d.properties?.name + '-' + d.properties?.code}
                         d={geoPath().projection(projection)(d) ?? undefined}
-                        className={
-                            d.properties?.name + '-' + d.properties?.code
-                        }
-                        fill={getFill(d.properties)}
-                        stroke="#FFFFFF"
+                        className={`${d.properties?.name}-${d.properties
+                            ?.code} ${styles[getClass(d.properties)]}`}
+                        fill="transparent"
                         strokeWidth={0.5}
                     />
                 ))}
