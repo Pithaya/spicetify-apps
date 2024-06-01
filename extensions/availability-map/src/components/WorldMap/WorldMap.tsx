@@ -23,10 +23,9 @@ const featureCollection: FeatureCollection = feature(
     topology,
     topology.objects.countries,
 ) as any as FeatureCollection;
-const projection = geoMercator().fitSize(
-    [svgWidth, svgHeight],
-    featureCollection,
-);
+const projection = geoMercator()
+    .rotate([-11, 0])
+    .fitSize([svgWidth, svgHeight], featureCollection);
 
 export function WorldMap(props: Readonly<Props>): JSX.Element {
     const geographies: Feature[] = featureCollection.features;
