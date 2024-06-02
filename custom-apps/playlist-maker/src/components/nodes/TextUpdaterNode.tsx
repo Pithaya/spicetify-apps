@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
+import styles from '../../css/app.module.scss';
 
 const handleStyle = { left: 10 };
 
@@ -15,7 +16,7 @@ export function TextUpdaterNode(
     }, []);
 
     return (
-        <div className="text-updater-node">
+        <div className={styles['node']}>
             <Handle type="target" position={Position.Top} />
             <div>
                 <label htmlFor="text">{props.data.label}</label>
