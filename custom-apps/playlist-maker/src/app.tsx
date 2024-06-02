@@ -16,11 +16,13 @@ import ReactFlow, {
     type Edge,
     type NodeTypes,
 } from 'reactflow';
-import { TextUpdaterNode } from './nodes/TextUpdaterNode';
+import { TextUpdaterNode } from './components/nodes/TextUpdaterNode';
 import styles from './css/app.module.scss';
 
 // Can't use `import 'reactflow/dist/style.css';` because of postcss2 issue
 import '../../../node_modules/reactflow/dist/style.css';
+import './css/reactflow.scss';
+import { Sidenav } from './components/sidebar/Sidebar';
 
 const nodeTypes: NodeTypes = { textUpdater: TextUpdaterNode };
 
@@ -70,8 +72,10 @@ function App(): JSX.Element {
     return (
         <div className={styles['container']}>
             <div className={styles['grid-container']}>
-                <div className={styles['header']}>Header</div>
-                <div className={styles['sidenav']}>Side Navigation</div>
+                <div className={styles['padding']} />
+                <div className={styles['sidenav']}>
+                    <Sidenav />
+                </div>
                 <div className={styles['main']}>
                     <ReactFlow
                         fitView
@@ -83,9 +87,18 @@ function App(): JSX.Element {
                         deleteKeyCode={['Backspace', 'Delete']}
                         nodeTypes={nodeTypes}
                     >
-                        <Panel position="top-center">Mon super diagramme</Panel>
-                        <Panel position="top-right">Save</Panel>
-                        <Panel position="top-left">Help</Panel>
+                        <Panel
+                            className={styles['panel']}
+                            position="top-center"
+                        >
+                            Mon super diagramme
+                        </Panel>
+                        <Panel className={styles['panel']} position="top-right">
+                            Save
+                        </Panel>
+                        <Panel className={styles['panel']} position="top-left">
+                            Help
+                        </Panel>
                         <Controls />
                         <MiniMap />
                         <Background

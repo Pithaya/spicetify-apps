@@ -4,56 +4,48 @@
     right: 0;
     top: 0;
     bottom: 0;
-    padding-top: 64px;
+    background-color: var(--spice-sidebar);
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 64px auto;
     grid-template-areas:
-        'header header'
+        'padding padding'
         'sidenav main';
+    gap: var(--panel-gap);
     height: 100%;
     width: 100%;
 }
 
-.header {
-    grid-area: header;
-    background-color: #f8f9fa;
-    padding: 20px;
+.padding,
+.sidenav,
+.main {
+    background-color: var(--spice-main);
+    border-radius: 8px;
+}
+
+.padding {
+    grid-area: padding;
 }
 
 .sidenav {
     grid-area: sidenav;
-    background-color: #f8f9fa;
     padding: 20px;
 }
 
 .main {
     grid-area: main;
-    background-color: #f8f9fa;
-    padding: 20px;
 }
 
-.react-flow__panel {
+.panel {
+    border-radius: 8px;
     padding: 5px 10px;
-    background: white;
-    box-shadow:
-        rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
-        rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
 }
 
-.text-updater-node {
-    height: 50px;
-    border: 1px solid #eee;
-    padding: 5px;
-    border-radius: 5px;
-    background: white;
-}
-
-.text-updater-node label {
-    display: block;
-    color: #777;
-    font-size: 12px;
+.node {
+    border-radius: 4px;
+    padding: 4px;
+    background-color: var(--spice-main-elevated);
 }
