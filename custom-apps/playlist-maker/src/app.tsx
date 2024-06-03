@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, type DragEvent, useState } from 'react';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
@@ -14,7 +14,8 @@ import ReactFlow, {
     Panel,
     type Node,
     type Edge,
-    type NodeTypes,
+    type ReactFlowInstance,
+    type XYPosition,
 } from 'reactflow';
 import styles from './css/app.module.scss';
 
@@ -22,13 +23,7 @@ import styles from './css/app.module.scss';
 import '../../../node_modules/reactflow/dist/style.css';
 import './css/reactflow.scss';
 import { Sidenav } from './components/sidebar/Sidebar';
-import { LikedSongsSourceNode } from './components/nodes/sources/LikedSongsSourceNode';
-import { ResultNode } from './components/nodes/result/ResultNode';
-
-const nodeTypes: NodeTypes = {
-    likedSongsSource: LikedSongsSourceNode,
-    result: ResultNode,
-};
+import { nodeTypes } from './models/nodes/node-types';
 
 const initialNodes: Node[] = [
     {
@@ -46,15 +41,57 @@ const initialNodes: Node[] = [
 ];
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
 
-// TODO: https://reactflow.dev/examples/interaction/drag-and-drop
+let id = 0;
+const getId = (): string => `node_${id++}`;
 
 function App(): JSX.Element {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [reactFlowInstance, setReactFlowInstance] =
+        useState<ReactFlowInstance | null>(null);
 
     const onConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+        (params: Connection) => {
+            setEdges((eds) => addEdge(params, eds));
+        },
         [setEdges],
+    );
+
+    const addNode = useCallback((nodeType: string, position: XYPosition) => {
+        const newNode = {
+            id: getId(),
+            type: nodeType,
+            position,
+            data: { label: `${nodeType} node` },
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+    }, []);
+
+    const onDragOver = useCallback((event: DragEvent) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, []);
+
+    const onDrop = useCallback(
+        (event: DragEvent) => {
+            event.preventDefault();
+
+            const type = event.dataTransfer.getData('application/reactflow');
+
+            // check if the dropped element is valid
+            if (typeof type === 'undefined' || !type) {
+                return;
+            }
+
+            const position = reactFlowInstance?.screenToFlowPosition({
+                x: event.clientX,
+                y: event.clientY,
+            }) ?? { x: 0, y: 0 };
+
+            addNode(type, position);
+        },
+        [reactFlowInstance],
     );
 
     async function init(): Promise<void> {
@@ -82,7 +119,11 @@ function App(): JSX.Element {
             <div className={styles['grid-container']}>
                 <div className={styles['padding']} />
                 <div className={styles['sidenav']}>
-                    <Sidenav />
+                    <Sidenav
+                        onNodeSelected={(nodeType) => {
+                            addNode(nodeType, { x: 0, y: 0 });
+                        }}
+                    />
                 </div>
                 <div className={styles['main']}>
                     <ReactFlow
@@ -92,6 +133,9 @@ function App(): JSX.Element {
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
+                        onInit={setReactFlowInstance}
+                        onDrop={onDrop}
+                        onDragOver={onDragOver}
                         deleteKeyCode={['Backspace']}
                         nodeTypes={nodeTypes}
                     >

@@ -8,13 +8,22 @@
     }
 
     li {
-        font-size: 1rem;
-        padding-top: 8px;
-        padding-bottom: 8px;
-
-        &:hover {
-            background-color: var(--spice-highlight);
+        button {
+            background-color: transparent;
+            border-style: none;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            width: 100%;
+            text-align: start;
             cursor: grab;
+
+            &:hover {
+                background-color: var(--spice-highlight);
+            }
+        }
+
+        span {
+            font-size: 1rem;
         }
     }
 
