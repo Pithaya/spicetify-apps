@@ -2,14 +2,20 @@ import React, { type DragEvent, type KeyboardEvent } from 'react';
 import styles from './Sidebar.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type CustomNodeType } from '../../models/nodes/node-types';
+import { useStore } from '../../store/store';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;
     label: string;
-    onNodeSelected: (nodeType: CustomNodeType) => void;
 };
 
 function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
+    const addNode = useStore((state) => state.addNode);
+
+    const onNodeSelected = (nodeType: CustomNodeType): void => {
+        addNode(nodeType, { x: 0, y: 0 });
+    };
+
     const onDragStart = (event: DragEvent, nodeType: CustomNodeType): void => {
         event.dataTransfer.setData('application/reactflow', nodeType);
         event.dataTransfer.effectAllowed = 'move';
@@ -25,7 +31,7 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                 tabIndex={0}
                 onKeyDown={(event: KeyboardEvent) => {
                     if (event.key === 'Enter') {
-                        props.onNodeSelected(props.nodeType);
+                        onNodeSelected(props.nodeType);
                     }
                 }}
             >
@@ -35,21 +41,13 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
     );
 }
 
-export type Props = {
-    onNodeSelected: (nodeType: CustomNodeType) => void;
-};
-
-export function Sidenav(props: Readonly<Props>): JSX.Element {
+export function Sidenav(): JSX.Element {
     return (
         <div className={styles['sidebar']}>
             <TextComponent elementType="h1">Sources</TextComponent>
             <hr />
             <ul>
-                <SidenavItem
-                    label="Liked songs"
-                    nodeType="likedSongsSource"
-                    onNodeSelected={props.onNodeSelected}
-                />
+                <SidenavItem label="Liked songs" nodeType="likedSongsSource" />
 
                 <TextComponent elementType="li">Local files</TextComponent>
                 <TextComponent elementType="li">Playlist</TextComponent>
@@ -71,11 +69,7 @@ export function Sidenav(props: Readonly<Props>): JSX.Element {
             <TextComponent elementType="h1">Result</TextComponent>
             <hr />
             <ul>
-                <SidenavItem
-                    label="Result"
-                    nodeType="result"
-                    onNodeSelected={props.onNodeSelected}
-                />
+                <SidenavItem label="Result" nodeType="result" />
             </ul>
         </div>
     );
