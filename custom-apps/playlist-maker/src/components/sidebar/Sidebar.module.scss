@@ -1,0 +1,26 @@
+.sidebar {
+    h1 {
+        font-size: 1.5rem;
+
+        &:not(:first-child) {
+            margin-top: 8px;
+        }
+    }
+
+    li {
+        font-size: 1rem;
+        padding-top: 8px;
+        padding-bottom: 8px;
+
+        &:hover {
+            background-color: var(--spice-highlight);
+            cursor: grab;
+        }
+    }
+
+    hr {
+        border: 0;
+        border-top: thin solid;
+        opacity: 0.6;
+    }
+}

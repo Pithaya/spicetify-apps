@@ -16,24 +16,32 @@ import ReactFlow, {
     type Edge,
     type NodeTypes,
 } from 'reactflow';
-import { TextUpdaterNode } from './components/nodes/TextUpdaterNode';
 import styles from './css/app.module.scss';
 
 // Can't use `import 'reactflow/dist/style.css';` because of postcss2 issue
 import '../../../node_modules/reactflow/dist/style.css';
 import './css/reactflow.scss';
 import { Sidenav } from './components/sidebar/Sidebar';
+import { LikedSongsSourceNode } from './components/nodes/sources/LikedSongsSourceNode';
+import { ResultNode } from './components/nodes/result/ResultNode';
 
-const nodeTypes: NodeTypes = { textUpdater: TextUpdaterNode };
+const nodeTypes: NodeTypes = {
+    likedSongsSource: LikedSongsSourceNode,
+    result: ResultNode,
+};
 
 const initialNodes: Node[] = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' }, type: 'input' },
-    { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
     {
-        id: 'node-1',
-        type: 'textUpdater',
+        id: '1',
+        type: 'likedSongsSource',
         position: { x: 0, y: 0 },
-        data: { label: '123' },
+        data: {},
+    },
+    {
+        id: '2',
+        type: 'result',
+        position: { x: 0, y: 100 },
+        data: {},
     },
 ];
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
@@ -84,14 +92,14 @@ function App(): JSX.Element {
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
-                        deleteKeyCode={['Backspace', 'Delete']}
+                        deleteKeyCode={['Backspace']}
                         nodeTypes={nodeTypes}
                     >
                         <Panel
                             className={styles['panel']}
                             position="top-center"
                         >
-                            Mon super diagramme
+                            My playlist
                         </Panel>
                         <Panel className={styles['panel']} position="top-right">
                             Save
