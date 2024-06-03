@@ -12,6 +12,20 @@ export type LibraryAPI = {
     contains: (...uris: string[]) => Promise<boolean[]>;
 
     getEvents: () => LibraryAPIEventManager;
+
+    getTracks: (params?: {
+        offset?: number;
+        limit?: number;
+        filters?: string[];
+        uri?: string;
+        sort?: LibraryAPITrackSortOption;
+    }) => Promise<{
+        items: LibraryAPITrack[];
+        limit: number;
+        offset: number;
+        totalLength: number;
+        unfilteredTotalLength: number;
+    }>;
 };
 
 export type LibraryAPIEventType = 'operation_complete';
@@ -42,3 +56,44 @@ export type LibraryAPIOperationCompleteEvent = LibraryAPIEvent<{
     error: null | unknown;
     silent: boolean;
 }>;
+
+export type LibraryAPITrackSortOption = {
+    field: 'ADDED_AT' | 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION';
+    order: 'DESC' | 'ASC';
+};
+
+export type LibraryAPITrack = {
+    type: 'track';
+    uri: string;
+    name: string;
+    duration: {
+        milliseconds: number;
+    };
+    album: {
+        type: 'album';
+        uri: string;
+        name: string;
+        artist: {
+            type: 'artist';
+            uri: '';
+            name: '';
+        };
+        images: {
+            url: string;
+            label: string;
+        }[];
+    };
+    artists: {
+        type: 'artist';
+        uri: string;
+        name: string;
+    }[];
+    discNumber: number;
+    trackNumber: number;
+    isExplicit: boolean;
+    isPlayable: boolean;
+    isLocal: boolean;
+    is19PlusOnly: boolean;
+    addedAt: string;
+    hasAssociatedVideo: boolean;
+};

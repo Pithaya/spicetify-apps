@@ -1,30 +1,36 @@
 import React from 'react';
+import styles from './Sidebar.module.scss';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export function Sidenav(): JSX.Element {
     return (
-        <>
-            <h1>Sources</h1>
+        <div className={styles['sidebar']}>
+            <TextComponent elementType="h1">Sources</TextComponent>
+            <hr />
             <ul>
-                <li>Liked songs</li>
-                <li>Local files</li>
-                <li>Playlist</li>
+                <TextComponent elementType="li">Liked songs</TextComponent>
+                <TextComponent elementType="li">Local files</TextComponent>
+                <TextComponent elementType="li">Playlist</TextComponent>
             </ul>
 
-            <h1>Filters</h1>
+            <TextComponent elementType="h1">Filters</TextComponent>
+            <hr />
             <ul>
-                <li>Genre</li>
+                <TextComponent elementType="li">Genre</TextComponent>
             </ul>
 
-            <h1>Processing</h1>
+            <TextComponent elementType="h1">Processing</TextComponent>
+            <hr />
             <ul>
-                <li>Merge</li>
-                <li>Dedup</li>
+                <TextComponent elementType="li">Merge</TextComponent>
+                <TextComponent elementType="li">Dedup</TextComponent>
             </ul>
 
-            <h1>Result</h1>
+            <TextComponent elementType="h1">Result</TextComponent>
+            <hr />
             <ul>
-                <li>Result</li>
+                <TextComponent elementType="li">Result</TextComponent>
             </ul>
-        </>
+        </div>
     );
 }
