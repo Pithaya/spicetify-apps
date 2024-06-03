@@ -16,6 +16,7 @@
     "license": "MIT",
     "devDependencies": {
         "reactflow": "^11.11.3",
-        "spcr-whats-new": "^1.0.1"
+        "spcr-whats-new": "^1.0.1",
+        "zustand": "^4.5.2"
     }
 }
