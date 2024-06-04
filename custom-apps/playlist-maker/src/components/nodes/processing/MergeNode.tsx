@@ -1,25 +1,30 @@
 import React from 'react';
-import { Position } from 'reactflow';
+import { Handle, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { SingleConnectionHandle } from '../shared/SingleConnectionHandle';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 
-export function ResultNode(): JSX.Element {
+export function MergeNode(): JSX.Element {
     return (
         <Node>
             <NodeHeader
-                label="Result"
-                backgroundColor="orange"
+                label="Processing"
+                backgroundColor="greenyellow"
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent>Final playlist</TextComponent>
+                <TextComponent>Merge</TextComponent>
             </NodeContent>
-            <SingleConnectionHandle
+            <Handle
                 type="target"
                 position={Position.Left}
+                id="input"
+                style={{ top: '42px' }}
+            />
+            <Handle
+                type="source"
+                position={Position.Right}
                 id="input"
                 style={{ top: '42px' }}
             />

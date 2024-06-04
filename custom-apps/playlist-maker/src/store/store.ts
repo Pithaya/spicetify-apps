@@ -16,23 +16,7 @@ import {
 import { getDataForNodeType } from '../utils/node-utils';
 import { type CustomNodeType } from '../models/nodes/node-types';
 
-const initialNodes: Node[] = [
-    {
-        id: '1',
-        type: 'likedSongsSource',
-        position: { x: 0, y: 0 },
-        data: {},
-    },
-    {
-        id: '2',
-        type: 'result',
-        position: { x: 0, y: 100 },
-        data: {},
-    },
-];
-const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
-
-let id = initialNodes.length;
+let id = 0;
 const getId = (): string => (++id).toString();
 
 export type AppState = {
@@ -48,8 +32,8 @@ export type AppState = {
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
-    nodes: initialNodes,
-    edges: initialEdges,
+    nodes: [],
+    edges: [],
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes),

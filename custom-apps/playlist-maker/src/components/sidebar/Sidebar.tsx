@@ -62,8 +62,8 @@ export function Sidenav(): JSX.Element {
             <TextComponent elementType="h1">Processing</TextComponent>
             <hr />
             <ul>
-                <TextComponent elementType="li">Merge</TextComponent>
-                <TextComponent elementType="li">Dedup</TextComponent>
+                <SidenavItem label="Merge" nodeType="merge" />
+                <SidenavItem label="Deduplicate" nodeType="deduplicate" />
             </ul>
 
             <TextComponent elementType="h1">Result</TextComponent>
