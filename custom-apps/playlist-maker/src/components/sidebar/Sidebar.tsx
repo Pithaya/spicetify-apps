@@ -2,7 +2,7 @@ import React, { type DragEvent, type KeyboardEvent } from 'react';
 import styles from './Sidebar.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type CustomNodeType } from '../../models/nodes/node-types';
-import { useStore } from '../../store/store';
+import { useAppStore } from '../../store/store';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;
@@ -10,7 +10,7 @@ type SidenavItemProps = {
 };
 
 function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
-    const addNode = useStore((state) => state.addNode);
+    const addNode = useAppStore((state) => state.addNode);
 
     const onNodeSelected = (nodeType: CustomNodeType): void => {
         addNode(nodeType, { x: 0, y: 0 });
@@ -48,8 +48,8 @@ export function Sidenav(): JSX.Element {
             <hr />
             <ul>
                 <SidenavItem label="Liked songs" nodeType="likedSongsSource" />
+                <SidenavItem label="Local files" nodeType="localTracksSource" />
 
-                <TextComponent elementType="li">Local files</TextComponent>
                 <TextComponent elementType="li">Playlist</TextComponent>
             </ul>
 

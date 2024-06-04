@@ -18,7 +18,7 @@ import './css/reactflow.scss';
 import { Sidenav } from './components/sidebar/Sidebar';
 import { type CustomNodeType, nodeTypes } from './models/nodes/node-types';
 
-import { useStore, type AppState } from './store/store';
+import { useAppStore, type AppState } from './store/store';
 import { useShallow } from 'zustand/react/shallow';
 import { executeWorkflow } from './utils/node-utils';
 
@@ -49,7 +49,7 @@ function App(): JSX.Element {
         onEdgesChange,
         onConnect,
         addNode,
-    }: State = useStore(useShallow(selector));
+    }: State = useAppStore(useShallow(selector));
     const [reactFlowInstance, setReactFlowInstance] =
         useState<ReactFlowInstance | null>(null);
 

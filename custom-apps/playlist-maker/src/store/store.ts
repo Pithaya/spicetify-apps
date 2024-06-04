@@ -47,7 +47,7 @@ export type AppState = {
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
 };
 
-export const useStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>((set, get) => ({
     nodes: initialNodes,
     edges: initialEdges,
     onNodesChange: (changes: NodeChange[]) => {
@@ -94,4 +94,4 @@ export const useStore = create<AppState>((set, get) => ({
     },
 }));
 
-export default useStore;
+export default useAppStore;

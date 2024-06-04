@@ -1,15 +1,15 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import globalStyles from '../../../css/app.module.scss';
-import styles from './LikedSongsSourceNode.module.scss';
+import globalStyles from '../../../../css/app.module.scss';
+import styles from '../LikedSongs/LikedSongsSourceNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { useStore } from '../../../store/store';
+import { useAppStore } from '../../../../store/store';
 import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
 
 export function LikedSongsSourceNode(
     props: NodeProps<LikedSongsData>,
 ): JSX.Element {
-    const updateNodeData = useStore((state) => state.updateNodeData);
+    const updateNodeData = useAppStore((state) => state.updateNodeData);
 
     return (
         <div className={globalStyles['node']}>
