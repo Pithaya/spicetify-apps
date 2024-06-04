@@ -4,6 +4,8 @@ import { ResultNodeProcessor } from '../models/nodes/results/result-node-process
 import { type NodeProcessor } from '../models/nodes/node-processor';
 import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
 import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
+import { MergeProcessor } from '../models/nodes/processing/merge-processor';
+import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): any {
     switch (nodeType) {
@@ -77,6 +79,10 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
             return new LikedSongsSourceProcessor(node.data);
         case 'localTracksSource':
             return new LocalTracksSourceProcessor(node.data);
+        case 'merge':
+            return new MergeProcessor(incomers.map((node) => node.id));
+        case 'deduplicate':
+            return new DeduplicateProcessor(incomers.map((node) => node.id));
         default:
             throw new Error(`Unknown node type: ${node.type}`);
     }

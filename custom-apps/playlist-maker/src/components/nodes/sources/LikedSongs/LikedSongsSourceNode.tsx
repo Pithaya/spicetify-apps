@@ -1,10 +1,12 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import globalStyles from '../../../../css/app.module.scss';
 import styles from '../LikedSongs/LikedSongsSourceNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useAppStore } from '../../../../store/store';
 import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
+import { NodeHeader } from '../../shared/NodeHeader';
+import { Node } from '../../shared/Node';
+import { NodeContent } from '../../shared/NodeContent';
 
 export function LikedSongsSourceNode(
     props: NodeProps<LikedSongsData>,
@@ -12,13 +14,13 @@ export function LikedSongsSourceNode(
     const updateNodeData = useAppStore((state) => state.updateNodeData);
 
     return (
-        <div className={globalStyles['node']}>
-            <div className={styles['node-header']}>
-                <TextComponent paddingBottom="4px" weight="bold">
-                    Source
-                </TextComponent>
-            </div>
-            <div className={styles['node-content']}>
+        <Node>
+            <NodeHeader
+                label="Source"
+                backgroundColor="cornflowerblue"
+                textColor="black"
+            />
+            <NodeContent className={styles['node-content']}>
                 <TextComponent paddingBottom="8px">Liked songs</TextComponent>
                 <label>
                     <Spicetify.ReactComponent.TooltipWrapper
@@ -80,13 +82,13 @@ export function LikedSongsSourceNode(
                         }}
                     />
                 </label>
-            </div>
+            </NodeContent>
             <Handle
                 type="source"
                 position={Position.Right}
                 id="result"
                 style={{ top: '40px' }}
             />
-        </div>
+        </Node>
     );
 }
