@@ -3,6 +3,7 @@ import type { LocalTrack } from '@shared/platform/local-files';
 
 export type Track = LibraryAPITrack | LocalTrack;
 
+// TODO: Keep cache of results
 export abstract class NodeProcessor {
     /**
      * Get the result of this node.

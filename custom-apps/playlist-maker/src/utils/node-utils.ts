@@ -3,6 +3,7 @@ import { type CustomNodeType } from '../models/nodes/node-types';
 import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
 import { type NodeProcessor } from '../models/nodes/node-processor';
 import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
+import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): any {
     switch (nodeType) {
@@ -28,7 +29,7 @@ export async function executeWorkflow(
 
     if (results.length > 1) {
         Spicetify.showNotification(
-            'Cannot have multiple result nodes found in workflow',
+            'The workflow should have only one result node',
             true,
         );
         return;
@@ -74,6 +75,8 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
     switch (node.type as CustomNodeType) {
         case 'likedSongsSource':
             return new LikedSongsSourceProcessor(node.data);
+        case 'localTracksSource':
+            return new LocalTracksSourceProcessor(node.data);
         default:
             throw new Error(`Unknown node type: ${node.type}`);
     }

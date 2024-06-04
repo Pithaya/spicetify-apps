@@ -1,8 +1,9 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
+import { Position } from 'reactflow';
 import globalStyles from '../../../css/app.module.scss';
 import styles from './ResultNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { SingleConnectionHandle } from '../shared/SingleConnectionHandle';
 
 export function ResultNode(): JSX.Element {
     return (
@@ -15,7 +16,7 @@ export function ResultNode(): JSX.Element {
             <div className={styles['node-content']}>
                 <TextComponent>Final playlist</TextComponent>
             </div>
-            <Handle
+            <SingleConnectionHandle
                 type="target"
                 position={Position.Left}
                 id="input"
