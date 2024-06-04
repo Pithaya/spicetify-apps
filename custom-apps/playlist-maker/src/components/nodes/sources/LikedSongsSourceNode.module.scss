@@ -8,4 +8,14 @@
 
 .node-content {
     padding: 8px;
+    display: flex;
+    flex-direction: column;
+
+    label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
 }
