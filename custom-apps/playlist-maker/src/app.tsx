@@ -16,10 +16,11 @@ import styles from './css/app.module.scss';
 import '../../../node_modules/reactflow/dist/style.css';
 import './css/reactflow.scss';
 import { Sidenav } from './components/sidebar/Sidebar';
-import { nodeTypes } from './models/nodes/node-types';
+import { type CustomNodeType, nodeTypes } from './models/nodes/node-types';
 
 import { useStore, type AppState } from './store/store';
 import { useShallow } from 'zustand/react/shallow';
+import { executeWorkflow } from './utils/node-utils';
 
 type State = Pick<
     AppState,
@@ -61,7 +62,9 @@ function App(): JSX.Element {
         (event: DragEvent) => {
             event.preventDefault();
 
-            const type = event.dataTransfer.getData('application/reactflow');
+            const type = event.dataTransfer.getData(
+                'application/reactflow',
+            ) as CustomNodeType;
 
             // check if the dropped element is valid
             if (typeof type === 'undefined' || !type) {
@@ -126,7 +129,14 @@ function App(): JSX.Element {
                             My playlist
                         </Panel>
                         <Panel className={styles['panel']} position="top-right">
-                            Save
+                            <button
+                                onClick={async () => {
+                                    // TODO: Move this elsewhere
+                                    await executeWorkflow(nodes, edges);
+                                }}
+                            >
+                                Save
+                            </button>
                         </Panel>
                         <Panel className={styles['panel']} position="top-left">
                             Help

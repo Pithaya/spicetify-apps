@@ -15,7 +15,12 @@ export function ResultNode(): JSX.Element {
             <div className={styles['node-content']}>
                 <TextComponent>Final playlist</TextComponent>
             </div>
-            <Handle type="target" position={Position.Left} id="input" />
+            <Handle
+                type="target"
+                position={Position.Left}
+                id="input"
+                style={{ top: '42px' }}
+            />
         </div>
     );
 }

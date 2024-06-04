@@ -13,6 +13,8 @@ import {
     applyEdgeChanges,
     type XYPosition,
 } from 'reactflow';
+import { getDataForNodeType } from '../utils/node-utils';
+import { type CustomNodeType } from '../models/nodes/node-types';
 
 const initialNodes: Node[] = [
     {
@@ -41,7 +43,8 @@ export type AppState = {
     onConnect: OnConnect;
     setNodes: (nodes: Node[]) => void;
     setEdges: (edges: Edge[]) => void;
-    addNode: (nodeType: string, position: XYPosition) => void;
+    addNode: (nodeType: CustomNodeType, position: XYPosition) => void;
+    updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
 };
 
 export const useStore = create<AppState>((set, get) => ({
@@ -68,15 +71,26 @@ export const useStore = create<AppState>((set, get) => ({
     setEdges: (edges: Edge[]) => {
         set({ edges });
     },
-    addNode: (nodeType: string, position: XYPosition) => {
+    addNode: (nodeType: CustomNodeType, position: XYPosition) => {
         const newNode = {
             id: getId(),
             type: nodeType,
             position,
-            data: { label: `${nodeType} node` }, // TODO: getDataForNodeType(nodeType)
+            data: getDataForNodeType(nodeType),
         };
 
         set({ nodes: get().nodes.concat(newNode) });
+    },
+    updateNodeData: <T>(nodeId: string, data: Partial<T>) => {
+        set({
+            nodes: get().nodes.map((node) => {
+                if (node.id === nodeId) {
+                    return { ...node, data: { ...node.data, ...data } };
+                }
+
+                return node;
+            }),
+        });
     },
 }));
 
