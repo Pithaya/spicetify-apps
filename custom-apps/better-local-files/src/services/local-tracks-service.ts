@@ -91,12 +91,12 @@ export class LocalTracksService {
     }
 
     /**
-     * Create a URI from the album name.
-     * @param albumName The display name of the album.
-     * @returns A Spotify URI for this album.
+     * Create an URI from an album or artist name.
+     * @param name The name of the album or artist.
+     * @returns A Spotify URI for this album or artist.
      */
-    private albumKeyFromName(albumName: string): string {
-        return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
+    private getUri(name: string): string {
+        return `spotify:local:${name.toLowerCase().replace(/\s/g, '+')}`;
     }
 
     /**
@@ -176,7 +176,7 @@ export class LocalTracksService {
 
             // Recreate an uri from the album's name
             const albumName = this.getDisplayName(localTrack.album.name);
-            const albumKey = this.albumKeyFromName(albumName);
+            const albumKey = this.getUri(albumName);
 
             if (!this.albums.has(albumKey)) {
                 album = new Album(
@@ -264,9 +264,7 @@ export class LocalTracksService {
                 }
 
                 const firstTrack = tracksWithCover.tracks[0];
-                const albumKey = this.albumKeyFromName(
-                    `${album.name} ${index}`,
-                );
+                const albumKey = this.getUri(`${album.name} ${index}`);
 
                 const newAlbum = new Album(
                     albumKey,
@@ -460,9 +458,19 @@ export class LocalTracksService {
         artistNames: string,
         artistImage: string,
     ): Artist[] {
-        return artistNames
-            .split(/[;,]/)
-            .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
+        // known Spotify bug: FLAC files can have duplicate artists
+        const uniqueNames = new Set(
+            artistNames.split(/[;,]/).map((a) => a.trim()),
+        );
+
+        return [...uniqueNames].map((a) => {
+            const displayName = this.getDisplayName(a);
+            return new Artist(
+                displayName,
+                this.getUri(displayName),
+                artistImage,
+            );
+        });
     }
 
     /**
