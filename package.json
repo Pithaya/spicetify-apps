@@ -1,4 +1,5 @@
 {
+    "name": "spicetify-apps",
     "private": true,
     "workspaces": [
         "extensions/*",
