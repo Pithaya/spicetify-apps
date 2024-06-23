@@ -1,5 +1,5 @@
 import type { Segment } from '@spotify-web-api/models/audio-analysis';
-import type { JukeboxSettings } from '../models/jukebox-settings';
+import { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';
 import { Beat } from '../models/graph/beat';
@@ -71,6 +71,7 @@ export class GraphGenerator {
             this.dynamicCollectNearestNeighbors();
         } else {
             this.collectNearestNeighbors(this.settings.maxBranchDistance);
+            this.computedMaxBranchDistance = this.settings.maxBranchDistance;
         }
 
         this.postProcessNearestNeighbors();
@@ -85,12 +86,11 @@ export class GraphGenerator {
         let branchCount = 0;
         const targetBranchCount = this.beats.length / 6;
 
-        // FIXME: threshold always 0 ?
-        const threshold = 0;
+        let threshold;
 
         for (
-            let threshold = 10;
-            threshold < this.settings.maxBranchDistance;
+            threshold = 10;
+            threshold < JukeboxSettings.rangeMaxBranchDistance;
             threshold += 5
         ) {
             branchCount = this.collectNearestNeighbors(threshold);
@@ -128,7 +128,7 @@ export class GraphGenerator {
         currentBeat: RemixedTimeInterval,
     ): void {
         const maxNeighbors = this.maxBranches;
-        const maxBranchDistance = this.settings.maxBranchDistance;
+        const maxBranchDistance = JukeboxSettings.rangeMaxBranchDistance;
 
         const edges: Edge[] = [];
 
@@ -334,7 +334,7 @@ export class GraphGenerator {
     private postProcessNearestNeighbors(): void {
         if (this.settings.addLastEdge) {
             this.insertBestBackwardBranch(
-                this.settings.maxBranchDistance,
+                this.computedMaxBranchDistance,
                 this.longestBackwardBranch() < 50 ? 65 : 55,
             );
         }

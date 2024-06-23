@@ -1,0 +1,27 @@
+{
+    "name": "availability-map",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "init": "npm run build && npm run apply",
+        "build": "spicetify-creator",
+        "build-local": "spicetify-creator --out=dist --minify",
+        "watch": "spicetify-creator --watch",
+        "launch-watch": "spicetify watch -e",
+        "apply": "spicetify config extensions availability-map.js && spicetify apply",
+        "unapply": "spicetify config extensions availability-map.js- && spicetify apply",
+        "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
+        "format": "npx prettier --write src/"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/d3-geo": "^3.1.0",
+        "@types/topojson-client": "^3.1.4",
+        "d3-geo": "^3.1.1",
+        "geojson": "^0.5.0",
+        "i18n-iso-countries": "^7.11.2",
+        "i18next": "^23.7.6",
+        "lucide-react": "^0.381.0",
+        "topojson-client": "^3.1.0"
+    }
+}

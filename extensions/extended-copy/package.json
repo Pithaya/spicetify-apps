@@ -1,6 +1,6 @@
 {
     "name": "extended-copy",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
@@ -14,6 +14,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "i18next": "^23.7.6"
+        "i18next": "^23.7.6",
+        "lucide-react": "^0.381.0"
     }
 }

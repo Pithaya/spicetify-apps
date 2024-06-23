@@ -1,0 +1,30 @@
+.tabBar {
+    ul {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+
+        li {
+            pointer-events: all;
+
+            button {
+                border-radius: 4px;
+                border-style: none;
+                color: var(--spice-text);
+                background-color: transparent;
+                margin: 0 8px 0 0;
+                padding: 8px 16px;
+                cursor: pointer;
+
+                &.active {
+                    background-color: var(--spice-tab-active);
+                    border-radius: 4px;
+                }
+            }
+        }
+
+        select {
+            height: 100%;
+        }
+    }
+}

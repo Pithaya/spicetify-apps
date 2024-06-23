@@ -1,6 +1,6 @@
 # Extended copy
 
-Copy the name, ID, URI or raw data of the selected element(s) to the clipboard.
+Copy the name, ID, URI or data from the web API of the selected element(s) to the clipboard.
 
 ![preview](https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/extensions/extended-copy/preview.png)
 

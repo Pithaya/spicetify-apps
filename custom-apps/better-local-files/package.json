@@ -1,6 +1,6 @@
 {
     "name": "better-local-files",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",

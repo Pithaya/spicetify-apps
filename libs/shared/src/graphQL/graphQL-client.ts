@@ -1,148 +1,93 @@
-import type { AlbumData } from './models/album-data';
 import type { GraphQLResponse } from './models/response';
 import { IsErrorResponse, ThrowWithErrorMessage } from './utils/graphQL-utils';
 import type { TrackNameData } from './models/track-name-data';
 import type { EpisodeNameData } from './models/episode-name-data';
 import type { ArtistMinimalData } from './models/artist-minimal-data';
 import type { NpvEpisodeData } from './models/npv-episode-data';
-import type { AlbumNameAndTracksData } from './models/album-name-and-tracks-data';
 
-// Decorate
-// ----------------------------------------
-
-export async function decorateItemsForEnhance(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function decorateContextEpisodesOrChapters(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function decorateContextTracks(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function decoratePlaylists(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-// Fetch extracted colors
-// ----------------------------------------
-
-export async function fetchExtractedColors(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForAlbumEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForArtistEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForEpisodeEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForPlaylistEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForPodcastEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorAndImageForTrackEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForAlbumEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForArtistEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForEpisodeEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForPlaylistEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForPodcastEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchExtractedColorForTrackEntity(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-// Album
-// ----------------------------------------
-
-export async function getAlbum(
-    uri: Spicetify.URI,
-    locale: typeof Spicetify.Locale,
-    offset: number,
-    limit: number,
-): Promise<AlbumData> {
-    if (uri.type !== Spicetify.URI.Type.ALBUM) {
-        throw new Error(`URI '${uri.toString()}' is not an album.`);
-    }
-
-    const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.getAlbum,
-        {
-            uri: uri.toString(),
-            locale: locale.getLocale(),
-            offset,
-            limit,
-        },
-    )) as GraphQLResponse<AlbumData>;
-
-    if (IsErrorResponse(response)) {
-        ThrowWithErrorMessage(response);
-    }
-
-    return response.data;
-}
-
-export async function getAlbumNameAndTracks(
-    uri: Spicetify.URI,
-    offset: number,
-    limit: number,
-): Promise<AlbumNameAndTracksData> {
-    if (uri.type !== Spicetify.URI.Type.ALBUM) {
-        throw new Error(`URI '${uri.toString()}' is not an album.`);
-    }
-
-    const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.getAlbumNameAndTracks,
-        {
-            uri: uri.toString(),
-            offset,
-            limit,
-        },
-    )) as GraphQLResponse<AlbumNameAndTracksData>;
-
-    if (IsErrorResponse(response)) {
-        ThrowWithErrorMessage(response);
-    }
-
-    return response.data;
-}
-
-export async function queryAlbumTrackUris(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryAlbumTracks(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
+type Definitions =
+    | 'followUsers'
+    | 'unfollowUsers'
+    | 'decorateContextTracks'
+    | 'isCurated'
+    | 'applyCurations'
+    | 'editablePlaylists'
+    | 'addToLibrary'
+    | 'removeFromLibrary'
+    | 'pinLibraryItem'
+    | 'unpinLibraryItem'
+    | 'fetchLibraryAlbums'
+    | 'fetchLibraryArtists'
+    | 'fetchLibraryTracks'
+    | 'fetchLibraryShows'
+    | 'fetchLibraryAudiobooks'
+    | 'fetchLibraryEpisodes'
+    | 'libraryV3'
+    | 'areEntitiesInLibrary'
+    | 'addToPlaylist'
+    | 'removeFromPlaylist'
+    | 'moveItemsInPlaylist'
+    | 'fetchPlaylist'
+    | 'fetchPlaylistMetadata'
+    | 'fetchPlaylistContents'
+    | 'queryShowAccessInfo'
+    | 'queryShowMetadataV2'
+    | 'queryBookChapters'
+    | 'getEpisodeOrChapter'
+    | 'queryPodcastEpisodes'
+    | 'smartShuffle'
+    | 'profileAttributes'
+    | 'queryFullscreenMode'
+    | 'episodeSponsoredContent'
+    | 'fetchExtractedColorAndImageForArtistEntity'
+    | 'fetchExtractedColorAndImageForEpisodeEntity'
+    | 'fetchExtractedColorAndImageForPlaylistEntity'
+    | 'fetchExtractedColorAndImageForPodcastEntity'
+    | 'fetchExtractedColorAndImageForTrackEntity'
+    | 'fetchExtractedColorForAlbumEntity'
+    | 'fetchExtractedColorForArtistEntity'
+    | 'fetchExtractedColorForEpisodeEntity'
+    | 'fetchExtractedColorForPlaylistEntity'
+    | 'fetchExtractedColorForPodcastEntity'
+    | 'fetchExtractedColorForTrackEntity'
+    | 'getEpisodeName'
+    | 'getPodcastOrBookName'
+    | 'getTrackName'
+    | 'getArtistNameAndTracks'
+    | 'queryTrackArtists'
+    | 'queryWhatsNewFeed'
+    | 'whatsNewFeedNewItems'
+    | 'SetItemsStateInWhatsNewFeed'
+    | 'queryNpvEpisodeChapters'
+    | 'queryNpvEpisode'
+    | 'queryNpvArtist'
+    | 'queryArtistRelatedVideos'
+    | 'searchConcertLocations'
+    | 'saveLocation'
+    | 'userLocation'
+    | 'queryAlbumTracks'
+    | 'queryArtistAppearsOn'
+    | 'queryArtistDiscographyAlbums'
+    | 'queryArtistDiscographySingles'
+    | 'queryArtistDiscographyCompilations'
+    | 'queryArtistDiscographyAll'
+    | 'queryArtistDiscographyOverview'
+    | 'queryArtistDiscoveredOn'
+    | 'queryArtistFeaturing'
+    | 'queryArtistPlaylists'
+    | 'queryArtistRelated'
+    | 'queryArtistMinimal'
+    | 'decorateQueuedByUsers'
+    | 'searchModalResults'
+    | 'showItemsPlayedState'
+    | 'watchFeedView'
+    | 'internalLinkRecommenderEpisode'
+    | 'home'
+    | 'homeFeedChips'
+    | 'homeSubfeed'
+    | 'homeSection'
+    | 'feedBaselineLookup'
+    | 'internalLinkRecommenderShow';
 
 // Episode
 // ----------------------------------------
@@ -159,8 +104,9 @@ export async function getEpisodeName(
         throw new Error(`URI '${uri.toString()}' is not an episode.`);
     }
 
+    const definition: Definitions = 'getEpisodeName';
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.getEpisodeName,
+        Spicetify.GraphQL.Definitions[definition],
         {
             uri: uri.toString(),
         },
@@ -180,8 +126,9 @@ export async function queryNpvEpisode(
         throw new Error(`URI '${uri.toString()}' is not an episode.`);
     }
 
+    const definition: Definitions = 'queryNpvEpisode';
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.queryNpvEpisode,
+        Spicetify.GraphQL.Definitions[definition],
         {
             uri: uri.toString(),
         },
@@ -207,8 +154,9 @@ export async function getTrackName(uri: Spicetify.URI): Promise<TrackNameData> {
         throw new Error(`URI '${uri.toString()}' is not a track.`);
     }
 
+    const definition: Definitions = 'getTrackName';
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.getTrackName,
+        Spicetify.GraphQL.Definitions[definition],
         {
             uri: uri.toString(),
         },
@@ -219,61 +167,6 @@ export async function getTrackName(uri: Spicetify.URI): Promise<TrackNameData> {
     }
 
     return response.data;
-}
-
-export async function queryTrackArtists(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function fetchTracksForRadioStation(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-// Artist
-// ----------------------------------------
-
-export async function queryArtistOverview(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistAppearsOn(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscographyAlbums(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscographySingles(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscographyCompilations(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscographyAll(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscographyOverview(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistPlaylists(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistDiscoveredOn(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistFeaturing(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryArtistRelated(): Promise<unknown> {
-    throw new Error('Method not implemented.');
 }
 
 /**
@@ -288,8 +181,9 @@ export async function queryArtistMinimal(
         throw new Error(`URI '${uri.toString()}' is not an artist.`);
     }
 
+    const definition: Definitions = 'queryArtistMinimal';
     const response = (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.queryArtistMinimal,
+        Spicetify.GraphQL.Definitions[definition],
         {
             uri: uri.toString(),
         },
@@ -300,37 +194,4 @@ export async function queryArtistMinimal(
     }
 
     return response.data;
-}
-
-/**
- * Get Now Playing View info for the artist.
- */
-export async function queryNpvArtist(
-    artistUri: Spicetify.URI,
-    trackUri: Spicetify.URI,
-): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-// Other
-// ----------------------------------------
-
-export async function queryFullscreenMode(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function searchModalResults(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function queryWhatsNewFeed(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function whatsNewFeedNewItems(): Promise<unknown> {
-    throw new Error('Method not implemented.');
-}
-
-export async function browseAll(): Promise<unknown> {
-    throw new Error('Method not implemented.');
 }

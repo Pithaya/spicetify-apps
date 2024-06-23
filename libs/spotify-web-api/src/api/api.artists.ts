@@ -10,6 +10,8 @@ import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/artists`;
 
+export const MAX_GET_MULTIPLE_ARTISTS_IDS = 100;
+
 /**
  * Get Spotify catalog information for a single artist identified by their unique Spotify ID.
  * @param id The Spotify ID of the artist.
@@ -26,16 +28,21 @@ export async function getArtist(id: string): Promise<Artist | null> {
 
 /**
  * Get Spotify catalog information for several artists based on their Spotify IDs.
- * @param ids Spotify IDs for the artists. Maximum: 50 IDs.
+ * @param ids Spotify IDs for the artists. Maximum: 100 IDs.
  * @returns A set of artists.
  */
-export async function getArtists(...ids: string[]): Promise<Artist[]> {
+export async function getArtists(ids: string[]): Promise<Artist[]> {
     try {
-        if (ids.length > 50) {
-            throw new ArgumentError('The maximum number of IDs is 50.');
+        if (ids.length > MAX_GET_MULTIPLE_ARTISTS_IDS) {
+            throw new ArgumentError(
+                `The maximum number of IDs is ${MAX_GET_MULTIPLE_ARTISTS_IDS}.`,
+            );
         }
 
-        return await get(`${baseUrl}?ids=${ids.join(',')}`);
+        const result = await get<{ artists: Artist[] }>(
+            `${baseUrl}?ids=${ids.join(',')}`,
+        );
+        return result.artists;
     } catch (error: any) {
         handleError(error);
         return [];

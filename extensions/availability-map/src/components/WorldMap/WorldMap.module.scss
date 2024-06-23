@@ -1,0 +1,13 @@
+.country {
+    stroke: var(--spice-text);
+}
+
+.country-active {
+    fill: var(--spice-text);
+    stroke: transparent;
+    transition: fill 0.4s ease;
+
+    &:hover {
+        fill: var(--spice-button-active);
+    }
+}

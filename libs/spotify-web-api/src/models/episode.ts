@@ -1,6 +1,7 @@
 import type { Image } from './image';
 import type { ReleaseDatePrecision } from './release-date';
 import type { Restrictions } from './restrictions';
+import type { Show } from './show';
 
 export type Episode = {
     /**
@@ -103,27 +104,29 @@ export type Episode = {
         resume_position_ms: number;
     };
 
-    show: {
-        available_markets: string[];
-        copyrights: string[];
-        description: string;
-        explicit: boolean;
-        external_urls: {
-            spotify: string;
-        };
-        href: string;
-        html_description: string;
-        id: string;
-        images: Image[];
-        is_externally_hosted: boolean;
-        languages: string[];
-        media_type: string;
-        name: string;
-        publisher: string;
-        total_episodes: number;
-        type: 'show';
-        uri: string;
-    };
+    /**
+     * The show on which the episode belongs.
+     */
+    show: Pick<
+        Show,
+        | 'available_markets'
+        | 'copyrights'
+        | 'description'
+        | 'explicit'
+        | 'external_urls'
+        | 'href'
+        | 'html_description'
+        | 'id'
+        | 'images'
+        | 'is_externally_hosted'
+        | 'languages'
+        | 'media_type'
+        | 'name'
+        | 'publisher'
+        | 'total_episodes'
+        | 'type'
+        | 'uri'
+    >;
 
     /**
      * The object type.

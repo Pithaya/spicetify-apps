@@ -2,17 +2,46 @@ import tinycolor from 'tinycolor2';
 import type { Beat } from '../models/graph/beat';
 import type { Segment } from '@spotify-web-api/models/audio-analysis';
 import { Point } from '../models/visualization/point';
-import { getPercentOfValue, getPointFromPercent } from '../utils/math-utils';
+import { getPointFromPercent } from '../utils/math-utils';
 import type { BeatDrawData } from '../models/visualization/beat-draw-data';
 import type { EdgeDrawData } from '../models/visualization/edge-draw-data';
 import type { GraphState } from '../models/graph/graph-state';
 import type { GraphDrawData } from '../models/visualization/graph-draw-data';
 
-export function initSvgDrawData(
-    svgSize: number,
-    halfSize: number,
-    graphState: GraphState,
-): GraphDrawData {
+/**
+ * SVG size.
+ * SVG size = (inner circle radius + maximum tile height) * 2.
+ */
+export const svgSize = 100;
+export const halfSize = svgSize / 2;
+
+/**
+ * Inner circle radius.
+ */
+const innerCircleRadius = 40;
+
+/**
+ * Minimum height for a tile.
+ */
+const minTileHeight = 2;
+
+/**
+ * How much a tile should grow per beat.
+ */
+const tileHeightIncrementPerBeat = 0.2;
+
+/**
+ * How much a tile should grow when it's playing.
+ */
+const isPlayingAdditionalTileHeight = 1;
+
+/**
+ * Maximum height for a tile (8).
+ */
+const maxTileHeight =
+    halfSize - (innerCircleRadius + isPlayingAdditionalTileHeight);
+
+export function initSvgDrawData(graphState: GraphState): GraphDrawData {
     if (graphState.beats.length === 0) {
         return { beats: [], edges: [] };
     }
@@ -28,18 +57,10 @@ export function initSvgDrawData(
         graphState.beats[graphState.beats.length - 1].duration -
         offset;
 
-    const innerCircleRadius = getPercentOfValue(40, svgSize);
-    const tileHeight = getPercentOfValue(2, svgSize);
-    const outerCircleRadius = innerCircleRadius + tileHeight;
-
     const beatsDrawData = getBeatsDrawData(
         graphState,
         offset,
         totalDuration,
-        outerCircleRadius,
-        innerCircleRadius,
-        svgSize,
-        tileHeight,
         cmin,
         cmax,
     );
@@ -52,10 +73,6 @@ function getBeatsDrawData(
     graphState: GraphState,
     offset: number,
     totalDuration: number,
-    outerCircleRadius: number,
-    innerCircleRadius: number,
-    svgSize: number,
-    tileHeight: number,
     cmin: number[],
     cmax: number[],
 ): BeatDrawData[] {
@@ -63,15 +80,24 @@ function getBeatsDrawData(
         const percentFromStart = ((beat.start - offset) * 100) / totalDuration;
         const percentOfSong = (beat.duration * 100) / totalDuration;
 
+        const currentTileHeight = Math.min(
+            minTileHeight +
+                tileHeightIncrementPerBeat * beat.playCount +
+                (beat.isPlaying ? isPlayingAdditionalTileHeight : 0),
+            maxTileHeight,
+        );
+
+        const outerCircleRadius = innerCircleRadius + currentTileHeight;
+
         // Outer arc
         const outerArcStart = getPointFromPercent(
             percentFromStart,
-            outerCircleRadius + (beat.isPlaying ? tileHeight : 0),
+            outerCircleRadius,
             svgSize,
         );
         const outerArcEnd = getPointFromPercent(
             percentFromStart + percentOfSong,
-            outerCircleRadius + (beat.isPlaying ? tileHeight : 0),
+            outerCircleRadius,
             svgSize,
         );
 

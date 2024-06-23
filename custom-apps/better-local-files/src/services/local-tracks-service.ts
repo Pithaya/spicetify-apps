@@ -1,4 +1,4 @@
-import { sort } from '../helpers/sort-helper';
+import { sort } from '../utils/sort.utils';
 import { Album } from '../models/album';
 import { Artist } from '../models/artist';
 import { Track } from '../models/track';
@@ -7,7 +7,8 @@ import { BehaviorSubject, type Observable } from 'rxjs';
 import { StorageService } from './storage-service';
 import type { CachedAlbum } from '../models/cached-album';
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import type { LocalFilesAPI, LocalTrack } from '@shared/platform/local-files';
+import type { LocalFilesAPI } from '@shared/platform/local-files';
+import { getImageUrlFromAlbum } from '../utils/local-tracks.utils';
 
 /**
  * A list of tracks with an associated cover.
@@ -90,12 +91,12 @@ export class LocalTracksService {
     }
 
     /**
-     * Create a URI from the album name.
-     * @param albumName The display name of the album.
-     * @returns A Spotify URI for this album.
+     * Create an URI from an album or artist name.
+     * @param name The name of the album or artist.
+     * @returns A Spotify URI for this album or artist.
      */
-    private albumKeyFromName(albumName: string): string {
-        return `spotify:uri:${albumName.toLowerCase().replace(/\s/g, '+')}`;
+    private getUri(name: string): string {
+        return `spotify:local:${name.toLowerCase().replace(/\s/g, '+')}`;
     }
 
     /**
@@ -175,13 +176,13 @@ export class LocalTracksService {
 
             // Recreate an uri from the album's name
             const albumName = this.getDisplayName(localTrack.album.name);
-            const albumKey = this.albumKeyFromName(albumName);
+            const albumKey = this.getUri(albumName);
 
             if (!this.albums.has(albumKey)) {
                 album = new Album(
                     albumKey,
                     albumName,
-                    this.getImageUrlFromAlbum(localTrack.album),
+                    getImageUrlFromAlbum(localTrack.album),
                 );
 
                 this.albums.set(albumKey, album);
@@ -263,14 +264,12 @@ export class LocalTracksService {
                 }
 
                 const firstTrack = tracksWithCover.tracks[0];
-                const albumKey = this.albumKeyFromName(
-                    `${album.name} ${index}`,
-                );
+                const albumKey = this.getUri(`${album.name} ${index}`);
 
                 const newAlbum = new Album(
                     albumKey,
                     album.name,
-                    this.getImageUrlFromAlbum(firstTrack.localTrack.album),
+                    getImageUrlFromAlbum(firstTrack.localTrack.album),
                 );
 
                 for (const artist of firstTrack.artists) {
@@ -403,7 +402,7 @@ export class LocalTracksService {
 
             // For each artist(s), take the album cover of the first track
             for (const tracks of albumTrackMap.values()) {
-                const coverUrl = this.getImageUrlFromAlbum(
+                const coverUrl = getImageUrlFromAlbum(
                     tracks[0].localTrack.album,
                 );
 
@@ -459,9 +458,19 @@ export class LocalTracksService {
         artistNames: string,
         artistImage: string,
     ): Artist[] {
-        return artistNames
-            .split(/[;,]/)
-            .map((a) => new Artist(this.getDisplayName(a.trim()), artistImage));
+        // known Spotify bug: FLAC files can have duplicate artists
+        const uniqueNames = new Set(
+            artistNames.split(/[;,]/).map((a) => a.trim()),
+        );
+
+        return [...uniqueNames].map((a) => {
+            const displayName = this.getDisplayName(a);
+            return new Artist(
+                displayName,
+                this.getUri(displayName),
+                artistImage,
+            );
+        });
     }
 
     /**
@@ -526,14 +535,5 @@ export class LocalTracksService {
         );
 
         return mismatchedPixels;
-    }
-
-    /**
-     * Get the image url from an album. Return an empty string if there is are no images.
-     * @param album The album.
-     * @returns The image url.
-     */
-    private getImageUrlFromAlbum(album: LocalTrack['album']): string {
-        return album.images.length === 0 ? '' : album.images[0].url;
     }
 }
