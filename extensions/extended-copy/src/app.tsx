@@ -88,6 +88,7 @@ async function main(): Promise<void> {
             en: {
                 translation: {
                     copyTrack: 'Copy track',
+                    copyTracks: 'Copy tracks',
                     copyAlbum: 'Copy album',
                     copyArtist: 'Copy artist',
                     copyPlaylist: 'Copy playlist',
@@ -102,6 +103,7 @@ async function main(): Promise<void> {
             fr: {
                 translation: {
                     copyTrack: 'Copier la piste',
+                    copyTracks: 'Copier les pistes',
                     copyAlbum: "Copier l'album",
                     copyArtist: "Copier l'artiste",
                     copyPlaylist: 'Copier la playlist',
@@ -196,11 +198,12 @@ async function main(): Promise<void> {
         ).register();
     };
 
-    // TODO : If multiple rows tracks are selected, add menus to copy album, artist
-
     createSubmenu(
         'copyTrack',
         (uris) => uris.length === 1 && Spicetify.URI.isTrack(uris[0]),
+    );
+    createSubmenu('copyTracks', (uris) =>
+        uris.every((uri) => Spicetify.URI.isTrack(uri)),
     );
     createSubmenu(
         'copyAlbum',
