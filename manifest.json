@@ -19,5 +19,12 @@
         "preview": "extensions/made-for-you-shortcut/preview.png",
         "main": "extensions/made-for-you-shortcut/dist/made-for-you-shortcut.js",
         "readme": "extensions/made-for-you-shortcut/README.md"
+    },
+    {
+        "name": "Availability map",
+        "description": "See a map of every country where a track is available.",
+        "preview": "extensions/availability-map/preview.png",
+        "main": "extensions/availability-map/dist/availability-map.js",
+        "readme": "extensions/availability-map/README.md"
     }
 ]
