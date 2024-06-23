@@ -1,5 +1,5 @@
 import { getTranslation } from '../utils/translations.utils';
-import type { TopBarItem } from '../models/top-bar-item';
+import type { TopBarItem } from '@shared/components/top-bar/top-bar-item';
 
 export const CUSTOM_APP_PATH = '/better-local-files';
 export const ALBUM_ROUTE = `${CUSTOM_APP_PATH}/album`;

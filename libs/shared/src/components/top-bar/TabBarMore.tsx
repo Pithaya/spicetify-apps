@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TopBarItem } from '../../../models/top-bar-item';
+import type { TopBarItem } from './top-bar-item';
 
 export type Props = {
     items: TopBarItem[];

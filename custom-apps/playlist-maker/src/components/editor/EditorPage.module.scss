@@ -1,0 +1,44 @@
+.container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: var(--spice-sidebar);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 64px auto;
+    grid-template-areas:
+        'padding padding'
+        'sidenav main';
+    gap: var(--panel-gap);
+    height: 100%;
+    width: 100%;
+}
+
+.padding,
+.sidenav,
+.main {
+    background-color: var(--spice-main);
+    border-radius: 8px;
+}
+
+.padding {
+    grid-area: padding;
+}
+
+.sidenav {
+    grid-area: sidenav;
+    padding: 20px;
+}
+
+.main {
+    grid-area: main;
+}
+
+.panel {
+    border-radius: 8px;
+}

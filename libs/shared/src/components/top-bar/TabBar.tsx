@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { TopBarItem } from '../../../models/top-bar-item';
+import type { TopBarItem } from './top-bar-item';
 import { TabBarItem } from './TabBarItem';
 import { TabBarMore } from './TabBarMore';
 import styles from './TabBar.module.scss';
