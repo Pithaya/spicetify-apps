@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './TabBar.module.scss';
-import type { TopBarItem } from '../../../models/top-bar-item';
+import type { TopBarItem } from './top-bar-item';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
