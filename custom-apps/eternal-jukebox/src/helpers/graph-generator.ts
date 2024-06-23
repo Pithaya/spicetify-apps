@@ -71,6 +71,7 @@ export class GraphGenerator {
             this.dynamicCollectNearestNeighbors();
         } else {
             this.collectNearestNeighbors(this.settings.maxBranchDistance);
+            this.computedMaxBranchDistance = this.settings.maxBranchDistance;
         }
 
         this.postProcessNearestNeighbors();
@@ -127,7 +128,7 @@ export class GraphGenerator {
         currentBeat: RemixedTimeInterval,
     ): void {
         const maxNeighbors = this.maxBranches;
-        const maxBranchDistance = this.settings.maxBranchDistance;
+        const maxBranchDistance = JukeboxSettings.rangeMaxBranchDistance;
 
         const edges: Edge[] = [];
 
@@ -333,7 +334,7 @@ export class GraphGenerator {
     private postProcessNearestNeighbors(): void {
         if (this.settings.addLastEdge) {
             this.insertBestBackwardBranch(
-                this.settings.maxBranchDistance,
+                this.computedMaxBranchDistance,
                 this.longestBackwardBranch() < 50 ? 65 : 55,
             );
         }
