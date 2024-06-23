@@ -21,6 +21,7 @@ import { type CustomNodeType, nodeTypes } from './models/nodes/node-types';
 import { useAppStore, type AppState } from './store/store';
 import { useShallow } from 'zustand/react/shallow';
 import { executeWorkflow } from './utils/node-utils';
+import { HelpButton } from './components/help/HelpButton';
 
 type State = Pick<
     AppState,
@@ -139,7 +140,7 @@ function App(): JSX.Element {
                             </button>
                         </Panel>
                         <Panel className={styles['panel']} position="top-left">
-                            Help
+                            <HelpButton />
                         </Panel>
                         <Controls />
                         <MiniMap />
