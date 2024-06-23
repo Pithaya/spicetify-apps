@@ -7,12 +7,7 @@ import {
 import { getId } from '@shared/utils/uri-utils';
 import i18next from 'i18next';
 import { Clipboard } from 'lucide-react';
-import { getTrack } from '@spotify-web-api/api/api.tracks';
-import { getAlbum } from '@spotify-web-api/api/api.albums';
-import { getArtist } from '@spotify-web-api/api/api.artists';
-import { getEpisode } from '@spotify-web-api/api/api.episodes';
-import { getShow } from '@spotify-web-api/api/api.shows';
-import { getPlaylist } from '@spotify-web-api/api/api.playlists';
+import { getApiData } from '@shared/utils/web-api-utils';
 import type { Track } from '@spotify-web-api/models/track';
 import type { Album } from '@spotify-web-api/models/album';
 import type { Artist } from '@spotify-web-api/models/artist';
@@ -23,51 +18,54 @@ import type { Playlist } from '@spotify-web-api/models/playlist';
 let locale: typeof Spicetify.Locale;
 let clipboardApi: ClipboardAPI;
 
-async function getData(
-    uriString: string,
-): Promise<Track | Album | Artist | Playlist | Show | Episode | null> {
-    const uri: Spicetify.URI = Spicetify.URI.fromString(uriString);
-    const id = getId(uri);
+async function getNames(uris: string[]): Promise<string[]> {
+    const data = await getApiData(uris);
 
-    if (id === null) {
-        return null;
+    const names: string[] = [];
+    const invalidUris: string[] = [];
+
+    for (const [index, item] of data.entries()) {
+        if (item === null) {
+            invalidUris.push(uris[index]);
+        } else {
+            names.push(item.name);
+        }
     }
 
-    if (Spicetify.URI.isTrack(uri)) {
-        return await getTrack(id);
+    if (invalidUris.length > 0) {
+        Spicetify.showNotification(
+            `Couldn't get data for URIs: ${invalidUris.join(', ')}`,
+            true,
+        );
     }
 
-    if (Spicetify.URI.isAlbum(uri)) {
-        return await getAlbum(id);
-    }
-
-    if (Spicetify.URI.isArtist(uri)) {
-        return await getArtist(id);
-    }
-
-    if (Spicetify.URI.isPlaylistV1OrV2(uri)) {
-        return await getPlaylist(id);
-    }
-
-    if (Spicetify.URI.isShow(uri)) {
-        return await getShow(id);
-    }
-
-    if (Spicetify.URI.isEpisode(uri)) {
-        return await getEpisode(id);
-    }
-
-    return null;
+    return names;
 }
 
-async function getName(uri: string): Promise<string | null> {
-    const data = await getData(uri);
+async function getData(
+    uris: string[],
+): Promise<(Track | Album | Artist | Playlist | Show | Episode)[]> {
+    const data = await getApiData(uris);
 
-    if (data === null) {
-        return null;
+    const items: (Track | Album | Artist | Playlist | Show | Episode)[] = [];
+    const invalidUris: string[] = [];
+
+    for (const [index, item] of data.entries()) {
+        if (item === null) {
+            invalidUris.push(uris[index]);
+        } else {
+            items.push(item);
+        }
     }
 
-    return data.name;
+    if (invalidUris.length > 0) {
+        Spicetify.showNotification(
+            `Couldn't get data for URIs: ${invalidUris.join(', ')}`,
+            true,
+        );
+    }
+
+    return items;
 }
 
 async function copy(text: string | any): Promise<void> {
@@ -121,21 +119,7 @@ async function main(): Promise<void> {
     const copyNameItem = new Spicetify.ContextMenu.Item(
         i18next.t('name'),
         async (uris) => {
-            const names: string[] = [];
-
-            for (const uri of uris) {
-                const name = await getName(uri);
-                if (name === null) {
-                    Spicetify.showNotification(
-                        `Couldn't get name for URI '${uri}'`,
-                        true,
-                    );
-                    return;
-                } else {
-                    names.push(name);
-                }
-            }
-
+            const names: string[] = await getNames(uris);
             await copy(names.join(locale.getSeparator()));
         },
         () => true,
@@ -161,22 +145,8 @@ async function main(): Promise<void> {
     const copyDataItem = new Spicetify.ContextMenu.Item(
         i18next.t('data'),
         async (uris) => {
-            const result: any[] = [];
-
-            for (const uri of uris) {
-                const data = await getData(uri);
-                if (data === null) {
-                    Spicetify.showNotification(
-                        `Couldn't get data for URI '${uri}'`,
-                        true,
-                    );
-                    return;
-                } else {
-                    result.push(data);
-                }
-            }
-
-            await copy(result);
+            const results = await getData(uris);
+            await copy(results);
         },
         () => true,
     );
@@ -202,8 +172,10 @@ async function main(): Promise<void> {
         'copyTrack',
         (uris) => uris.length === 1 && Spicetify.URI.isTrack(uris[0]),
     );
-    createSubmenu('copyTracks', (uris) =>
-        uris.every((uri) => Spicetify.URI.isTrack(uri)),
+    createSubmenu(
+        'copyTracks',
+        (uris) =>
+            uris.length > 1 && uris.every((uri) => Spicetify.URI.isTrack(uri)),
     );
     createSubmenu(
         'copyAlbum',
