@@ -16,6 +16,15 @@ export type Props = Spicetify.ReactComponent.TextComponentProps & {
         | 'h6'
         | 'small'
         | 'li';
+    fontSize?:
+        | 'xx-small'
+        | 'x-small'
+        | 'small'
+        | 'medium'
+        | 'large'
+        | 'x-large'
+        | 'xx-large'
+        | 'xxx-large';
 
     className?: string;
     style?: React.CSSProperties;

@@ -1,6 +1,6 @@
 import styles from '../../../css/app.module.scss';
 import React from 'react';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 
 export type Props = {
     label: string;

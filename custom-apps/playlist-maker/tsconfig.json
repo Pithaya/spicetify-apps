@@ -2,6 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./dist",
+        "resolveJsonModule": true
     },
-    "include": ["./src/**/*", "../../libs/shared/src/types/**/*"]
+    "include": [
+        "./src/**/*",
+        "../../libs/shared/src/types/**/*",
+        "./scripts/**/*"
+    ]
 }

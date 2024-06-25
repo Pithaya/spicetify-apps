@@ -10,7 +10,7 @@ import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/artists`;
 
-export const MAX_GET_MULTIPLE_ARTISTS_IDS = 100;
+export const MAX_GET_MULTIPLE_ARTISTS_IDS = 50;
 
 /**
  * Get Spotify catalog information for a single artist identified by their unique Spotify ID.

@@ -1,7 +1,11 @@
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
+import type { AudioAnalysis } from '@spotify-web-api/models/audio-analysis';
 
-export type Track = LibraryAPITrack | LocalTrack;
+export type Track = (LibraryAPITrack | LocalTrack) & {
+    genres?: Set<string>;
+    analysis?: AudioAnalysis;
+};
 
 // TODO: Keep cache of results
 export abstract class NodeProcessor {

@@ -11,7 +11,7 @@ import { ArtistSelectionMenu } from './ArtistSelectionMenu';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { addToQueuePath } from '../icons/icons';
 import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
 import type { LibraryAPI } from '@shared/platform/library';

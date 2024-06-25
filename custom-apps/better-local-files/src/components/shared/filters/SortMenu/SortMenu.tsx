@@ -9,7 +9,7 @@ import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constan
 import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
-import { SpotifyIcon } from '../../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { MenuItemHeading } from '../../menus/MenuItemHeading';
 import { MenuItemLabel } from '../../menus/MenuItemLabel';
 

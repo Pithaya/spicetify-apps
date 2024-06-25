@@ -11,10 +11,13 @@
         "apply": "spicetify config custom_apps playlist-maker && spicetify apply",
         "unapply": "spicetify config custom_apps playlist-maker- && spicetify apply",
         "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
-        "format": "npx prettier --write src/"
+        "format": "npx prettier --write src/",
+        "generate-genres": "npx esrun scripts/generate-genres.ts"
     },
     "license": "MIT",
     "devDependencies": {
+        "@types/jsdom": "^21.1.7",
+        "jsdom": "^24.1.0",
         "lucide-react": "^0.396.0",
         "reactflow": "^11.11.3",
         "spcr-whats-new": "^1.0.1",
