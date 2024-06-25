@@ -56,7 +56,7 @@ export function Sidenav(): JSX.Element {
             <TextComponent elementType="h1">Filters</TextComponent>
             <hr />
             <ul>
-                <TextComponent elementType="li">Genre</TextComponent>
+                <SidenavItem label="Genre" nodeType="genre" />
             </ul>
 
             <TextComponent elementType="h1">Processing</TextComponent>

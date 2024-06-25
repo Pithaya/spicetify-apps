@@ -6,9 +6,18 @@ import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-s
 import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
 import { MergeProcessor } from '../models/nodes/processing/merge-processor';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
+import {
+    type GenreFilterData,
+    GenreProcessor,
+} from '../models/nodes/filter/genre-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): any {
     switch (nodeType) {
+        case 'genre':
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            return {
+                genres: [],
+            } as GenreFilterData;
         default:
             return {};
     }
@@ -83,6 +92,8 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
             return new MergeProcessor(incomers.map((node) => node.id));
         case 'deduplicate':
             return new DeduplicateProcessor(incomers.map((node) => node.id));
+        case 'genre':
+            return new GenreProcessor(incomers[0].id, node.data);
         default:
             throw new Error(`Unknown node type: ${node.type}`);
     }

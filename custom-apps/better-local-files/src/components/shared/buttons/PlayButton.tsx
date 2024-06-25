@@ -1,6 +1,6 @@
 import React from 'react';
 import { getTranslation } from '../../../utils/translations.utils';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 
 export type Props = {
     size: Spicetify.ReactComponent.ButtonProps['buttonSize'];

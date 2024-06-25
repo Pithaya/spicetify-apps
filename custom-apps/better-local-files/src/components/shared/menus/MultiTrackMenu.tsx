@@ -5,7 +5,7 @@ import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { addToQueuePath } from '../icons/icons';
 import type { PlayerAPI } from '@shared/platform/player';
 

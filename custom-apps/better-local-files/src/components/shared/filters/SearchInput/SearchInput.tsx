@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Search } from 'lucide-react';
 import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
 import { useObservableRef, useSubscription } from 'observable-hooks';
-import { SpotifyIcon } from '../../icons/SpotifyIcon';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 
 export type Props = {
     search: string;
