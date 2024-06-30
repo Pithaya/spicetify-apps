@@ -1,12 +1,9 @@
-import type { LibraryAPITrack } from '@shared/platform/library';
-import type { LocalTrack } from '@shared/platform/local-files';
 import useAppStore from '../../store/store';
+import type { Track } from '../track';
 
 export type BaseNodeData = {
     isExecuting: boolean;
 };
-
-export type Track = LibraryAPITrack | LocalTrack;
 
 // TODO: Keep cache of results
 

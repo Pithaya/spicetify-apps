@@ -13,6 +13,7 @@ import {
     type GenreFilterData,
     GenreProcessor,
 } from '../models/nodes/filter/genre-processor';
+import useAppStore from '../store/store';
 
 export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
     let data: BaseNodeData = { isExecuting: false };
@@ -34,6 +35,7 @@ export async function executeWorkflow(
     edges: Edge[],
 ): Promise<void> {
     console.log('Executing workflow with nodes:', nodes);
+    const setResult = useAppStore.getState().setResult;
 
     const results = nodes.filter(
         (node) => (node.type as CustomNodeType) === 'result',
@@ -89,6 +91,8 @@ export async function executeWorkflow(
     console.log('All processors : ', allProcessors);
     const finalResult = await resultProcessor.getResults(allProcessors);
     console.log('Final result : ', finalResult);
+
+    setResult(finalResult);
 }
 
 function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {

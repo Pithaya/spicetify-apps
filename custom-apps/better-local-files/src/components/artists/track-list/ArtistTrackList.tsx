@@ -1,6 +1,6 @@
 import React from 'react';
 import { playContext, playTrack } from '../../../utils/player.utils';
-import { PlayButton } from '../../shared/buttons/PlayButton';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import { MoreButton } from '../../shared/buttons/MoreButton';
 import { getTranslation } from '@shared/utils/translations.utils';
 import type { TrackListHeaderOption } from '@shared/components/track-list/models/sort-option';

@@ -1,4 +1,5 @@
-import { type Track, NodeProcessor } from '../node-processor';
+import { type Track } from '../../track';
+import { NodeProcessor } from '../node-processor';
 
 /**
  * Final node in the workflow.

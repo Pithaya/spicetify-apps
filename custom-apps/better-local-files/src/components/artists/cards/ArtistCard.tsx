@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { navigateTo } from '../../../utils/history.utils';
-import { PlayButton } from '../../shared/buttons/PlayButton';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
 import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
