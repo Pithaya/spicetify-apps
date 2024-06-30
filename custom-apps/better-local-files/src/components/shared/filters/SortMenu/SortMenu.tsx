@@ -1,14 +1,14 @@
 import React from 'react';
 import {
     displayIcons,
+    type HeaderKey,
     type DisplayType,
     type SelectedSortOption,
     type SortOption,
-} from 'custom-apps/better-local-files/src/models/sort-option';
+} from '@shared/components/track-list/models/sort-option';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
-import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { MenuItemHeading } from '../../menus/MenuItemHeading';
 import { MenuItemLabel } from '../../menus/MenuItemLabel';

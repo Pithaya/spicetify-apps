@@ -1,13 +1,18 @@
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
+import type { ITrack } from './models/interfaces';
 import { TrackListRowTitle } from './TrackListRowTitle';
-import { getImageUrlFromAlbum } from 'custom-apps/better-local-files/src/utils/local-tracks.utils';
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 
 type Props = {
-    track: Track;
+    track: ITrack;
     withArtists: boolean;
+    onArtistClick: (artistUri: string) => void;
 };
 
+/**
+ * Title section of a track list row, with an image.
+ * Shows the image, the track name and artists.
+ */
 export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
     const imageFallback = (
         <div className="main-trackList-rowImage main-trackList-rowImageFallback">
@@ -24,7 +29,7 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
         </div>
     );
 
-    const imageUrl = getImageUrlFromAlbum(props.track.localTrack.album);
+    const imageUrl = getImageUrlFromAlbum(props.track.backingTrack.album);
 
     return (
         <>
@@ -49,6 +54,7 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
             <TrackListRowTitle
                 track={props.track}
                 withArtists={props.withArtists}
+                onArtistClick={props.onArtistClick}
             />
         </>
     );

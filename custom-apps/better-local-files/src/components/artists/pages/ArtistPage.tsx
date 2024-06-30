@@ -3,7 +3,7 @@ import { navigateTo } from '../../../utils/history.utils';
 import { ArtistTrackList } from '../track-list/ArtistTrackList';
 import { Header, HeaderImage } from '../../shared/Header';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
 import type { History } from '@shared/platform/history';

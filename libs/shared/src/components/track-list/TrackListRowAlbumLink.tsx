@@ -1,13 +1,15 @@
-import { ALBUM_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
+import type { ITrack } from './models/interfaces';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 type Props = {
-    track: Track;
+    track: ITrack;
+    onAlbumClick: (albumUri: string) => void;
 };
 
+/**
+ * Section of a track list row that shows the track's album.
+ */
 export function TrackListRowAlbumLink(props: Readonly<Props>): JSX.Element {
     return (
         <TextComponent variant="mesto">
@@ -17,7 +19,7 @@ export function TrackListRowAlbumLink(props: Readonly<Props>): JSX.Element {
                 href="#"
                 tabIndex={-1}
                 onClick={() => {
-                    navigateTo(ALBUM_ROUTE, props.track.album.uri);
+                    props.onAlbumClick(props.track.album.uri);
                 }}
             >
                 {props.track.album.name}

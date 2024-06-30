@@ -1,15 +1,18 @@
 import React from 'react';
 import { playContext, playTrack } from '../../../utils/player.utils';
 import { PlayButton } from '../../shared/buttons/PlayButton';
-import type { SubTracksList } from '../../shared/track-list/TrackListGrid';
-import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
-import { TrackListRowTitle } from '../../shared/track-list/TrackListRowTitle';
-import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
+import type { SubTracksList } from '@shared/components/track-list/TrackListGrid';
+import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
+import { TrackListRowTitle } from '@shared/components/track-list/TrackListRowTitle';
+import type { TrackListHeaderOption } from '@shared/components/track-list/models/sort-option';
 import { DiscDivider } from './DiscDivider';
 import { MoreButton } from '../../shared/buttons/MoreButton';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
+import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
+import { RowMenu } from '../../shared/menus/RowMenu';
 
 export type Props = {
     albumName: string;
@@ -50,7 +53,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                             size="lg"
                             onClick={() => {
                                 playContext(
-                                    orderedTracks.map((t) => t.localTrack),
+                                    orderedTracks.map((t) => t.backingTrack),
                                 );
                             }}
                         />
@@ -74,7 +77,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                 onPlayTrack={(uri) => {
                     playTrack(
                         uri,
-                        orderedTracks.map((t) => t.localTrack),
+                        orderedTracks.map((t) => t.backingTrack),
                     );
                 }}
                 headers={headers}
@@ -84,10 +87,14 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                             key={track.uri}
                             track={track}
                             withArtists={true}
+                            onArtistClick={(artistUri) => {
+                                navigateTo(ARTIST_ROUTE, artistUri);
+                            }}
                         />,
                     ];
                 }}
                 displayType="list"
+                getRowMenu={(track) => <RowMenu track={track} />}
             ></TrackListGrid>
         </>
     );

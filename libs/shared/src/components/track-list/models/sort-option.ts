@@ -1,4 +1,15 @@
-import type { HeaderKey } from '../constants/constants';
+/**
+ * Possible header keys for sorting.
+ */
+export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';
+
+/**
+ * A track list header.
+ */
+export type TrackListHeaderOption = {
+    key: HeaderKey;
+    label: string;
+};
 
 /**
  * Sort option to display in the sort dropdown.
@@ -26,6 +37,9 @@ export type SelectedSortOption = {
  */
 export type DisplayType = 'list' | 'compact' | 'grid';
 
+/**
+ * Icons for the display types.
+ */
 export const displayIcons: Record<DisplayType, Spicetify.Icon> = {
     list: 'list-view',
     compact: 'menu',

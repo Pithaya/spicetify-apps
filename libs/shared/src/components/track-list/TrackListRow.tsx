@@ -1,5 +1,3 @@
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React, {
     Children,
     type MouseEventHandler,
@@ -8,11 +6,12 @@ import React, {
     useState,
     useEffect,
 } from 'react';
-import { useIntersectionObserver } from '../../../hooks/use-intersection-observer';
-import { RowMenu } from '../menus/RowMenu';
+import { getTranslation } from '@shared/utils/translations.utils';
+import type { ITrack } from './models/interfaces';
+import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
-import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
+import type { DisplayType } from './models/sort-option';
+import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type {
     LibraryAPI,
@@ -21,7 +20,7 @@ import type {
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
-    track: Track;
+    track: ITrack;
     index: number;
     selected: boolean;
     active: boolean;
@@ -44,8 +43,12 @@ export type Props = {
         ) => void;
     };
     displayType: DisplayType;
+    getRowMenu: (track: ITrack) => JSX.Element;
 };
 
+/**
+ * Row for a track in the TrackListGrid.
+ */
 export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const rowRef = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(rowRef);
@@ -175,7 +178,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
         >
             {visible ? (
                 <Spicetify.ReactComponent.RightClickMenu
-                    menu={<RowMenu track={props.track} />}
+                    menu={props.getRowMenu(props.track)}
                 >
                     <div
                         aria-selected={props.selected}
@@ -346,9 +349,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                         <Spicetify.ReactComponent.ContextMenu
                                             trigger="click"
                                             action="toggle"
-                                            menu={
-                                                <RowMenu track={props.track} />
-                                            }
+                                            menu={props.getRowMenu(props.track)}
                                         >
                                             <Spicetify.ReactComponent.ButtonTertiary
                                                 aria-label={getTranslation(

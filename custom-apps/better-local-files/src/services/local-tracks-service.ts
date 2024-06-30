@@ -8,7 +8,7 @@ import { StorageService } from './storage-service';
 import type { CachedAlbum } from '../models/cached-album';
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
 import type { LocalFilesAPI } from '@shared/platform/local-files';
-import { getImageUrlFromAlbum } from '../utils/local-tracks.utils';
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 
 /**
  * A list of tracks with an associated cover.
@@ -269,7 +269,7 @@ export class LocalTracksService {
                 const newAlbum = new Album(
                     albumKey,
                     album.name,
-                    getImageUrlFromAlbum(firstTrack.localTrack.album),
+                    getImageUrlFromAlbum(firstTrack.backingTrack.album),
                 );
 
                 for (const artist of firstTrack.artists) {
@@ -282,12 +282,12 @@ export class LocalTracksService {
                 for (const track of tracksWithCover.tracks) {
                     track.album = newAlbum;
 
-                    if (!newAlbum.discs.has(track.localTrack.discNumber)) {
-                        newAlbum.discs.set(track.localTrack.discNumber, []);
+                    if (!newAlbum.discs.has(track.backingTrack.discNumber)) {
+                        newAlbum.discs.set(track.backingTrack.discNumber, []);
                     }
 
                     newAlbum.discs
-                        .get(track.localTrack.discNumber)
+                        .get(track.backingTrack.discNumber)
                         ?.push(track);
                 }
 
@@ -403,7 +403,7 @@ export class LocalTracksService {
             // For each artist(s), take the album cover of the first track
             for (const tracks of albumTrackMap.values()) {
                 const coverUrl = getImageUrlFromAlbum(
-                    tracks[0].localTrack.album,
+                    tracks[0].backingTrack.album,
                 );
 
                 let image: HTMLImageElement;

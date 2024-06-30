@@ -1,11 +1,12 @@
 import type { LocalTrack } from '@shared/platform/local-files';
 import type { Album } from './album';
 import type { Artist } from './artist';
+import type { ITrack } from '@shared/components/track-list/models/interfaces';
 
 /**
  * A processed local track.
  */
-export class Track {
+export class Track implements ITrack {
     /**
      * Date the track was added to the local file library.
      */
@@ -48,6 +49,10 @@ export class Track {
         return this.localTrack.trackNumber;
     }
 
+    public get backingTrack(): LocalTrack {
+        return this.localTrack;
+    }
+
     /**
      * Create a new instance of the Track class.
      * @param localTrack The backing local track.
@@ -55,7 +60,7 @@ export class Track {
      * @param artists The list of artists for this track.
      */
     constructor(
-        public readonly localTrack: LocalTrack,
+        private readonly localTrack: LocalTrack,
         public album: Album,
         public readonly artists: Artist[],
     ) {}

@@ -1,4 +1,4 @@
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import React from 'react';
 
 type Props = {

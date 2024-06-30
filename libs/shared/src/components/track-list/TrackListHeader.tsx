@@ -1,10 +1,12 @@
 import React from 'react';
-import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import type { SelectedSortOption } from 'custom-apps/better-local-files/src/models/sort-option';
-import { CaretUp } from '../icons/CaretUp';
-import { CaretDown } from '../icons/CaretDown';
-import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import type {
+    HeaderKey,
+    TrackListHeaderOption,
+    SelectedSortOption,
+} from './models/sort-option';
+import { CaretUp } from '@shared/icons/CaretUp';
+import { CaretDown } from '@shared/icons/CaretDown';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
@@ -17,6 +19,9 @@ export type Props = {
 // < 800px: remove added at
 // < 540px: remove album
 
+/**
+ * Header of a track list grid.
+ */
 export function TrackListHeader(props: Readonly<Props>): JSX.Element {
     function getCaret(): JSX.Element {
         if (props.sortedHeader === undefined) {
