@@ -18,7 +18,7 @@ for (const genre of Array.from(genreContainer?.children ?? [])) {
         currentGenre = genre.textContent ?? '';
         genres[currentGenre] = [];
     } else if (genre.tagName === 'UL') {
-        for (const subGenre of Array.from(genre.children)) {
+        for (const subGenre of Array.from(genre.children).slice(0, -1)) {
             genres[currentGenre].push(subGenre.textContent?.trim() ?? '');
         }
     }

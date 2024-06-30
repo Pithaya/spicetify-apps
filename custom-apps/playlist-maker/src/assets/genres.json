@@ -812,8 +812,7 @@
         "aghani lil-atfal",
         "italian disco",
         "chakma pop",
-        "dogri pop",
-        "Show More"
+        "dogri pop"
     ],
     "Electronic": [
         "electronic",
@@ -1328,8 +1327,7 @@
         "norwegian techno",
         "nice indie",
         "zurich indie",
-        "cinematic dubstep",
-        "Show More"
+        "cinematic dubstep"
     ],
     "Hip Hop": [
         "hip hop",
@@ -1824,8 +1822,7 @@
         "idaho hip hop",
         "vaportrap",
         "sesotho hip hop",
-        "kikuyu gospel",
-        "Show More"
+        "kikuyu gospel"
     ],
     "R&B": [
         "r&b",
@@ -1949,8 +1946,7 @@
         "finnish soul",
         "mento",
         "language",
-        "deep southern soul",
-        "Show More"
+        "deep southern soul"
     ],
     "Latin": [
         "latin",
@@ -2541,8 +2537,7 @@
         "dark electro-industrial",
         "jazz caraibes",
         "guitarra portuguesa",
-        "grunge brasileiro",
-        "Show More"
+        "grunge brasileiro"
     ],
     "Rock": [
         "rock",
@@ -3279,8 +3274,7 @@
         "belgian post-rock",
         "deep swedish rock",
         "aberdeen indie",
-        "brazilian rockabilly",
-        "Show More"
+        "brazilian rockabilly"
     ],
     "Metal": [
         "metal",
@@ -3862,8 +3856,7 @@
         "wisconsin metal",
         "metal noir quebecois",
         "african metal",
-        "bulgarian metal",
-        "Show More"
+        "bulgarian metal"
     ],
     "Country": [
         "country",
@@ -4039,8 +4032,7 @@
         "wyoming roots",
         "el paso indie",
         "san marcos tx indie",
-        "musica timor-leste",
-        "Show More"
+        "musica timor-leste"
     ],
     "Folk/Acoustic": [
         "folk",
@@ -4340,8 +4332,7 @@
         "afrikaans folk",
         "croatian folk",
         "yorkshire folk",
-        "cornish folk",
-        "Show More"
+        "cornish folk"
     ],
     "Classical": [
         "classical",
@@ -4685,8 +4676,7 @@
         "handbells",
         "youth orchestra",
         "xenharmonic",
-        "women's choir",
-        "Show More"
+        "women's choir"
     ],
     "Jazz": [
         "jazz",
@@ -4884,8 +4874,7 @@
         "accordion",
         "dortmund indie",
         "electroacoustic improvisation",
-        "estonian jazz",
-        "Show More"
+        "estonian jazz"
     ],
     "Blues": [
         "blues",
@@ -4963,8 +4952,7 @@
         "indonesian blues",
         "deep delta blues",
         "belgian punk",
-        "fife and drum",
-        "Show More"
+        "fife and drum"
     ],
     "Easy listening": [
         "easy listening",
@@ -5082,8 +5070,7 @@
         "animal singing",
         "drama",
         "trad jazz catala",
-        "salon music",
-        "Show More"
+        "salon music"
     ],
     "New age": [
         "new age",
@@ -5299,8 +5286,7 @@
         "musica madeirense",
         "sound collage",
         "glass",
-        "hypnosis",
-        "Show More"
+        "hypnosis"
     ],
     "World/Traditional": [
         "folkmusik",
@@ -5655,7 +5641,6 @@
         "palestinian traditional",
         "israeli traditional",
         "cambodian traditional",
-        "folklore quebecois",
-        "Show More"
+        "folklore quebecois"
     ]
 }
