@@ -7,14 +7,20 @@ import { MergeNode } from '../../components/nodes/processing/MergeNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
 import { GenreNode } from '../../components/nodes/filter/GenreNode';
 import { PlaylistSourceNode } from '../../components/nodes/sources/Playlist/PlaylistSourceNode';
+import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 
 export type CustomNodeType =
+    // Sources
     | 'likedSongsSource'
     | 'localTracksSource'
     | 'playlistSource'
+    // Filters
+    | 'genre'
+    // Processing
     | 'merge'
     | 'deduplicate'
-    | 'genre'
+    | 'shuffle'
+    // Result
     | 'result';
 
 export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
@@ -25,4 +31,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     deduplicate: DeduplicateNode,
     genre: GenreNode,
     result: ResultNode,
+    shuffle: ShuffleNode,
 };
