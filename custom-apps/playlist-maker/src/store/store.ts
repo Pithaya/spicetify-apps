@@ -15,6 +15,7 @@ import {
 } from 'reactflow';
 import { getDataForNodeType } from '../utils/node-utils';
 import { type CustomNodeType } from '../models/nodes/node-types';
+import { type Track } from '../models/track';
 
 let id = 0;
 const getId = (): string => (++id).toString();
@@ -22,6 +23,7 @@ const getId = (): string => (++id).toString();
 export type AppState = {
     nodes: Node[];
     edges: Edge[];
+    result: Track[];
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
@@ -29,11 +31,13 @@ export type AppState = {
     setEdges: (edges: Edge[]) => void;
     addNode: (nodeType: CustomNodeType, position: XYPosition) => void;
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
+    setResult: (tracks: Track[]) => void;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
     nodes: [],
     edges: [],
+    result: [],
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes),
@@ -75,6 +79,9 @@ export const useAppStore = create<AppState>((set, get) => ({
                 return node;
             }),
         });
+    },
+    setResult: (tracks: Track[]) => {
+        set({ result: tracks });
     },
 }));
 

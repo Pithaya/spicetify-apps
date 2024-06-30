@@ -1,9 +1,6 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import {
-    type Track,
-    NodeProcessor,
-    type BaseNodeData,
-} from '../node-processor';
+import { type Track } from '../../track';
+import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import type { LibraryAPI } from '@shared/platform/library';
 
 export type LikedSongsData = BaseNodeData & {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { playContext, playTrack } from '../../../utils/player.utils';
-import { PlayButton } from '../../shared/buttons/PlayButton';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import type { SubTracksList } from '@shared/components/track-list/TrackListGrid';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
 import { TrackListRowTitle } from '@shared/components/track-list/TrackListRowTitle';

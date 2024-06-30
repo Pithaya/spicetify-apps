@@ -16,7 +16,7 @@ import {
 } from 'custom-apps/better-local-files/src/constants/constants';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
-import { PlayButton } from '../../shared/buttons/PlayButton';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
 import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
 import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';

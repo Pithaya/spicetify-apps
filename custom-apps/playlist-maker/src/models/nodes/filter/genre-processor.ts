@@ -1,8 +1,5 @@
-import {
-    type Track,
-    NodeProcessor,
-    type BaseNodeData,
-} from '../node-processor';
+import { type Track } from '../../track';
+import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { getId } from '@shared/utils/uri-utils';
 import {
