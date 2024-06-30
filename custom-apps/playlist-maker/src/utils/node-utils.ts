@@ -18,6 +18,7 @@ import {
     PlaylistSourceProcessor,
     type PlaylistData,
 } from '../models/nodes/sources/my-playlists-source-processor';
+import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
     let data: BaseNodeData = { isExecuting: false };
@@ -132,6 +133,8 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
             );
         case 'genre':
             return new GenreProcessor(node.id, incomers[0].id, node.data);
+        case 'shuffle':
+            return new ShuffleProcessor(node.id, incomers[0].id);
         default:
             throw new Error(`Unknown node type: ${node.type}`);
     }

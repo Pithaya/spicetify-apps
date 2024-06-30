@@ -63,6 +63,7 @@ export function Sidenav(): JSX.Element {
             <ul>
                 <SidenavItem label="Merge" nodeType="merge" />
                 <SidenavItem label="Deduplicate" nodeType="deduplicate" />
+                <SidenavItem label="Shuffle" nodeType="shuffle" />
             </ul>
 
             <TextComponent elementType="h1">Result</TextComponent>
