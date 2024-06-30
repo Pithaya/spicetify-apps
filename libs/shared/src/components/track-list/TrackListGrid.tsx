@@ -1,30 +1,28 @@
-import styles from './TrackListGrid.module.scss';
 import React, { useMemo, useState } from 'react';
+import styles from './TrackListGrid.module.scss';
 import { TrackListRow } from './TrackListRow';
 import { TrackListHeader } from './TrackListHeader';
 import type { Props as TrackListHeaderProps } from './TrackListHeader';
-import { useCurrentPlayerTrackUri } from 'custom-apps/better-local-files/src/hooks/use-current-uri';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import {
-    type PlayStatus,
-    usePlayStatus,
-} from 'custom-apps/better-local-files/src/hooks/use-play-status';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
-import type { DisplayType } from 'custom-apps/better-local-files/src/models/sort-option';
+import { useCurrentPlayerTrackUri } from '@shared/hooks/use-current-uri';
+import { type PlayStatus, usePlayStatus } from '@shared/hooks/use-play-status';
+import { getTranslation } from '@shared/utils/translations.utils';
+import type { DisplayType } from '@shared/components/track-list/models/sort-option';
+import type { ITrack } from './models/interfaces';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
-    tracks: Track[];
+    tracks: ITrack[];
 };
 
 export type Props = {
-    tracks: Track[];
+    tracks: ITrack[];
     subtracks: SubTracksList[];
     gridLabel: string;
     useTrackNumber: boolean;
     onPlayTrack: (uri: string) => void;
-    getRowContent: (track: Track) => JSX.Element[];
+    getRowContent: (track: ITrack) => JSX.Element[];
     displayType: DisplayType;
+    getRowMenu: (track: ITrack) => JSX.Element;
 } & TrackListHeaderProps;
 
 /**
@@ -34,11 +32,11 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
     const activeTrackUri = useCurrentPlayerTrackUri();
     const playStatus: PlayStatus = usePlayStatus();
 
-    const [selectedTracks, setSelectedTracks] = useState<Map<string, Track>>(
-        new Map<string, Track>(),
+    const [selectedTracks, setSelectedTracks] = useState<Map<string, ITrack>>(
+        new Map<string, ITrack>(),
     );
     const dragHandler = useMemo(() => {
-        const mapAsArray: [string, Track][] = Array.from(
+        const mapAsArray: [string, ITrack][] = Array.from(
             selectedTracks.entries(),
         );
 
@@ -63,7 +61,7 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
 
     function handleClick(
         e: React.MouseEvent<HTMLDivElement>,
-        track: Track,
+        track: ITrack,
     ): void {
         // TODO: Shift only adds tracks to the selection,
         // Between the last selected track and the clicked track
@@ -76,10 +74,10 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                 selectedTracks.set(track.uri, track);
             }
 
-            setSelectedTracks(new Map<string, Track>(selectedTracks));
+            setSelectedTracks(new Map<string, ITrack>(selectedTracks));
         } else {
             // Simple click sets one track
-            setSelectedTracks(new Map<string, Track>([[track.uri, track]]));
+            setSelectedTracks(new Map<string, ITrack>([[track.uri, track]]));
         }
     }
 
@@ -129,6 +127,7 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                             }}
                             dragHandler={dragHandler}
                             displayType={props.displayType}
+                            getRowMenu={props.getRowMenu}
                         >
                             {props.getRowContent(track)}
                         </TrackListRow>
@@ -161,6 +160,7 @@ export function TrackListGrid(props: Readonly<Props>): JSX.Element {
                                         }}
                                         dragHandler={dragHandler}
                                         displayType={props.displayType}
+                                        getRowMenu={props.getRowMenu}
                                     >
                                         {props.getRowContent(track)}
                                     </TrackListRow>

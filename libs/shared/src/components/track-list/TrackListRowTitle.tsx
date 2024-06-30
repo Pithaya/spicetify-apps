@@ -1,14 +1,17 @@
-import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
+import type { ITrack } from './models/interfaces';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 type Props = {
-    track: Track;
+    track: ITrack;
     withArtists: boolean;
+    onArtistClick: (artistUri: string) => void;
 };
 
+/**
+ * Title section of a track list row.
+ * Shows the track name and artists.
+ */
 export function TrackListRowTitle(props: Readonly<Props>): JSX.Element {
     return (
         <div className="main-trackList-rowMainContent">
@@ -32,7 +35,7 @@ export function TrackListRowTitle(props: Readonly<Props>): JSX.Element {
                                 href="#"
                                 tabIndex={-1}
                                 onClick={() => {
-                                    navigateTo(ARTIST_ROUTE, a.uri);
+                                    props.onArtistClick(a.uri);
                                 }}
                                 key={a.uri}
                             >

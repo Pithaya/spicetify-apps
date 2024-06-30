@@ -4,14 +4,14 @@ import { AlbumCard } from '../cards/AlbumCard';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import type {
+    HeaderKey,
     SelectedSortOption,
     SortOption,
     SortOrder,
-} from 'custom-apps/better-local-files/src/models/sort-option';
+} from '@shared/components/track-list/models/sort-option';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
-import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 
 export function AlbumsPage(): JSX.Element {
@@ -78,7 +78,7 @@ export function AlbumsPage(): JSX.Element {
     }
 
     function playAlbum(album: Album): void {
-        playContext(album.getTracks().map((t) => t.localTrack));
+        playContext(album.getTracks().map((t) => t.backingTrack));
     }
 
     return (

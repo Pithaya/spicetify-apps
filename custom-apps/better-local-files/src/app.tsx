@@ -8,7 +8,7 @@ import { AlbumPage } from './components/albums/pages/AlbumPage';
 import { AlbumsPage } from './components/albums/pages/AlbumsPage';
 import { ArtistPage } from './components/artists/pages/ArtistPage';
 import { ArtistsPage } from './components/artists/pages/ArtistsPage';
-import { LoadingIcon } from './components/shared/icons/Loading';
+import { LoadingIcon } from '@shared/icons/Loading';
 import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
 import { TracksPage } from './components/tracks/pages/TracksPage';
 import {

@@ -1,3 +1,4 @@
+import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
 
 /**
@@ -5,6 +6,8 @@ import type { LocalTrack } from '@shared/platform/local-files';
  * @param album The album.
  * @returns The image url.
  */
-export function getImageUrlFromAlbum(album: LocalTrack['album']): string {
+export function getImageUrlFromAlbum(
+    album: LocalTrack['album'] | LibraryAPITrack['album'],
+): string {
     return album.images.length === 0 ? '' : album.images[0].url ?? '';
 }

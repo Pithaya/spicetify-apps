@@ -1,13 +1,15 @@
-import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import React from 'react';
+import type { ITrack } from './models/interfaces';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 type Props = {
-    track: Track;
+    track: ITrack;
+    onArtistClick: (artistUri: string) => void;
 };
 
+/**
+ * Section of a track list row that shows the track's artists.
+ */
 export function TrackListRowArtistLink(props: Readonly<Props>): JSX.Element {
     return (
         <TextComponent className="standalone-ellipsis-one-line" variant="mesto">
@@ -18,7 +20,7 @@ export function TrackListRowArtistLink(props: Readonly<Props>): JSX.Element {
                         href="#"
                         tabIndex={-1}
                         onClick={() => {
-                            navigateTo(ARTIST_ROUTE, a.uri);
+                            props.onArtistClick(a.uri);
                         }}
                         key={a.uri}
                     >

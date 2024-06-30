@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react';
 import type { LibraryAPI } from '@shared/platform/library';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { useEffect, useState } from 'react';
 
 export function useIsInLibrary(
     uri: string,

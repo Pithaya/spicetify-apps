@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { Folder } from 'lucide-react';
 import { Header } from '../../shared/Header';
 import { TrackList } from '../track-list/TrackList';
