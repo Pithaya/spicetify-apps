@@ -21,9 +21,9 @@ export class LikedSongsSourceProcessor extends NodeProcessor {
     }
 
     public override async getResults(): Promise<Track[]> {
-        const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
-
         this.setExecuting(true);
+
+        const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
 
         let { offset, limit, filter } = this.data;
 

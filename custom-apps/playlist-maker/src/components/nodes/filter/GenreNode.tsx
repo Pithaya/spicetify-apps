@@ -8,48 +8,14 @@ import { NodeContent } from '../shared/NodeContent';
 import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 import { Chip } from '@shared/components/ui/Chip/Chip';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import { ChevronDown } from 'lucide-react';
 import useAppStore from 'custom-apps/playlist-maker/src/store/store';
 import type { GenreFilterData } from 'custom-apps/playlist-maker/src/models/nodes/filter/genre-processor';
+import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
 
 const genres: Record<string, string[]> = genresJson;
 
 export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
     const updateNodeData = useAppStore((state) => state.updateNodeData);
-
-    const menu = (
-        <Spicetify.ReactComponent.Menu className={'main-contextMenu-menu'}>
-            {Object.keys(genres).map((genre) => (
-                <Spicetify.ReactComponent.MenuItem
-                    key={genre}
-                    onClick={() => {
-                        if (props.data.genres.includes(genre)) {
-                            updateNodeData<GenreFilterData>(props.id, {
-                                genres: props.data.genres.filter(
-                                    (g) => g !== genre,
-                                ),
-                            });
-                        } else {
-                            updateNodeData<GenreFilterData>(props.id, {
-                                genres: [...props.data.genres, genre],
-                            });
-                        }
-                    }}
-                    leadingIcon={
-                        props.data.genres.includes(genre) ? (
-                            <SpotifyIcon
-                                icon="check"
-                                iconSize={12}
-                                semanticColor="textBrightAccent"
-                            />
-                        ) : undefined
-                    }
-                >
-                    <span>{genre}</span>
-                </Spicetify.ReactComponent.MenuItem>
-            ))}
-        </Spicetify.ReactComponent.Menu>
-    );
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -59,7 +25,11 @@ export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent elementType="p" paddingBottom="1rem">
+                <TextComponent
+                    elementType="p"
+                    paddingBottom="1rem"
+                    weight="bold"
+                >
                     Genres
                 </TextComponent>
                 <div className={`${styles['chip-container']}`}>
@@ -84,19 +54,27 @@ export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
                     ))}
                 </div>
 
-                <Spicetify.ReactComponent.ContextMenu
-                    trigger="click"
-                    action="toggle"
-                    placement="bottom"
-                    menu={menu}
-                >
-                    <div
-                        className={`main-dropDown-dropDown ${styles['dropdown']} nodrag`}
-                    >
-                        <span>Select genres</span>
-                        <ChevronDown size={14} />
-                    </div>
-                </Spicetify.ReactComponent.ContextMenu>
+                <MultiSelect
+                    selectLabel="Select genres"
+                    items={Object.keys(genres).map((genre) => ({
+                        id: genre,
+                        label: genre,
+                    }))}
+                    selectedItems={props.data.genres}
+                    onItemClicked={(genre) => {
+                        if (props.data.genres.includes(genre)) {
+                            updateNodeData<GenreFilterData>(props.id, {
+                                genres: props.data.genres.filter(
+                                    (g) => g !== genre,
+                                ),
+                            });
+                        } else {
+                            updateNodeData<GenreFilterData>(props.id, {
+                                genres: [...props.data.genres, genre],
+                            });
+                        }
+                    }}
+                />
             </NodeContent>
             <Handle
                 type="target"

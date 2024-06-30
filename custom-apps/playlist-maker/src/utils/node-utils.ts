@@ -14,6 +14,10 @@ import {
     GenreProcessor,
 } from '../models/nodes/filter/genre-processor';
 import useAppStore from '../store/store';
+import {
+    PlaylistSourceProcessor,
+    type PlaylistData,
+} from '../models/nodes/sources/my-playlists-source-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
     let data: BaseNodeData = { isExecuting: false };
@@ -22,6 +26,15 @@ export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
         const newData: GenreFilterData = {
             ...data,
             genres: [],
+        };
+
+        data = newData;
+    }
+
+    if (nodeType === 'playlistSource') {
+        const newData: PlaylistData = {
+            ...data,
+            playlistUri: '',
         };
 
         data = newData;
@@ -89,10 +102,14 @@ export async function executeWorkflow(
     }
 
     console.log('All processors : ', allProcessors);
-    const finalResult = await resultProcessor.getResults(allProcessors);
-    console.log('Final result : ', finalResult);
+    try {
+        const finalResult = await resultProcessor.getResults(allProcessors);
+        console.log('Final result : ', finalResult);
 
-    setResult(finalResult);
+        setResult(finalResult);
+    } catch (e) {
+        console.error('Error while executing workflow:', e);
+    }
 }
 
 function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
@@ -101,6 +118,8 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
             return new LikedSongsSourceProcessor(node.id, node.data);
         case 'localTracksSource':
             return new LocalTracksSourceProcessor(node.id, node.data);
+        case 'playlistSource':
+            return new PlaylistSourceProcessor(node.id, node.data);
         case 'merge':
             return new MergeProcessor(
                 node.id,

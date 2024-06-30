@@ -4,6 +4,7 @@ type Props = {
     inputId: string;
     value: boolean;
     onChange: (value: boolean) => void;
+    label?: string;
 };
 
 export function CheckboxComponent(props: Readonly<Props>): JSX.Element {
@@ -19,7 +20,7 @@ export function CheckboxComponent(props: Readonly<Props>): JSX.Element {
                 }}
             />
             <span className="x-toggle-indicatorWrapper">
-                <span className="x-toggle-indicator"></span>
+                <span className="x-toggle-indicator">{props.label}</span>
             </span>
         </label>
     );

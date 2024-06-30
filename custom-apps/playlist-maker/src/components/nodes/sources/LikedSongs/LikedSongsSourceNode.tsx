@@ -21,7 +21,9 @@ export function LikedSongsSourceNode(
                 textColor="black"
             />
             <NodeContent className={styles['node-content']}>
-                <TextComponent paddingBottom="8px">Liked songs</TextComponent>
+                <TextComponent paddingBottom="8px" weight="bold">
+                    Liked songs
+                </TextComponent>
                 <label>
                     <Spicetify.ReactComponent.TooltipWrapper
                         label={'Search filter to apply'}

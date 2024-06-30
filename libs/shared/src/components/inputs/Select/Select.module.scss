@@ -1,0 +1,17 @@
+.dropdown {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 15px;
+    cursor: default;
+    max-width: 300px;
+}
+
+.dropdown-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
+}

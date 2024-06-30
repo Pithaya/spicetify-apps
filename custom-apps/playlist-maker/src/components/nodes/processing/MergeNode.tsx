@@ -15,7 +15,9 @@ export function MergeNode(props: NodeProps<BaseNodeData>): JSX.Element {
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent>Merge</TextComponent>
+                <TextComponent paddingBottom="8px" weight="bold">
+                    Merge
+                </TextComponent>
             </NodeContent>
             <Handle
                 type="target"

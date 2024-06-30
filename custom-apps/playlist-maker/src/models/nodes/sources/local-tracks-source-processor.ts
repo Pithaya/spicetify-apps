@@ -19,10 +19,10 @@ export class LocalTracksSourceProcessor extends NodeProcessor {
     }
 
     public override async getResults(): Promise<Track[]> {
+        this.setExecuting(true);
+
         const localFilesApi =
             await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
-
-        this.setExecuting(true);
 
         const result = await localFilesApi.getTracks(
             undefined,

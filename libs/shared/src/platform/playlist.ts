@@ -1,3 +1,5 @@
+import type { LibraryAPITrack } from './library';
+
 export type PlaylistParameters = {
     decorateFormatListData?: boolean;
     hydrateCollaboratorsWithMembers?: boolean;
@@ -13,7 +15,7 @@ export type QueryParameters = {
 
 export type Playlist = {
     contents: {
-        items: unknown[];
+        items: LibraryAPITrack[];
         limit: number;
         offset: number;
         totalLength: number;
@@ -109,7 +111,7 @@ export type PlaylistAPI = {
 
     getContents: (
         playlistUri: string,
-        queryParameters: QueryParameters,
+        queryParameters?: Partial<QueryParameters>,
     ) => Promise<Playlist['contents']>;
 
     getPlaylist: (
