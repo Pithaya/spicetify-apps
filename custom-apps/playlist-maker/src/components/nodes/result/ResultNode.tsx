@@ -16,7 +16,9 @@ export function ResultNode(props: NodeProps<BaseNodeData>): JSX.Element {
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent>Final playlist</TextComponent>
+                <TextComponent paddingBottom="8px" weight="bold">
+                    Final playlist
+                </TextComponent>
             </NodeContent>
             <SingleConnectionHandle
                 type="target"

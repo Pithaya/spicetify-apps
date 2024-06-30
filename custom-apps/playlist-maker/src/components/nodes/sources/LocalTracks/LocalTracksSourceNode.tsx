@@ -21,7 +21,9 @@ export function LocalTracksSourceNode(
                 textColor="black"
             />
             <NodeContent className={styles['node-content']}>
-                <TextComponent paddingBottom="8px">Local tracks</TextComponent>
+                <TextComponent paddingBottom="8px" weight="bold">
+                    Local tracks
+                </TextComponent>
                 <label>
                     <Spicetify.ReactComponent.TooltipWrapper
                         label={'Search filter to apply'}

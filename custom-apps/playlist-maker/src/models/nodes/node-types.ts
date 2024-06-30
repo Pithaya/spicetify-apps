@@ -6,10 +6,12 @@ import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTrack
 import { MergeNode } from '../../components/nodes/processing/MergeNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
 import { GenreNode } from '../../components/nodes/filter/GenreNode';
+import { PlaylistSourceNode } from '../../components/nodes/sources/Playlist/PlaylistSourceNode';
 
 export type CustomNodeType =
     | 'likedSongsSource'
     | 'localTracksSource'
+    | 'playlistSource'
     | 'merge'
     | 'deduplicate'
     | 'genre'
@@ -18,6 +20,7 @@ export type CustomNodeType =
 export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     likedSongsSource: LikedSongsSourceNode,
     localTracksSource: LocalTracksSourceNode,
+    playlistSource: PlaylistSourceNode,
     merge: MergeNode,
     deduplicate: DeduplicateNode,
     genre: GenreNode,

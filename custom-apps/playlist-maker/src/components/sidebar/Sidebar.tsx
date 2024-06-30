@@ -49,8 +49,7 @@ export function Sidenav(): JSX.Element {
             <ul>
                 <SidenavItem label="Liked songs" nodeType="likedSongsSource" />
                 <SidenavItem label="Local files" nodeType="localTracksSource" />
-
-                <TextComponent elementType="li">Playlist</TextComponent>
+                <SidenavItem label="Playlist" nodeType="playlistSource" />
             </ul>
 
             <TextComponent elementType="h1">Filters</TextComponent>

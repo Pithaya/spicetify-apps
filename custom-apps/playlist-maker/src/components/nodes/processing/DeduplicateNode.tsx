@@ -15,7 +15,9 @@ export function DeduplicateNode(props: NodeProps<BaseNodeData>): JSX.Element {
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent>Deduplicate</TextComponent>
+                <TextComponent paddingBottom="8px" weight="bold">
+                    Deduplicate
+                </TextComponent>
             </NodeContent>
             <Handle
                 type="target"
