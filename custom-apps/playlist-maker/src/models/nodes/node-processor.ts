@@ -1,17 +1,12 @@
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
-import type { AudioAnalysis } from '@spotify-web-api/models/audio-analysis';
 import useAppStore from '../../store/store';
 
 export type BaseNodeData = {
     isExecuting: boolean;
 };
 
-// TODO: remove additional properties
-export type Track = (LibraryAPITrack | LocalTrack) & {
-    genres?: Set<string>;
-    analysis?: AudioAnalysis;
-};
+export type Track = LibraryAPITrack | LocalTrack;
 
 // TODO: Keep cache of results
 
