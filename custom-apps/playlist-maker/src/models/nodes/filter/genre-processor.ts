@@ -13,8 +13,6 @@ import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 
 const genres: Record<string, string[]> = genresJson;
 
-// TODO: artist genres cache
-
 export type GenreFilterData = BaseNodeData & {
     genres: string[];
 };
@@ -28,25 +26,40 @@ export class GenreProcessor extends NodeProcessor {
         super(currentNodeId);
     }
 
+    private static readonly artistsGenres: Map<string, string[]> = new Map<
+        string,
+        string[]
+    >();
+
     public override async getResults(
         processors: Record<string, NodeProcessor>,
     ): Promise<Track[]> {
         const result = [];
 
-        const tracks =
+        const incomingTracks =
             await processors[this.sourceNodeId].getResults(processors);
+
+        // Don't keep local tracks as we can't get genres from them
+        const tracks = incomingTracks.filter(
+            (track) =>
+                !Spicetify.URI.isLocalTrack(
+                    Spicetify.URI.fromString(track.uri),
+                ),
+        );
 
         this.setExecuting(true);
 
-        await this.setTracksGenres(tracks);
+        await this.getArtistsGenres(tracks);
 
         for (const track of tracks) {
-            if (track.genres) {
-                for (const genre of this.data.genres) {
-                    if (track.genres.has(genre)) {
-                        result.push(track);
-                        break;
-                    }
+            const trackGenres = track.artists.flatMap(
+                (artist) => GenreProcessor.artistsGenres.get(artist.uri) ?? [],
+            );
+
+            for (const genre of this.data.genres) {
+                if (trackGenres.includes(genre)) {
+                    result.push(track);
+                    break;
                 }
             }
         }
@@ -56,9 +69,14 @@ export class GenreProcessor extends NodeProcessor {
         return result;
     }
 
-    private async setTracksGenres(tracks: Track[]): Promise<void> {
-        const tracksWithoutGenres = tracks.filter((track) => !track.genres);
-        const artists = tracksWithoutGenres.flatMap((track) => track.artists);
+    /**
+     * Get artists genres and add them to the cache.
+     * @param tracks Tracks to process.
+     */
+    private async getArtistsGenres(tracks: Track[]): Promise<void> {
+        const artists = tracks
+            .flatMap((track) => track.artists)
+            .filter((artist) => !GenreProcessor.artistsGenres.has(artist.uri));
         const chunks = splitInChunks(artists, MAX_GET_MULTIPLE_ARTISTS_IDS);
 
         const artistsData = (
@@ -75,35 +93,36 @@ export class GenreProcessor extends NodeProcessor {
             )
         ).flatMap((data) => data);
 
-        const artistsGenres: Map<string, string[]> = new Map<string, string[]>(
-            artistsData.map((data) => [data.uri, data.genres]),
-        );
+        for (const artistData of artistsData) {
+            const artistSubGenres = artistData.genres;
 
-        for (const track of tracksWithoutGenres) {
-            const trackSubgenres = new Set(
-                track.artists.flatMap((a) => artistsGenres.get(a.uri) ?? []),
-            );
-
-            if (trackSubgenres.size === 0) {
+            if (artistSubGenres.length === 0) {
+                GenreProcessor.artistsGenres.set(artistData.uri, []);
                 continue;
             }
 
-            const trackGenres = new Set(
-                Array.from(trackSubgenres)
-                    .map(
-                        (subgenre) =>
-                            Object.entries(genres).find(([genre, subgenres]) =>
-                                subgenres.includes(subgenre),
-                            )?.[0],
-                    )
-                    .filter((genre) => genre !== undefined) as string[],
-            );
+            const artistGenres = new Set<string>();
 
-            if (trackGenres.size === 0) {
-                continue;
+            for (const subgenre of artistSubGenres) {
+                const genre: [string, string[]] | undefined = Object.entries(
+                    genres,
+                ).find(([genre, subgenres]) => subgenres.includes(subgenre));
+
+                if (genre === undefined) {
+                    console.warn(
+                        'Could not find genre for subgenre:',
+                        subgenre,
+                    );
+                    continue;
+                }
+
+                artistGenres.add(genre[0]);
             }
 
-            track.genres = trackGenres;
+            GenreProcessor.artistsGenres.set(
+                artistData.uri,
+                Array.from(artistGenres),
+            );
         }
     }
 }
