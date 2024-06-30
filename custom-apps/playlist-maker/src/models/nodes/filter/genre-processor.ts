@@ -1,4 +1,8 @@
-import { type Track, NodeProcessor } from '../node-processor';
+import {
+    type Track,
+    NodeProcessor,
+    type BaseNodeData,
+} from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { getId } from '@shared/utils/uri-utils';
 import {
@@ -9,16 +13,19 @@ import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 
 const genres: Record<string, string[]> = genresJson;
 
-export type GenreFilterData = {
+// TODO: artist genres cache
+
+export type GenreFilterData = BaseNodeData & {
     genres: string[];
 };
 
 export class GenreProcessor extends NodeProcessor {
     constructor(
-        public readonly sourceNodesId: string,
+        currentNodeId: string,
+        public readonly sourceNodeId: string,
         public readonly data: Readonly<GenreFilterData>,
     ) {
-        super();
+        super(currentNodeId);
     }
 
     public override async getResults(
@@ -27,7 +34,9 @@ export class GenreProcessor extends NodeProcessor {
         const result = [];
 
         const tracks =
-            await processors[this.sourceNodesId].getResults(processors);
+            await processors[this.sourceNodeId].getResults(processors);
+
+        this.setExecuting(true);
 
         await this.setTracksGenres(tracks);
 
@@ -41,6 +50,8 @@ export class GenreProcessor extends NodeProcessor {
                 }
             }
         }
+
+        this.setExecuting(false);
 
         return result;
     }

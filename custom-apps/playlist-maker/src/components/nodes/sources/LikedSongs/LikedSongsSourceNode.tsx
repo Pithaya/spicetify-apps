@@ -14,7 +14,7 @@ export function LikedSongsSourceNode(
     const updateNodeData = useAppStore((state) => state.updateNodeData);
 
     return (
-        <Node>
+        <Node isExecuting={props.data.isExecuting}>
             <NodeHeader
                 label="Source"
                 backgroundColor="cornflowerblue"

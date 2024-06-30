@@ -1,13 +1,14 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
-export function MergeNode(): JSX.Element {
+export function MergeNode(props: NodeProps<BaseNodeData>): JSX.Element {
     return (
-        <Node>
+        <Node isExecuting={props.data.isExecuting}>
             <NodeHeader
                 label="Processing"
                 backgroundColor="greenyellow"

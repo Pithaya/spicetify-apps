@@ -1,8 +1,12 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type Track, NodeProcessor } from '../node-processor';
+import {
+    type Track,
+    NodeProcessor,
+    type BaseNodeData,
+} from '../node-processor';
 import type { LibraryAPI } from '@shared/platform/library';
 
-export type LikedSongsData = {
+export type LikedSongsData = BaseNodeData & {
     offset?: number;
     limit?: number;
     filter?: string;
@@ -12,12 +16,17 @@ export type LikedSongsData = {
  * Source node that returns liked songs.
  */
 export class LikedSongsSourceProcessor extends NodeProcessor {
-    constructor(public readonly data: Readonly<LikedSongsData>) {
-        super();
+    constructor(
+        currentNodeId: string,
+        public readonly data: Readonly<LikedSongsData>,
+    ) {
+        super(currentNodeId);
     }
 
     public override async getResults(): Promise<Track[]> {
         const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
+
+        this.setExecuting(true);
 
         let { offset, limit, filter } = this.data;
 
@@ -31,6 +40,8 @@ export class LikedSongsSourceProcessor extends NodeProcessor {
             offset,
             filters: filter ? [filter] : undefined,
         });
+
+        this.setExecuting(false);
 
         return tracks.items;
     }

@@ -1,7 +1,10 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
-import { type NodeProcessor } from '../models/nodes/node-processor';
+import {
+    type BaseNodeData,
+    type NodeProcessor,
+} from '../models/nodes/node-processor';
 import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
 import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
 import { MergeProcessor } from '../models/nodes/processing/merge-processor';
@@ -11,16 +14,19 @@ import {
     GenreProcessor,
 } from '../models/nodes/filter/genre-processor';
 
-export function getDataForNodeType(nodeType: CustomNodeType): any {
-    switch (nodeType) {
-        case 'genre':
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            return {
-                genres: [],
-            } as GenreFilterData;
-        default:
-            return {};
+export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
+    let data: BaseNodeData = { isExecuting: false };
+
+    if (nodeType === 'genre') {
+        const newData: GenreFilterData = {
+            ...data,
+            genres: [],
+        };
+
+        data = newData;
     }
+
+    return data;
 }
 
 export async function executeWorkflow(
@@ -52,7 +58,10 @@ export async function executeWorkflow(
 
     // Build the graph starting from the result node
     const nodesToVisit: Node[] = [...getIncomers(result, nodes, edges)];
-    const resultProcessor = new ResultNodeProcessor(nodesToVisit[0].id);
+    const resultProcessor = new ResultNodeProcessor(
+        result.id,
+        nodesToVisit[0].id,
+    );
     const allProcessors: Record<string, NodeProcessor> = {
         [result.id]: resultProcessor,
     };
@@ -85,15 +94,21 @@ export async function executeWorkflow(
 function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor {
     switch (node.type as CustomNodeType) {
         case 'likedSongsSource':
-            return new LikedSongsSourceProcessor(node.data);
+            return new LikedSongsSourceProcessor(node.id, node.data);
         case 'localTracksSource':
-            return new LocalTracksSourceProcessor(node.data);
+            return new LocalTracksSourceProcessor(node.id, node.data);
         case 'merge':
-            return new MergeProcessor(incomers.map((node) => node.id));
+            return new MergeProcessor(
+                node.id,
+                incomers.map((node) => node.id),
+            );
         case 'deduplicate':
-            return new DeduplicateProcessor(incomers.map((node) => node.id));
+            return new DeduplicateProcessor(
+                node.id,
+                incomers.map((node) => node.id),
+            );
         case 'genre':
-            return new GenreProcessor(incomers[0].id, node.data);
+            return new GenreProcessor(node.id, incomers[0].id, node.data);
         default:
             throw new Error(`Unknown node type: ${node.type}`);
     }
