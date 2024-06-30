@@ -52,7 +52,7 @@ export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
     );
 
     return (
-        <Node>
+        <Node isExecuting={props.data.isExecuting}>
             <NodeHeader
                 label="Filter"
                 backgroundColor="violet"

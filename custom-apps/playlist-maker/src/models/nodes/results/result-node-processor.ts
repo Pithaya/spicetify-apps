@@ -4,8 +4,11 @@ import { type Track, NodeProcessor } from '../node-processor';
  * Final node in the workflow.
  */
 export class ResultNodeProcessor extends NodeProcessor {
-    constructor(public readonly sourceNodeId: string) {
-        super();
+    constructor(
+        currentNodeId: string,
+        public readonly sourceNodeId: string,
+    ) {
+        super(currentNodeId);
     }
 
     public override async getResults(

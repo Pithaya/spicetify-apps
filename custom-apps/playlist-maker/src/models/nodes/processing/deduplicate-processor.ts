@@ -1,8 +1,11 @@
 import { type Track, NodeProcessor } from '../node-processor';
 
 export class DeduplicateProcessor extends NodeProcessor {
-    constructor(public readonly sourceNodesIds: string[]) {
-        super();
+    constructor(
+        currentNodeId: string,
+        public readonly sourceNodesIds: string[],
+    ) {
+        super(currentNodeId);
     }
 
     public override async getResults(
@@ -14,10 +17,14 @@ export class DeduplicateProcessor extends NodeProcessor {
             tracks.push(...(await processors[id].getResults(processors)));
         }
 
+        this.setExecuting(true);
+
         const uris = tracks.map((track) => track.uri);
         const filtered = tracks.filter(
             (track, index) => !uris.includes(track.uri, index + 1),
         );
+
+        this.setExecuting(false);
 
         return filtered;
     }

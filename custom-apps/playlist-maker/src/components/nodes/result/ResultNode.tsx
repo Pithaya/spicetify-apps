@@ -1,14 +1,15 @@
 import React from 'react';
-import { Position } from 'reactflow';
+import { type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { SingleConnectionHandle } from '../shared/SingleConnectionHandle';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
-export function ResultNode(): JSX.Element {
+export function ResultNode(props: NodeProps<BaseNodeData>): JSX.Element {
     return (
-        <Node>
+        <Node isExecuting={props.data.isExecuting}>
             <NodeHeader
                 label="Result"
                 backgroundColor="orange"

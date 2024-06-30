@@ -1,8 +1,11 @@
 import { type Track, NodeProcessor } from '../node-processor';
 
 export class MergeProcessor extends NodeProcessor {
-    constructor(public readonly sourceNodesIds: string[]) {
-        super();
+    constructor(
+        currentNodeId: string,
+        public readonly sourceNodesIds: string[],
+    ) {
+        super(currentNodeId);
     }
 
     public override async getResults(

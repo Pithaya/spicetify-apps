@@ -3,3 +3,10 @@
     background-color: var(--spice-main-elevated);
     font-size: 1rem;
 }
+
+.executing {
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--spice-button);
+    border-radius: 6px;
+}
