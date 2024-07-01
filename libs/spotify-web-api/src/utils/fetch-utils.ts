@@ -1,12 +1,15 @@
-import type { Session } from '@shared/platform/session';
+import type { AuthorizationAPI } from '@shared/platform/authorization';
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
 
 export async function get<T>(url: string): Promise<T> {
-    const session = await waitForPlatformApi<Session>('Session');
+    const authorizationApi =
+        await waitForPlatformApi<AuthorizationAPI>('AuthorizationAPI');
 
     const response = await fetch(url, {
         headers: {
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${
+                authorizationApi.getState().token.accessToken
+            }`,
         },
     });
 

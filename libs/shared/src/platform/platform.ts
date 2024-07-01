@@ -12,6 +12,7 @@ import type { History } from './history';
 import type { ShowAPI } from './show';
 import type { LocalStorageAPI } from './local-storage';
 import type { LibraryAPI } from './library';
+import type { AuthorizationAPI } from './authorization';
 
 export type Platform = {
     Session: Session;
@@ -23,7 +24,7 @@ export type Platform = {
     AdManagers: unknown;
     RemoteConfiguration: unknown;
     ActionStoreAPI: unknown;
-    AuthorizationAPI: unknown;
+    AuthorizationAPI: AuthorizationAPI;
     ClipboardAPI: ClipboardAPI;
     ConnectAPI: unknown;
     SocialConnectAPI: unknown;
