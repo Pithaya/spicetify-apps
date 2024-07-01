@@ -11,9 +11,7 @@ export type LocalTracksData = BaseNodeData & {
  * Source node that returns local songs.
  */
 export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
-    public override async getResults(): Promise<Track[]> {
-        this.setExecuting(true);
-
+    public override async getResultsInternal(): Promise<Track[]> {
         const localFilesApi =
             await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
 
@@ -21,8 +19,6 @@ export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
             undefined,
             this.data.filter,
         );
-
-        this.setExecuting(false);
 
         return result;
     }

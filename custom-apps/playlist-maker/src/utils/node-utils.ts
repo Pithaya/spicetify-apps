@@ -49,6 +49,7 @@ export async function executeWorkflow(
 ): Promise<void> {
     console.log('Executing workflow with nodes:', nodes);
     const setResult = useAppStore.getState().setResult;
+    const updateNodeData = useAppStore.getState().updateNodeData;
 
     const results = nodes.filter(
         (node) => (node.type as CustomNodeType) === 'result',
@@ -110,6 +111,12 @@ export async function executeWorkflow(
         setResult(finalResult);
     } catch (e) {
         console.error('Error while executing workflow:', e);
+        Spicetify.showNotification('Error while executing workflow', true);
+
+        setResult([]);
+        for (const node of nodes) {
+            updateNodeData(node.id, { isExecuting: false });
+        }
     }
 }
 

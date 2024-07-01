@@ -14,9 +14,7 @@ export type PlaylistData = BaseNodeData & {
  * Source node that returns tracks from a playlist.
  */
 export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
-    public override async getResults(): Promise<Track[]> {
-        this.setExecuting(true);
-
+    public override async getResultsInternal(): Promise<Track[]> {
         const playlistApi =
             await waitForPlatformApi<PlaylistAPI>('PlaylistAPI');
 
@@ -27,8 +25,6 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
             offset,
             filter,
         });
-
-        this.setExecuting(false);
 
         return tracks.items;
     }

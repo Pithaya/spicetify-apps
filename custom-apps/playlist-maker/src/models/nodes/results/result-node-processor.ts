@@ -5,9 +5,9 @@ import { type BaseNodeData, NodeProcessor } from '../node-processor';
  * Final node in the workflow.
  */
 export class ResultNodeProcessor extends NodeProcessor<BaseNodeData> {
-    public override async getResults(
-        processors: Record<string, NodeProcessor<BaseNodeData>>,
+    protected override async getResultsInternal(
+        input: Track[],
     ): Promise<Track[]> {
-        return await this.getInputs(processors);
+        return input;
     }
 }
