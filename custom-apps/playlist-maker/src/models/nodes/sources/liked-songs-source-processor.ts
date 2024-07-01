@@ -13,9 +13,7 @@ export type LikedSongsData = BaseNodeData & {
  * Source node that returns liked songs.
  */
 export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
-    public override async getResults(): Promise<Track[]> {
-        this.setExecuting(true);
-
+    protected override async getResultsInternal(): Promise<Track[]> {
         const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
 
         let { offset, limit, filter } = this.data;
@@ -30,8 +28,6 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
             offset,
             filters: filter ? [filter] : undefined,
         });
-
-        this.setExecuting(false);
 
         return tracks.items;
     }

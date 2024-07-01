@@ -2,20 +2,14 @@ import { type Track } from '../../track';
 import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 export class ShuffleProcessor extends NodeProcessor<BaseNodeData> {
-    public override async getResults(
-        processors: Record<string, NodeProcessor<BaseNodeData>>,
+    protected override async getResultsInternal(
+        input: Track[],
     ): Promise<Track[]> {
-        const tracks = await this.getInputs(processors);
-
-        this.setExecuting(true);
-
-        for (let i = tracks.length - 1; i > 0; i--) {
+        for (let i = input.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+            [input[i], input[j]] = [input[j], input[i]];
         }
 
-        this.setExecuting(false);
-
-        return tracks;
+        return input;
     }
 }

@@ -6,7 +6,9 @@ import {
     MAX_GET_MULTIPLE_ARTISTS_IDS,
     getArtists,
 } from '@spotify-web-api/api/api.artists';
+import type { Artist } from '@spotify-web-api/models/artist';
 import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
+import { wait } from '@shared/utils/promise-utils';
 
 const genres: Record<string, string[]> = genresJson;
 
@@ -20,17 +22,13 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
         string[]
     >();
 
-    public override async getResults(
-        processors: Record<string, NodeProcessor<BaseNodeData>>,
+    protected override async getResultsInternal(
+        input: Track[],
     ): Promise<Track[]> {
-        const incomingTracks = await this.getInputs(processors);
-
-        this.setExecuting(true);
-
         const result = [];
 
         // Don't keep local tracks as we can't get genres from them
-        const tracks = incomingTracks.filter(
+        const tracks = input.filter(
             (track) =>
                 !Spicetify.URI.isLocalTrack(
                     Spicetify.URI.fromString(track.uri),
@@ -52,8 +50,6 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
             }
         }
 
-        this.setExecuting(false);
-
         return result;
     }
 
@@ -67,19 +63,18 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
             .filter((artist) => !GenreProcessor.artistsGenres.has(artist.uri));
         const chunks = splitInChunks(artists, MAX_GET_MULTIPLE_ARTISTS_IDS);
 
-        const artistsData = (
-            await Promise.all(
-                chunks.map(async (artists) => {
-                    const artistsId: string[] = artists
-                        .map((artist) =>
-                            getId(Spicetify.URI.fromString(artist.uri)),
-                        )
-                        .filter((id) => id) as string[];
+        const artistsData: Artist[] = [];
 
-                    return await getArtists(artistsId);
-                }),
-            )
-        ).flatMap((data) => data);
+        for (const chunk of chunks) {
+            const artistsId: string[] = chunk
+                .map((artist) => getId(Spicetify.URI.fromString(artist.uri)))
+                .filter((id) => id) as string[];
+
+            const chunkResult = await getArtists(artistsId);
+            artistsData.push(...chunkResult);
+            // TODO: Handle 429 error and use Retry-After header
+            await wait(1000 / 50); // 50 requests per second
+        }
 
         for (const artistData of artistsData) {
             const artistSubGenres = artistData.genres;

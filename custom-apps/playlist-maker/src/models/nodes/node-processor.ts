@@ -21,11 +21,23 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
      * @param processors - Map of all processors in the workflow.
      * @returns List of track after processing.
      */
-    public abstract getResults(
+    public async getResults(
         processors: Record<string, NodeProcessor<BaseNodeData>>,
-    ): Promise<Track[]>;
+    ): Promise<Track[]> {
+        const input = await this.getInputs(processors);
 
-    protected async getInputs(
+        this.setExecuting(true);
+
+        const result = await this.getResultsInternal(input);
+
+        this.setExecuting(false);
+
+        return result;
+    }
+
+    protected abstract getResultsInternal(input: Track[]): Promise<Track[]>;
+
+    private async getInputs(
         processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<Track[]> {
         const inputs: Track[] = [];
@@ -43,7 +55,7 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
         return inputs;
     }
 
-    protected setExecuting(isExecuting: boolean): void {
+    private setExecuting(isExecuting: boolean): void {
         this.updateNodeData<BaseNodeData>(this.currentNodeId, {
             isExecuting,
         });
