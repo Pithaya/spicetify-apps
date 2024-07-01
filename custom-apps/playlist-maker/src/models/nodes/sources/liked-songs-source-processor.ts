@@ -12,14 +12,7 @@ export type LikedSongsData = BaseNodeData & {
 /**
  * Source node that returns liked songs.
  */
-export class LikedSongsSourceProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly data: Readonly<LikedSongsData>,
-    ) {
-        super(currentNodeId);
-    }
-
+export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
     public override async getResults(): Promise<Track[]> {
         this.setExecuting(true);
 

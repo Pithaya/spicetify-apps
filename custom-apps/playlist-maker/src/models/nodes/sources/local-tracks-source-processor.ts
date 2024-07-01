@@ -10,14 +10,7 @@ export type LocalTracksData = BaseNodeData & {
 /**
  * Source node that returns local songs.
  */
-export class LocalTracksSourceProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly data: Readonly<LocalTracksData>,
-    ) {
-        super(currentNodeId);
-    }
-
+export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
     public override async getResults(): Promise<Track[]> {
         this.setExecuting(true);
 

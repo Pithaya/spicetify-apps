@@ -13,14 +13,7 @@ export type PlaylistData = BaseNodeData & {
 /**
  * Source node that returns tracks from a playlist.
  */
-export class PlaylistSourceProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly data: Readonly<PlaylistData>,
-    ) {
-        super(currentNodeId);
-    }
-
+export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
     public override async getResults(): Promise<Track[]> {
         this.setExecuting(true);
 
