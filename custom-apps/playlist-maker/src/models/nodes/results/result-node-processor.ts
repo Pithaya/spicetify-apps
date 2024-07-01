@@ -1,20 +1,13 @@
 import { type Track } from '../../track';
-import { NodeProcessor } from '../node-processor';
+import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 /**
  * Final node in the workflow.
  */
-export class ResultNodeProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly sourceNodeId: string,
-    ) {
-        super(currentNodeId);
-    }
-
+export class ResultNodeProcessor extends NodeProcessor<BaseNodeData> {
     public override async getResults(
-        processors: Record<string, NodeProcessor>,
+        processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<Track[]> {
-        return await processors[this.sourceNodeId].getResults(processors);
+        return await this.getInputs(processors);
     }
 }

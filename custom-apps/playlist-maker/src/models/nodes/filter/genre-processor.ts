@@ -14,27 +14,20 @@ export type GenreFilterData = BaseNodeData & {
     genres: string[];
 };
 
-export class GenreProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly sourceNodeId: string,
-        public readonly data: Readonly<GenreFilterData>,
-    ) {
-        super(currentNodeId);
-    }
-
+export class GenreProcessor extends NodeProcessor<GenreFilterData> {
     private static readonly artistsGenres: Map<string, string[]> = new Map<
         string,
         string[]
     >();
 
     public override async getResults(
-        processors: Record<string, NodeProcessor>,
+        processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<Track[]> {
-        const result = [];
+        const incomingTracks = await this.getInputs(processors);
 
-        const incomingTracks =
-            await processors[this.sourceNodeId].getResults(processors);
+        this.setExecuting(true);
+
+        const result = [];
 
         // Don't keep local tracks as we can't get genres from them
         const tracks = incomingTracks.filter(
@@ -43,8 +36,6 @@ export class GenreProcessor extends NodeProcessor {
                     Spicetify.URI.fromString(track.uri),
                 ),
         );
-
-        this.setExecuting(true);
 
         await this.getArtistsGenres(tracks);
 

@@ -1,29 +1,21 @@
 import { type Track } from '../../track';
-import { NodeProcessor } from '../node-processor';
+import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
-export class ShuffleProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly sourceNodeId: string,
-    ) {
-        super(currentNodeId);
-    }
-
+export class ShuffleProcessor extends NodeProcessor<BaseNodeData> {
     public override async getResults(
-        processors: Record<string, NodeProcessor>,
+        processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<Track[]> {
-        const result =
-            await processors[this.sourceNodeId].getResults(processors);
+        const tracks = await this.getInputs(processors);
 
         this.setExecuting(true);
 
-        for (let i = result.length - 1; i > 0; i--) {
+        for (let i = tracks.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [result[i], result[j]] = [result[j], result[i]];
+            [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
         }
 
         this.setExecuting(false);
 
-        return result;
+        return tracks;
     }
 }

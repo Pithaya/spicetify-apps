@@ -1,22 +1,11 @@
 import { type Track } from '../../track';
-import { NodeProcessor } from '../node-processor';
+import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
-export class DeduplicateProcessor extends NodeProcessor {
-    constructor(
-        currentNodeId: string,
-        public readonly sourceNodesIds: string[],
-    ) {
-        super(currentNodeId);
-    }
-
+export class DeduplicateProcessor extends NodeProcessor<BaseNodeData> {
     public override async getResults(
-        processors: Record<string, NodeProcessor>,
+        processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<Track[]> {
-        const tracks = [];
-
-        for (const id of this.sourceNodesIds) {
-            tracks.push(...(await processors[id].getResults(processors)));
-        }
+        const tracks = await this.getInputs(processors);
 
         this.setExecuting(true);
 

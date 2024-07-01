@@ -1,7 +1,6 @@
 import React from 'react';
-import { type NodeProps, Position } from 'reactflow';
+import { type NodeProps, Position, Handle } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { SingleConnectionHandle } from '../shared/SingleConnectionHandle';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -20,7 +19,7 @@ export function ResultNode(props: NodeProps<BaseNodeData>): JSX.Element {
                     Final playlist
                 </TextComponent>
             </NodeContent>
-            <SingleConnectionHandle
+            <Handle
                 type="target"
                 position={Position.Left}
                 id="input"

@@ -5,7 +5,6 @@ import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SingleConnectionHandle } from '../shared/SingleConnectionHandle';
 
 export function ShuffleNode(props: NodeProps<BaseNodeData>): JSX.Element {
     return (
@@ -20,7 +19,7 @@ export function ShuffleNode(props: NodeProps<BaseNodeData>): JSX.Element {
                     Shuffle
                 </TextComponent>
             </NodeContent>
-            <SingleConnectionHandle
+            <Handle
                 type="target"
                 position={Position.Left}
                 id="input"
