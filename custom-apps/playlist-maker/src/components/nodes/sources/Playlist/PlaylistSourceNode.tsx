@@ -11,6 +11,8 @@ import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { Folder, Playlist, RootlistAPI } from '@shared/platform/rootlist';
 import type { UserAPI } from '@shared/platform/user';
 import { Select } from '@shared/components/inputs/Select/Select';
+import { TextInput } from '../../../inputs/TextInput';
+import { NumberInput } from '../../../inputs/NumberInput';
 
 export function PlaylistSourceNode(
     props: NodeProps<PlaylistData>,
@@ -109,13 +111,12 @@ export function PlaylistSourceNode(
                             Filter
                         </TextComponent>
                     </Spicetify.ReactComponent.TooltipWrapper>
-                    <input
-                        type="text"
+                    <TextInput
                         placeholder="Search"
                         value={props.data.filter}
-                        onChange={(e) => {
+                        onChange={(value) => {
                             updateNodeData<PlaylistData>(props.id, {
-                                filter: e.target.value,
+                                filter: value,
                             });
                         }}
                     />
@@ -129,13 +130,12 @@ export function PlaylistSourceNode(
                             Offset
                         </TextComponent>
                     </Spicetify.ReactComponent.TooltipWrapper>
-                    <input
-                        type="number"
+                    <NumberInput
                         placeholder="0"
                         value={props.data.offset}
-                        onChange={(e) => {
+                        onChange={(value) => {
                             updateNodeData<PlaylistData>(props.id, {
-                                offset: e.target.valueAsNumber,
+                                offset: value,
                             });
                         }}
                     />
@@ -149,13 +149,12 @@ export function PlaylistSourceNode(
                     >
                         <TextComponent elementType="small">Limit</TextComponent>
                     </Spicetify.ReactComponent.TooltipWrapper>
-                    <input
-                        type="number"
+                    <NumberInput
                         placeholder="0"
                         value={props.data.limit}
-                        onChange={(e) => {
+                        onChange={(value) => {
                             updateNodeData<PlaylistData>(props.id, {
-                                limit: e.target.valueAsNumber,
+                                limit: value,
                             });
                         }}
                     />

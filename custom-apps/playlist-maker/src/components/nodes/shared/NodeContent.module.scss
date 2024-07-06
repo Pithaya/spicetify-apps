@@ -1,3 +1,7 @@
 .node-content {
     padding: 8px;
+
+    label:not(:last-of-type) {
+        margin-bottom: 4px;
+    }
 }
