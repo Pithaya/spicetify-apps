@@ -7,6 +7,7 @@ import { type LocalTracksData } from 'custom-apps/playlist-maker/src/models/node
 import { Node } from '../../shared/Node';
 import { NodeHeader } from '../../shared/NodeHeader';
 import { NodeContent } from '../../shared/NodeContent';
+import { TextInput } from '../../../inputs/TextInput';
 
 export function LocalTracksSourceNode(
     props: NodeProps<LocalTracksData>,
@@ -33,13 +34,12 @@ export function LocalTracksSourceNode(
                             Filter
                         </TextComponent>
                     </Spicetify.ReactComponent.TooltipWrapper>
-                    <input
-                        type="text"
+                    <TextInput
                         placeholder="Search"
                         value={props.data.filter}
-                        onChange={(e) => {
+                        onChange={(value) => {
                             updateNodeData<LocalTracksData>(props.id, {
-                                filter: e.target.value,
+                                filter: value,
                             });
                         }}
                     />
