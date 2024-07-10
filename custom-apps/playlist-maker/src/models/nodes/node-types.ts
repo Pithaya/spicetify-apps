@@ -5,14 +5,14 @@ import { ResultNode } from '../../components/nodes/result/ResultNode';
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracks/LocalTracksSourceNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
 import { GenreNode } from '../../components/nodes/filter/GenreNode';
-import { PlaylistSourceNode } from '../../components/nodes/sources/Playlist/PlaylistSourceNode';
+import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylist/LibraryPlaylistSourceNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 
 export type CustomNodeType =
     // Sources
     | 'likedSongsSource'
     | 'localTracksSource'
-    | 'playlistSource'
+    | 'libraryPlaylistSource'
     // Filters
     | 'genre'
     // Processing
@@ -24,7 +24,7 @@ export type CustomNodeType =
 export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     likedSongsSource: LikedSongsSourceNode,
     localTracksSource: LocalTracksSourceNode,
-    playlistSource: PlaylistSourceNode,
+    libraryPlaylistSource: LibraryPlaylistSourceNode,
     deduplicate: DeduplicateNode,
     genre: GenreNode,
     result: ResultNode,

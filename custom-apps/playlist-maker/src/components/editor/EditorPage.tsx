@@ -83,7 +83,6 @@ export function EditorPage(): JSX.Element {
                 </div>
                 <div className={styles['main']}>
                     <ReactFlow
-                        fitView
                         nodes={nodes}
                         edges={edges}
                         onNodesChange={onNodesChange}

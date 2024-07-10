@@ -7,7 +7,7 @@ export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';
  * A track list header.
  */
 export type TrackListHeaderOption = {
-    key: HeaderKey;
+    key: HeaderKey | string;
     label: string;
 };
 

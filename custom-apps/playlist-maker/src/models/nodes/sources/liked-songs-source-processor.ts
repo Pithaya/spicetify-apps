@@ -29,6 +29,9 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
             filters: filter ? [filter] : undefined,
         });
 
-        return tracks.items;
+        return tracks.items.map((track) => ({
+            ...track,
+            source: 'Liked songs',
+        }));
     }
 }

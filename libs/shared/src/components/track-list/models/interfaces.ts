@@ -42,6 +42,11 @@ export interface ITrack {
      * Internal track.
      */
     backingTrack: LocalTrack | LibraryAPITrack;
+
+    /**
+     * Source of the track.
+     */
+    source?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

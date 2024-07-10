@@ -15,11 +15,14 @@ export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
         const localFilesApi =
             await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
 
-        const result = await localFilesApi.getTracks(
+        const tracks = await localFilesApi.getTracks(
             undefined,
             this.data.filter,
         );
 
-        return result;
+        return tracks.map((track) => ({
+            ...track,
+            source: 'Local tracks',
+        }));
     }
 }

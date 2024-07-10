@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import styles from './PlaylistSourceNode.module.scss';
+import styles from './LibraryPlaylistSourceNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useAppStore } from '../../../../store/store';
 import { NodeHeader } from '../../shared/NodeHeader';
@@ -14,7 +14,10 @@ import { Select } from '@shared/components/inputs/Select/Select';
 import { TextInput } from '../../../inputs/TextInput';
 import { NumberInput } from '../../../inputs/NumberInput';
 
-export function PlaylistSourceNode(
+// TODO: custom select with search field
+// TODO: order playlists by name
+
+export function LibraryPlaylistSourceNode(
     props: NodeProps<PlaylistData>,
 ): JSX.Element {
     const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
@@ -52,6 +55,7 @@ export function PlaylistSourceNode(
             ) {
                 updateNodeData<PlaylistData>(props.id, {
                     playlistUri: '',
+                    playlistName: '',
                 });
             }
         }
@@ -95,9 +99,10 @@ export function PlaylistSourceNode(
                             id: p.uri,
                             label: p.name,
                         }))}
-                        onItemClicked={(uri) => {
+                        onItemClicked={(item) => {
                             updateNodeData<PlaylistData>(props.id, {
-                                playlistUri: uri,
+                                playlistUri: item.id,
+                                playlistName: item.label,
                             });
                         }}
                     />
