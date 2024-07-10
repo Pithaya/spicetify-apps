@@ -5,6 +5,7 @@ import type { PlaylistAPI } from '@shared/platform/playlist';
 
 export type PlaylistData = BaseNodeData & {
     playlistUri: string;
+    playlistName: string;
     offset?: number;
     limit?: number;
     filter?: string;
@@ -26,6 +27,9 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
             filter,
         });
 
-        return tracks.items;
+        return tracks.items.map((track) => ({
+            ...track,
+            source: this.data.playlistName,
+        }));
     }
 }

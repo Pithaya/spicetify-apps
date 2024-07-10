@@ -20,6 +20,8 @@ import { type Track } from '../models/track';
 let id = 0;
 const getId = (): string => (++id).toString();
 
+// TODO: keep track of input validation errors
+
 export type AppState = {
     nodes: Node[];
     edges: Edge[];

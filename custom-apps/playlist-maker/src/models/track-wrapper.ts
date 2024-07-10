@@ -44,5 +44,9 @@ export class TrackWrapper implements ITrack {
         return this.track;
     }
 
+    public get source(): string {
+        return this.track.source;
+    }
+
     constructor(private readonly track: Track) {}
 }

@@ -12,6 +12,7 @@ import { TrackWrapper } from '../../models/track-wrapper';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { History } from '@shared/platform/history';
 import { getId } from '@shared/utils/uri-utils';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export function ResultPage(): JSX.Element {
     const history = getPlatformApiOrThrow<History>('History');
@@ -34,6 +35,10 @@ export function ResultPage(): JSX.Element {
         {
             key: 'album',
             label: getTranslation(['tracklist.header.album']),
+        },
+        {
+            key: 'source',
+            label: 'Source', // TODO: Translation
         },
     ];
 
@@ -113,6 +118,13 @@ export function ResultPage(): JSX.Element {
                                         );
                                     }}
                                 />,
+                                <TextComponent
+                                    key={track.uri}
+                                    variant="mesto"
+                                    className="standalone-ellipsis-one-line"
+                                >
+                                    {track.source}
+                                </TextComponent>,
                             ];
 
                             return contents;

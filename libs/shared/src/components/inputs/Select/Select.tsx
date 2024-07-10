@@ -2,10 +2,15 @@ import React from 'react';
 import styles from './Select.module.scss';
 import { ChevronDown } from 'lucide-react';
 
+type Item = {
+    id: string;
+    label: string;
+};
+
 export type Props = {
     selectLabel: string;
-    items: { id: string; label: string }[];
-    onItemClicked: (id: string) => void;
+    items: Item[];
+    onItemClicked: (item: Item) => void;
     selectedItemId: string | null;
 };
 
@@ -18,7 +23,7 @@ function SelectMenu(
                 <Spicetify.ReactComponent.MenuItem
                     key={item.id}
                     onClick={() => {
-                        props.onItemClicked(item.id);
+                        props.onItemClicked(item);
                     }}
                 >
                     <span>{item.label}</span>
