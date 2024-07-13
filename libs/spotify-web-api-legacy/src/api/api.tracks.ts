@@ -2,7 +2,7 @@ import { handleError } from '../helpers';
 import type { Track } from '../models/track';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
 import { get } from '../utils/fetch-utils';
-import { ArgumentError } from '@spotify-web-api/models/errors';
+import { ArgumentError } from '@spotify-web-api-legacy/models/errors';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/tracks`;
 

@@ -1,4 +1,4 @@
-import { ArgumentError } from '@spotify-web-api/models/errors';
+import { ArgumentError } from '@spotify-web-api-legacy/models/errors';
 import { handleError } from '../helpers';
 import type { Episode } from '../models/episode';
 import { get } from '../utils/fetch-utils';
