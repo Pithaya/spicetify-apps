@@ -1,8 +1,8 @@
-import type { Show } from '@spotify-web-api/models/show';
+import type { Show } from '@spotify-web-api-legacy/models/show';
 import { handleError } from '../helpers';
 import { get } from '../utils/fetch-utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
-import { ArgumentError } from '@spotify-web-api/models/errors';
+import { ArgumentError } from '@spotify-web-api-legacy/models/errors';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/shows`;
 

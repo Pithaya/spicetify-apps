@@ -1,7 +1,7 @@
 import { handleError } from '../helpers';
 import { get } from '../utils/fetch-utils';
 import { baseUrl as spotifyWebApiBaseUrl } from '../variables';
-import type { Playlist } from '@spotify-web-api/models/playlist';
+import type { Playlist } from '@spotify-web-api-legacy/models/playlist';
 
 const baseUrl = `${spotifyWebApiBaseUrl}/playlists`;
 
