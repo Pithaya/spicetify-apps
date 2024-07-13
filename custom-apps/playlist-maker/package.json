@@ -11,8 +11,7 @@
         "apply": "spicetify config custom_apps playlist-maker && spicetify apply",
         "unapply": "spicetify config custom_apps playlist-maker- && spicetify apply",
         "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
-        "format": "npx prettier --write src/",
-        "generate-genres": "npx esrun scripts/generate-genres.ts"
+        "format": "npx prettier --write src/"
     },
     "license": "MIT",
     "devDependencies": {
