@@ -20,6 +20,14 @@ export function saveWorkflowToStorage(workflow: SavedWorkflow): void {
     );
 }
 
+export function removeWorkflowFromStorage(id: string): void {
+    const workflows: SavedWorkflow[] = getWorkflowsFromStorage();
+
+    const filteredWorkflows = workflows.filter((w) => w.id !== id);
+
+    Spicetify.LocalStorage.set(WORKFLOW_KEY, JSON.stringify(filteredWorkflows));
+}
+
 export function getWorkflowsFromStorage(): SavedWorkflow[] {
     return JSON.parse(Spicetify.LocalStorage.get(WORKFLOW_KEY) ?? '[]');
 }

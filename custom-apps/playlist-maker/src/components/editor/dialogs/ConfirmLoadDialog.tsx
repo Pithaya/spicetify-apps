@@ -31,7 +31,6 @@ export function ConfirmLoadDialog(): JSX.Element {
 
     return (
         <Spicetify.ReactComponent.ConfirmDialog
-            style={{ zIndex: 200 }}
             isOpen={showConfirmLoadModal}
             onConfirm={() => {
                 setShowConfirmLoadModal(false);

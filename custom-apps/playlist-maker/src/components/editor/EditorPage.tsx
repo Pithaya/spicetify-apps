@@ -15,6 +15,7 @@ import { CenterPanel } from './panels/CenterPanel';
 import { TopRightPanel } from './panels/TopRightPanel';
 import { TopLeftPanel } from './panels/TopLeftPanel';
 import { ConfirmLoadDialog } from './dialogs/ConfirmLoadDialog';
+import { ConfirmDeleteDialog } from './dialogs/ConfirmDeleteDialog';
 
 type State = Pick<
     AppState,
@@ -116,6 +117,7 @@ export function EditorPage(): JSX.Element {
             </div>
             <ConfirmNewDialog />
             <ConfirmLoadDialog />
+            <ConfirmDeleteDialog />
         </>
     );
 }
