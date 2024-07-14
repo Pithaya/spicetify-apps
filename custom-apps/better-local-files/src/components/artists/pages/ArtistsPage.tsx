@@ -4,6 +4,7 @@ import { getTranslation } from '@shared/utils/translations.utils';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import type {
     HeaderKey,
+    LibraryHeaders,
     SelectedSortOption,
     SortOption,
     SortOrder,
@@ -18,7 +19,7 @@ export function ArtistsPage(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
-    const sortOptions: SortOption[] = [
+    const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'title',
             label: getTranslation(['collection.sort.alphabetical']),
@@ -44,12 +45,13 @@ export function ArtistsPage(): JSX.Element {
         [artists, debouncedSearch],
     );
 
-    const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+    const [selectedSortOption, setSelectedSortOption] = useState<
+        SelectedSortOption<LibraryHeaders>
+    >({ ...sortOptions[0], order: 'ascending' });
 
     function orderArtists(
         artists: Artist[],
-        option: SelectedSortOption,
+        option: SelectedSortOption<LibraryHeaders>,
     ): Artist[] {
         if (option.key === 'title') {
             return artists.sort((x, y) => sort(x.name, y.name, option.order));
@@ -66,7 +68,9 @@ export function ArtistsPage(): JSX.Element {
         return order === 'ascending' ? 'descending' : 'ascending';
     }
 
-    function handleSortOptionChange(headerKey: HeaderKey): void {
+    function handleSortOptionChange(
+        headerKey: HeaderKey<LibraryHeaders>,
+    ): void {
         setSelectedSortOption((previous) => ({
             key: headerKey,
             order:

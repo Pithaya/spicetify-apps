@@ -2,13 +2,11 @@ import { type Track } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { getId } from '@shared/utils/uri-utils';
-import {
-    MAX_GET_MULTIPLE_ARTISTS_IDS,
-    getArtists,
-} from '@spotify-web-api/api/api.artists';
-import type { Artist } from '@spotify-web-api/models/artist';
+import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
+import type { Artist } from '@spotify-web-api';
 import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 import { wait } from '@shared/utils/promise-utils';
+import { getSdkClient } from '@shared/utils/web-api-utils';
 
 const genres: Record<string, string[]> = genresJson;
 
@@ -58,6 +56,7 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
      * @param tracks Tracks to process.
      */
     private async getArtistsGenres(tracks: Track[]): Promise<void> {
+        const sdk = getSdkClient();
         const artists = tracks
             .flatMap((track) => track.artists)
             .filter((artist) => !GenreProcessor.artistsGenres.has(artist.uri));
@@ -70,7 +69,7 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
                 .map((artist) => getId(Spicetify.URI.fromString(artist.uri)))
                 .filter((id) => id) as string[];
 
-            const chunkResult = await getArtists(artistsId);
+            const chunkResult = await sdk.artists.get(artistsId);
             artistsData.push(...chunkResult);
             // TODO: Handle 429 error and use Retry-After header
             await wait(1000 / 50); // 50 requests per second

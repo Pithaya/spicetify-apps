@@ -31,10 +31,11 @@ export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
         data = newData;
     }
 
-    if (nodeType === 'playlistSource') {
+    if (nodeType === 'libraryPlaylistSource') {
         const newData: PlaylistData = {
             ...data,
             playlistUri: '',
+            playlistName: '',
         };
 
         data = newData;
@@ -126,7 +127,7 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor<any> {
             return new LikedSongsSourceProcessor(node.id, [], node.data);
         case 'localTracksSource':
             return new LocalTracksSourceProcessor(node.id, [], node.data);
-        case 'playlistSource':
+        case 'libraryPlaylistSource':
             return new PlaylistSourceProcessor(node.id, [], node.data);
         case 'deduplicate':
             return new DeduplicateProcessor(

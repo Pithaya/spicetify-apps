@@ -4,7 +4,11 @@ import { PlayButton } from '@shared/components/ui/PlayButton';
 import type { SubTracksList } from '@shared/components/track-list/TrackListGrid';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
 import { TrackListRowTitle } from '@shared/components/track-list/TrackListRowTitle';
-import type { TrackListHeaderOption } from '@shared/components/track-list/models/sort-option';
+import type {
+    HeaderKey,
+    LibraryHeaders,
+    TrackListHeaderOption,
+} from '@shared/components/track-list/models/sort-option';
 import { DiscDivider } from './DiscDivider';
 import { MoreButton } from '../../shared/buttons/MoreButton';
 import { getTranslation } from '@shared/utils/translations.utils';
@@ -37,7 +41,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
         }
     }
 
-    const headers: TrackListHeaderOption[] = [
+    const headers: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [
         {
             key: 'title',
             label: getTranslation(['sort.title']),

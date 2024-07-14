@@ -3,7 +3,11 @@ import { playContext, playTrack } from '../../../utils/player.utils';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { MoreButton } from '../../shared/buttons/MoreButton';
 import { getTranslation } from '@shared/utils/translations.utils';
-import type { TrackListHeaderOption } from '@shared/components/track-list/models/sort-option';
+import type {
+    HeaderKey,
+    LibraryHeaders,
+    TrackListHeaderOption,
+} from '@shared/components/track-list/models/sort-option';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
 import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
 import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
@@ -20,7 +24,7 @@ export type Props = {
 };
 
 export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
-    const headers: TrackListHeaderOption[] = [
+    const headers: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [
         {
             key: 'title',
             label: getTranslation(['sort.title']),

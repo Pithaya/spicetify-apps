@@ -14,7 +14,7 @@ export type SubTracksList = {
     tracks: ITrack[];
 };
 
-export type Props = {
+export type Props<T extends string> = {
     tracks: ITrack[];
     subtracks: SubTracksList[];
     gridLabel: string;
@@ -23,12 +23,14 @@ export type Props = {
     getRowContent: (track: ITrack) => JSX.Element[];
     displayType: DisplayType;
     getRowMenu: (track: ITrack) => JSX.Element;
-} & TrackListHeaderProps;
+} & TrackListHeaderProps<T>;
 
 /**
  * Contains the track list header and rows.
  */
-export function TrackListGrid(props: Readonly<Props>): JSX.Element {
+export function TrackListGrid<T extends string>(
+    props: Readonly<Props<T>>,
+): JSX.Element {
     const activeTrackUri = useCurrentPlayerTrackUri();
     const playStatus: PlayStatus = usePlayStatus();
 

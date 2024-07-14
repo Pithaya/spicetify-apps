@@ -1,9 +1,4 @@
-import type {
-    AudioAnalysis,
-    Section,
-    Segment,
-    TimeInterval,
-} from '@spotify-web-api/models/audio-analysis';
+import type { AudioAnalysis, Section, Segment } from '@spotify-web-api';
 import type {
     ChildQuantum,
     hasOverlappingSegments,
@@ -16,6 +11,7 @@ import type {
     RemixedSegment,
     RemixedTimeInterval,
 } from '../models/remixer.types';
+import type { TimeInterval } from '../models/time-interval';
 
 /**
  * A quanta is an element of the analysis.

@@ -8,9 +8,8 @@ import { GraphGenerator } from '../helpers/graph-generator.js';
 import { Driver } from '../driver';
 import { getId } from '@shared/utils/uri-utils';
 import { SettingsService } from '../services/settings-service';
-
-import { getAudioAnalysis } from '@spotify-web-api/api/api.audio-analysis';
-import type { AudioAnalysis } from '@spotify-web-api/models/audio-analysis';
+import type { AudioAnalysis } from '@spotify-web-api';
+import { getSdkClient } from '@shared/utils/web-api-utils';
 
 export type StatsChangedEvent = {
     beatsPlayed: number;
@@ -163,10 +162,11 @@ export class Jukebox {
             return;
         }
 
+        const sdk = getSdkClient();
         let analysis: AudioAnalysis | null = null;
 
         try {
-            analysis = await getAudioAnalysis(id);
+            analysis = await sdk.tracks.audioAnalysis(id);
         } catch {
             // Do nothing
         }
