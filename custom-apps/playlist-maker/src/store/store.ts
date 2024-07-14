@@ -26,6 +26,7 @@ export type AppState = {
     nodes: Node[];
     edges: Edge[];
     result: Track[];
+    workflowName: string;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
@@ -34,12 +35,15 @@ export type AppState = {
     addNode: (nodeType: CustomNodeType, position: XYPosition) => void;
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
     setResult: (tracks: Track[]) => void;
+    setWorkflowName: (workflowName: string) => void;
+    resetWorkflow: () => void;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
     nodes: [],
     edges: [],
     result: [],
+    workflowName: 'My workflow',
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes),
@@ -84,6 +88,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
     setResult: (tracks: Track[]) => {
         set({ result: tracks });
+    },
+    setWorkflowName: (workflowName: string) => {
+        set({ workflowName });
+    },
+    resetWorkflow: () => {
+        set({ nodes: [], edges: [], result: [], workflowName: 'My workflow' });
     },
 }));
 

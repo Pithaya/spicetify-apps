@@ -14,34 +14,46 @@ import { executeWorkflow } from '../../utils/node-utils';
 import { HelpButton } from '../help/HelpButton';
 import { useAppStore, type AppState } from '../../store/store';
 import { useShallow } from 'zustand/react/shallow';
+import { CirclePlay, Save, Network, BadgePlus } from 'lucide-react';
+import { SettingsButton } from '../settings/SettingsButton';
+import { TextInput } from '../inputs/TextInput';
 
 type State = Pick<
     AppState,
     | 'nodes'
     | 'edges'
+    | 'workflowName'
     | 'onNodesChange'
     | 'onEdgesChange'
     | 'onConnect'
     | 'addNode'
+    | 'setWorkflowName'
+    | 'resetWorkflow'
 >;
 
 const selector = (state: AppState): State => ({
     nodes: state.nodes,
     edges: state.edges,
+    workflowName: state.workflowName,
     onNodesChange: state.onNodesChange,
     onEdgesChange: state.onEdgesChange,
     onConnect: state.onConnect,
     addNode: state.addNode,
+    setWorkflowName: state.setWorkflowName,
+    resetWorkflow: state.resetWorkflow,
 });
 
 export function EditorPage(): JSX.Element {
     const {
         nodes,
         edges,
+        workflowName,
         onNodesChange,
         onEdgesChange,
         onConnect,
         addNode,
+        setWorkflowName,
+        resetWorkflow,
     }: State = useAppStore(useShallow(selector));
     const [reactFlowInstance, setReactFlowInstance] =
         useState<ReactFlowInstance | null>(null);
@@ -95,23 +107,59 @@ export function EditorPage(): JSX.Element {
                         nodeTypes={nodeTypes}
                     >
                         <Panel
-                            className={styles['panel']}
+                            className={
+                                styles['panel'] + ' ' + styles['flex-row']
+                            }
                             position="top-center"
                         >
-                            My playlist
+                            <TextInput
+                                className={styles['title-input']}
+                                placeholder=""
+                                value={workflowName}
+                                onChange={(value) => {
+                                    setWorkflowName(value);
+                                }}
+                            />
+                            <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">
+                                <Spicetify.ReactComponent.ButtonTertiary
+                                    onClick={() => {}}
+                                    buttonSize="sm"
+                                    iconOnly={() => <Save size={20} />}
+                                />
+                            </Spicetify.ReactComponent.TooltipWrapper>
+                            <div className={styles['divider-vertical']} />
+                            <Spicetify.ReactComponent.TooltipWrapper label="Manage workflows">
+                                <Spicetify.ReactComponent.ButtonTertiary
+                                    onClick={() => {}}
+                                    buttonSize="sm"
+                                    iconOnly={() => <Network size={20} />}
+                                />
+                            </Spicetify.ReactComponent.TooltipWrapper>
+                            <Spicetify.ReactComponent.TooltipWrapper label="Create new">
+                                <Spicetify.ReactComponent.ButtonTertiary
+                                    onClick={() => {
+                                        resetWorkflow();
+                                    }}
+                                    buttonSize="sm"
+                                    iconOnly={() => <BadgePlus size={20} />}
+                                />
+                            </Spicetify.ReactComponent.TooltipWrapper>
                         </Panel>
                         <Panel className={styles['panel']} position="top-right">
-                            <button
+                            <Spicetify.ReactComponent.ButtonTertiary
                                 onClick={async () => {
-                                    // TODO: Move this elsewhere
                                     await executeWorkflow(nodes, edges);
                                 }}
+                                buttonSize="sm"
+                                iconLeading={() => <CirclePlay size={20} />}
                             >
-                                Save
-                            </button>
+                                Execute
+                            </Spicetify.ReactComponent.ButtonTertiary>
                         </Panel>
                         <Panel className={styles['panel']} position="top-left">
                             <HelpButton />
+                            <div className={styles['divider-horizontal']} />
+                            <SettingsButton />
                         </Panel>
                         <Controls />
                         <MiniMap />
