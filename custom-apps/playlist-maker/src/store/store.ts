@@ -22,11 +22,19 @@ const getId = (): string => (++id).toString();
 
 // TODO: keep track of input validation errors
 
+function isClick(change: NodeChange | EdgeChange): boolean {
+    return (
+        change.type === 'select' ||
+        (change.type === 'position' && change.position === undefined)
+    );
+}
+
 export type AppState = {
     nodes: Node[];
     edges: Edge[];
     result: Track[];
     workflowName: string;
+    hasPendingChanges: boolean;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
@@ -37,6 +45,7 @@ export type AppState = {
     setResult: (tracks: Track[]) => void;
     setWorkflowName: (workflowName: string) => void;
     resetWorkflow: () => void;
+    saveWorkflow: () => void;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -44,19 +53,33 @@ export const useAppStore = create<AppState>((set, get) => ({
     edges: [],
     result: [],
     workflowName: 'My workflow',
+    hasPendingChanges: false,
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes),
         });
+
+        if (changes.some((c) => !isClick(c))) {
+            set({
+                hasPendingChanges: true,
+            });
+        }
     },
     onEdgesChange: (changes: EdgeChange[]) => {
         set({
             edges: applyEdgeChanges(changes, get().edges),
         });
+
+        if (changes.some((c) => !isClick(c))) {
+            set({
+                hasPendingChanges: true,
+            });
+        }
     },
     onConnect: (connection: Connection) => {
         set({
             edges: addEdge(connection, get().edges),
+            hasPendingChanges: true,
         });
     },
     setNodes: (nodes: Node[]) => {
@@ -84,16 +107,27 @@ export const useAppStore = create<AppState>((set, get) => ({
 
                 return node;
             }),
+            hasPendingChanges: true,
         });
     },
     setResult: (tracks: Track[]) => {
         set({ result: tracks });
     },
     setWorkflowName: (workflowName: string) => {
-        set({ workflowName });
+        set({ workflowName, hasPendingChanges: true });
     },
     resetWorkflow: () => {
-        set({ nodes: [], edges: [], result: [], workflowName: 'My workflow' });
+        set({
+            nodes: [],
+            edges: [],
+            result: [],
+            workflowName: 'My workflow',
+            hasPendingChanges: false,
+        });
+    },
+    saveWorkflow: () => {
+        // TODO: Save the workflow
+        set({ hasPendingChanges: false });
     },
 }));
 
