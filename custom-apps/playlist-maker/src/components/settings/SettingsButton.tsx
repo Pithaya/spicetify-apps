@@ -7,6 +7,7 @@ export function SettingsButton(): JSX.Element {
     return (
         <div className={styles['settings-panel']}>
             <Spicetify.ReactComponent.ButtonTertiary
+                aria-label="Settings"
                 iconOnly={() => <Settings size={20} strokeWidth={1.5} />}
                 buttonSize="sm"
                 onClick={() => {

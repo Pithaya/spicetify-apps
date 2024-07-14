@@ -1,0 +1,19 @@
+.panel {
+    border-radius: 8px;
+}
+
+.divider-vertical {
+    border-left: 1px solid var(--text-subdued);
+    align-self: stretch;
+}
+
+.title-input {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

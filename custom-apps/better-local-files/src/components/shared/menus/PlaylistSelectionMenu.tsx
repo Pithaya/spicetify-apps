@@ -10,14 +10,14 @@ export type Props = {
 };
 
 export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
-    const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
-    const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
-    const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
-
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
+            const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
+            const rootlistAPI =
+                getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
+
             const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
@@ -36,6 +36,7 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
     }, []);
 
     async function addToPlaylist(playlistUri: string): Promise<void> {
+        const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
         await playlistAPI.add(playlistUri, props.tracksUri, { after: 'end' });
     }
 
