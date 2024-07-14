@@ -6,6 +6,7 @@ import { CHANGE_NOTES } from './change-notes';
 // Can't use `import 'reactflow/dist/style.css';` because of postcss2 issue
 import '../../../node_modules/reactflow/dist/style.css';
 import './css/reactflow.scss';
+import './css/overrides.scss';
 
 import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
 import ReactDOM from 'react-dom';

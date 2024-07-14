@@ -20,9 +20,6 @@ import { NumberInput } from '../../../inputs/NumberInput';
 export function LibraryPlaylistSourceNode(
     props: NodeProps<PlaylistData>,
 ): JSX.Element {
-    const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
-    const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
-
     const updateNodeData = useAppStore((state) => state.updateNodeData);
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -30,6 +27,10 @@ export function LibraryPlaylistSourceNode(
 
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
+            const rootlistAPI =
+                getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
+            const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
+
             const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
@@ -47,21 +48,19 @@ export function LibraryPlaylistSourceNode(
             }
 
             setPlaylists(filteredPlaylists);
-
-            if (
-                !filteredPlaylists
-                    .map((p) => p.uri)
-                    .includes(props.data.playlistUri)
-            ) {
-                updateNodeData<PlaylistData>(props.id, {
-                    playlistUri: '',
-                    playlistName: '',
-                });
-            }
         }
 
         void getPlaylists();
     }, [onlyMine]);
+
+    useEffect(() => {
+        if (!playlists.map((p) => p.uri).includes(props.data.playlistUri)) {
+            updateNodeData<PlaylistData>(props.id, {
+                playlistUri: '',
+                playlistName: '',
+            });
+        }
+    }, [playlists, props.data.playlistUri, props.id, updateNodeData]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>

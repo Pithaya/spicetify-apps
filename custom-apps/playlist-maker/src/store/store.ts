@@ -12,54 +12,65 @@ import {
     applyNodeChanges,
     applyEdgeChanges,
     type XYPosition,
+    type ReactFlowInstance,
 } from 'reactflow';
 import { getDataForNodeType } from '../utils/node-utils';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { type Track } from '../models/track';
+import { v4 as uuidv4 } from 'uuid';
+import type { SavedWorkflow } from '../utils/storage-utils';
 
 let id = 0;
 const getId = (): string => (++id).toString();
 
 // TODO: keep track of input validation errors
 
-function isClick(change: NodeChange | EdgeChange): boolean {
-    return (
-        change.type === 'select' ||
-        (change.type === 'position' && change.position === undefined)
-    );
+function isMove(change: NodeChange): boolean {
+    return change.type === 'position' && change.position !== undefined;
+}
+
+function isRemove(change: NodeChange | EdgeChange): boolean {
+    return change.type === 'remove';
 }
 
 export type AppState = {
+    reactFlowInstance: ReactFlowInstance | null;
     nodes: Node[];
     edges: Edge[];
     result: Track[];
+    workflowId: string;
     workflowName: string;
     hasPendingChanges: boolean;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
-    setNodes: (nodes: Node[]) => void;
-    setEdges: (edges: Edge[]) => void;
+    setReactFlowInstance: (instance: ReactFlowInstance) => void;
     addNode: (nodeType: CustomNodeType, position: XYPosition) => void;
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
     setResult: (tracks: Track[]) => void;
     setWorkflowName: (workflowName: string) => void;
-    resetWorkflow: () => void;
-    saveWorkflow: () => void;
+    resetState: () => void;
+    onWorkflowSaved: () => void;
+    loadWorkflow: (workflow: SavedWorkflow) => void;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
+    reactFlowInstance: null,
     nodes: [],
     edges: [],
     result: [],
+    workflowId: uuidv4(),
     workflowName: 'My workflow',
     hasPendingChanges: false,
+    setReactFlowInstance: (instance: ReactFlowInstance) => {
+        set({ reactFlowInstance: instance });
+    },
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes),
         });
 
-        if (changes.some((c) => !isClick(c))) {
+        if (changes.some((c) => isMove(c) || isRemove(c))) {
             set({
                 hasPendingChanges: true,
             });
@@ -70,7 +81,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             edges: applyEdgeChanges(changes, get().edges),
         });
 
-        if (changes.some((c) => !isClick(c))) {
+        if (changes.some((c) => isRemove(c))) {
             set({
                 hasPendingChanges: true,
             });
@@ -82,12 +93,6 @@ export const useAppStore = create<AppState>((set, get) => ({
             hasPendingChanges: true,
         });
     },
-    setNodes: (nodes: Node[]) => {
-        set({ nodes });
-    },
-    setEdges: (edges: Edge[]) => {
-        set({ edges });
-    },
     addNode: (nodeType: CustomNodeType, position: XYPosition) => {
         const newNode = {
             id: getId(),
@@ -96,7 +101,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             data: getDataForNodeType(nodeType),
         };
 
-        set({ nodes: get().nodes.concat(newNode) });
+        set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });
     },
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => {
         set({
@@ -116,18 +121,29 @@ export const useAppStore = create<AppState>((set, get) => ({
     setWorkflowName: (workflowName: string) => {
         set({ workflowName, hasPendingChanges: true });
     },
-    resetWorkflow: () => {
+    resetState: () => {
         set({
             nodes: [],
             edges: [],
             result: [],
+            workflowId: uuidv4(),
             workflowName: 'My workflow',
             hasPendingChanges: false,
         });
     },
-    saveWorkflow: () => {
-        // TODO: Save the workflow
+    onWorkflowSaved: () => {
         set({ hasPendingChanges: false });
+    },
+    loadWorkflow: (workflow: SavedWorkflow) => {
+        const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
+        get().reactFlowInstance?.setViewport({ x, y, zoom });
+        set({
+            nodes: workflow.nodes || [],
+            edges: workflow.edges || [],
+            hasPendingChanges: false,
+            workflowId: workflow.id,
+            workflowName: workflow.name,
+        });
     },
 }));
 

@@ -7,6 +7,7 @@ export function HelpButton(): JSX.Element {
     return (
         <div className={styles['help-panel']}>
             <Spicetify.ReactComponent.ButtonTertiary
+                aria-label="Help"
                 iconOnly={() => <CircleHelp size={20} strokeWidth={1.5} />}
                 buttonSize="sm"
                 onClick={() => {
