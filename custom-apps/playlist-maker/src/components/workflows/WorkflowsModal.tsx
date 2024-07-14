@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './WorkflowsModal.module.scss';
 import { getWorkflowsFromStorage } from '../../utils/storage-utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
@@ -20,21 +20,41 @@ export function WorkflowsModal(): JSX.Element {
 
     const {
         setShowConfirmLoadModal,
+        setShowConfirmDeleteModal,
         setSelectedWorkflow,
-    }: Pick<DialogState, 'setShowConfirmLoadModal' | 'setSelectedWorkflow'> =
-        useDialogStore(
-            useShallow((state) => {
-                return {
-                    setShowConfirmLoadModal: state.setShowConfirmLoadModal,
-                    setSelectedWorkflow: state.setSelectedWorkflow,
-                };
-            }),
-        );
-    const workflows = getWorkflowsFromStorage();
+        savedWorkflows,
+        setSavedWorkflows,
+    }: Pick<
+        DialogState,
+        | 'setShowConfirmLoadModal'
+        | 'setShowConfirmDeleteModal'
+        | 'setSelectedWorkflow'
+        | 'savedWorkflows'
+        | 'setSavedWorkflows'
+    > = useDialogStore(
+        useShallow((state) => {
+            return {
+                setShowConfirmLoadModal: state.setShowConfirmLoadModal,
+                setShowConfirmDeleteModal: state.setShowConfirmDeleteModal,
+                setSelectedWorkflow: state.setSelectedWorkflow,
+                savedWorkflows: state.savedWorkflows,
+                setSavedWorkflows: state.setSavedWorkflows,
+            };
+        }),
+    );
+
+    useEffect(() => {
+        setSavedWorkflows(getWorkflowsFromStorage());
+    }, [setSavedWorkflows]);
 
     return (
         <>
-            {workflows.map((workflow) => {
+            {savedWorkflows.length === 0 && (
+                <TextComponent elementType="small" semanticColor="textSubdued">
+                    No saved workflows
+                </TextComponent>
+            )}
+            {savedWorkflows.map((workflow) => {
                 return (
                     <div key={workflow.id} className={styles['workflow']}>
                         <TextComponent>{workflow.name}</TextComponent>
@@ -59,8 +79,8 @@ export function WorkflowsModal(): JSX.Element {
                                 <Spicetify.ReactComponent.ButtonTertiary
                                     aria-label="Delete workflow"
                                     onClick={() => {
-                                        // TODO: Show confirm delete modal
                                         setSelectedWorkflow(workflow);
+                                        setShowConfirmDeleteModal(true);
                                     }}
                                     buttonSize="sm"
                                     iconOnly={() => (

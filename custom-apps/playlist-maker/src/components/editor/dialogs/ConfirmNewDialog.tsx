@@ -27,7 +27,6 @@ export function ConfirmNewDialog(): JSX.Element {
 
     return (
         <Spicetify.ReactComponent.ConfirmDialog
-            style={{ zIndex: 200 }}
             isOpen={showConfirmNewModal}
             onConfirm={() => {
                 setShowConfirmNewModal(false);
