@@ -9,6 +9,7 @@ import type {
     SortOption,
     SortOrder,
     TrackListHeaderOption,
+    LibraryHeaders,
 } from '@shared/components/track-list/models/sort-option';
 import {
     ALBUM_ROUTE,
@@ -48,7 +49,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     /**
      * Options for the sort dropdown.
      */
-    const sortOptions: SortOption[] = [
+    const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'date',
             label: getTranslation(['sort.date-added']),
@@ -71,13 +72,14 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
         },
     ];
 
-    const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+    const [selectedSortOption, setSelectedSortOption] = useState<
+        SelectedSortOption<LibraryHeaders>
+    >({ ...sortOptions[0], order: 'ascending' });
 
     const [selectedDisplayType, setSelectedDisplayType] =
         useState<DisplayType>('list');
 
-    const headers: TrackListHeaderOption[] = [];
+    const headers: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [];
 
     if (selectedDisplayType === 'list') {
         // First header can be artist or title
@@ -131,7 +133,10 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
         );
     }
 
-    function orderTracks(tracks: Track[], option: SelectedSortOption): Track[] {
+    function orderTracks(
+        tracks: Track[],
+        option: SelectedSortOption<LibraryHeaders>,
+    ): Track[] {
         switch (option.key) {
             case 'date':
                 return tracks.sort((x, y) =>
@@ -177,11 +182,11 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     }
 
     function handleSortOptionChange(
-        headerKey: HeaderKey,
+        headerKey: HeaderKey<LibraryHeaders>,
         fromDropdownMenu: boolean,
     ): void {
         setSelectedSortOption((previous) => {
-            let newKey: HeaderKey;
+            let newKey: HeaderKey<LibraryHeaders>;
             let newOrder: SortOrder;
 
             if (

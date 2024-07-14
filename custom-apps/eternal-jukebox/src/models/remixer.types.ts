@@ -1,13 +1,10 @@
-import type {
-    Section,
-    Segment,
-    TimeInterval,
-} from '@spotify-web-api/models/audio-analysis';
+import type { Section, Segment } from '@spotify-web-api';
 import type {
     ChildQuantum,
     hasOverlappingSegments,
     ParentQuantum,
 } from './quantum.types';
+import type { TimeInterval } from './time-interval';
 
 /**
  * An `AudioAnalysis` processed by the remixer.

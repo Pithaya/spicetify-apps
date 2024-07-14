@@ -1,21 +1,28 @@
 /**
+ * Default track list headers.
+ */
+export type DefaultHeaders = 'duration';
+
+/**
  * Possible header keys for sorting.
  */
-export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';
+export type LibraryHeaders = 'title' | 'artist' | 'album' | 'date';
+
+export type HeaderKey<T extends string> = T | DefaultHeaders;
 
 /**
  * A track list header.
  */
-export type TrackListHeaderOption = {
-    key: HeaderKey | string;
+export type TrackListHeaderOption<T extends string> = {
+    key: HeaderKey<T>;
     label: string;
 };
 
 /**
  * Sort option to display in the sort dropdown.
  */
-export type SortOption = {
-    key: HeaderKey;
+export type SortOption<T extends string> = {
+    key: HeaderKey<T>;
     label: string;
 };
 
@@ -27,8 +34,8 @@ export type SortOrder = 'ascending' | 'descending';
 /**
  * A selected sort option.
  */
-export type SelectedSortOption = {
-    key: HeaderKey;
+export type SelectedSortOption<T extends string> = {
+    key: HeaderKey<T>;
     order: SortOrder;
 };
 

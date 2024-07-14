@@ -42,6 +42,7 @@ async function main(): Promise<void> {
     styleSheet.innerText = styles;
     document.head.appendChild(styleSheet);
 
+    // TODO: Replace the href with the correct one (get from category endpoint)
     renderElement(
         <NavBarLink
             icon={<Crown size={24} className="made-for-you-icon home-icon" />}

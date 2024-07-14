@@ -2,7 +2,10 @@ import React, { useMemo } from 'react';
 import styles from './ResultPage.module.scss';
 import useAppStore from '../../store/store';
 import { useShallow } from 'zustand/react/shallow';
-import { type TrackListHeaderOption } from '@shared/components/track-list/models/sort-option';
+import type {
+    LibraryHeaders,
+    TrackListHeaderOption,
+} from '@shared/components/track-list/models/sort-option';
 import { getTranslation } from '@shared/utils/translations.utils';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
@@ -27,7 +30,7 @@ export function ResultPage(): JSX.Element {
         return result.map((track) => new TrackWrapper(track));
     }, [result]);
 
-    const headers: TrackListHeaderOption[] = [
+    const headers: TrackListHeaderOption<LibraryHeaders | 'source'>[] = [
         {
             key: 'title',
             label: getTranslation(['tracklist.header.title']),

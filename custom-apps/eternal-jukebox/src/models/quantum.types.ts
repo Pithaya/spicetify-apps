@@ -1,4 +1,4 @@
-import type { Segment } from '@spotify-web-api/models/audio-analysis';
+import type { Segment } from '@spotify-web-api';
 
 /**
  * A quantum is a part of the audio analysis.

@@ -8,12 +8,14 @@ import { getId } from '@shared/utils/uri-utils';
 import i18next from 'i18next';
 import { Clipboard } from 'lucide-react';
 import { getApiData } from '@shared/utils/web-api-utils';
-import type { Track } from '@spotify-web-api/models/track';
-import type { Album } from '@spotify-web-api/models/album';
-import type { Artist } from '@spotify-web-api/models/artist';
-import type { Show } from '@spotify-web-api/models/show';
-import type { Episode } from '@spotify-web-api/models/episode';
-import type { Playlist } from '@spotify-web-api/models/playlist';
+import type {
+    Album,
+    Artist,
+    Episode,
+    Playlist,
+    Show,
+    Track,
+} from '@spotify-web-api';
 
 let locale: typeof Spicetify.Locale;
 let clipboardApi: ClipboardAPI;

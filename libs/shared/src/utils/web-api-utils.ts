@@ -1,36 +1,24 @@
-import {
-    MAX_GET_MULTIPLE_TRACKS_IDS,
-    getTrack,
-    getTracks,
-} from '@spotify-web-api/api/api.tracks';
-import {
-    MAX_GET_MULTIPLE_ALBUMS_IDS,
-    getAlbum,
-    getAlbums,
-} from '@spotify-web-api/api/api.albums';
-import {
-    MAX_GET_MULTIPLE_ARTISTS_IDS,
-    getArtist,
-    getArtists,
-} from '@spotify-web-api/api/api.artists';
-import {
-    MAX_GET_MULTIPLE_EPISODES_IDS,
-    getEpisode,
-    getEpisodes,
-} from '@spotify-web-api/api/api.episodes';
-import {
-    MAX_GET_MULTIPLE_SHOWS_IDS,
-    getShow,
-    getShows,
-} from '@spotify-web-api/api/api.shows';
-import { getPlaylist } from '@spotify-web-api/api/api.playlists';
-import type { Track } from '@spotify-web-api/models/track';
-import type { Album } from '@spotify-web-api/models/album';
-import type { Artist } from '@spotify-web-api/models/artist';
-import type { Show } from '@spotify-web-api/models/show';
-import type { Episode } from '@spotify-web-api/models/episode';
-import type { Playlist } from '@spotify-web-api/models/playlist';
+import type { AuthorizationAPI } from '@shared/platform/authorization';
+import { waitForPlatformApi } from './spicetify-utils';
 import { getId } from './uri-utils';
+import type {
+    Album,
+    Artist,
+    Episode,
+    IAuthStrategy,
+    Playlist,
+    Show,
+    Track,
+} from '@spotify-web-api';
+import {
+    SpotifyApi,
+    MAX_GET_MULTIPLE_ALBUMS_IDS,
+    MAX_GET_MULTIPLE_ARTISTS_IDS,
+    MAX_GET_MULTIPLE_EPISODES_IDS,
+    MAX_GET_MULTIPLE_SHOWS_IDS,
+    MAX_GET_MULTIPLE_TRACKS_IDS,
+    ConsoleLoggingErrorHandler,
+} from '@spotify-web-api';
 
 /**
  * Get Spotify catalog information for multiple tracks, albums, artists, playlists, shows, or episodes identified by their Spotify URI.
@@ -61,12 +49,14 @@ export async function getApiData(
         return [];
     }
 
+    const sdk = getSdkClient();
+
     if (uris.every((uri) => Spicetify.URI.isTrack(uri))) {
         return await getDataForIds(
             ids as string[],
             MAX_GET_MULTIPLE_TRACKS_IDS,
-            getTrack,
-            getTracks,
+            async (id) => await sdk.tracks.get(id),
+            async (ids) => await sdk.tracks.get(ids),
         );
     }
 
@@ -74,8 +64,8 @@ export async function getApiData(
         return await getDataForIds(
             ids as string[],
             MAX_GET_MULTIPLE_ALBUMS_IDS,
-            getAlbum,
-            getAlbums,
+            async (id) => await sdk.albums.get(id),
+            async (ids) => await sdk.albums.get(ids),
         );
     }
 
@@ -83,8 +73,8 @@ export async function getApiData(
         return await getDataForIds(
             ids as string[],
             MAX_GET_MULTIPLE_ARTISTS_IDS,
-            getArtist,
-            getArtists,
+            async (id) => await sdk.artists.get(id),
+            async (ids) => await sdk.artists.get(ids),
         );
     }
 
@@ -98,15 +88,15 @@ export async function getApiData(
             return [];
         }
 
-        return [await getPlaylist(ids[0]!)];
+        return [await sdk.playlists.getPlaylist(ids[0]!)];
     }
 
     if (uris.every((uri) => Spicetify.URI.isShow(uri))) {
         return await getDataForIds(
             ids as string[],
             MAX_GET_MULTIPLE_SHOWS_IDS,
-            getShow,
-            getShows,
+            async (id) => await sdk.shows.get(id),
+            async (ids) => await sdk.shows.get(ids),
         );
     }
 
@@ -114,8 +104,8 @@ export async function getApiData(
         return await getDataForIds(
             ids as string[],
             MAX_GET_MULTIPLE_EPISODES_IDS,
-            getEpisode,
-            getEpisodes,
+            async (id) => await sdk.episodes.get(id),
+            async (ids) => await sdk.episodes.get(ids),
         );
     }
 
@@ -140,4 +130,19 @@ async function getDataForIds<T>(
     return ids.length === 1
         ? [await getSingle(ids[0])]
         : await getMultiple(ids);
+}
+
+export function getSdkClient(): SpotifyApi {
+    const authStrategy: IAuthStrategy = {
+        getAccessToken: async () => {
+            const authorizationApi =
+                await waitForPlatformApi<AuthorizationAPI>('AuthorizationAPI');
+
+            return authorizationApi.getState().token.accessToken;
+        },
+    };
+
+    return new SpotifyApi(authStrategy, {
+        errorHandler: new ConsoleLoggingErrorHandler(),
+    });
 }

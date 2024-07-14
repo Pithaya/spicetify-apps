@@ -1,4 +1,4 @@
-import type { Segment } from '@spotify-web-api/models/audio-analysis';
+import type { Segment } from '@spotify-web-api';
 import { JukeboxSettings } from '../models/jukebox-settings';
 import { SongGraph } from '../models/graph/song-graph';
 import { Edge } from '../models/graph/edge';

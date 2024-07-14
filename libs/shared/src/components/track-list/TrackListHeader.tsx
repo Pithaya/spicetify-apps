@@ -1,18 +1,18 @@
 import React from 'react';
 import type {
-    HeaderKey,
     TrackListHeaderOption,
     SelectedSortOption,
+    HeaderKey,
 } from './models/sort-option';
 import { CaretUp } from '@shared/icons/CaretUp';
 import { CaretDown } from '@shared/icons/CaretDown';
 import { getTranslation } from '@shared/utils/translations.utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
-export type Props = {
-    headers: TrackListHeaderOption[];
-    sortedHeader?: SelectedSortOption;
-    onHeaderClicked?: (key: HeaderKey) => void;
+export type Props<T extends string> = {
+    headers: TrackListHeaderOption<T>[];
+    sortedHeader?: SelectedSortOption<T>;
+    onHeaderClicked?: (key: HeaderKey<T>) => void;
 };
 
 // TODO: responsive
@@ -22,7 +22,9 @@ export type Props = {
 /**
  * Header of a track list grid.
  */
-export function TrackListHeader(props: Readonly<Props>): JSX.Element {
+export function TrackListHeader<T extends string>(
+    props: Readonly<Props<T>>,
+): JSX.Element {
     function getCaret(): JSX.Element {
         if (props.sortedHeader === undefined) {
             return <></>;
