@@ -42,3 +42,23 @@
 .panel {
     border-radius: 8px;
 }
+
+.divider-horizontal {
+    border-bottom: 1px solid #eee;
+}
+
+.divider-vertical {
+    border-left: 1px solid #eee;
+    align-self: stretch;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.title-input {
+    margin-left: 4px;
+    margin-right: 4px;
+}

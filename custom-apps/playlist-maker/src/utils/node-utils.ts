@@ -110,6 +110,11 @@ export async function executeWorkflow(
         console.log('Final result : ', finalResult);
 
         setResult(finalResult);
+        Spicetify.showNotification(
+            'Workflow executed successfully',
+            false,
+            1000,
+        );
     } catch (e) {
         console.error('Error while executing workflow:', e);
         Spicetify.showNotification('Error while executing workflow', true);
