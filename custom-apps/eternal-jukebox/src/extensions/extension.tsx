@@ -15,9 +15,13 @@ void (async () => {
     await waitForSpicetify();
 
     try {
-        const element = await waitForElement('.player-controls__right');
+        const element = await waitForElement('.main-repeatButton-button');
 
-        renderElement(<PlaybarButton />, element);
+        if (element.parentElement === null) {
+            throw new Error('Parent element not found');
+        }
+
+        renderElement(<PlaybarButton />, element.parentElement);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
