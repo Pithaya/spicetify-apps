@@ -6,7 +6,9 @@ import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
-export function ShuffleNode(props: NodeProps<BaseNodeData>): JSX.Element {
+export function ShuffleNode(
+    props: Readonly<NodeProps<BaseNodeData>>,
+): JSX.Element {
     return (
         <Node isExecuting={props.data.isExecuting}>
             <NodeHeader

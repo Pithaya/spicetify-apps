@@ -14,7 +14,6 @@ import {
     type XYPosition,
     type ReactFlowInstance,
 } from 'reactflow';
-import { getDataForNodeType } from '../utils/node-utils';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { type Track } from '../models/track';
 import { v4 as uuidv4 } from 'uuid';
@@ -106,7 +105,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             id: getId(),
             type: nodeType,
             position,
-            data: getDataForNodeType(nodeType),
+            data: {},
         };
 
         set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });

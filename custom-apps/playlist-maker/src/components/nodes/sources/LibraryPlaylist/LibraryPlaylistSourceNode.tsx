@@ -19,19 +19,20 @@ import {
     stringValueSetter,
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
 
 export function LibraryPlaylistSourceNode(
-    props: NodeProps<PlaylistData>,
+    props: Readonly<NodeProps<BaseNodeData>>,
 ): JSX.Element {
     const { register, errors, setValue, getValues, control } =
         useNodeForm<PlaylistData>(props.id, {
-            playlist: props.data.playlist,
-            offset: props.data.offset,
-            filter: props.data.filter,
-            limit: props.data.limit,
+            playlist: undefined,
+            offset: undefined,
+            filter: undefined,
+            limit: undefined,
         });
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);

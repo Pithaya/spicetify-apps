@@ -11,13 +11,19 @@ import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../shared/NodeField';
 import { Controller } from 'react-hook-form';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
 const genres: Record<string, string[]> = genresJson;
 
-export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
-    const { errors, control } = useNodeForm<GenreFilterData>(props.id, {
-        genres: props.data.genres,
-    });
+export function GenreNode(
+    props: Readonly<NodeProps<BaseNodeData>>,
+): JSX.Element {
+    const { errors, control, getValues } = useNodeForm<GenreFilterData>(
+        props.id,
+        {
+            genres: [],
+        },
+    );
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -35,13 +41,13 @@ export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
                     Genres
                 </TextComponent>
                 <div className={`${styles['genre-container']}`}>
-                    {props.data.genres.length > 0 && (
+                    {getValues('genres').length > 0 && (
                         <TextComponent
                             elementType="small"
                             fontSize="small"
                             paddingBottom="1rem"
                         >
-                            {props.data.genres.join(', ')}
+                            {getValues('genres').join(', ')}
                         </TextComponent>
                     )}
                 </div>
