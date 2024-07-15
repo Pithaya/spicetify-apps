@@ -1,10 +1,10 @@
 import React from 'react';
 import useDialogStore, {
     type DialogState,
-} from 'custom-apps/playlist-maker/src/store/dialog-store';
+} from 'custom-apps/playlist-maker/src/stores/dialog-store';
 import useAppStore, {
     type AppState,
-} from 'custom-apps/playlist-maker/src/store/store';
+} from 'custom-apps/playlist-maker/src/stores/store';
 import { useShallow } from 'zustand/react/shallow';
 
 export function ConfirmLoadDialog(): JSX.Element {

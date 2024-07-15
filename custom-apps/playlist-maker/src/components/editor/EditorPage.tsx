@@ -8,7 +8,7 @@ import ReactFlow, {
 } from 'reactflow';
 import { Sidenav } from '../sidebar/Sidebar';
 import { type CustomNodeType, nodeTypes } from '../../models/nodes/node-types';
-import { useAppStore, type AppState } from '../../store/store';
+import { useAppStore, type AppState } from '../../stores/store';
 import { useShallow } from 'zustand/react/shallow';
 import { ConfirmNewDialog } from './dialogs/ConfirmNewDialog';
 import { CenterPanel } from './panels/CenterPanel';

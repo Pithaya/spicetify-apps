@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import styles from './LibraryPlaylistSourceNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { useAppStore } from '../../../../store/store';
 import { NodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
@@ -13,6 +11,14 @@ import type { UserAPI } from '@shared/platform/user';
 import { Select } from '@shared/components/inputs/Select/Select';
 import { TextInput } from '../../../inputs/TextInput';
 import { NumberInput } from '../../../inputs/NumberInput';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import { Controller } from 'react-hook-form';
+import { NodeField } from '../../shared/NodeField';
+import {
+    numberValueSetter,
+    stringValueSetter,
+} from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
@@ -20,7 +26,13 @@ import { NumberInput } from '../../../inputs/NumberInput';
 export function LibraryPlaylistSourceNode(
     props: NodeProps<PlaylistData>,
 ): JSX.Element {
-    const updateNodeData = useAppStore((state) => state.updateNodeData);
+    const { register, errors, setValue, getValues, control } =
+        useNodeForm<PlaylistData>(props.id, {
+            playlist: props.data.playlist,
+            offset: props.data.offset,
+            filter: props.data.filter,
+            limit: props.data.limit,
+        });
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [onlyMine, setOnlyMine] = useState<boolean>(false);
@@ -54,13 +66,16 @@ export function LibraryPlaylistSourceNode(
     }, [onlyMine]);
 
     useEffect(() => {
-        if (!playlists.map((p) => p.uri).includes(props.data.playlistUri)) {
-            updateNodeData<PlaylistData>(props.id, {
-                playlistUri: '',
-                playlistName: '',
-            });
+        const selectedUri = getValues('playlist.uri');
+
+        if (selectedUri === undefined) {
+            return;
         }
-    }, [playlists, props.data.playlistUri, props.id, updateNodeData]);
+
+        if (!playlists.map((p) => p.uri).includes(selectedUri)) {
+            setValue('playlist', undefined, { shouldValidate: true });
+        }
+    }, [playlists, setValue, getValues]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -69,10 +84,11 @@ export function LibraryPlaylistSourceNode(
                 backgroundColor="cornflowerblue"
                 textColor="black"
             />
-            <NodeContent className={styles['node-content']}>
+            <NodeContent>
                 <TextComponent paddingBottom="8px" weight="bold">
                     Playlist
                 </TextComponent>
+
                 <label>
                     <TextComponent elementType="small">
                         Only my playlists
@@ -85,84 +101,100 @@ export function LibraryPlaylistSourceNode(
                         }}
                     />
                 </label>
-                <label>
-                    <TextComponent elementType="small">Playlist</TextComponent>
-                    <Select
-                        selectLabel="Select a playlist"
-                        selectedItemId={
-                            props.data.playlistUri === ''
-                                ? null
-                                : props.data.playlistUri
-                        }
-                        items={playlists.map((p) => ({
-                            id: p.uri,
-                            label: p.name,
-                        }))}
-                        onItemClicked={(item) => {
-                            updateNodeData<PlaylistData>(props.id, {
-                                playlistUri: item.id,
-                                playlistName: item.label,
-                            });
+
+                <NodeField
+                    label="Playlist"
+                    error={
+                        errors.playlist === undefined
+                            ? undefined
+                            : {
+                                  type: 'validate',
+                                  message: errors.playlist.message,
+                              }
+                    }
+                >
+                    <Controller
+                        name="playlist"
+                        control={control}
+                        rules={{
+                            validate: (v) =>
+                                v === undefined
+                                    ? 'This field is required'
+                                    : true,
                         }}
+                        render={({ field: { onChange, value } }) => (
+                            <Select
+                                selectLabel="Select a playlist"
+                                selectedValue={
+                                    value === undefined ? null : value.uri
+                                }
+                                items={playlists.map((p) => ({
+                                    value: p.uri,
+                                    label: p.name,
+                                }))}
+                                onItemClicked={(item) => {
+                                    onChange({
+                                        uri: item.value,
+                                        name: item.label,
+                                    });
+                                }}
+                            />
+                        )}
                     />
-                </label>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={'Search filter to apply'}
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">
-                            Filter
-                        </TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+                </NodeField>
+
+                <NodeField
+                    tooltip="Search filter to apply"
+                    label="Filter"
+                    error={errors.filter}
+                >
                     <TextInput
                         placeholder="Search"
-                        value={props.data.filter}
-                        onChange={(value) => {
-                            updateNodeData<PlaylistData>(props.id, {
-                                filter: value,
-                            });
-                        }}
+                        {...register('filter', {
+                            setValueAs: stringValueSetter,
+                        })}
                     />
-                </label>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={'Number of elements to skip'}
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">
-                            Offset
-                        </TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+                </NodeField>
+
+                <NodeField
+                    label="Offset"
+                    tooltip="Number of elements to skip"
+                    error={errors.offset}
+                >
                     <NumberInput
                         placeholder="0"
-                        value={props.data.offset}
-                        onChange={(value) => {
-                            updateNodeData<PlaylistData>(props.id, {
-                                offset: value,
-                            });
-                        }}
+                        {...register('offset', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
+                        })}
                     />
-                </label>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={
-                            'Number of elements to take. Leave empty to take all elements.'
-                        }
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">Limit</TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+                </NodeField>
+
+                <NodeField
+                    label="Limit"
+                    tooltip="Number of elements to take. Leave empty to take all elements."
+                    error={errors.limit}
+                >
                     <NumberInput
-                        placeholder="0"
-                        value={props.data.limit}
-                        onChange={(value) => {
-                            updateNodeData<PlaylistData>(props.id, {
-                                limit: value,
-                            });
-                        }}
+                        placeholder="None"
+                        {...register('limit', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
+                        })}
                     />
-                </label>
+                </NodeField>
             </NodeContent>
             <Handle
                 type="source"

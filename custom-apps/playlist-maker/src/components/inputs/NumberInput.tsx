@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { type ForwardedRef, forwardRef } from 'react';
 import styles from './NumberInput.module.scss';
+import { type UseFormRegister } from 'react-hook-form';
 
 export type Props = {
-    value?: number;
     placeholder: string;
-    onChange: (value: number) => void;
-};
+} & ReturnType<UseFormRegister<any>>;
 
-export function NumberInput(props: Readonly<Props>): JSX.Element {
+export const NumberInput = forwardRef(function NumberInput(
+    props: Readonly<Props>,
+    ref: ForwardedRef<HTMLInputElement>,
+): JSX.Element {
     return (
         <input
             className={styles['number-input']}
             type="number"
             placeholder={props.placeholder}
-            value={props.value}
-            onChange={(e) => {
-                props.onChange(e.target.valueAsNumber);
-            }}
+            ref={ref}
+            name={props.name}
+            onChange={props.onChange}
+            onBlur={props.onBlur}
         />
     );
-}
+});

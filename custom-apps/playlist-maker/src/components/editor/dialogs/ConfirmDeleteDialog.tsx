@@ -1,6 +1,6 @@
 import useDialogStore, {
     type DialogState,
-} from 'custom-apps/playlist-maker/src/store/dialog-store';
+} from 'custom-apps/playlist-maker/src/stores/dialog-store';
 import {
     getWorkflowsFromStorage,
     removeWorkflowFromStorage,

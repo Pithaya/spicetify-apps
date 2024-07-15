@@ -12,11 +12,8 @@ import {
     type GenreFilterData,
     GenreProcessor,
 } from '../models/nodes/filter/genre-processor';
-import useAppStore from '../store/store';
-import {
-    PlaylistSourceProcessor,
-    type PlaylistData,
-} from '../models/nodes/sources/my-playlists-source-processor';
+import useAppStore from '../stores/store';
+import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 
 export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
@@ -26,16 +23,6 @@ export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
         const newData: GenreFilterData = {
             ...data,
             genres: [],
-        };
-
-        data = newData;
-    }
-
-    if (nodeType === 'libraryPlaylistSource') {
-        const newData: PlaylistData = {
-            ...data,
-            playlistUri: '',
-            playlistName: '',
         };
 
         data = newData;
@@ -51,6 +38,8 @@ export async function executeWorkflow(
     console.log('Executing workflow with nodes:', nodes);
     const setResult = useAppStore.getState().setResult;
     const updateNodeData = useAppStore.getState().updateNodeData;
+    const validationCallbacks =
+        useAppStore.getState().nodeFormValidationCallbacks;
 
     const results = nodes.filter(
         (node) => (node.type as CustomNodeType) === 'result',
@@ -72,6 +61,18 @@ export async function executeWorkflow(
     const result = results[0];
 
     console.log('Result node:', result);
+
+    // Validate node data
+    let valid = true;
+    for (const callback of validationCallbacks.values()) {
+        const validationResult = await callback();
+        valid = valid && validationResult;
+    }
+
+    if (!valid) {
+        Spicetify.showNotification('Some nodes are invalid', true);
+        return;
+    }
 
     // Build the graph starting from the result node
     const nodesToVisit: Node[] = [...getIncomers(result, nodes, edges)];

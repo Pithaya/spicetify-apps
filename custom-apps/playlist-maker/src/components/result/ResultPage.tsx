@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styles from './ResultPage.module.scss';
-import useAppStore from '../../store/store';
+import useAppStore from '../../stores/store';
 import { useShallow } from 'zustand/react/shallow';
 import type {
     LibraryHeaders,

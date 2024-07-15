@@ -3,7 +3,7 @@ import styles from './Select.module.scss';
 import { ChevronDown } from 'lucide-react';
 
 type Item = {
-    id: string;
+    value: string;
     label: string;
 };
 
@@ -11,17 +11,19 @@ export type Props = {
     selectLabel: string;
     items: Item[];
     onItemClicked: (item: Item) => void;
-    selectedItemId: string | null;
+    selectedValue: string | null;
 };
 
 function SelectMenu(
     props: Readonly<Pick<Props, 'items' | 'onItemClicked'>>,
 ): JSX.Element {
     return (
-        <Spicetify.ReactComponent.Menu className={'main-contextMenu-menu'}>
+        <Spicetify.ReactComponent.Menu
+            className={'main-contextMenu-menu' + ' ' + styles['menu']}
+        >
             {props.items.map((item) => (
                 <Spicetify.ReactComponent.MenuItem
-                    key={item.id}
+                    key={item.value}
                     onClick={() => {
                         props.onItemClicked(item);
                     }}
@@ -50,9 +52,10 @@ export function Select(props: Readonly<Props>): JSX.Element {
                 className={`main-dropDown-dropDown ${styles['dropdown']} nodrag`}
             >
                 <span className={styles['dropdown-label']}>
-                    {props.selectedItemId !== null
-                        ? props.items.find((i) => i.id === props.selectedItemId)
-                              ?.label
+                    {props.selectedValue !== null
+                        ? props.items.find(
+                              (i) => i.value === props.selectedValue,
+                          )?.label
                         : props.selectLabel}
                 </span>
                 <ChevronDown size={14} />

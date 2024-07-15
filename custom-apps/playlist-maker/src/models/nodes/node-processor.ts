@@ -1,4 +1,4 @@
-import useAppStore from '../../store/store';
+import useAppStore from '../../stores/store';
 import type { Track } from '../track';
 
 export type BaseNodeData = {
