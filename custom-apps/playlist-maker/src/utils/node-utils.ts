@@ -1,35 +1,14 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
-import {
-    type BaseNodeData,
-    type NodeProcessor,
-} from '../models/nodes/node-processor';
+import { type NodeProcessor } from '../models/nodes/node-processor';
 import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
 import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
-import {
-    type GenreFilterData,
-    GenreProcessor,
-} from '../models/nodes/filter/genre-processor';
+import { GenreProcessor } from '../models/nodes/filter/genre-processor';
 import useAppStore from '../stores/store';
 import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
-
-export function getDataForNodeType(nodeType: CustomNodeType): BaseNodeData {
-    let data: BaseNodeData = { isExecuting: false };
-
-    if (nodeType === 'genre') {
-        const newData: GenreFilterData = {
-            ...data,
-            genres: [],
-        };
-
-        data = newData;
-    }
-
-    return data;
-}
 
 export async function executeWorkflow(
     nodes: Node[],

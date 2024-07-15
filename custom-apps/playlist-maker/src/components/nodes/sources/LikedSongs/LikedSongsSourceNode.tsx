@@ -14,14 +14,15 @@ import {
 import { NumberInput } from '../../../inputs/NumberInput';
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
 export function LikedSongsSourceNode(
-    props: NodeProps<LikedSongsData>,
+    props: Readonly<NodeProps<BaseNodeData>>,
 ): JSX.Element {
     const { register, errors } = useNodeForm<LikedSongsData>(props.id, {
-        filter: props.data.filter,
-        offset: props.data.offset,
-        limit: props.data.limit,
+        filter: undefined,
+        offset: undefined,
+        limit: undefined,
     });
 
     return (

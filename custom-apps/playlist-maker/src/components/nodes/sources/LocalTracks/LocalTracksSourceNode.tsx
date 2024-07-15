@@ -9,12 +9,13 @@ import { TextInput } from '../../../inputs/TextInput';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../../shared/NodeField';
 import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
 export function LocalTracksSourceNode(
-    props: NodeProps<LocalTracksData>,
+    props: Readonly<NodeProps<BaseNodeData>>,
 ): JSX.Element {
     const { register, errors } = useNodeForm<LocalTracksData>(props.id, {
-        filter: props.data.filter,
+        filter: undefined,
     });
 
     return (
