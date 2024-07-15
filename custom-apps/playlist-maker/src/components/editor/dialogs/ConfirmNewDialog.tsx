@@ -1,9 +1,9 @@
 import useDialogStore, {
     type DialogState,
-} from 'custom-apps/playlist-maker/src/store/dialog-store';
+} from 'custom-apps/playlist-maker/src/stores/dialog-store';
 import useAppStore, {
     type AppState,
-} from 'custom-apps/playlist-maker/src/store/store';
+} from 'custom-apps/playlist-maker/src/stores/store';
 import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
 

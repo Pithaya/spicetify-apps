@@ -6,16 +6,18 @@ import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
-import { Chip } from '@shared/components/ui/Chip/Chip';
-import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import useAppStore from 'custom-apps/playlist-maker/src/store/store';
 import type { GenreFilterData } from 'custom-apps/playlist-maker/src/models/nodes/filter/genre-processor';
 import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import { NodeField } from '../shared/NodeField';
+import { Controller } from 'react-hook-form';
 
 const genres: Record<string, string[]> = genresJson;
 
 export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
-    const updateNodeData = useAppStore((state) => state.updateNodeData);
+    const { errors, control } = useNodeForm<GenreFilterData>(props.id, {
+        genres: props.data.genres,
+    });
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -32,49 +34,59 @@ export function GenreNode(props: NodeProps<GenreFilterData>): JSX.Element {
                 >
                     Genres
                 </TextComponent>
-                <div className={`${styles['chip-container']}`}>
-                    {props.data.genres.map((genre) => (
-                        <Chip
-                            key={genre}
-                            onClick={() => {
-                                updateNodeData<GenreFilterData>(props.id, {
-                                    genres: props.data.genres.filter(
-                                        (g) => g !== genre,
-                                    ),
-                                });
-                            }}
-                            iconTrailing={() => (
-                                <SpotifyIcon iconSize={12} icon="x" />
-                            )}
+                <div className={`${styles['genre-container']}`}>
+                    {props.data.genres.length > 0 && (
+                        <TextComponent
+                            elementType="small"
+                            fontSize="small"
+                            paddingBottom="1rem"
                         >
-                            <TextComponent fontSize={'x-small'}>
-                                {genre}
-                            </TextComponent>
-                        </Chip>
-                    ))}
+                            {props.data.genres.join(', ')}
+                        </TextComponent>
+                    )}
                 </div>
 
-                <MultiSelect
-                    selectLabel="Select genres"
-                    items={Object.keys(genres).map((genre) => ({
-                        id: genre,
-                        label: genre,
-                    }))}
-                    selectedItems={props.data.genres}
-                    onItemClicked={(genre) => {
-                        if (props.data.genres.includes(genre)) {
-                            updateNodeData<GenreFilterData>(props.id, {
-                                genres: props.data.genres.filter(
-                                    (g) => g !== genre,
-                                ),
-                            });
-                        } else {
-                            updateNodeData<GenreFilterData>(props.id, {
-                                genres: [...props.data.genres, genre],
-                            });
-                        }
-                    }}
-                />
+                <NodeField
+                    label="Genres"
+                    error={
+                        errors.genres === undefined
+                            ? undefined
+                            : {
+                                  type: 'validate',
+                                  message: errors.genres.message,
+                              }
+                    }
+                >
+                    <Controller
+                        name="genres"
+                        control={control}
+                        rules={{
+                            validate: (v) =>
+                                v.length === 0
+                                    ? 'This field is required'
+                                    : true,
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                            <MultiSelect
+                                selectLabel="Select genres"
+                                items={Object.keys(genres).map((genre) => ({
+                                    value: genre,
+                                    label: genre,
+                                }))}
+                                selectedValues={value}
+                                onItemClicked={(genre) => {
+                                    if (value.includes(genre)) {
+                                        onChange(
+                                            value.filter((g) => g !== genre),
+                                        );
+                                    } else {
+                                        onChange([...value, genre]);
+                                    }
+                                }}
+                            />
+                        )}
+                    />
+                </NodeField>
             </NodeContent>
             <Handle
                 type="target"

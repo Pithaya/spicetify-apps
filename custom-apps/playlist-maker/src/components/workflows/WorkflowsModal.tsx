@@ -3,9 +3,9 @@ import styles from './WorkflowsModal.module.scss';
 import { getWorkflowsFromStorage } from '../../utils/storage-utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { Import, Trash } from 'lucide-react';
-import useAppStore, { type AppState } from '../../store/store';
+import useAppStore, { type AppState } from '../../stores/store';
 import { useShallow } from 'zustand/react/shallow';
-import useDialogStore, { type DialogState } from '../../store/dialog-store';
+import useDialogStore, { type DialogState } from '../../stores/dialog-store';
 
 export function WorkflowsModal(): JSX.Element {
     const {

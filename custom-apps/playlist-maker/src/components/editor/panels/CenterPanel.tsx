@@ -1,15 +1,18 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styles from './CenterPanel.module.scss';
 import { Panel } from 'reactflow';
 import { TextInput } from '../../inputs/TextInput';
 import useAppStore, {
     type AppState,
-} from 'custom-apps/playlist-maker/src/store/store';
+} from 'custom-apps/playlist-maker/src/stores/store';
 import { useShallow } from 'zustand/react/shallow';
 import { WorkflowsModal } from '../../workflows/WorkflowsModal';
 import { BadgePlus, Network, Save } from 'lucide-react';
 import { saveWorkflowToStorage } from 'custom-apps/playlist-maker/src/utils/storage-utils';
-import useDialogStore from 'custom-apps/playlist-maker/src/store/dialog-store';
+import useDialogStore from 'custom-apps/playlist-maker/src/stores/dialog-store';
+import { InputError } from '../../inputs/InputError';
+import { useForm, useWatch } from 'react-hook-form';
+import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
 
 export function CenterPanel(): JSX.Element {
     const {
@@ -20,6 +23,7 @@ export function CenterPanel(): JSX.Element {
         workflowId,
         onWorkflowSaved,
         resetState,
+        anyExecuting,
     }: Pick<
         AppState,
         | 'workflowName'
@@ -29,6 +33,7 @@ export function CenterPanel(): JSX.Element {
         | 'workflowId'
         | 'onWorkflowSaved'
         | 'resetState'
+        | 'anyExecuting'
     > = useAppStore(
         useShallow((state) => ({
             workflowName: state.workflowName,
@@ -38,8 +43,27 @@ export function CenterPanel(): JSX.Element {
             workflowId: state.workflowId,
             onWorkflowSaved: state.onWorkflowSaved,
             resetState: state.resetState,
+            anyExecuting: state.anyExecuting,
         })),
     );
+
+    const {
+        register,
+        formState: { errors, isValid },
+        control,
+    } = useForm<{ workflowName: string | undefined }>({
+        mode: 'onChange',
+        disabled: anyExecuting,
+        defaultValues: {
+            workflowName,
+        },
+    });
+
+    const formValues = useWatch({ control });
+
+    useEffect(() => {
+        setWorkflowName(formValues.workflowName ?? '');
+    }, [formValues, setWorkflowName]);
 
     const { setShowConfirmNewModal } = useDialogStore(
         useShallow((state) => ({
@@ -75,26 +99,35 @@ export function CenterPanel(): JSX.Element {
             className={styles['panel'] + ' ' + styles['flex-row']}
             position="top-center"
         >
-            <TextInput
-                className={styles['title-input']}
-                placeholder=""
-                value={workflowName}
-                onChange={(value) => {
-                    setWorkflowName(value);
-                }}
-            />
-            <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">
-                <Spicetify.ReactComponent.ButtonTertiary
-                    aria-label="Save workflow"
-                    disabled={!hasPendingChanges}
-                    onClick={() => {
-                        saveWorkflow();
-                    }}
-                    buttonSize="sm"
-                    iconOnly={() => <Save size={20} />}
-                />
-            </Spicetify.ReactComponent.TooltipWrapper>
+            <div>
+                <div className={styles['flex-row']}>
+                    <TextInput
+                        className={styles['title-input']}
+                        placeholder=""
+                        {...register('workflowName', {
+                            required: true,
+                            setValueAs: stringValueSetter,
+                        })}
+                    />
+                    <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">
+                        <Spicetify.ReactComponent.ButtonTertiary
+                            aria-label="Save workflow"
+                            disabled={!hasPendingChanges || !isValid}
+                            onClick={() => {
+                                saveWorkflow();
+                            }}
+                            buttonSize="sm"
+                            iconOnly={() => <Save size={20} />}
+                        />
+                    </Spicetify.ReactComponent.TooltipWrapper>
+                </div>
+                <div className={styles['title-input']}>
+                    <InputError error={errors.workflowName} />
+                </div>
+            </div>
+
             <div className={styles['divider-vertical']} />
+
             <Spicetify.ReactComponent.TooltipWrapper label="Manage workflows">
                 <Spicetify.ReactComponent.ButtonTertiary
                     aria-label="Manage workflows"

@@ -2,27 +2,33 @@ import React from 'react';
 import styles from './MultiSelect.module.scss';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { ChevronDown } from 'lucide-react';
+type Item = {
+    value: string;
+    label: string;
+};
 
 export type Props = {
     selectLabel: string;
-    items: { id: string; label: string }[];
-    selectedItems: string[];
-    onItemClicked: (id: string) => void;
+    items: Item[];
+    selectedValues: string[];
+    onItemClicked: (value: string) => void;
 };
 
 function MultiSelectMenu(
-    props: Readonly<Pick<Props, 'items' | 'onItemClicked' | 'selectedItems'>>,
+    props: Readonly<Pick<Props, 'items' | 'onItemClicked' | 'selectedValues'>>,
 ): JSX.Element {
     return (
-        <Spicetify.ReactComponent.Menu className={'main-contextMenu-menu'}>
+        <Spicetify.ReactComponent.Menu
+            className={'main-contextMenu-menu' + ' ' + styles['menu']}
+        >
             {props.items.map((item) => (
                 <Spicetify.ReactComponent.MenuItem
-                    key={item.id}
+                    key={item.value}
                     onClick={() => {
-                        props.onItemClicked(item.id);
+                        props.onItemClicked(item.value);
                     }}
                     leadingIcon={
-                        props.selectedItems.includes(item.id) ? (
+                        props.selectedValues.includes(item.value) ? (
                             <SpotifyIcon
                                 icon="check"
                                 iconSize={12}
@@ -47,7 +53,7 @@ export function MultiSelect(props: Readonly<Props>): JSX.Element {
             menu={
                 <MultiSelectMenu
                     items={props.items}
-                    selectedItems={props.selectedItems}
+                    selectedValues={props.selectedValues}
                     onItemClicked={props.onItemClicked}
                 />
             }
@@ -55,7 +61,11 @@ export function MultiSelect(props: Readonly<Props>): JSX.Element {
             <div
                 className={`main-dropDown-dropDown ${styles['dropdown']} nodrag`}
             >
-                <span>{props.selectLabel}</span>
+                <span>
+                    {props.selectedValues.length > 0
+                        ? `${props.selectedValues.length} elements selected`
+                        : props.selectLabel}
+                </span>
                 <ChevronDown size={14} />
             </div>
         </Spicetify.ReactComponent.ContextMenu>

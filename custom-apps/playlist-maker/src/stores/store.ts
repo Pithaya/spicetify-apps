@@ -41,6 +41,7 @@ export type AppState = {
     workflowId: string;
     workflowName: string;
     hasPendingChanges: boolean;
+    anyExecuting: boolean;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
@@ -52,6 +53,12 @@ export type AppState = {
     resetState: () => void;
     onWorkflowSaved: () => void;
     loadWorkflow: (workflow: SavedWorkflow) => void;
+    nodeFormValidationCallbacks: Map<string, () => Promise<boolean>>;
+    addValidationCallback: (
+        nodeId: string,
+        callback: () => Promise<boolean>,
+    ) => void;
+    removeValidationCallback: (nodeId: string) => void;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -62,6 +69,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     workflowId: uuidv4(),
     workflowName: 'My workflow',
     hasPendingChanges: false,
+    anyExecuting: false,
     setReactFlowInstance: (instance: ReactFlowInstance) => {
         set({ reactFlowInstance: instance });
     },
@@ -114,6 +122,9 @@ export const useAppStore = create<AppState>((set, get) => ({
             }),
             hasPendingChanges: true,
         });
+        set({
+            anyExecuting: get().nodes.some((node) => node.data.isExecuting),
+        });
     },
     setResult: (tracks: Track[]) => {
         set({ result: tracks });
@@ -144,6 +155,22 @@ export const useAppStore = create<AppState>((set, get) => ({
             workflowId: workflow.id,
             workflowName: workflow.name,
         });
+    },
+    nodeFormValidationCallbacks: new Map(),
+    addValidationCallback: (
+        nodeId: string,
+        callback: () => Promise<boolean>,
+    ) => {
+        set({
+            nodeFormValidationCallbacks: new Map(
+                get().nodeFormValidationCallbacks,
+            ).set(nodeId, callback),
+        });
+    },
+    removeValidationCallback: (nodeId: string) => {
+        const callbacks = new Map(get().nodeFormValidationCallbacks);
+        callbacks.delete(nodeId);
+        set({ nodeFormValidationCallbacks: callbacks });
     },
 }));
 

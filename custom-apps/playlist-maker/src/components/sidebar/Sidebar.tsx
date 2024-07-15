@@ -2,7 +2,7 @@ import React, { type DragEvent, type KeyboardEvent } from 'react';
 import styles from './Sidebar.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type CustomNodeType } from '../../models/nodes/node-types';
-import { useAppStore } from '../../store/store';
+import { useAppStore } from '../../stores/store';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;

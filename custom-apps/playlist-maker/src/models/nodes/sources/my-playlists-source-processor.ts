@@ -4,8 +4,10 @@ import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import type { PlaylistAPI } from '@shared/platform/playlist';
 
 export type PlaylistData = BaseNodeData & {
-    playlistUri: string;
-    playlistName: string;
+    playlist?: {
+        uri: string;
+        name: string;
+    };
     offset?: number;
     limit?: number;
     filter?: string;
@@ -16,12 +18,17 @@ export type PlaylistData = BaseNodeData & {
  */
 export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
     public override async getResultsInternal(): Promise<Track[]> {
+        const playlist = this.data.playlist;
+        if (playlist === undefined) {
+            throw new Error('Playlist is not defined');
+        }
+
         const playlistApi =
             await waitForPlatformApi<PlaylistAPI>('PlaylistAPI');
 
         const { offset, limit, filter } = this.data;
 
-        const tracks = await playlistApi.getContents(this.data.playlistUri, {
+        const tracks = await playlistApi.getContents(playlist.uri, {
             limit,
             offset,
             filter,
@@ -29,7 +36,7 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
 
         return tracks.items.map((track) => ({
             ...track,
-            source: this.data.playlistName,
+            source: playlist.name,
         }));
     }
 }

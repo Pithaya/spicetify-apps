@@ -1,19 +1,28 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import styles from '../LikedSongs/LikedSongsSourceNode.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { useAppStore } from '../../../../store/store';
 import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
 import { NodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
 import { TextInput } from '../../../inputs/TextInput';
+import { NodeField } from '../../shared/NodeField';
+import {
+    numberValueSetter,
+    stringValueSetter,
+} from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { NumberInput } from '../../../inputs/NumberInput';
+import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 
 export function LikedSongsSourceNode(
     props: NodeProps<LikedSongsData>,
 ): JSX.Element {
-    const updateNodeData = useAppStore((state) => state.updateNodeData);
+    const { register, errors } = useNodeForm<LikedSongsData>(props.id, {
+        filter: props.data.filter,
+        offset: props.data.offset,
+        limit: props.data.limit,
+    });
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -22,67 +31,63 @@ export function LikedSongsSourceNode(
                 backgroundColor="cornflowerblue"
                 textColor="black"
             />
-            <NodeContent className={styles['node-content']}>
+            <NodeContent>
                 <TextComponent paddingBottom="8px" weight="bold">
                     Liked songs
                 </TextComponent>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={'Search filter to apply'}
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">
-                            Filter
-                        </TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+
+                <NodeField
+                    label="Filter"
+                    tooltip="Search filter to apply"
+                    error={errors.filter}
+                >
                     <TextInput
                         placeholder="Search"
-                        value={props.data.filter}
-                        onChange={(value) => {
-                            updateNodeData<LikedSongsData>(props.id, {
-                                filter: value,
-                            });
-                        }}
+                        {...register('filter', {
+                            setValueAs: stringValueSetter,
+                        })}
                     />
-                </label>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={'Number of elements to skip'}
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">
-                            Offset
-                        </TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+                </NodeField>
+
+                <NodeField
+                    label="Offset"
+                    tooltip="Number of elements to skip"
+                    error={errors.offset}
+                >
                     <NumberInput
                         placeholder="0"
-                        value={props.data.offset}
-                        onChange={(value) => {
-                            updateNodeData<LikedSongsData>(props.id, {
-                                offset: value,
-                            });
-                        }}
+                        {...register('offset', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
+                        })}
                     />
-                </label>
-                <label>
-                    <Spicetify.ReactComponent.TooltipWrapper
-                        label={
-                            'Number of elements to take. Leave empty to take all elements.'
-                        }
-                        showDelay={100}
-                    >
-                        <TextComponent elementType="small">Limit</TextComponent>
-                    </Spicetify.ReactComponent.TooltipWrapper>
+                </NodeField>
+
+                <NodeField
+                    label="Limit"
+                    tooltip="Number of elements to take. Leave empty to take all elements."
+                    error={errors.limit}
+                >
                     <NumberInput
-                        placeholder="0"
-                        value={props.data.limit}
-                        onChange={(value) => {
-                            updateNodeData<LikedSongsData>(props.id, {
-                                limit: value,
-                            });
-                        }}
+                        placeholder="None"
+                        {...register('limit', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
+                        })}
                     />
-                </label>
+                </NodeField>
             </NodeContent>
             <Handle
                 type="source"

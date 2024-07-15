@@ -4,7 +4,7 @@ import { Panel } from 'reactflow';
 import { executeWorkflow } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import useAppStore, {
     type AppState,
-} from 'custom-apps/playlist-maker/src/store/store';
+} from 'custom-apps/playlist-maker/src/stores/store';
 import { useShallow } from 'zustand/react/shallow';
 import { CirclePlay } from 'lucide-react';
 
