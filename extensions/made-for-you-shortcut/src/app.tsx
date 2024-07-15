@@ -5,9 +5,40 @@ import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';
 import { renderElement } from '@shared/utils/react-utils';
+import { getSdkClient } from '@shared/utils/web-api-utils';
+import type { Categories, MaxInt } from '@spotify-web-api';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
+
+    const sdk = getSdkClient();
+
+    // Legacy id, works but navigation link is not shown as active when on page
+    let genreId: string = 'made-for-x-hub';
+
+    let result: Categories | null = null;
+    const limit: MaxInt<50> = 10;
+    let offset = 0;
+
+    do {
+        result = await sdk.browse.getCategories('en_US', limit, offset);
+
+        if (result === null) {
+            break;
+        }
+
+        const madeForYouCategory = result.categories.items.find(
+            (category) => category.name === 'Made For You',
+        );
+
+        if (madeForYouCategory !== undefined) {
+            genreId = madeForYouCategory.id;
+            break;
+        }
+
+        // Get the next page
+        offset += limit;
+    } while (result?.categories.next);
 
     const locale: typeof Spicetify.Locale = Spicetify.Locale;
 
@@ -42,7 +73,6 @@ async function main(): Promise<void> {
     styleSheet.innerText = styles;
     document.head.appendChild(styleSheet);
 
-    // TODO: Replace the href with the correct one (get from category endpoint)
     renderElement(
         <NavBarLink
             icon={<Crown size={24} className="made-for-you-icon home-icon" />}
@@ -54,7 +84,7 @@ async function main(): Promise<void> {
                 />
             }
             label={i18next.t('forYou')}
-            href="/genre/made-for-x-hub"
+            href={`/genre/${genreId}`}
         />,
         element,
     );
