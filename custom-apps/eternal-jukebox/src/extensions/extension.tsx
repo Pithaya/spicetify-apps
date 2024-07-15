@@ -14,14 +14,26 @@ void (async () => {
 
     await waitForSpicetify();
 
-    try {
-        const element = await waitForElement('.main-repeatButton-button');
+    let element: Element | null = null;
 
-        if (element.parentElement === null) {
-            throw new Error('Parent element not found');
+    try {
+        element = await waitForElement('.player-controls__right');
+    } catch {}
+
+    // Fallback to the main repeat button if the player controls are not found
+    if (element === null) {
+        try {
+            const button = await waitForElement('.main-repeatButton-button');
+            element = button.parentElement;
+        } catch {}
+    }
+
+    try {
+        if (element === null) {
+            throw new Error('Container element not found');
         }
 
-        renderElement(<PlaybarButton />, element.parentElement);
+        renderElement(<PlaybarButton />, element);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
