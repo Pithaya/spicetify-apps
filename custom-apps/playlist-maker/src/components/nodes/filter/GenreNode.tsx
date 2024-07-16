@@ -16,7 +16,7 @@ import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/
 const genres: Record<string, string[]> = genresJson;
 
 const defaultValues: LocalNodeData<GenreFilterData> = {
-    genres: [],
+    genreCategories: [],
 };
 
 export function GenreNode(
@@ -44,13 +44,13 @@ export function GenreNode(
                     Genres
                 </TextComponent>
                 <div className={`${styles['genre-container']}`}>
-                    {getValues('genres').length > 0 && (
+                    {getValues('genreCategories').length > 0 && (
                         <TextComponent
                             elementType="small"
                             fontSize="small"
                             paddingBottom="1rem"
                         >
-                            {getValues('genres').join(', ')}
+                            {getValues('genreCategories').join(', ')}
                         </TextComponent>
                     )}
                 </div>
@@ -58,16 +58,16 @@ export function GenreNode(
                 <NodeField
                     label="Genres"
                     error={
-                        errors.genres === undefined
+                        errors.genreCategories === undefined
                             ? undefined
                             : {
                                   type: 'validate',
-                                  message: errors.genres.message,
+                                  message: errors.genreCategories.message,
                               }
                     }
                 >
                     <Controller
-                        name="genres"
+                        name="genreCategories"
                         control={control}
                         rules={{
                             validate: (v) =>

@@ -22,8 +22,6 @@ import type { SavedWorkflow } from '../utils/storage-utils';
 let id = 0;
 const getId = (): string => (++id).toString();
 
-// TODO: keep track of input validation errors
-
 function isMove(change: NodeChange): boolean {
     return change.type === 'position' && change.position !== undefined;
 }
