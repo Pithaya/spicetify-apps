@@ -50,6 +50,11 @@ export interface ITrack {
      * Source of the track.
      */
     source?: string;
+
+    /**
+     * If the track is playable.
+     */
+    isPlayable: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

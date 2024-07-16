@@ -53,6 +53,14 @@ export class Track implements ITrack {
         return this.localTrack;
     }
 
+    public get isPlayable(): boolean {
+        return this.localTrack.isPlayable;
+    }
+
+    public get source(): string | undefined {
+        return undefined;
+    }
+
     /**
      * Create a new instance of the Track class.
      * @param localTrack The backing local track.

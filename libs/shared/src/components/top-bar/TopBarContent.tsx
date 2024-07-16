@@ -20,17 +20,17 @@ export function TopBarContent(props: Readonly<Props>): JSX.Element {
 
     const [windowSize, setWindowSize] = useState(resizeHost.clientWidth);
 
-    const resizeHandler = (): void => {
-        setWindowSize(resizeHost.clientWidth);
-    };
-
     useEffect(() => {
+        const resizeHandler = (): void => {
+            setWindowSize(resizeHost.clientWidth);
+        };
+
         const observer = new ResizeObserver(resizeHandler);
         observer.observe(resizeHost);
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [resizeHost]);
 
     return (
         <TabBar

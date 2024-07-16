@@ -69,6 +69,18 @@ export class TrackWrapper implements ITrack {
         return this.track.source;
     }
 
+    public get isPlayable(): boolean {
+        if (TrackWrapper.isInternalTrack(this.backingTrack)) {
+            return this.backingTrack.isPlayable;
+        }
+
+        if (TrackWrapper.isApiTrack(this.backingTrack)) {
+            return this.backingTrack.is_playable ?? false;
+        }
+
+        return false;
+    }
+
     constructor(private readonly track: WorkflowTrack) {}
 
     private static isInternalTrack(

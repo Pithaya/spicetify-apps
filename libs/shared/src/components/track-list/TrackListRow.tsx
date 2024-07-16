@@ -55,21 +55,23 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const [isHovered, setIsHovered] = useState(false);
     const [trackInLibrary, setTrackInLibrary] = useIsInLibrary(props.track.uri);
 
-    const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
-
     async function addToLikedSongs(): Promise<void> {
+        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
         await libraryApi.add({
             uris: [props.track.uri],
         });
     }
 
     async function removeFromLikedSongs(): Promise<void> {
+        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
         await libraryApi.remove({
             uris: [props.track.uri],
         });
     }
 
     useEffect(() => {
+        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+
         if (!visible) {
             // Only listen to the event when the row is visible
             return;
@@ -92,7 +94,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                 .getEvents()
                 .removeListener('operation_complete', listener);
         };
-    }, [visible, props.track.uri]);
+    }, [visible, props.track.uri, setTrackInLibrary]);
 
     const placeholder = (
         <div
@@ -166,6 +168,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     }
 
     // TODO: Set the correct aria-rowindex
+    // TODO: Remove element hidden when '!props.track.isPlayable' when the disabled css class is available
     return (
         <div
             ref={rowRef}
@@ -183,7 +186,11 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                     <div
                         aria-selected={props.selected}
                         onClick={props.onClick}
-                        onDoubleClick={props.onDoubleClick}
+                        onDoubleClick={() => {
+                            if (props.track.isPlayable) {
+                                props.onDoubleClick();
+                            }
+                        }}
                         draggable="true"
                         onDragStart={(e) => {
                             if (props.dragHandler.draggable) {
@@ -201,6 +208,9 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                     ? 'main-trackList-rowCompactMode'
                                     : ''
                             }`}
+                            style={{
+                                opacity: props.track.isPlayable ? 1 : 0.4,
+                            }}
                         >
                             <div
                                 className="main-trackList-rowSectionIndex"
@@ -214,47 +224,57 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                                 {props.index}
                                             </span>
 
-                                            <Spicetify.ReactComponent.TooltipWrapper
-                                                label={getTranslation(
-                                                    ['tracklist.a11y.play'],
-                                                    props.track.name,
-                                                    props.track.artists
-                                                        .map((a) => a.name)
-                                                        .join(', '),
-                                                )}
-                                                showDelay={200}
-                                            >
-                                                <button
-                                                    className="main-trackList-rowImagePlayButton"
-                                                    aria-label={getTranslation(
+                                            {props.track.isPlayable && (
+                                                <Spicetify.ReactComponent.TooltipWrapper
+                                                    label={getTranslation(
                                                         ['tracklist.a11y.play'],
                                                         props.track.name,
                                                         props.track.artists
                                                             .map((a) => a.name)
                                                             .join(', '),
                                                     )}
-                                                    onClick={() => {
-                                                        if (props.active) {
-                                                            Spicetify.Player.play();
-                                                        } else {
-                                                            props.onDoubleClick();
-                                                        }
-                                                    }}
-                                                    tabIndex={-1}
+                                                    showDelay={200}
                                                 >
-                                                    <svg
-                                                        height="24"
-                                                        width="24"
-                                                        aria-hidden="true"
-                                                        className="main-trackList-rowPlayPauseIcon"
-                                                        viewBox="0 0 24 24"
-                                                        data-encore-id="icon"
-                                                        fill="currentColor"
+                                                    <button
+                                                        className="main-trackList-rowImagePlayButton"
+                                                        aria-label={getTranslation(
+                                                            [
+                                                                'tracklist.a11y.play',
+                                                            ],
+                                                            props.track.name,
+                                                            props.track.artists
+                                                                .map(
+                                                                    (a) =>
+                                                                        a.name,
+                                                                )
+                                                                .join(', '),
+                                                        )}
+                                                        onClick={() => {
+                                                            if (props.active) {
+                                                                Spicetify.Player.play();
+                                                            } else if (
+                                                                props.track
+                                                                    .isPlayable
+                                                            ) {
+                                                                props.onDoubleClick();
+                                                            }
+                                                        }}
+                                                        tabIndex={-1}
                                                     >
-                                                        <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
-                                                    </svg>
-                                                </button>
-                                            </Spicetify.ReactComponent.TooltipWrapper>
+                                                        <svg
+                                                            height="24"
+                                                            width="24"
+                                                            aria-hidden="true"
+                                                            className="main-trackList-rowPlayPauseIcon"
+                                                            viewBox="0 0 24 24"
+                                                            data-encore-id="icon"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </Spicetify.ReactComponent.TooltipWrapper>
+                                            )}
                                         </>
                                     ) : (
                                         <>

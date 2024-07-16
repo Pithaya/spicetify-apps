@@ -3,6 +3,21 @@ import type { History, HistoryEntry } from '../../platform/history';
 import React, { useEffect, useState } from 'react';
 import type { LocalStorageAPI } from '@shared/platform/local-storage';
 
+function isSideBarCollapsed(): boolean {
+    return (
+        getPlatformApiOrThrow<LocalStorageAPI>('LocalStorageAPI').getItem(
+            'ylx-sidebar-state',
+        ) === 1
+    );
+}
+
+function isLibraryXEnabled(sidebar: HTMLElement): boolean {
+    return (
+        sidebar.classList.contains('hasYLXSidebar') ||
+        !!sidebar.querySelector('.main-yourLibraryX-entryPoints')
+    );
+}
+
 export type NavBarLinkProps = {
     icon: JSX.Element;
     activeIcon: JSX.Element;
@@ -19,18 +34,21 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
         throw new Error('Could not find sidebar');
     }
 
+    const href = props.href;
+
     const [active, setActive] = useState(initialActive);
     const [isLibX, setIsLibX] = useState(isLibraryXEnabled(sidebar));
     const [isCollapsed, setIsCollapsed] = useState(isSideBarCollapsed());
 
     useEffect(() => {
         function handleHistoryChange(e: HistoryEntry): void {
-            setActive(e.pathname === props.href);
+            setActive(e.pathname === href);
         }
 
+        const history = getPlatformApiOrThrow<History>('History');
         const unsubscribe = history.listen(handleHistoryChange);
         return unsubscribe;
-    }, []);
+    }, [href]);
 
     useEffect(() => {
         // From https://github.dev/spicetify/spicetify-cli/blob/master/jsHelper/sidebarConfig.js
@@ -56,7 +74,7 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [sidebar]);
 
     useEffect(() => {
         // Observe sidebar width changes
@@ -69,7 +87,7 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [sidebar]);
 
     function navigate(): void {
         history.push(props.href);
@@ -77,21 +95,6 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
 
     if (sidebar == null) {
         return <></>;
-    }
-
-    function isSideBarCollapsed(): boolean {
-        return (
-            getPlatformApiOrThrow<LocalStorageAPI>('LocalStorageAPI').getItem(
-                'ylx-sidebar-state',
-            ) === 1
-        );
-    }
-
-    function isLibraryXEnabled(sidebar: HTMLElement): boolean {
-        return (
-            sidebar.classList.contains('hasYLXSidebar') ||
-            !!sidebar.querySelector('.main-yourLibraryX-entryPoints')
-        );
     }
 
     if (isLibX) {

@@ -8,20 +8,18 @@ export function useIsInLibrary(
     boolean | undefined,
     React.Dispatch<React.SetStateAction<boolean | undefined>>,
 ] {
-    const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
     const [trackInLibrary, setTrackInLibrary] = useState<boolean | undefined>(
-        libraryApi.containsSync(uri),
+        getPlatformApiOrThrow<LibraryAPI>('LibraryAPI').containsSync(uri),
     );
 
     useEffect(() => {
-        if (trackInLibrary === undefined) {
-            libraryApi
-                .contains(uri)
-                .then((result) => {
-                    setTrackInLibrary(result[0]);
-                })
-                .catch(console.error);
-        }
+        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+        libraryApi
+            .contains(uri)
+            .then((result) => {
+                setTrackInLibrary(result[0]);
+            })
+            .catch(console.error);
     }, [uri]);
 
     return [trackInLibrary, setTrackInLibrary];

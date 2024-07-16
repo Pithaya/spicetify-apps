@@ -8,6 +8,7 @@ import { GenreNode } from '../../components/nodes/filter/GenreNode';
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylist/LibraryPlaylistSourceNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracks/TopTracksSourceNode';
+import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 
 export type CustomNodeType =
     // Sources
@@ -17,6 +18,7 @@ export type CustomNodeType =
     | 'topTracksSource'
     // Filters
     | 'genre'
+    | 'isPlayable'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -30,6 +32,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     topTracksSource: TopTracksSourceNode,
     deduplicate: DeduplicateNode,
     genre: GenreNode,
+    isPlayable: IsPlayableNode,
     result: ResultNode,
     shuffle: ShuffleNode,
 };

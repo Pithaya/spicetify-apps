@@ -52,10 +52,12 @@ export function MultiRangeSlider(props: Readonly<Props>): JSX.Element {
         }
     }, [maxVal, getPercent]);
 
+    const { onChange } = props;
+
     // Get min and max values when their state changes
     useEffect(() => {
-        props.onChange({ min: minVal, max: maxVal });
-    }, [minVal, maxVal, props.onChange]);
+        onChange({ min: minVal, max: maxVal });
+    }, [minVal, maxVal, onChange]);
 
     return (
         <div className={styles['container']}>
