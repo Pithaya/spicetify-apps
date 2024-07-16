@@ -1,6 +1,7 @@
-import type { LibraryAPITrack } from '@shared/platform/library';
-import type { LocalTrack } from '@shared/platform/local-files';
+import type { BackingTrack } from '@shared/components/track-list/models/interfaces';
 
-export type Track = (LibraryAPITrack | LocalTrack) & {
+export type AdditionalTrackData = {
     source: string;
 };
+
+export type WorkflowTrack = BackingTrack & AdditionalTrackData;

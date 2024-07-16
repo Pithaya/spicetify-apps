@@ -1,5 +1,5 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type Track } from '../../track';
+import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import type { LocalFilesAPI } from '@shared/platform/local-files';
 
@@ -11,7 +11,7 @@ export type LocalTracksData = BaseNodeData & {
  * Source node that returns local songs.
  */
 export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
-    public override async getResultsInternal(): Promise<Track[]> {
+    public override async getResultsInternal(): Promise<WorkflowTrack[]> {
         const localFilesApi =
             await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
 

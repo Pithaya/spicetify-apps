@@ -1,5 +1,5 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type Track } from '../../track';
+import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import type { LibraryAPI } from '@shared/platform/library';
 
@@ -13,7 +13,7 @@ export type LikedSongsData = BaseNodeData & {
  * Source node that returns liked songs.
  */
 export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
-    protected override async getResultsInternal(): Promise<Track[]> {
+    protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
         const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
 
         let { offset, limit, filter } = this.data;

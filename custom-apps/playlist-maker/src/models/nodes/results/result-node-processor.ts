@@ -1,4 +1,4 @@
-import { type Track } from '../../track';
+import { type WorkflowTrack } from '../../track';
 import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 /**
@@ -6,8 +6,8 @@ import { type BaseNodeData, NodeProcessor } from '../node-processor';
  */
 export class ResultNodeProcessor extends NodeProcessor<BaseNodeData> {
     protected override async getResultsInternal(
-        input: Track[],
-    ): Promise<Track[]> {
+        input: WorkflowTrack[],
+    ): Promise<WorkflowTrack[]> {
         return input;
     }
 }

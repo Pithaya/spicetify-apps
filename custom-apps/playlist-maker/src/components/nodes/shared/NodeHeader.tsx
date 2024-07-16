@@ -17,7 +17,7 @@ export function NodeHeader(props: Readonly<Props>): JSX.Element {
                 color: props.textColor,
             }}
         >
-            <TextComponent paddingBottom="4px" weight="bold">
+            <TextComponent paddingBottom="0" weight="bold">
                 {props.label}
             </TextComponent>
         </div>

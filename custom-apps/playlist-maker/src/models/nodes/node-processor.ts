@@ -1,5 +1,5 @@
 import useAppStore from '../../stores/store';
-import type { Track } from '../track';
+import type { WorkflowTrack } from '../track';
 
 export type BaseNodeData = {
     isExecuting: boolean;
@@ -28,7 +28,7 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
      */
     public async getResults(
         processors: Record<string, NodeProcessor<BaseNodeData>>,
-    ): Promise<Track[]> {
+    ): Promise<WorkflowTrack[]> {
         const input = await this.getInputs(processors);
 
         this.setExecuting(true);
@@ -40,12 +40,14 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
         return result;
     }
 
-    protected abstract getResultsInternal(input: Track[]): Promise<Track[]>;
+    protected abstract getResultsInternal(
+        input: WorkflowTrack[],
+    ): Promise<WorkflowTrack[]>;
 
     private async getInputs(
         processors: Record<string, NodeProcessor<BaseNodeData>>,
-    ): Promise<Track[]> {
-        const inputs: Track[] = [];
+    ): Promise<WorkflowTrack[]> {
+        const inputs: WorkflowTrack[] = [];
 
         for (const sourceNodeId of this.sourceNodeIds) {
             const processor = processors[sourceNodeId];

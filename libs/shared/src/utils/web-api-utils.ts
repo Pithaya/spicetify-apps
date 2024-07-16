@@ -6,6 +6,8 @@ import type {
     Artist,
     Episode,
     IAuthStrategy,
+    MaxInt,
+    Page,
     Playlist,
     Show,
     Track,
@@ -145,4 +147,46 @@ export function getSdkClient(): SpotifyApi {
     return new SpotifyApi(authStrategy, {
         errorHandler: new ConsoleLoggingErrorHandler(),
     });
+}
+
+/**
+ * Get items from all pages.
+ * @param getPage Callback to get data for a page.
+ * @param initialOffset Initial offset.
+ * @param maxItemsCount Maximum number of items to get. If not provided, all items will be fetched.
+ * @returns A list of items.
+ */
+export async function getAllPages<T>(
+    getPage: (offset: number, limit: MaxInt<50>) => Promise<Page<T> | null>,
+    initialOffset: number,
+    maxItemsCount?: number,
+): Promise<T[]> {
+    const items: T[] = [];
+    let currentPage: Page<T> | null = null;
+    let offset = initialOffset;
+    // If the total to get is less than 50, we can get all in a single query
+    // else, get the maximum of items per page
+    let limit: MaxInt<50> =
+        maxItemsCount !== undefined && maxItemsCount <= 50
+            ? (maxItemsCount as MaxInt<50>)
+            : 50;
+
+    do {
+        currentPage = await getPage(offset, limit);
+
+        if (currentPage === null) {
+            break;
+        }
+
+        if (maxItemsCount === undefined) {
+            maxItemsCount = currentPage.total;
+        }
+
+        items.push(...currentPage.items);
+
+        offset += limit;
+        limit = Math.min(...[50, maxItemsCount - items.length]) as MaxInt<50>;
+    } while (currentPage?.next !== null && items.length < maxItemsCount);
+
+    return items;
 }

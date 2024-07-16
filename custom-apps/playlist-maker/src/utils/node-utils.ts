@@ -9,6 +9,7 @@ import { GenreProcessor } from '../models/nodes/filter/genre-processor';
 import useAppStore from '../stores/store';
 import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
+import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
 
 export async function executeWorkflow(
     nodes: Node[],
@@ -114,6 +115,8 @@ function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor<any> {
             return new LocalTracksSourceProcessor(node.id, [], node.data);
         case 'libraryPlaylistSource':
             return new PlaylistSourceProcessor(node.id, [], node.data);
+        case 'topTracksSource':
+            return new TopTracksSourceProcessor(node.id, [], node.data);
         case 'deduplicate':
             return new DeduplicateProcessor(
                 node.id,

@@ -1,4 +1,4 @@
-import { type Track } from '../../track';
+import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { getId } from '@shared/utils/uri-utils';
@@ -27,8 +27,8 @@ export type GenreFilterData = BaseNodeData & {
 
 export class GenreProcessor extends NodeProcessor<GenreFilterData> {
     protected override async getResultsInternal(
-        input: Track[],
-    ): Promise<Track[]> {
+        input: WorkflowTrack[],
+    ): Promise<WorkflowTrack[]> {
         const result = [];
 
         // Don't keep local tracks as we can't get genres from them
@@ -68,7 +68,7 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
      * @param tracks Tracks to process.
      */
     private async getArtistsGenres(
-        tracks: Track[],
+        tracks: WorkflowTrack[],
     ): Promise<Map<string, string[]>> {
         const artistCache = removeExpired(getArtistsGenresCache());
 

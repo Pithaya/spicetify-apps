@@ -15,7 +15,7 @@ import {
     type ReactFlowInstance,
 } from 'reactflow';
 import { type CustomNodeType } from '../models/nodes/node-types';
-import { type Track } from '../models/track';
+import { type WorkflowTrack } from '../models/track';
 import { v4 as uuidv4 } from 'uuid';
 import type { SavedWorkflow } from '../utils/storage-utils';
 
@@ -34,7 +34,7 @@ export type AppState = {
     reactFlowInstance: ReactFlowInstance | null;
     nodes: Node[];
     edges: Edge[];
-    result: Track[];
+    result: WorkflowTrack[];
     workflowId: string;
     workflowName: string;
     hasPendingChanges: boolean;
@@ -45,7 +45,7 @@ export type AppState = {
     setReactFlowInstance: (instance: ReactFlowInstance) => void;
     addNode: (nodeType: CustomNodeType, position: XYPosition) => void;
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => void;
-    setResult: (tracks: Track[]) => void;
+    setResult: (tracks: WorkflowTrack[]) => void;
     setWorkflowName: (workflowName: string) => void;
     resetState: () => void;
     onWorkflowSaved: () => void;
@@ -123,7 +123,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             anyExecuting: get().nodes.some((node) => node.data.isExecuting),
         });
     },
-    setResult: (tracks: Track[]) => {
+    setResult: (tracks: WorkflowTrack[]) => {
         set({ result: tracks });
     },
     setWorkflowName: (workflowName: string) => {
