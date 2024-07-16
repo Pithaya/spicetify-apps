@@ -10,7 +10,7 @@
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps eternal-jukebox && spicetify apply",
         "unapply": "spicetify config custom_apps eternal-jukebox- && spicetify apply",
-        "lint": "npx tsc --noemit && npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
         "format": "npx prettier --write src/"
     },
     "devDependencies": {

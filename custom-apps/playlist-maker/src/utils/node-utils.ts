@@ -10,6 +10,51 @@ import useAppStore from '../stores/store';
 import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
+import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
+
+const nodeProcessorFactory: Record<
+    CustomNodeType,
+    (node: Node, incomers: Node[]) => NodeProcessor<any>
+> = {
+    likedSongsSource: (node, incomers) =>
+        new LikedSongsSourceProcessor(node.id, [], node.data),
+    localTracksSource: (node, incomers) =>
+        new LocalTracksSourceProcessor(node.id, [], node.data),
+    libraryPlaylistSource: (node, incomers) =>
+        new PlaylistSourceProcessor(node.id, [], node.data),
+    topTracksSource: (node, incomers) =>
+        new TopTracksSourceProcessor(node.id, [], node.data),
+    deduplicate: (node, incomers) =>
+        new DeduplicateProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    genre: (node, incomers) =>
+        new GenreProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    isPlayable: (node, incomers) =>
+        new IsPlayableProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    shuffle: (node, incomers) =>
+        new ShuffleProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    result: (node, incomers) =>
+        new ResultNodeProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+};
 
 export async function executeWorkflow(
     nodes: Node[],
@@ -55,12 +100,8 @@ export async function executeWorkflow(
     }
 
     // Build the graph starting from the result node
-    const nodesToVisit: Node[] = [...getIncomers(result, nodes, edges)];
-    const resultProcessor = new ResultNodeProcessor(
-        result.id,
-        nodesToVisit.map((node) => node.id),
-        result.data,
-    );
+    const nodesToVisit: Node[] = getIncomers(result, nodes, edges);
+    const resultProcessor = nodeProcessorFactory.result(result, nodesToVisit);
     const allProcessors: Record<string, NodeProcessor<any>> = {
         [result.id]: resultProcessor,
     };
@@ -77,7 +118,14 @@ export async function executeWorkflow(
         visitedNodes.add(currentNode.id);
 
         const incomers = getIncomers(currentNode, nodes, edges);
-        allProcessors[currentNode.id] = getProcessorForNode(
+        const nodeType: CustomNodeType | undefined =
+            currentNode.type as CustomNodeType;
+
+        if (nodeProcessorFactory[nodeType] === undefined) {
+            throw new Error(`Unknown node type: ${nodeType}`);
+        }
+
+        allProcessors[currentNode.id] = nodeProcessorFactory[nodeType](
             currentNode,
             incomers,
         );
@@ -104,38 +152,5 @@ export async function executeWorkflow(
         for (const node of nodes) {
             updateNodeData(node.id, { isExecuting: false });
         }
-    }
-}
-
-function getProcessorForNode(node: Node, incomers: Node[]): NodeProcessor<any> {
-    switch (node.type as CustomNodeType) {
-        case 'likedSongsSource':
-            return new LikedSongsSourceProcessor(node.id, [], node.data);
-        case 'localTracksSource':
-            return new LocalTracksSourceProcessor(node.id, [], node.data);
-        case 'libraryPlaylistSource':
-            return new PlaylistSourceProcessor(node.id, [], node.data);
-        case 'topTracksSource':
-            return new TopTracksSourceProcessor(node.id, [], node.data);
-        case 'deduplicate':
-            return new DeduplicateProcessor(
-                node.id,
-                incomers.map((node) => node.id),
-                node.data,
-            );
-        case 'genre':
-            return new GenreProcessor(
-                node.id,
-                incomers.map((node) => node.id),
-                node.data,
-            );
-        case 'shuffle':
-            return new ShuffleProcessor(
-                node.id,
-                incomers.map((node) => node.id),
-                node.data,
-            );
-        default:
-            throw new Error(`Unknown node type: ${node.type}`);
     }
 }
