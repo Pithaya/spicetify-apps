@@ -12,15 +12,15 @@ import {
     useWatch,
 } from 'react-hook-form';
 import { useEffect } from 'react';
-import { type BaseNodeData } from '../models/nodes/node-processor';
-
-type LocalNodeData<TNodeData extends BaseNodeData> = Omit<
-    TNodeData,
-    'isExecuting'
->;
+import {
+    type LocalNodeData,
+    type BaseNodeData,
+} from '../models/nodes/node-processor';
+import deepEqual from 'deep-equal';
 
 export function useNodeForm<TNodeData extends BaseNodeData & FieldValues>(
     nodeId: string,
+    nodeData: TNodeData,
     defaultValues: DefaultValues<LocalNodeData<TNodeData>>,
 ): {
     register: UseFormRegister<LocalNodeData<TNodeData>>;
@@ -50,12 +50,16 @@ export function useNodeForm<TNodeData extends BaseNodeData & FieldValues>(
         formState: { errors },
         trigger,
         control,
-        setValue,
+        reset,
         getValues,
+        setValue,
     } = useForm<LocalNodeData<TNodeData>>({
         mode: 'onChange',
         disabled: anyExecuting,
-        defaultValues,
+        defaultValues: {
+            ...defaultValues,
+            ...nodeData,
+        },
     });
 
     const formValues = useWatch({ control });
@@ -63,6 +67,26 @@ export function useNodeForm<TNodeData extends BaseNodeData & FieldValues>(
     useEffect(() => {
         updateNodeData<LocalNodeData<TNodeData>>(nodeId, formValues);
     }, [nodeId, updateNodeData, formValues]);
+
+    useEffect(() => {
+        if (Object.keys(nodeData).length === 0) {
+            // If nodeData is empty, default values are not yet set
+            return;
+        }
+
+        // If we load a new workflow with the same nodes, the nodes component won't be recreated
+        // So when data has changed outside of the form, sync the form
+        // undefined values are not stored, so we apply the default values
+        const areEquals = deepEqual(
+            { ...defaultValues, ...nodeData },
+            getValues(),
+            { strict: true },
+        );
+
+        if (!areEquals) {
+            reset(nodeData);
+        }
+    }, [nodeData, defaultValues, getValues, reset]);
 
     useEffect(() => {
         addValidationCallback(nodeId, async () => {

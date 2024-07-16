@@ -51,6 +51,8 @@ export function CenterPanel(): JSX.Element {
         register,
         formState: { errors, isValid },
         control,
+        getValues,
+        setValue,
     } = useForm<{ workflowName: string | undefined }>({
         mode: 'onChange',
         disabled: anyExecuting,
@@ -64,6 +66,13 @@ export function CenterPanel(): JSX.Element {
     useEffect(() => {
         setWorkflowName(formValues.workflowName ?? '');
     }, [formValues, setWorkflowName]);
+
+    useEffect(() => {
+        // On changes outside of the form (workflow load, reset), sync the state
+        if (getValues('workflowName') !== workflowName) {
+            setValue('workflowName', workflowName, { shouldValidate: true });
+        }
+    }, [workflowName, getValues, setValue]);
 
     const { setShowConfirmNewModal } = useDialogStore(
         useShallow((state) => ({

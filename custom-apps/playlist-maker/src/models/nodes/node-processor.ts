@@ -5,6 +5,11 @@ export type BaseNodeData = {
     isExecuting: boolean;
 };
 
+export type LocalNodeData<TNodeData extends BaseNodeData> = Omit<
+    TNodeData,
+    'isExecuting'
+>;
+
 // TODO: Keep cache of results
 
 export abstract class NodeProcessor<T extends BaseNodeData> {
