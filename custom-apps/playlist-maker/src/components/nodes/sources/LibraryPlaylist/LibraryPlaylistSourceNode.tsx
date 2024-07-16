@@ -6,7 +6,7 @@ import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
 import type { PlaylistData } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { Folder, Playlist, RootlistAPI } from '@shared/platform/rootlist';
+import type { Playlist } from '@shared/platform/rootlist';
 import type { UserAPI } from '@shared/platform/user';
 import { Select } from '@shared/components/inputs/Select/Select';
 import { TextInput } from '../../../inputs/TextInput';
@@ -20,6 +20,7 @@ import {
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
@@ -42,27 +43,16 @@ export function LibraryPlaylistSourceNode(
 
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
-            const rootlistAPI =
-                getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
             const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
-
-            const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
-            const isPlaylist = (item: Folder | Playlist): item is Playlist =>
-                item.type === 'playlist';
-
-            let filteredPlaylists: Playlist[] = rootlistFolder.items
-                .flatMap((i) => (i.type === 'playlist' ? i : i.items))
-                .filter(isPlaylist);
+            let playlists = await getRootlistPlaylists();
 
             if (onlyMine) {
-                filteredPlaylists = filteredPlaylists.filter(
-                    (p) => p.owner.uri === user.uri,
-                );
+                playlists = playlists.filter((p) => p.owner.uri === user.uri);
             }
 
-            setPlaylists(filteredPlaylists);
+            setPlaylists(playlists);
         }
 
         void getPlaylists();

@@ -4,6 +4,7 @@ import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 
 export type Props = {
     size: Spicetify.ReactComponent.ButtonProps['buttonSize'];
+    disabled?: boolean;
     onClick: () => void;
 };
 
@@ -12,6 +13,7 @@ export function PlayButton(props: Readonly<Props>): JSX.Element {
         <Spicetify.ReactComponent.ButtonPrimary
             aria-label={getTranslation(['play'])}
             buttonSize={props.size}
+            disabled={props.disabled}
             onClick={(e: any) => {
                 e.stopPropagation();
                 props.onClick();
