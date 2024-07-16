@@ -1,0 +1,15 @@
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.fieldset {
+    label {
+        display: block;
+    }
+
+    label:not(:last-of-type) {
+        margin-bottom: 14px;
+    }
+}

@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import type { PlaylistAPI } from '@shared/platform/playlist';
-import type { Folder, Playlist, RootlistAPI } from '@shared/platform/rootlist';
+import type { Playlist } from '@shared/platform/rootlist';
 import type { UserAPI } from '@shared/platform/user';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
-import React, { useEffect, useState } from 'react';
+import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 
 export type Props = {
     tracksUri: string[];
@@ -15,19 +16,12 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
             const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
-            const rootlistAPI =
-                getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
-
-            const rootlistFolder = await rootlistAPI.getContents();
             const user = await userAPI.getUser();
 
-            const isPlaylist = (item: Folder | Playlist): item is Playlist =>
-                item.type === 'playlist';
-
-            const userPlaylists: Playlist[] = rootlistFolder.items
-                .flatMap((i) => (i.type === 'playlist' ? i : i.items))
-                .filter(isPlaylist)
-                .filter((p) => p.owner.uri === user.uri);
+            const playlists = await getRootlistPlaylists();
+            const userPlaylists: Playlist[] = playlists.filter(
+                (p) => p.owner.uri === user.uri,
+            );
 
             setPlaylists(userPlaylists);
         }

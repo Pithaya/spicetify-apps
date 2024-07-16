@@ -16,6 +16,8 @@ import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { History } from '@shared/platform/history';
 import { getId } from '@shared/utils/uri-utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { ArrowRightFromLine } from 'lucide-react';
+import { CreatePlaylistModal } from './modals/CreatePlaylistModal';
 
 export function ResultPage(): JSX.Element {
     const history = getPlatformApiOrThrow<History>('History');
@@ -74,12 +76,35 @@ export function ResultPage(): JSX.Element {
                         <div className="main-actionBar-ActionBarRow">
                             <div className="main-playButton-PlayButton">
                                 <PlayButton
+                                    disabled={tracks.length === 0}
                                     size="lg"
                                     onClick={() => {
                                         playTracks();
                                     }}
                                 />
                             </div>
+                            <Spicetify.ReactComponent.TooltipWrapper
+                                label={'Create playlist from tracks'}
+                            >
+                                <Spicetify.ReactComponent.ButtonSecondary
+                                    disabled={tracks.length === 0}
+                                    aria-label="Create playlist from tracks"
+                                    iconOnly={() => (
+                                        <ArrowRightFromLine size={30} />
+                                    )}
+                                    buttonSize="lg"
+                                    onClick={() => {
+                                        Spicetify.PopupModal.display({
+                                            title: 'Create playlist',
+                                            content: React.createElement(
+                                                CreatePlaylistModal,
+                                            ) as any,
+                                            isLarge: true,
+                                        });
+                                    }}
+                                    className={styles['help-button']}
+                                ></Spicetify.ReactComponent.ButtonSecondary>
+                            </Spicetify.ReactComponent.TooltipWrapper>
                         </div>
                     </div>
 

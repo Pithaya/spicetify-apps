@@ -92,7 +92,7 @@ export type PlaylistAPI = {
     add: (
         playlistUri: string,
         tracks: string[],
-        options: any | { after: 'end' },
+        options: any | { before?: 'start'; after?: 'end' },
     ) => Promise<void>;
 
     applyModifications: (
