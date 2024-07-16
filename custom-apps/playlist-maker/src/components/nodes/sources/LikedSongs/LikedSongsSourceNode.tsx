@@ -14,16 +14,22 @@ import {
 import { NumberInput } from '../../../inputs/NumberInput';
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+
+const defaultValues: LocalNodeData<LikedSongsData> = {
+    filter: undefined,
+    offset: undefined,
+    limit: undefined,
+};
 
 export function LikedSongsSourceNode(
-    props: Readonly<NodeProps<BaseNodeData>>,
+    props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
-    const { register, errors } = useNodeForm<LikedSongsData>(props.id, {
-        filter: undefined,
-        offset: undefined,
-        limit: undefined,
-    });
+    const { register, errors } = useNodeForm<LikedSongsData>(
+        props.id,
+        props.data,
+        defaultValues,
+    );
 
     return (
         <Node isExecuting={props.data.isExecuting}>

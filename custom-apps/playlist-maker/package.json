@@ -15,7 +15,9 @@
     },
     "license": "MIT",
     "devDependencies": {
+        "@types/deep-equal": "^1.0.4",
         "@types/jsdom": "^21.1.7",
+        "deep-equal": "^2.2.3",
         "jsdom": "^24.1.0",
         "lucide-react": "^0.396.0",
         "react-hook-form": "^7.52.1",

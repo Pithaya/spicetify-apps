@@ -11,18 +11,21 @@ import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../shared/NodeField';
 import { Controller } from 'react-hook-form';
-import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 
 const genres: Record<string, string[]> = genresJson;
 
+const defaultValues: LocalNodeData<GenreFilterData> = {
+    genres: [],
+};
+
 export function GenreNode(
-    props: Readonly<NodeProps<BaseNodeData>>,
+    props: Readonly<NodeProps<GenreFilterData>>,
 ): JSX.Element {
     const { errors, control, getValues } = useNodeForm<GenreFilterData>(
         props.id,
-        {
-            genres: [],
-        },
+        props.data,
+        defaultValues,
     );
 
     return (

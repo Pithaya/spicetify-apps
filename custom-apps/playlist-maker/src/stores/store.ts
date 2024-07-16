@@ -132,6 +132,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ workflowName, hasPendingChanges: true });
     },
     resetState: () => {
+        id = 0;
         set({
             nodes: [],
             edges: [],
@@ -145,6 +146,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ hasPendingChanges: false });
     },
     loadWorkflow: (workflow: SavedWorkflow) => {
+        id =
+            workflow.nodes.length > 0
+                ? Math.max(...workflow.nodes.map((node) => parseInt(node.id)))
+                : 0;
         const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
         get().reactFlowInstance?.setViewport({ x, y, zoom });
         set({
