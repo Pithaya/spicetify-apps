@@ -1,5 +1,5 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type Track } from '../../track';
+import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
 import type { PlaylistAPI } from '@shared/platform/playlist';
 
@@ -17,7 +17,7 @@ export type PlaylistData = BaseNodeData & {
  * Source node that returns tracks from a playlist.
  */
 export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
-    public override async getResultsInternal(): Promise<Track[]> {
+    public override async getResultsInternal(): Promise<WorkflowTrack[]> {
         const playlist = this.data.playlist;
         if (playlist === undefined) {
             throw new Error('Playlist is not defined');

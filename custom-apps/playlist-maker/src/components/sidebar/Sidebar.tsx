@@ -53,6 +53,7 @@ export function Sidenav(): JSX.Element {
                     label="Library playlist"
                     nodeType="libraryPlaylistSource"
                 />
+                <SidenavItem label="Top tracks" nodeType="topTracksSource" />
             </ul>
 
             <TextComponent elementType="h1">Filters</TextComponent>

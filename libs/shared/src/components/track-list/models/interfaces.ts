@@ -1,5 +1,8 @@
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
+import type { Track } from '@spotify-web-api';
+
+export type BackingTrack = LocalTrack | LibraryAPITrack | Track;
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ITrack {
@@ -41,7 +44,7 @@ export interface ITrack {
     /**
      * Internal track.
      */
-    backingTrack: LocalTrack | LibraryAPITrack;
+    backingTrack: BackingTrack;
 
     /**
      * Source of the track.
