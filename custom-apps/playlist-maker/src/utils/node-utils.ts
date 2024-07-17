@@ -66,16 +66,16 @@ export async function executeWorkflow(
     const validationCallbacks =
         useAppStore.getState().nodeFormValidationCallbacks;
 
-    const results = nodes.filter(
+    const resultNodes = nodes.filter(
         (node) => (node.type as CustomNodeType) === 'result',
     );
 
-    if (results.length === 0) {
+    if (resultNodes.length === 0) {
         Spicetify.showNotification('No result node found in workflow', true);
         return;
     }
 
-    if (results.length > 1) {
+    if (resultNodes.length > 1) {
         Spicetify.showNotification(
             'The workflow should have only one result node',
             true,
@@ -83,9 +83,7 @@ export async function executeWorkflow(
         return;
     }
 
-    const result = results[0];
-
-    console.log('Result node:', result);
+    const resultNode = resultNodes[0];
 
     // Validate node data
     let valid = true;
@@ -100,19 +98,22 @@ export async function executeWorkflow(
     }
 
     // Build the graph starting from the result node
-    const nodesToVisit: Node[] = getIncomers(result, nodes, edges);
-    const resultProcessor = nodeProcessorFactory.result(result, nodesToVisit);
+    const nodesToVisit: Node[] = getIncomers(resultNode, nodes, edges);
+    const resultProcessor = nodeProcessorFactory.result(
+        resultNode,
+        nodesToVisit,
+    );
     const allProcessors: Record<string, NodeProcessor<any>> = {
-        [result.id]: resultProcessor,
+        [resultNode.id]: resultProcessor,
     };
-    const visitedNodes: Set<string> = new Set<string>([result.id]);
+    const visitedNodes: Set<string> = new Set<string>([resultNode.id]);
 
     while (nodesToVisit.length > 0) {
         const currentNode = nodesToVisit.pop()!;
 
         if (visitedNodes.has(currentNode.id)) {
-            Spicetify.showNotification('Cycle detected in workflow', true);
-            return;
+            // Skip already visited nodes
+            continue;
         }
 
         visitedNodes.add(currentNode.id);

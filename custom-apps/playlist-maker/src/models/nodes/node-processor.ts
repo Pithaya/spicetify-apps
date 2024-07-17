@@ -10,10 +10,9 @@ export type LocalNodeData<TNodeData extends BaseNodeData> = Omit<
     'isExecuting'
 >;
 
-// TODO: Keep cache of results
-
 export abstract class NodeProcessor<T extends BaseNodeData> {
     private readonly updateNodeData = useAppStore.getState().updateNodeData;
+    private resultCache: WorkflowTrack[] | null = null;
 
     constructor(
         protected readonly currentNodeId: string,
@@ -33,11 +32,13 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
 
         this.setExecuting(true);
 
-        const result = await this.getResultsInternal(input);
+        if (this.resultCache === null) {
+            this.resultCache = await this.getResultsInternal(input);
+        }
 
         this.setExecuting(false);
 
-        return result;
+        return this.resultCache;
     }
 
     protected abstract getResultsInternal(

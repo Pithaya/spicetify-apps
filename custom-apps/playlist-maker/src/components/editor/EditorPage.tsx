@@ -5,6 +5,9 @@ import ReactFlow, {
     MiniMap,
     Background,
     BackgroundVariant,
+    type Connection,
+    type Node,
+    getOutgoers,
 } from 'reactflow';
 import { Sidenav } from '../sidebar/Sidebar';
 import { type CustomNodeType, nodeTypes } from '../../models/nodes/node-types';
@@ -27,6 +30,8 @@ type State = Pick<
     | 'onConnect'
     | 'addNode'
     | 'setReactFlowInstance'
+    | 'getNodes'
+    | 'getEdges'
 >;
 
 const selector = (state: AppState): State => ({
@@ -38,6 +43,8 @@ const selector = (state: AppState): State => ({
     onConnect: state.onConnect,
     addNode: state.addNode,
     setReactFlowInstance: state.setReactFlowInstance,
+    getNodes: state.getNodes,
+    getEdges: state.getEdges,
 });
 
 export function EditorPage(): JSX.Element {
@@ -50,6 +57,8 @@ export function EditorPage(): JSX.Element {
         addNode,
         reactFlowInstance,
         setReactFlowInstance,
+        getNodes,
+        getEdges,
     }: State = useAppStore(useShallow(selector));
 
     const onDragOver = useCallback((event: DragEvent) => {
@@ -80,6 +89,48 @@ export function EditorPage(): JSX.Element {
         [reactFlowInstance, addNode],
     );
 
+    const isValidConnection = useCallback(
+        (connection: Connection): boolean => {
+            const nodes = getNodes();
+            const edges = getEdges();
+            const target = nodes.find((node) => node.id === connection.target);
+
+            if (target === undefined) {
+                return false;
+            }
+
+            const hasCycle = (
+                node: Node,
+                visited = new Set<string>(),
+            ): boolean => {
+                if (visited.has(node.id)) {
+                    return false;
+                }
+
+                visited.add(node.id);
+
+                for (const outgoer of getOutgoers(node, nodes, edges)) {
+                    if (outgoer.id === connection.source) {
+                        return true;
+                    }
+
+                    if (hasCycle(outgoer, visited)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+
+            if (target.id === connection.source) {
+                return false;
+            }
+
+            return !hasCycle(target);
+        },
+        [getNodes, getEdges],
+    );
+
     return (
         <>
             <div className={styles['container']}>
@@ -100,6 +151,7 @@ export function EditorPage(): JSX.Element {
                             onDragOver={onDragOver}
                             deleteKeyCode={['Backspace']}
                             nodeTypes={nodeTypes}
+                            isValidConnection={isValidConnection}
                         >
                             <TopLeftPanel />
                             <CenterPanel />

@@ -56,6 +56,8 @@ export type AppState = {
         callback: () => Promise<boolean>,
     ) => void;
     removeValidationCallback: (nodeId: string) => void;
+    getNodes: () => Node[];
+    getEdges: () => Edge[];
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -174,6 +176,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         callbacks.delete(nodeId);
         set({ nodeFormValidationCallbacks: callbacks });
     },
+    getNodes: () => get().nodes,
+    getEdges: () => get().edges,
 }));
 
 export default useAppStore;
