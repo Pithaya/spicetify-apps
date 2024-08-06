@@ -30,4 +30,4 @@ spicetify apply
 # Clean up
 rm -rf "$ZIP_FILE" "$TEMP_DIR"
 
-echo "Installation complete. Enjoy your new stats app!"
+echo "Installation complete. Enjoy your new app!"
