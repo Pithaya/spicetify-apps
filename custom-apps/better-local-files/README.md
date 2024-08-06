@@ -19,7 +19,7 @@ View your local songs, albums and artists.
 
 ## Auto Installation (Linux)
 ```
-sh <(curl -s https://raw.github.com/Pithaya/spicetify-apps/tree/main/custom-apps/better-local-files/src/install.sh)
+sh <(curl -s https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/better-local-files/src/install.sh)
 
 ```
 
