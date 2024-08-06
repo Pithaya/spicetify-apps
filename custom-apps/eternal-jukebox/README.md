@@ -14,7 +14,8 @@ It finds pathways through similar segments of the song and plays a never-ending 
 
 ## Auto Install (Linux)
 ```
-sh <(curl -s https://raw.github.com/Pithaya/spicetify-apps/tree/main/custom-apps/eternal-jukebox/src/install.sh)
+sh <(curl -s https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/src/install.sh)
+
 ```
 
 ## Manual Installation
