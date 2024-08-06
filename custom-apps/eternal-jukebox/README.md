@@ -12,7 +12,7 @@ It finds pathways through similar segments of the song and plays a never-ending 
 > See [known issues](#known-issues) and [upcoming features](#upcoming-features).
 
 
-## Auto Install (Linux)
+## Auto Installation (Linux)
 ```
 sh <(curl -s https://raw.githubusercontent.com/Pithaya/spicetify-apps/main/custom-apps/eternal-jukebox/src/install.sh)
 
