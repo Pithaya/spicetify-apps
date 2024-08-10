@@ -24,12 +24,32 @@ import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
+// FIXME: leaving and coming back to the page trigger the playlist selection validation with undefined, and shows the error message
 
 const defaultValues: LocalNodeData<PlaylistData> = {
     playlist: undefined,
     offset: undefined,
     filter: undefined,
     limit: undefined,
+    sortField: 'NO_SORT',
+    sortOrder: 'ASC',
+};
+
+const propertyValues: Record<PlaylistData['sortField'], string> = {
+    ALBUM: 'Album',
+    ARTIST: 'Artist',
+    TITLE: 'Name',
+    DURATION: 'Duration',
+    ADDED_AT: 'Added at',
+    ADDED_BY: 'Added by',
+    PUBLISH_DATE: 'Publish date',
+    SHOW_NAME: 'Show name',
+    NO_SORT: 'No sort',
+};
+
+const orderValues: Record<PlaylistData['sortOrder'], string> = {
+    ASC: 'Ascending',
+    DESC: 'Descending',
 };
 
 export function LibraryPlaylistSourceNode(
@@ -186,6 +206,82 @@ export function LibraryPlaylistSourceNode(
                                 whole: wholeNumber,
                             },
                         })}
+                    />
+                </NodeField>
+
+                <NodeField
+                    label="Sort by"
+                    error={
+                        errors.sortField === undefined
+                            ? undefined
+                            : {
+                                  type: 'validate',
+                                  message: errors.sortField.message,
+                              }
+                    }
+                >
+                    <Controller
+                        name="sortField"
+                        control={control}
+                        rules={{
+                            validate: (v) =>
+                                v === undefined
+                                    ? 'This field is required'
+                                    : true,
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                            <Select
+                                selectLabel="Property to sort on"
+                                selectedValue={value ?? null}
+                                items={Object.entries(propertyValues).map(
+                                    ([key, label]) => ({
+                                        label,
+                                        value: key,
+                                    }),
+                                )}
+                                onItemClicked={(item) => {
+                                    onChange(item.value);
+                                }}
+                            />
+                        )}
+                    />
+                </NodeField>
+                <NodeField
+                    label="Order"
+                    error={
+                        errors.sortOrder === undefined
+                            ? undefined
+                            : {
+                                  type: 'validate',
+                                  message: errors.sortOrder.message,
+                              }
+                    }
+                >
+                    <Controller
+                        name="sortOrder"
+                        control={control}
+                        rules={{
+                            validate: (v) =>
+                                v === undefined
+                                    ? 'This field is required'
+                                    : true,
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                            <Select
+                                selectLabel="Sort order"
+                                selectedValue={value ?? null}
+                                items={Object.entries(orderValues).map(
+                                    ([key, label]) => ({
+                                        label,
+                                        value: key,
+                                    }),
+                                )}
+                                onItemClicked={(item) => {
+                                    onChange(item.value);
+                                }}
+                                disabled={props.data.sortField === 'NO_SORT'}
+                            />
+                        )}
                     />
                 </NodeField>
             </NodeContent>

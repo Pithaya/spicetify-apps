@@ -12,6 +12,7 @@ export type Props = {
     items: Item[];
     onItemClicked: (item: Item) => void;
     selectedValue: string | null;
+    disabled?: boolean;
 };
 
 function SelectMenu(
@@ -50,6 +51,10 @@ export function Select(props: Readonly<Props>): JSX.Element {
         >
             <div
                 className={`main-dropDown-dropDown ${styles['dropdown']} nodrag`}
+                style={{
+                    pointerEvents: props.disabled ? 'none' : 'auto',
+                    opacity: props.disabled ? 0.5 : 1,
+                }}
             >
                 <span className={styles['dropdown-label']}>
                     {props.selectedValue !== null

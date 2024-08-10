@@ -6,11 +6,24 @@ export type PlaylistParameters = {
     withSync?: boolean;
 };
 
+export type PlaylistSortOption = {
+    field:
+        | 'TITLE'
+        | 'ADDED_AT'
+        | 'ADDED_BY'
+        | 'ALBUM'
+        | 'ARTIST'
+        | 'DURATION'
+        | 'SHOW_NAME'
+        | 'PUBLISH_DATE';
+    order: 'DESC' | 'ASC';
+};
+
 export type QueryParameters = {
     filter: string;
     limit: number;
     offset: number;
-    sort: string | undefined;
+    sort?: PlaylistSortOption;
 };
 
 export type Playlist = {

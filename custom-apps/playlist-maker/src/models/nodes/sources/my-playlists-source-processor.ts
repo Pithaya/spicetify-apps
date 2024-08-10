@@ -1,7 +1,10 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
 import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import type { PlaylistAPI } from '@shared/platform/playlist';
+import type {
+    PlaylistAPI,
+    PlaylistSortOption,
+} from '@shared/platform/playlist';
 
 export type PlaylistData = BaseNodeData & {
     playlist?: {
@@ -11,6 +14,8 @@ export type PlaylistData = BaseNodeData & {
     offset?: number;
     limit?: number;
     filter?: string;
+    sortField: PlaylistSortOption['field'] | 'NO_SORT';
+    sortOrder: PlaylistSortOption['order'];
 };
 
 /**
@@ -26,12 +31,19 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
         const playlistApi =
             await waitForPlatformApi<PlaylistAPI>('PlaylistAPI');
 
-        const { offset, limit, filter } = this.data;
+        const { offset, limit, filter, sortField, sortOrder } = this.data;
 
         const tracks = await playlistApi.getContents(playlist.uri, {
             limit,
             offset,
             filter,
+            sort:
+                sortField === 'NO_SORT'
+                    ? undefined
+                    : {
+                          field: sortField,
+                          order: sortOrder,
+                      },
         });
 
         return tracks.items.map((track) => ({

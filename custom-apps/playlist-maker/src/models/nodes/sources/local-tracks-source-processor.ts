@@ -1,10 +1,15 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
 import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import type { LocalFilesAPI } from '@shared/platform/local-files';
+import type {
+    LocalFilesAPI,
+    LocalTrackSortOption,
+} from '@shared/platform/local-files';
 
 export type LocalTracksData = BaseNodeData & {
     filter?: string;
+    sortField: LocalTrackSortOption['field'] | 'NO_SORT';
+    sortOrder: LocalTrackSortOption['order'];
 };
 
 /**
@@ -15,9 +20,16 @@ export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
         const localFilesApi =
             await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
 
+        const { filter, sortField, sortOrder } = this.data;
+
         const tracks = await localFilesApi.getTracks(
-            undefined,
-            this.data.filter,
+            sortField === 'NO_SORT'
+                ? undefined
+                : {
+                      field: sortField,
+                      order: sortOrder,
+                  },
+            filter,
         );
 
         return tracks.map((track) => ({

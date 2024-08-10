@@ -58,7 +58,7 @@ export type LibraryAPIOperationCompleteEvent = LibraryAPIEvent<{
 }>;
 
 export type LibraryAPITrackSortOption = {
-    field: 'ADDED_AT' | 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION';
+    field: 'ADDED_AT' | 'ALBUM_NAME' | 'NAME' | 'ARTIST_NAME';
     order: 'DESC' | 'ASC';
 };
 
