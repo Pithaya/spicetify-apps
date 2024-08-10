@@ -5,13 +5,13 @@ import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';
 import { renderElement } from '@shared/utils/react-utils';
-import { getSdkClient } from '@shared/utils/web-api-utils';
+import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 import type { Categories, MaxInt } from '@spotify-web-api';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
 
-    const sdk = getSdkClient();
+    const sdk = getCosmosSdkClient();
 
     // Legacy id, works but navigation link is not shown as active when on page
     let genreId: string = 'made-for-x-hub';

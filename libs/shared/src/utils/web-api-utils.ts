@@ -5,7 +5,6 @@ import type {
     Album,
     Artist,
     Episode,
-    IAuthStrategy,
     MaxInt,
     Page,
     Playlist,
@@ -51,7 +50,7 @@ export async function getApiData(
         return [];
     }
 
-    const sdk = getSdkClient();
+    const sdk = getCosmosSdkClient();
 
     if (uris.every((uri) => Spicetify.URI.isTrack(uri))) {
         return await getDataForIds(
@@ -134,18 +133,68 @@ async function getDataForIds<T>(
         : await getMultiple(ids);
 }
 
+/**
+ * Get a Spotify API client that uses the default fetch implementation.
+ * @returns The client.
+ */
 export function getSdkClient(): SpotifyApi {
-    const authStrategy: IAuthStrategy = {
-        getAccessToken: async () => {
-            const authorizationApi =
-                await waitForPlatformApi<AuthorizationAPI>('AuthorizationAPI');
-
-            return authorizationApi.getState().token.accessToken;
-        },
-    };
-
-    return new SpotifyApi(authStrategy, {
+    return new SpotifyApi({
         errorHandler: new ConsoleLoggingErrorHandler(),
+        authentication: {
+            getAccessToken: async () => {
+                const authorizationApi =
+                    await waitForPlatformApi<AuthorizationAPI>(
+                        'AuthorizationAPI',
+                    );
+
+                return authorizationApi.getState().token.accessToken;
+            },
+        },
+    });
+}
+
+type CosmosProxyErrorResponse = {
+    /**
+     * Response status
+     */
+    code: number;
+    /**
+     * Response status text
+     */
+    error: string;
+    message: 'Failed to fetch';
+    stack: undefined;
+};
+
+/**
+ * Get a Spotify API client that uses the Cosmos proxy.
+ * @returns The client.
+ */
+export function getCosmosSdkClient(): SpotifyApi {
+    return new SpotifyApi({
+        errorHandler: new ConsoleLoggingErrorHandler(),
+        fetch: async (url, init) => {
+            // TODO: handle other methods
+            if (init.method !== 'GET') {
+                throw new Error('Only GET requests are supported');
+            }
+
+            return await Spicetify.CosmosAsync.get(url);
+        },
+        responseValidator: {
+            validateResponse: async (response: any) => {
+                if (response.message === 'Failed to fetch') {
+                    const { code, error } =
+                        response as CosmosProxyErrorResponse;
+                    throw new Error(`Failed to fetch: ${code} - ${error}`);
+                }
+            },
+        },
+        deserializer: {
+            deserialize: async (response: any) => {
+                return response;
+            },
+        },
     });
 }
 

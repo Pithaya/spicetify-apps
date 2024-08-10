@@ -1,6 +1,6 @@
 import { type WorkflowTrack } from '../../track';
 import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import { getAllPages, getSdkClient } from '@shared/utils/web-api-utils';
+import { getAllPages, getCosmosSdkClient } from '@shared/utils/web-api-utils';
 import { type Track as ApiTrack } from '@spotify-web-api';
 
 export type TopTracksData = BaseNodeData & {
@@ -14,7 +14,7 @@ export type TopTracksData = BaseNodeData & {
  */
 export class TopTracksSourceProcessor extends NodeProcessor<TopTracksData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        const sdk = getSdkClient();
+        const sdk = getCosmosSdkClient();
 
         const offset = this.data.offset ?? 0;
         const maxItemsToTake = this.data.limit;
@@ -33,6 +33,7 @@ export class TopTracksSourceProcessor extends NodeProcessor<TopTracksData> {
 
         return items.map((track) => ({
             ...track,
+            is_playable: track.is_playable ?? true,
             source: 'Top tracks',
         }));
     }

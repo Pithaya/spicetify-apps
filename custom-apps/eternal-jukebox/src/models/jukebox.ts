@@ -9,7 +9,7 @@ import { Driver } from '../driver';
 import { getId } from '@shared/utils/uri-utils';
 import { SettingsService } from '../services/settings-service';
 import type { AudioAnalysis } from '@spotify-web-api';
-import { getSdkClient } from '@shared/utils/web-api-utils';
+import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 
 export type StatsChangedEvent = {
     beatsPlayed: number;
@@ -162,7 +162,7 @@ export class Jukebox {
             return;
         }
 
-        const sdk = getSdkClient();
+        const sdk = getCosmosSdkClient();
         let analysis: AudioAnalysis | null = null;
 
         try {

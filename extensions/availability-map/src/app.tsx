@@ -11,7 +11,7 @@ import { registerLocale } from 'i18n-iso-countries';
 import * as enLocale from 'i18n-iso-countries/langs/en.json';
 import * as frLocale from 'i18n-iso-countries/langs/fr.json';
 import type { Session } from '@shared/platform/session';
-import { getSdkClient } from '@shared/utils/web-api-utils';
+import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 
 async function showAvailability(uris: string[], locale: string): Promise<void> {
     const uri: Spicetify.URI = Spicetify.URI.fromString(uris[0]);
@@ -21,7 +21,7 @@ async function showAvailability(uris: string[], locale: string): Promise<void> {
         return;
     }
 
-    const sdk = getSdkClient();
+    const sdk = getCosmosSdkClient();
     const track = await sdk.tracks.get(id);
 
     Spicetify.PopupModal.display({

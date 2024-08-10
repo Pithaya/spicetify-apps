@@ -6,7 +6,7 @@ import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
 import type { Artist } from '@spotify-web-api';
 import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 import { wait } from '@shared/utils/promise-utils';
-import { getSdkClient } from '@shared/utils/web-api-utils';
+import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 import {
     createWithExpiry,
     getArtistsGenresCache,
@@ -72,7 +72,7 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
     ): Promise<Map<string, string[]>> {
         const artistCache = removeExpired(getArtistsGenresCache());
 
-        const sdk = getSdkClient();
+        const sdk = getCosmosSdkClient();
         const artists = tracks
             .flatMap((track) => track.artists)
             .filter((artist) => !artistCache.has(artist.uri));
