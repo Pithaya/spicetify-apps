@@ -9,6 +9,7 @@ import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/Librar
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracks/TopTracksSourceNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
+import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 
 export type CustomNodeType =
     // Sources
@@ -22,6 +23,7 @@ export type CustomNodeType =
     // Processing
     | 'deduplicate'
     | 'shuffle'
+    | 'sort'
     // Result
     | 'result';
 
@@ -35,4 +37,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     isPlayable: IsPlayableNode,
     result: ResultNode,
     shuffle: ShuffleNode,
+    sort: SortProcessorNode,
 };

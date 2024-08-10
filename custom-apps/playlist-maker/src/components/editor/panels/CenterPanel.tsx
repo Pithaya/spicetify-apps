@@ -144,7 +144,7 @@ export function CenterPanel(): JSX.Element {
                         Spicetify.PopupModal.display({
                             title: 'Saved workflows',
                             content: React.createElement(WorkflowsModal) as any,
-                            isLarge: true,
+                            isLarge: false,
                         });
                     }}
                     buttonSize="sm"

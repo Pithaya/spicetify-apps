@@ -11,6 +11,7 @@ import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-so
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
 import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
+import { SortProcessor } from '../models/nodes/processing/sort-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -50,6 +51,12 @@ const nodeProcessorFactory: Record<
         ),
     result: (node, incomers) =>
         new ResultNodeProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    sort: (node, incomers) =>
+        new SortProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,
