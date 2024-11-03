@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Infinity } from 'lucide-react';
 import { useSubscription } from 'observable-hooks';
 
-export function PlaybarButton(): JSX.Element {
+export function PlaybarButton(props: { className: string }): JSX.Element {
     const [isActive, setIsActive] = useState(false);
 
     useSubscription(window.jukebox.stateChanged$, setIsActive);
@@ -12,21 +12,6 @@ export function PlaybarButton(): JSX.Element {
     }
 
     const label = isActive ? 'Disable jukebox' : 'Enable jukebox';
-    const style: React.CSSProperties = {
-        color: isActive ? 'var(--spice-button-active)' : 'inherit',
-    };
-    const beforeStyle: React.CSSProperties = {
-        backgroundColor: 'currentcolor',
-        borderRadius: '50%',
-        bottom: '0',
-        display: 'block',
-        left: '50%',
-        position: 'absolute',
-        width: '4px',
-        inlineSize: '4px',
-        height: '4px',
-        transform: 'translateX(-50%)',
-    };
 
     return (
         <Spicetify.ReactComponent.TooltipWrapper
@@ -41,13 +26,10 @@ export function PlaybarButton(): JSX.Element {
                     e.stopPropagation();
                     await toggleJukebox();
                 }}
-                iconOnly={() => (
-                    <>
-                        <Infinity size={24} />
-                        {isActive && <div style={beforeStyle}></div>}
-                    </>
-                )}
-                style={style}
+                iconOnly={() => <Infinity size={24} />}
+                className={Spicetify.classnames(props.className, {
+                    active: isActive,
+                })}
             ></Spicetify.ReactComponent.ButtonTertiary>
         </Spicetify.ReactComponent.TooltipWrapper>
     );

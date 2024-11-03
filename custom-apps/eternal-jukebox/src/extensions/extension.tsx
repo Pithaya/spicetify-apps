@@ -33,7 +33,49 @@ void (async () => {
             throw new Error('Container element not found');
         }
 
-        renderElement(<PlaybarButton />, element);
+        const styles = `
+        svg.made-for-you-icon {
+            stroke-width: 2px !important;
+        }
+
+        button.jukebox-toggle {
+            border-color: var(--text-base);
+        }
+
+        button.jukebox-toggle.active {
+            color: var(--spice-button-active);
+        }
+
+        button.jukebox-toggle:focus-visible {
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        button.jukebox-toggle:focus::after {
+            border-color: transparent !important;
+        }
+
+        button.jukebox-toggle.active:before {
+            background-color: currentcolor;
+            border-radius: 50%;
+            bottom: 0;
+            content: "";
+            display: block;
+            left: 50%;
+            position: absolute;
+            width: 4px;
+            inline-size: 4px;
+            height: 4px;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
+    `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.innerText = styles;
+        document.head.appendChild(styleSheet);
+
+        renderElement(<PlaybarButton className="jukebox-toggle" />, element);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {
