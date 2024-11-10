@@ -67,7 +67,9 @@ export function Header(props: Readonly<Props>): JSX.Element {
     const { fontSize, ref } = useFitText();
 
     return (
-        <div className="contentSpacing main-entityHeader-container main-entityHeader-nonWrapped main-entityHeader-newEntityHeaders">
+        <div
+            className={`contentSpacing main-entityHeader-container main-entityHeader-nonWrapped main-entityHeader-newEntityHeaders ${styles['pad-top']}`}
+        >
             <div className="main-entityHeader-backgroundColor"></div>
             <div className="main-entityHeader-backgroundColor main-entityHeader-overlay"></div>
 

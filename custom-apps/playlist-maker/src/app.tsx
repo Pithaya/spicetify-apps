@@ -9,7 +9,6 @@ import './css/reactflow.scss';
 import './css/overrides.scss';
 
 import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
-import ReactDOM from 'react-dom';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { History } from '@shared/platform/history';
 import type { TopBarItem } from '@shared/components/top-bar/top-bar-item';
@@ -75,7 +74,7 @@ function App(): JSX.Element {
         <>
             {currentPage}
             {topBarContainer !== null &&
-                ReactDOM.createPortal(
+                Spicetify.ReactDOM.createPortal(
                     <TopBarContent
                         onItemClicked={(item) => {
                             history.push(item.href);
