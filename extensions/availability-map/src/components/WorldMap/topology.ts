@@ -247,7 +247,6 @@ export const topology: Topology = {
                             ],
                         ],
                         [[162]],
-                        [[163, 164]],
                     ],
                     id: '643',
                     properties: {
@@ -1110,6 +1109,7 @@ export const topology: Topology = {
                             -155, 435, -164, 436, 437, 438, 439, 440, 441, 442,
                             -432,
                         ],
+                        [163, 164],
                     ],
                     id: '804',
                     properties: {
