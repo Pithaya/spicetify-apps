@@ -12,6 +12,7 @@ import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
 import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
 import { SortProcessor } from '../models/nodes/processing/sort-processor';
+import { AcousticnessProcessor } from '../models/nodes/filter/acousticness-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -39,6 +40,12 @@ const nodeProcessorFactory: Record<
         ),
     isPlayable: (node, incomers) =>
         new IsPlayableProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    acousticness: (node, incomers) =>
+        new AcousticnessProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,

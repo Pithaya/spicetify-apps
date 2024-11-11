@@ -10,6 +10,7 @@ import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracks/TopTracksSourceNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
+import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 
 export type CustomNodeType =
     // Sources
@@ -20,6 +21,7 @@ export type CustomNodeType =
     // Filters
     | 'genre'
     | 'isPlayable'
+    | 'acousticness'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -38,4 +40,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     result: ResultNode,
     shuffle: ShuffleNode,
     sort: SortProcessorNode,
+    acousticness: AcousticnessNode,
 };

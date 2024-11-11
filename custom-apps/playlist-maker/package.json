@@ -21,6 +21,7 @@
         "jsdom": "^24.1.0",
         "lucide-react": "^0.396.0",
         "react-hook-form": "^7.52.1",
+        "react-range": "^1.10.0",
         "reactflow": "^11.11.3",
         "spcr-whats-new": "^1.0.1",
         "uuid": "^10.0.0",
