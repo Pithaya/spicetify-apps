@@ -48,7 +48,12 @@ export function AcousticnessNode(
                         Acousticness
                     </TextComponent>
 
-                    <SliderController control={control} />
+                    <SliderController
+                        control={control}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
                 </div>
             </NodeContent>
             <Handle

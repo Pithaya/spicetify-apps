@@ -6,9 +6,14 @@ import { getTrackBackground, Range } from 'react-range';
 
 type Props = {
     control: Control<{ range: { min: number; max: number } }>;
+    min: number;
+    max: number;
+    step: number;
 };
 
 export function SliderController(props: Readonly<Props>): JSX.Element {
+    const { min, max, step } = props;
+
     return (
         <div className="nodrag">
             <Controller
@@ -24,9 +29,9 @@ export function SliderController(props: Readonly<Props>): JSX.Element {
                     >
                         <Range
                             values={[value.min, value.max]}
-                            step={0.01}
-                            min={0}
-                            max={1}
+                            step={step}
+                            min={min}
+                            max={max}
                             rtl={false}
                             onChange={(values) => {
                                 onChange({
@@ -58,8 +63,8 @@ export function SliderController(props: Readonly<Props>): JSX.Element {
                                                     'var(--spice-button)',
                                                     '#ccc',
                                                 ],
-                                                min: 0,
-                                                max: 1,
+                                                min: min,
+                                                max: max,
                                                 rtl: false,
                                             }),
                                             alignSelf: 'center',
