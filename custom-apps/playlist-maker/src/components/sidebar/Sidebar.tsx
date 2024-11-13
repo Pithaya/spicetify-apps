@@ -69,6 +69,7 @@ export function Sidenav(): JSX.Element {
                     nodeType="instrumentalness"
                 />
                 <SidenavItem label="Liveness" nodeType="liveness" />
+                <SidenavItem label="Speechiness" nodeType="speechiness" />
                 <SidenavItem label="Loudness" nodeType="loudness" />
             </ul>
 

@@ -18,6 +18,7 @@ import { EnergyProcessor } from '../models/nodes/filter/energy-processor';
 import { InstrumentalnessProcessor } from '../models/nodes/filter/instrumentalness-processor';
 import { LivenessProcessor } from '../models/nodes/filter/liveness-processor';
 import { LoudnessProcessor } from '../models/nodes/filter/loudness-processor';
+import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -99,6 +100,12 @@ const nodeProcessorFactory: Record<
         ),
     loudness: (node, incomers) =>
         new LoudnessProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    speechiness: (node, incomers) =>
+        new SpeechinessProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,
