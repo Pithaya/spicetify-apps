@@ -64,6 +64,10 @@ export function Sidenav(): JSX.Element {
                 <SidenavItem label="Acousticness" nodeType="acousticness" />
                 <SidenavItem label="Danceability" nodeType="danceability" />
                 <SidenavItem label="Energy" nodeType="energy" />
+                <SidenavItem
+                    label="Instrumentalness"
+                    nodeType="instrumentalness"
+                />
             </ul>
 
             <TextComponent elementType="h1">Processing</TextComponent>

@@ -13,6 +13,7 @@ import { SortProcessorNode } from '../../components/nodes/processing/SortProcess
 import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode';
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
+import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
 
 export type CustomNodeType =
     // Sources
@@ -26,6 +27,7 @@ export type CustomNodeType =
     | 'acousticness'
     | 'danceability'
     | 'energy'
+    | 'instrumentalness'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -47,4 +49,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     acousticness: AcousticnessNode,
     danceability: DanceabilityNode,
     energy: EnergyNode,
+    instrumentalness: InstrumentalnessNode,
 };
