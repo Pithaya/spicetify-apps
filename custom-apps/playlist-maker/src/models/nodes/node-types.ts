@@ -12,6 +12,7 @@ import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode';
+import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
 
 export type CustomNodeType =
     // Sources
@@ -24,6 +25,7 @@ export type CustomNodeType =
     | 'isPlayable'
     | 'acousticness'
     | 'danceability'
+    | 'energy'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -44,4 +46,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     sort: SortProcessorNode,
     acousticness: AcousticnessNode,
     danceability: DanceabilityNode,
+    energy: EnergyNode,
 };

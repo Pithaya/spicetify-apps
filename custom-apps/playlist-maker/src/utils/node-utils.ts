@@ -14,6 +14,7 @@ import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processo
 import { SortProcessor } from '../models/nodes/processing/sort-processor';
 import { AcousticnessProcessor } from '../models/nodes/filter/acousticness-processor';
 import { DanceabilityProcessor } from '../models/nodes/filter/danceability-processor';
+import { EnergyProcessor } from '../models/nodes/filter/energy-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -71,6 +72,12 @@ const nodeProcessorFactory: Record<
         ),
     danceability: (node, incomers) =>
         new DanceabilityProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    energy: (node, incomers) =>
+        new EnergyProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,
