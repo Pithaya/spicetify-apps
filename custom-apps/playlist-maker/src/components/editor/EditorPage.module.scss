@@ -10,7 +10,7 @@
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: 64px auto;
+    grid-template-rows: 64px 1fr;
     grid-template-areas:
         'padding padding'
         'sidenav main';
@@ -33,6 +33,7 @@
 .sidenav {
     grid-area: sidenav;
     padding: 20px;
+    overflow: scroll;
 }
 
 .main {
