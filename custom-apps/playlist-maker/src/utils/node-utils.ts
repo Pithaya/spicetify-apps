@@ -1,3 +1,4 @@
+import useAppStore from '../stores/store';
 import { type Edge, getIncomers, type Node } from 'reactflow';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
@@ -6,13 +7,13 @@ import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-s
 import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
 import { GenreProcessor } from '../models/nodes/filter/genre-processor';
-import useAppStore from '../stores/store';
 import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
 import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
 import { SortProcessor } from '../models/nodes/processing/sort-processor';
 import { AcousticnessProcessor } from '../models/nodes/filter/acousticness-processor';
+import { DanceabilityProcessor } from '../models/nodes/filter/danceability-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -64,6 +65,12 @@ const nodeProcessorFactory: Record<
         ),
     sort: (node, incomers) =>
         new SortProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    danceability: (node, incomers) =>
+        new DanceabilityProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,
