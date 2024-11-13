@@ -17,6 +17,7 @@ import { InstrumentalnessNode } from '../../components/nodes/filter/Instrumental
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
 import { LoudnessNode } from '../../components/nodes/filter/LoudnessNode';
 import { SpeechinessNode } from '../../components/nodes/filter/SpeechinessNode';
+import { ValenceNode } from '../../components/nodes/filter/ValenceNode';
 
 export type CustomNodeType =
     // Sources
@@ -34,6 +35,7 @@ export type CustomNodeType =
     | 'liveness'
     | 'loudness'
     | 'speechiness'
+    | 'valence'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -59,4 +61,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     liveness: LivenessNode,
     loudness: LoudnessNode,
     speechiness: SpeechinessNode,
+    valence: ValenceNode,
 };
