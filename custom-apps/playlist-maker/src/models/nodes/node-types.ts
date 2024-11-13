@@ -15,6 +15,7 @@ import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
 import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
+import { LoudnessNode } from '../../components/nodes/filter/LoudnessNode';
 
 export type CustomNodeType =
     // Sources
@@ -30,6 +31,7 @@ export type CustomNodeType =
     | 'energy'
     | 'instrumentalness'
     | 'liveness'
+    | 'loudness'
     // Processing
     | 'deduplicate'
     | 'shuffle'
@@ -53,4 +55,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     energy: EnergyNode,
     instrumentalness: InstrumentalnessNode,
     liveness: LivenessNode,
+    loudness: LoudnessNode,
 };
