@@ -20,6 +20,7 @@ import { LivenessProcessor } from '../models/nodes/filter/liveness-processor';
 import { LoudnessProcessor } from '../models/nodes/filter/loudness-processor';
 import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
 import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
+import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -113,6 +114,12 @@ const nodeProcessorFactory: Record<
         ),
     valence: (node, incomers) =>
         new ValenceProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    tempo: (node, incomers) =>
+        new TempoProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,

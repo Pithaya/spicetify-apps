@@ -72,6 +72,7 @@ export function Sidenav(): JSX.Element {
                 <SidenavItem label="Speechiness" nodeType="speechiness" />
                 <SidenavItem label="Valence" nodeType="valence" />
                 <SidenavItem label="Loudness" nodeType="loudness" />
+                <SidenavItem label="Tempo" nodeType="tempo" />
             </ul>
 
             <TextComponent elementType="h1">Processing</TextComponent>

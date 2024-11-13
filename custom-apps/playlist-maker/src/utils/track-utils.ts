@@ -3,6 +3,7 @@ import type { WorkflowTrack } from '../models/track';
 import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 import { getId } from '@shared/utils/uri-utils';
 import { wait } from '@shared/utils/promise-utils';
+import type { AudioFeatures } from '@spotify-web-api';
 
 export async function setAudioFeatures(tracks: WorkflowTrack[]): Promise<void> {
     const sdk = getCosmosSdkClient();
@@ -19,12 +20,18 @@ export async function setAudioFeatures(tracks: WorkflowTrack[]): Promise<void> {
             .map((track) => getId(Spicetify.URI.fromString(track.uri)))
             .filter((id) => id) as string[];
 
-        const chunkResult = await sdk.tracks.audioFeatures(tracksIds);
+        const chunkResult: (AudioFeatures | null)[] =
+            await sdk.tracks.audioFeatures(tracksIds);
 
         for (const track of chunk) {
             const feature = chunkResult.find(
-                (result) => result.uri === track.uri,
+                (result) => result !== null && result.uri === track.uri,
             );
+
+            if (!feature) {
+                continue;
+            }
+
             track.audioFeatures = feature;
         }
 
