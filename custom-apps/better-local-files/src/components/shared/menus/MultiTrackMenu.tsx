@@ -1,12 +1,12 @@
 import React from 'react';
 import { SubmenuItem } from './SubmenuItem';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
-import { addToQueuePath } from '../icons/icons';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
+import { addToQueuePath } from '@shared/icons/icons';
 import type { PlayerAPI } from '@shared/platform/player';
 
 export type Props = {

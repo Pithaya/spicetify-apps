@@ -5,7 +5,7 @@ import { Header, HeaderImage } from '../../shared/Header';
 import {
     getTranslatedDuration,
     getTranslation,
-} from 'custom-apps/better-local-files/src/utils/translations.utils';
+} from '@shared/utils/translations.utils';
 import type { Album } from 'custom-apps/better-local-files/src/models/album';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {

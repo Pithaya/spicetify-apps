@@ -1,25 +1,32 @@
-import styles from '../../../css/app.module.scss';
 import React, { useMemo, useState } from 'react';
-import { TrackListGrid } from '../../shared/track-list/TrackListGrid';
+import styles from '../../../css/app.module.scss';
+import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
 import { playContext, playTrack } from '../../../utils/player.utils';
 import type {
+    HeaderKey,
     DisplayType,
     SelectedSortOption,
     SortOption,
     SortOrder,
-} from 'custom-apps/better-local-files/src/models/sort-option';
-import type { TrackListHeaderOption } from 'custom-apps/better-local-files/src/models/track-list-header-option';
-import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
+    TrackListHeaderOption,
+    LibraryHeaders,
+} from '@shared/components/track-list/models/sort-option';
+import {
+    ALBUM_ROUTE,
+    ARTIST_ROUTE,
+} from 'custom-apps/better-local-files/src/constants/constants';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
-import { PlayButton } from '../../shared/buttons/PlayButton';
-import { TrackListRowAlbumLink } from '../../shared/track-list/TrackListRowAlbumLink';
-import { TrackListRowImageTitle } from '../../shared/track-list/TrackListRowImageTitle';
+import { PlayButton } from '@shared/components/ui/PlayButton';
+import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
+import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
 import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
-import { TrackListRowArtistLink } from '../../shared/track-list/TrackListRowArtistLink';
+import { getTranslation } from '@shared/utils/translations.utils';
+import { TrackListRowArtistLink } from '@shared/components/track-list/TrackListRowArtistLink';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
+import { RowMenu } from '../../shared/menus/RowMenu';
 
 export type Props = {
     tracks: Track[];
@@ -29,6 +36,8 @@ export type Props = {
 // Spicetify.Platform.LocalStorageAPI.items[Spicetify.Platform.LocalStorageAPI.createNamespacedKey("view-mode")]
 
 // TODO: Store sort option
+
+// FIXME: Changing to compact display when tracks are sorted by title causes "DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
 
 /**
  * Contains the filtering, ordering, and play logic for a list of tracks.
@@ -40,7 +49,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     /**
      * Options for the sort dropdown.
      */
-    const sortOptions: SortOption[] = [
+    const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'date',
             label: getTranslation(['sort.date-added']),
@@ -63,13 +72,14 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
         },
     ];
 
-    const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+    const [selectedSortOption, setSelectedSortOption] = useState<
+        SelectedSortOption<LibraryHeaders>
+    >({ ...sortOptions[0], order: 'ascending' });
 
     const [selectedDisplayType, setSelectedDisplayType] =
         useState<DisplayType>('list');
 
-    const headers: TrackListHeaderOption[] = [];
+    const headers: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [];
 
     if (selectedDisplayType === 'list') {
         // First header can be artist or title
@@ -123,7 +133,10 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
         );
     }
 
-    function orderTracks(tracks: Track[], option: SelectedSortOption): Track[] {
+    function orderTracks(
+        tracks: Track[],
+        option: SelectedSortOption<LibraryHeaders>,
+    ): Track[] {
         switch (option.key) {
             case 'date':
                 return tracks.sort((x, y) =>
@@ -169,11 +182,11 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     }
 
     function handleSortOptionChange(
-        headerKey: HeaderKey,
+        headerKey: HeaderKey<LibraryHeaders>,
         fromDropdownMenu: boolean,
     ): void {
         setSelectedSortOption((previous) => {
-            let newKey: HeaderKey;
+            let newKey: HeaderKey<LibraryHeaders>;
             let newOrder: SortOrder;
 
             if (
@@ -216,7 +229,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             size="lg"
                             onClick={() => {
                                 playContext(
-                                    orderedTracks.map((t) => t.localTrack),
+                                    orderedTracks.map((t) => t.backingTrack),
                                 );
                             }}
                         />
@@ -251,7 +264,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                 onPlayTrack={(uri) => {
                     playTrack(
                         uri,
-                        orderedTracks.map((t) => t.localTrack),
+                        orderedTracks.map((t) => t.backingTrack),
                     );
                 }}
                 headers={headers}
@@ -275,6 +288,9 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                                 track={track}
                                 withArtists={true}
                                 key={track.uri}
+                                onArtistClick={(artistUri) => {
+                                    navigateTo(ARTIST_ROUTE, artistUri);
+                                }}
                             />
                         ),
                     ];
@@ -284,12 +300,21 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             <TrackListRowArtistLink
                                 track={track}
                                 key={track.uri}
+                                onArtistClick={(artistUri) => {
+                                    navigateTo(ARTIST_ROUTE, artistUri);
+                                }}
                             />,
                         );
                     }
 
                     contents.push(
-                        <TrackListRowAlbumLink track={track} key={track.uri} />,
+                        <TrackListRowAlbumLink
+                            track={track}
+                            key={track.uri}
+                            onAlbumClick={(albumUri) => {
+                                navigateTo(ALBUM_ROUTE, albumUri);
+                            }}
+                        />,
                         <TextComponent
                             variant="mesto"
                             semanticColor="textSubdued"
@@ -302,6 +327,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                     return contents;
                 }}
                 displayType={selectedDisplayType}
+                getRowMenu={(track) => <RowMenu track={track} />}
             />
         </>
     );

@@ -1,0 +1,17 @@
+.node-content {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+
+    label {
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    label:not(:last-of-type) {
+        margin-bottom: 4px;
+    }
+}

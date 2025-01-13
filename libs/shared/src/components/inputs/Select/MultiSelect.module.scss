@@ -1,0 +1,13 @@
+.dropdown {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 15px;
+    cursor: default;
+}
+
+.menu {
+    max-height: 300px;
+}

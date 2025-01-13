@@ -12,7 +12,7 @@ export async function waitForSpicetify(): Promise<void> {
 /**
  * Wait for a callback to return a value.
  */
-async function waitFor<T>(getValue: () => T | undefined): Promise<T> {
+export async function waitFor<T>(getValue: () => T | undefined): Promise<T> {
     let value = getValue();
 
     while (value === undefined) {

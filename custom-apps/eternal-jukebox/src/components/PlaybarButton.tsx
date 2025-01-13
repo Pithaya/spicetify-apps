@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Infinity } from 'lucide-react';
 import { useSubscription } from 'observable-hooks';
 
-export function PlaybarButton(): JSX.Element {
+export function PlaybarButton(props: { className: string }): JSX.Element {
     const [isActive, setIsActive] = useState(false);
 
     useSubscription(window.jukebox.stateChanged$, setIsActive);
@@ -11,20 +11,26 @@ export function PlaybarButton(): JSX.Element {
         await window.jukebox.setEnabled(!window.jukebox.isEnabled);
     }
 
+    const label = isActive ? 'Disable jukebox' : 'Enable jukebox';
+
     return (
         <Spicetify.ReactComponent.TooltipWrapper
-            label={'Enable jukebox'}
+            label={label}
             showDelay={100}
             renderInline={false}
         >
-            <button
-                className={`main-repeatButton-button ${
-                    isActive ? 'main-repeatButton-active' : ''
-                }`}
-                onClick={toggleJukebox}
-            >
-                <Infinity size={24} />
-            </button>
+            <Spicetify.ReactComponent.ButtonTertiary
+                aria-label={label}
+                buttonSize={'sm'}
+                onClick={async (e: any) => {
+                    e.stopPropagation();
+                    await toggleJukebox();
+                }}
+                iconOnly={() => <Infinity size={24} />}
+                className={Spicetify.classnames(props.className, {
+                    active: isActive,
+                })}
+            ></Spicetify.ReactComponent.ButtonTertiary>
         </Spicetify.ReactComponent.TooltipWrapper>
     );
 }

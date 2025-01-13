@@ -1,6 +1,5 @@
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
@@ -8,8 +7,8 @@ import { AlbumPage } from './components/albums/pages/AlbumPage';
 import { AlbumsPage } from './components/albums/pages/AlbumsPage';
 import { ArtistPage } from './components/artists/pages/ArtistPage';
 import { ArtistsPage } from './components/artists/pages/ArtistsPage';
-import { LoadingIcon } from './components/shared/icons/Loading';
-import { TopBarContent } from './components/shared/top-bar/TopBarContent';
+import { LoadingIcon } from '@shared/icons/Loading';
+import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
 import { TracksPage } from './components/tracks/pages/TracksPage';
 import {
     ALBUM_ROUTE,
@@ -114,7 +113,7 @@ function App(): JSX.Element {
                 )}
             </div>
             {topBarContainer !== null &&
-                ReactDOM.createPortal(
+                Spicetify.ReactDOM.createPortal(
                     <TopBarContent
                         onItemClicked={(item) => {
                             history.push(item.href);

@@ -1,5 +1,5 @@
-import { getTranslation } from '../utils/translations.utils';
-import type { TopBarItem } from '../models/top-bar-item';
+import { getTranslation } from '@shared/utils/translations.utils';
+import type { TopBarItem } from '@shared/components/top-bar/top-bar-item';
 
 export const CUSTOM_APP_PATH = '/better-local-files';
 export const ALBUM_ROUTE = `${CUSTOM_APP_PATH}/album`;
@@ -27,8 +27,6 @@ export const topBarItems: TopBarItem[] = [
         label: getTranslation(['search.title.artists']),
     },
 ];
-
-export type HeaderKey = 'title' | 'artist' | 'album' | 'date' | 'duration';
 
 // TODO: Move this somewhere else ?
 export const SPOTIFY_MENU_CLASSES = 'encore-dark-theme main-contextMenu-menu';

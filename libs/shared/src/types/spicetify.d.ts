@@ -1812,10 +1812,14 @@ declare namespace Spicetify {
 		 * @see Spicetify.ReactComponent.ButtonProps
 		 */
 		const ButtonTertiary: any;
-		 /**
+		/**
          * Dropdown menu
          */
         const Dropdown: any;
+		/**
+		 * Chip
+		 */
+		const Chip: any;
 	}
 
 	/**
@@ -1888,13 +1892,6 @@ declare namespace Spicetify {
 	 * SVG icons
 	 */
 	const SVGIcons: Record<Icon, string>;
-
-	/**
-	 * Return font styling used by Spotify.
-	 * @param font Name of the font.
-	 * Can match any of the fonts listed in `Spicetify._fontStyle` or returns a generic style otherwise.
-	 */
-	function getFontStyle(font: Variant): string;
 
 	/**
 	 * A filtered copy of user's `config-xpui` file.
@@ -2051,18 +2048,6 @@ declare namespace Spicetify {
 		 * Collection of GraphQL definitions.
 		 */
 		const Definitions: Record<Query | string, any>;
-		/**
-		 * GraphQL query definitions. Subset of `Definitions` that are used as query requests.
-		 */
-		const QueryDefinitions: Record<Query | string, any>;
-		/**
-		 * GraphQL mutation definitions. Subset of `Definitions` that are used as mutation requests.
-		 */
-		const MutationDefinitions: Record<Query | string, any>;
-		/**
-		 * GraphQL response definitions. Subset of `Definitions` that are used as response types.
-		 */
-		const ResponseDefinitions: Record<Query | string, any>;
 		/**
 		 * Sends a GraphQL query to Spotify.
 		 * @description A preinitialized version of `Spicetify.GraphQL.Handler` using current context.

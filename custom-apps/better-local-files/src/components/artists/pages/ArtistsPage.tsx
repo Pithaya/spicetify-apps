@@ -1,13 +1,14 @@
-import type { HeaderKey } from 'custom-apps/better-local-files/src/constants/constants';
 import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
 import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import type {
+    HeaderKey,
+    LibraryHeaders,
     SelectedSortOption,
     SortOption,
     SortOrder,
-} from 'custom-apps/better-local-files/src/models/sort-option';
+} from '@shared/components/track-list/models/sort-option';
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
@@ -18,7 +19,7 @@ export function ArtistsPage(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
-    const sortOptions: SortOption[] = [
+    const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'title',
             label: getTranslation(['collection.sort.alphabetical']),
@@ -44,12 +45,13 @@ export function ArtistsPage(): JSX.Element {
         [artists, debouncedSearch],
     );
 
-    const [selectedSortOption, setSelectedSortOption] =
-        useState<SelectedSortOption>({ ...sortOptions[0], order: 'ascending' });
+    const [selectedSortOption, setSelectedSortOption] = useState<
+        SelectedSortOption<LibraryHeaders>
+    >({ ...sortOptions[0], order: 'ascending' });
 
     function orderArtists(
         artists: Artist[],
-        option: SelectedSortOption,
+        option: SelectedSortOption<LibraryHeaders>,
     ): Artist[] {
         if (option.key === 'title') {
             return artists.sort((x, y) => sort(x.name, y.name, option.order));
@@ -66,7 +68,9 @@ export function ArtistsPage(): JSX.Element {
         return order === 'ascending' ? 'descending' : 'ascending';
     }
 
-    function handleSortOptionChange(headerKey: HeaderKey): void {
+    function handleSortOptionChange(
+        headerKey: HeaderKey<LibraryHeaders>,
+    ): void {
         setSelectedSortOption((previous) => ({
             key: headerKey,
             order:
@@ -80,7 +84,7 @@ export function ArtistsPage(): JSX.Element {
         playContext(
             window.localTracksService
                 .getArtistTracks(artist.uri)
-                .map((t) => t.localTrack),
+                .map((t) => t.backingTrack),
         );
     }
 

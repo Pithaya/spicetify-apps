@@ -59,7 +59,7 @@ export type LocalTrack = {
 };
 
 export type LocalTrackSortOption = {
-    field: 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION';
+    field: 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION' | 'ADDED_AT';
     order: 'DESC' | 'ASC';
 };
 

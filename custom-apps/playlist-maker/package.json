@@ -1,0 +1,30 @@
+{
+    "name": "playlist-maker",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "init": "npm run build && npm run apply",
+        "build": "spicetify-creator",
+        "build-local": "spicetify-creator --out=dist --minify",
+        "watch": "spicetify-creator --watch",
+        "launch-watch": "spicetify watch -a",
+        "apply": "spicetify config custom_apps playlist-maker && spicetify apply",
+        "unapply": "spicetify config custom_apps playlist-maker- && spicetify apply",
+        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
+        "format": "npx prettier --write src/"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/deep-equal": "^1.0.4",
+        "@types/jsdom": "^21.1.7",
+        "deep-equal": "^2.2.3",
+        "jsdom": "^24.1.0",
+        "lucide-react": "^0.396.0",
+        "react-hook-form": "^7.52.1",
+        "react-range": "^1.10.0",
+        "reactflow": "^11.11.3",
+        "spcr-whats-new": "^1.0.1",
+        "uuid": "^10.0.0",
+        "zustand": "^4.5.2"
+    }
+}

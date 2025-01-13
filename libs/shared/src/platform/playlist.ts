@@ -1,19 +1,34 @@
+import type { LibraryAPITrack } from './library';
+
 export type PlaylistParameters = {
     decorateFormatListData?: boolean;
     hydrateCollaboratorsWithMembers?: boolean;
     withSync?: boolean;
 };
 
+export type PlaylistSortOption = {
+    field:
+        | 'TITLE'
+        | 'ADDED_AT'
+        | 'ADDED_BY'
+        | 'ALBUM'
+        | 'ARTIST'
+        | 'DURATION'
+        | 'SHOW_NAME'
+        | 'PUBLISH_DATE';
+    order: 'DESC' | 'ASC';
+};
+
 export type QueryParameters = {
     filter: string;
     limit: number;
     offset: number;
-    sort: string | undefined;
+    sort?: PlaylistSortOption;
 };
 
 export type Playlist = {
     contents: {
-        items: unknown[];
+        items: LibraryAPITrack[];
         limit: number;
         offset: number;
         totalLength: number;
@@ -90,7 +105,7 @@ export type PlaylistAPI = {
     add: (
         playlistUri: string,
         tracks: string[],
-        options: any | { after: 'end' },
+        options: any | { before?: 'start'; after?: 'end' },
     ) => Promise<void>;
 
     applyModifications: (
@@ -109,7 +124,7 @@ export type PlaylistAPI = {
 
     getContents: (
         playlistUri: string,
-        queryParameters: QueryParameters,
+        queryParameters?: Partial<QueryParameters>,
     ) => Promise<Playlist['contents']>;
 
     getPlaylist: (

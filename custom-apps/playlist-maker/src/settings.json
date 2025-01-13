@@ -1,0 +1,6 @@
+{
+    "displayName": "Playlist maker",
+    "nameId": "playlist-maker",
+    "icon": "css/icon.svg",
+    "activeIcon": "css/active-icon.svg"
+}

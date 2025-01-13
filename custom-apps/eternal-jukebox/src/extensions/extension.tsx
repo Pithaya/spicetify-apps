@@ -14,10 +14,64 @@ void (async () => {
 
     await waitForSpicetify();
 
-    try {
-        const element = await waitForElement('.player-controls__right');
+    let element: Element | null = null;
 
-        renderElement(<PlaybarButton />, element);
+    try {
+        element = await waitForElement('.player-controls__right');
+    } catch {}
+
+    // Fallback to the main repeat button if the player controls are not found
+    if (element === null) {
+        try {
+            const button = await waitForElement('.main-repeatButton-button');
+            element = button.parentElement;
+        } catch {}
+    }
+
+    try {
+        if (element === null) {
+            throw new Error('Container element not found');
+        }
+
+        const styles = `
+        button.jukebox-toggle {
+            border-color: var(--text-base);
+        }
+
+        button.jukebox-toggle.active {
+            color: var(--spice-button-active);
+        }
+
+        button.jukebox-toggle:focus-visible {
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        button.jukebox-toggle:focus::after {
+            border-color: transparent !important;
+        }
+
+        button.jukebox-toggle.active:before {
+            background-color: currentcolor;
+            border-radius: 50%;
+            bottom: 0;
+            content: "";
+            display: block;
+            left: 50%;
+            position: absolute;
+            width: 4px;
+            inline-size: 4px;
+            height: 4px;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+        }
+    `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.innerText = styles;
+        document.head.appendChild(styleSheet);
+
+        renderElement(<PlaybarButton className="jukebox-toggle" />, element);
 
         await addUpdateChecker(version, 'eternal-jukebox');
     } catch (error) {

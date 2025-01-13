@@ -1,6 +1,6 @@
 import React from 'react';
 import { SubmenuItem } from './SubmenuItem';
-import { getTranslation } from 'custom-apps/better-local-files/src/utils/translations.utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import {
     ALBUM_ROUTE,
@@ -8,17 +8,17 @@ import {
     SPOTIFY_MENU_CLASSES,
 } from 'custom-apps/better-local-files/src/constants/constants';
 import { ArtistSelectionMenu } from './ArtistSelectionMenu';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
 import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SpotifyIcon } from '../icons/SpotifyIcon';
-import { addToQueuePath } from '../icons/icons';
-import { useIsInLibrary } from 'custom-apps/better-local-files/src/hooks/use-is-in-library';
+import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
+import { addToQueuePath } from '@shared/icons/icons';
+import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
 import type { LibraryAPI } from '@shared/platform/library';
 import type { PlayerAPI } from '@shared/platform/player';
+import type { ITrack } from '@shared/components/track-list/models/interfaces';
 
 export type Props = {
-    track: Track;
+    track: ITrack;
 };
 
 export function RowMenu(props: Readonly<Props>): JSX.Element {
