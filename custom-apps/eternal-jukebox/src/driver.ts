@@ -394,21 +394,6 @@ export class Driver {
      * @returns True if the beat should branch.
      */
     private shouldRandomBranch(beat: Beat): boolean {
-        // Branch if this is our last opportunity
-        if (
-            beat.index === this.songState.graph.lastBranchPoint &&
-            this.settings.alwaysFollowLastBranch
-        ) {
-            return true;
-        }
-
-        // Don't branch too fast
-        if (
-            this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
-        ) {
-            return false;
-        }
-
         // TODO: Set this on the song state and calculate only once
         const currentPlayTime = new Date().getTime() - this.songState.startTime;
 
@@ -418,6 +403,22 @@ export class Driver {
             currentPlayTime > this.settings.maxJukeboxPlayTime
         ) {
             this.songState.currentRandomBranchChance = 0;
+            return false;
+        }
+
+        // Branch if this is our last opportunity and max playtime is not reached
+        if (
+            beat.index === this.songState.graph.lastBranchPoint &&
+            this.settings.alwaysFollowLastBranch &&
+            currentPlayTime <= this.settings.maxJukeboxPlayTime
+        ) {
+            return true;
+        }
+
+        // Don't branch too fast
+        if (
+            this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
+        ) {
             return false;
         }
 
