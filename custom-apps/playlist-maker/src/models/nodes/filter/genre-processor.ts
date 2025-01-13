@@ -19,8 +19,6 @@ const genres: Record<string, string[]> = genresJson;
 // TODO: Add this to settings
 export const artistGenresStoreTime = 1000 * 60 * 60 * 24 * 10; // 10 days
 
-// FIXME: Web api always return an empty array for genres ?
-
 export type GenreFilterData = BaseNodeData & {
     genreCategories: string[];
 };

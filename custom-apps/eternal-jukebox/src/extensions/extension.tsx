@@ -34,10 +34,6 @@ void (async () => {
         }
 
         const styles = `
-        svg.made-for-you-icon {
-            stroke-width: 2px !important;
-        }
-
         button.jukebox-toggle {
             border-color: var(--text-base);
         }

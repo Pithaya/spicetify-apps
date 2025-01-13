@@ -4,9 +4,5 @@
         "outDir": "./dist",
         "resolveJsonModule": true
     },
-    "include": [
-        "./src/**/*",
-        "../../libs/shared/src/types/**/*",
-        "./scripts/**/*"
-    ]
+    "include": ["./src/**/*", "../../libs/shared/src/types/**/*"]
 }
