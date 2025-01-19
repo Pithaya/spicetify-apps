@@ -12,6 +12,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { NodeField } from '../shared/NodeField';
 import { Controller } from 'react-hook-form';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const genres: Record<string, string[]> = genresJson;
 
@@ -36,13 +37,8 @@ export function GenreNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent
-                    elementType="p"
-                    paddingBottom="1rem"
-                    weight="bold"
-                >
-                    Genres
-                </TextComponent>
+                <NodeTitle title="Genres" />
+
                 <div className={`${styles['genre-container']}`}>
                     {getValues('genreCategories').length > 0 && (
                         <TextComponent

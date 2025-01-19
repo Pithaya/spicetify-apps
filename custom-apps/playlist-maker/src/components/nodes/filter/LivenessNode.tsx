@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -8,6 +7,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { SliderController } from '../shared/SliderController';
 import type { LivenessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<LivenessData> = {
     range: {
@@ -40,13 +40,12 @@ export function LivenessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Liveness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Liveness"
+                        tooltip="Detects the presence of an audience in the recording. 
+                        Higher liveness values represent an increased probability that the track was performed live. 
+                        A value above 0.8 provides strong likelihood that the track is live."
+                    />
 
                     <SliderController
                         control={control}

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type LocalTracksData } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
 import { Node } from '../../shared/Node';
 import { NodeHeader } from '../../shared/NodeHeader';
@@ -12,6 +11,7 @@ import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-uti
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { Controller } from 'react-hook-form';
 import { Select } from '@shared/components/inputs/Select/Select';
+import { NodeTitle } from '../../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<LocalTracksData> = {
     filter: undefined,
@@ -50,9 +50,7 @@ export function LocalTracksSourceNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Local tracks
-                </TextComponent>
+                <NodeTitle title="Local tracks" />
 
                 <NodeField
                     tooltip="Search filter to apply"

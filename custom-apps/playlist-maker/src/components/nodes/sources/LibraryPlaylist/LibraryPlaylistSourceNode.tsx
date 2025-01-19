@@ -21,6 +21,7 @@ import {
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
+import { NodeTitle } from '../../shared/NodeTitle';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
@@ -98,9 +99,7 @@ export function LibraryPlaylistSourceNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Playlist
-                </TextComponent>
+                <NodeTitle title="Playlist" />
 
                 <label>
                     <TextComponent elementType="small">

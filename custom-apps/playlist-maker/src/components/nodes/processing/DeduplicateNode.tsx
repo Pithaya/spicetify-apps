@@ -1,10 +1,10 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function DeduplicateNode(
     props: Readonly<NodeProps<BaseNodeData>>,
@@ -17,9 +17,7 @@ export function DeduplicateNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Deduplicate
-                </TextComponent>
+                <NodeTitle title="Deduplicate" />
             </NodeContent>
             <Handle
                 type="target"
