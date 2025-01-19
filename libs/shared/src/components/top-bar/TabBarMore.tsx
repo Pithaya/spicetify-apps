@@ -12,13 +12,17 @@ export function TabBarMore(props: Readonly<Props>): JSX.Element {
     const style: React.CSSProperties = {
         width: `${props.size}px`,
     };
+
     return (
         <li id="more-button" style={style}>
-            <Spicetify.ReactComponent.Dropdown
+            <select
+                className="main-dropDown-dropDown"
                 value={props.activeItem.key}
                 disabled={false}
-                onSelect={(value: string) => {
-                    const item = props.items.find((i) => i.key === value);
+                onChange={(event) => {
+                    const item = props.items.find(
+                        (i) => i.key === event.target.value,
+                    );
                     if (item) {
                         props.onClick(item);
                     }
@@ -31,7 +35,7 @@ export function TabBarMore(props: Readonly<Props>): JSX.Element {
                         </option>
                     );
                 })}
-            </Spicetify.ReactComponent.Dropdown>
+            </select>
         </li>
     );
 }
