@@ -4,7 +4,7 @@
 CUSTOM_APPS_DIR="$HOME/.config/spicetify/CustomApps"
 NAME="eternal-jukebox"
 
-STATS_APP_DIR="$CUSTOM_APPS_DIR/$NAME"
+CUSTOM_APP_DIR="$CUSTOM_APPS_DIR/$NAME"
 
 ZIP_URL="https://github.com/Pithaya/spicetify-apps-dist/archive/refs/heads/dist/eternal-jukebox.zip"
 ZIP_FILE="/tmp/spicetifyed.zip"
@@ -20,7 +20,7 @@ curl -L -o "$ZIP_FILE" "$ZIP_URL"
 unzip "$ZIP_FILE" -d "$TEMP_DIR"
 
 # Move the unzipped folder to the correct location
-mv "$TEMP_DIR"/* "$STATS_APP_DIR"
+mv "$TEMP_DIR"/* "$CUSTOM_APP_DIR"
 
 # Apply Spicetify configuration
 spicetify config custom_apps "$NAME"
