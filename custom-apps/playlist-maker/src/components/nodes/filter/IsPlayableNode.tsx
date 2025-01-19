@@ -7,6 +7,7 @@ import { NodeContent } from '../shared/NodeContent';
 import { type IsPlayableData } from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<IsPlayableData> = {
     isPlayable: true,
@@ -29,9 +30,7 @@ export function IsPlayableNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Is playable
-                </TextComponent>
+                <NodeTitle title="Is playable" />
 
                 <label>
                     <TextComponent elementType="small">

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -10,6 +9,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { NodeField } from '../shared/NodeField';
 import { Controller } from 'react-hook-form';
 import { Select } from '@shared/components/inputs/Select/Select';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<OrderByData> = {
     order: 'asc',
@@ -46,9 +46,7 @@ export function SortProcessorNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Sort
-                </TextComponent>
+                <NodeTitle title="Sort" />
 
                 <NodeField
                     label="Property"

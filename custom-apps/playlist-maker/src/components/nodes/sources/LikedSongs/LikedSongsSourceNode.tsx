@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
 import { NodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
@@ -17,6 +16,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { Controller } from 'react-hook-form';
 import { Select } from '@shared/components/inputs/Select/Select';
+import { NodeTitle } from '../../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<LikedSongsData> = {
     filter: undefined,
@@ -55,9 +55,7 @@ export function LikedSongsSourceNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Liked songs
-                </TextComponent>
+                <NodeTitle title="Liked songs" />
 
                 <NodeField
                     label="Filter"

@@ -1,10 +1,10 @@
 import React from 'react';
 import { type NodeProps, Position, Handle } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function ResultNode(
     props: Readonly<NodeProps<BaseNodeData>>,
@@ -17,9 +17,7 @@ export function ResultNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Final playlist
-                </TextComponent>
+                <NodeTitle title="Final playlist" />
             </NodeContent>
             <Handle
                 type="target"

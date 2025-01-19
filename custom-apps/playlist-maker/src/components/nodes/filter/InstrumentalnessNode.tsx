@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -8,6 +7,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { SliderController } from '../shared/SliderController';
 import type { InstrumentalnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<InstrumentalnessData> = {
     range: {
@@ -40,13 +40,12 @@ export function InstrumentalnessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Instrumentalness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Instrumentalness"
+                        tooltip="Predicts whether a track contains no vocals.
+                        Values above 0.5 are intended to represent instrumental tracks. 
+                        The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content."
+                    />
 
                     <SliderController
                         control={control}

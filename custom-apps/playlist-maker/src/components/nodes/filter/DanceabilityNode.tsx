@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -8,6 +7,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { SliderController } from '../shared/SliderController';
 import type { DanceabilityData } from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<DanceabilityData> = {
     range: {
@@ -40,13 +40,14 @@ export function DanceabilityNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Danceability
-                    </TextComponent>
+                    <NodeTitle
+                        title="Danceability"
+                        tooltip="How suitable a track is for
+                            dancing based on a combination of musical elements
+                            including tempo, rhythm stability, beat strength, and
+                            overall regularity. A value of 0.0 is least
+                            danceable and 1.0 is most danceable."
+                    />
 
                     <SliderController
                         control={control}

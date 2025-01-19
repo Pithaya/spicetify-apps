@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { NodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
@@ -13,6 +12,7 @@ import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/
 import { type TopTracksData } from 'custom-apps/playlist-maker/src/models/nodes/sources/top-tracks-source-processor';
 import { Controller } from 'react-hook-form';
 import { Select } from '@shared/components/inputs/Select/Select';
+import { NodeTitle } from '../../shared/NodeTitle';
 
 const defaultValues: LocalNodeData<TopTracksData> = {
     timeRange: 'short_term',
@@ -37,9 +37,7 @@ export function TopTracksSourceNode(
                 textColor="black"
             />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Top tracks
-                </TextComponent>
+                <NodeTitle title="Top tracks" />
 
                 <NodeField
                     label="Time range"
