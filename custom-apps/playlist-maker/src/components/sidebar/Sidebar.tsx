@@ -147,6 +147,11 @@ export function Sidenav(): JSX.Element {
                     nodeType="tempo"
                     tooltip="Filter tracks by tempo."
                 />
+                <SidenavItem
+                    label="Mode"
+                    nodeType="mode"
+                    tooltip="Filter tracks by mode."
+                />
             </ul>
 
             <TextComponent elementType="h1">Processing</TextComponent>

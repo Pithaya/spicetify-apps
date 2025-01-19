@@ -21,6 +21,7 @@ import { LoudnessProcessor } from '../models/nodes/filter/loudness-processor';
 import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
 import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
 import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
+import { ModeProcessor } from '../models/nodes/filter/mode-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -120,6 +121,12 @@ const nodeProcessorFactory: Record<
         ),
     tempo: (node, incomers) =>
         new TempoProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    mode: (node, incomers) =>
+        new ModeProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,
