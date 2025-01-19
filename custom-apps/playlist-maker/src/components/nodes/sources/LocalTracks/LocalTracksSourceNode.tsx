@@ -2,7 +2,7 @@ import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { type LocalTracksData } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
 import { Node } from '../../shared/Node';
-import { NodeHeader } from '../../shared/NodeHeader';
+import { SourceNodeHeader } from '../../shared/NodeHeader';
 import { NodeContent } from '../../shared/NodeContent';
 import { TextInput } from '../../../inputs/TextInput';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
@@ -44,11 +44,7 @@ export function LocalTracksSourceNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Source"
-                backgroundColor="cornflowerblue"
-                textColor="black"
-            />
+            <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Local tracks" />
 

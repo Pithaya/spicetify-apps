@@ -1,7 +1,7 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type IsPlayableData } from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
@@ -24,11 +24,7 @@ export function IsPlayableNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+            <FilterNodeHeader />
             <NodeContent>
                 <NodeTitle title="Is playable" />
 

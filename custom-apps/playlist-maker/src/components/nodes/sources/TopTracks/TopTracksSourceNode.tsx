@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { NodeHeader } from '../../shared/NodeHeader';
+import { SourceNodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
 import { NodeField } from '../../shared/NodeField';
@@ -31,11 +31,7 @@ export function TopTracksSourceNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Source"
-                backgroundColor="cornflowerblue"
-                textColor="black"
-            />
+            <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Top tracks" />
 

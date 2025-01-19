@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { NodeHeader } from '../shared/NodeHeader';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
@@ -27,11 +27,7 @@ export function InstrumentalnessNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { NodeHeader } from '../shared/NodeHeader';
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type OrderByData } from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
@@ -40,11 +40,7 @@ export function SortProcessorNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Processing"
-                backgroundColor="greenyellow"
-                textColor="black"
-            />
+            <ProcessingNodeHeader />
             <NodeContent>
                 <NodeTitle title="Sort" />
 

@@ -23,3 +23,29 @@ export function NodeHeader(props: Readonly<Props>): JSX.Element {
         </div>
     );
 }
+
+export function SourceNodeHeader(): JSX.Element {
+    return (
+        <NodeHeader
+            label="Source"
+            backgroundColor="cornflowerblue"
+            textColor="black"
+        />
+    );
+}
+
+export function ProcessingNodeHeader(): JSX.Element {
+    return (
+        <NodeHeader
+            label="Processing"
+            backgroundColor="greenyellow"
+            textColor="black"
+        />
+    );
+}
+
+export function FilterNodeHeader(): JSX.Element {
+    return (
+        <NodeHeader label="Filter" backgroundColor="violet" textColor="black" />
+    );
+}
