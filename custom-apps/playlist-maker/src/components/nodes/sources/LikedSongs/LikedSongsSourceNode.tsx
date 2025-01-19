@@ -1,7 +1,7 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
-import { NodeHeader } from '../../shared/NodeHeader';
+import { SourceNodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
 import { TextInput } from '../../../inputs/TextInput';
@@ -49,11 +49,7 @@ export function LikedSongsSourceNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Source"
-                backgroundColor="cornflowerblue"
-                textColor="black"
-            />
+            <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Liked songs" />
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../../shared/NodeHeader';
+import { SourceNodeHeader } from '../../shared/NodeHeader';
 import { Node } from '../../shared/Node';
 import { NodeContent } from '../../shared/NodeContent';
 import type { PlaylistData } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
@@ -93,11 +93,7 @@ export function LibraryPlaylistSourceNode(
 
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Source"
-                backgroundColor="cornflowerblue"
-                textColor="black"
-            />
+            <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Playlist" />
 

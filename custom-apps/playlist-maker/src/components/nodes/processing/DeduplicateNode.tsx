@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { NodeHeader } from '../shared/NodeHeader';
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
@@ -11,11 +11,7 @@ export function DeduplicateNode(
 ): JSX.Element {
     return (
         <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Processing"
-                backgroundColor="greenyellow"
-                textColor="black"
-            />
+            <ProcessingNodeHeader />
             <NodeContent>
                 <NodeTitle title="Deduplicate" />
             </NodeContent>
