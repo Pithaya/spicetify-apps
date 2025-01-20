@@ -1,4 +1,7 @@
-export type NpvEpisodeData = {
+import { throwIfNotOfType } from '@shared/utils/validation-utils';
+import { sendGraphQLQuery } from '../utils/graphql-utils';
+
+export type QueryNpvEpisodeData = {
     episodeUnionV2: {
         __typename: 'Episode';
         id: string;
@@ -28,3 +31,15 @@ export type NpvEpisodeData = {
         };
     };
 };
+
+export async function queryNpvEpisode(
+    uri: Spicetify.URI,
+): Promise<QueryNpvEpisodeData> {
+    throwIfNotOfType(uri, Spicetify.URI.Type.EPISODE);
+
+    const { queryNpvEpisode } = Spicetify.GraphQL.Definitions;
+
+    return await sendGraphQLQuery(queryNpvEpisode, {
+        uri: uri.toString(),
+    });
+}

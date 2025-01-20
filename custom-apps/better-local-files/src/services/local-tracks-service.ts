@@ -183,6 +183,9 @@ export class LocalTracksService {
                     albumKey,
                     albumName,
                     getImageUrlFromAlbum(localTrack.album),
+                    localTrack.album.images.map((i) => ({
+                        url: i.url,
+                    })),
                 );
 
                 this.albums.set(albumKey, album);
@@ -270,6 +273,9 @@ export class LocalTracksService {
                     albumKey,
                     album.name,
                     getImageUrlFromAlbum(firstTrack.backingTrack.album),
+                    firstTrack.backingTrack.album.images.map((i) => ({
+                        url: i.url,
+                    })),
                 );
 
                 for (const artist of firstTrack.artists) {

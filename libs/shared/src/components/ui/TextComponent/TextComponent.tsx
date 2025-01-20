@@ -81,7 +81,7 @@ export function TextComponent(
             style={{
                 ...style,
                 fontSize,
-                display: props.paddingBottom ? 'block' : undefined,
+                display: props.paddingBottom ? 'block' : style?.display,
             }}
         >
             {children}

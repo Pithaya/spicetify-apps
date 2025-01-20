@@ -1,6 +1,6 @@
-import type { GraphQLResponse } from './response';
+import type { GraphQLResponse } from './graphql-response';
 
-export type ErrorResponse = GraphQLResponse<null> & {
+export type GraphQLErrorResponse = GraphQLResponse<null> & {
     errors: {
         extensions: { classification: string }[];
         message: string;
