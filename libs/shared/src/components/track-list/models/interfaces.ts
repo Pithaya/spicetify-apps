@@ -1,8 +1,25 @@
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
-import type { Track } from '@spotify-web-api';
+import type { Track as WebAPITrack } from '@spotify-web-api';
 
-export type BackingTrack = LocalTrack | LibraryAPITrack | Track;
+export type SimpleTrack = {
+    uri: string;
+    name: string;
+    addedAt?: Date;
+    duration: {
+        milliseconds: number;
+    };
+    trackNumber: number;
+    artists: IArtist[];
+    album: IAlbum;
+    isPlayable: boolean;
+};
+
+export type BackingTrack =
+    | LocalTrack
+    | LibraryAPITrack
+    | WebAPITrack
+    | SimpleTrack;
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ITrack {
@@ -18,8 +35,9 @@ export interface ITrack {
 
     /**
      * Date the track was added to the library.
+     * Null if the track is not in the library.
      */
-    addedAt: Date;
+    addedAt: Date | null;
 
     /**
      * Duration of the track in milliseconds.
@@ -81,4 +99,11 @@ export interface IAlbum {
      * Album name.
      */
     name: string;
+
+    /**
+     * Album images.
+     */
+    images: {
+        url: string;
+    }[];
 }

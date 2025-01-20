@@ -320,7 +320,9 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             semanticColor="textSubdued"
                             key={track.uri}
                         >
-                            {track.addedAt.toLocaleDateString()}
+                            {track.addedAt
+                                ? track.addedAt.toLocaleDateString()
+                                : ''}
                         </TextComponent>,
                     );
 

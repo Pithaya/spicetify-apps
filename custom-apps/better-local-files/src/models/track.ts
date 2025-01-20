@@ -10,7 +10,7 @@ export class Track implements ITrack {
     /**
      * Date the track was added to the local file library.
      */
-    public get addedAt(): Date {
+    public get addedAt(): Date | null {
         return this.localTrack.addedAt;
     }
 

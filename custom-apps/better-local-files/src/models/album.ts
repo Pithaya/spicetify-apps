@@ -1,10 +1,11 @@
+import type { IAlbum } from '@shared/components/track-list/models/interfaces';
 import type { Artist } from './artist';
 import type { Track } from './track';
 
 /**
  * A processed local Album.
  */
-export class Album {
+export class Album implements IAlbum {
     /**
      * List of artists for this album.
      */
@@ -25,6 +26,7 @@ export class Album {
         public readonly uri: string,
         public readonly name: string,
         public readonly image: string,
+        public readonly images: IAlbum['images'],
     ) {
         this.artists = [];
         this.discs = new Map<number, Track[]>();
@@ -49,6 +51,6 @@ export class Album {
     public getDuration(): number {
         return this.getTracks()
             .map((t) => t.duration)
-            .reduce((total, current) => total + current);
+            .reduce((total, current) => total + current, 0);
     }
 }

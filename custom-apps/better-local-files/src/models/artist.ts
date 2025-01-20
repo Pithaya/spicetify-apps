@@ -1,7 +1,9 @@
+import type { IArtist } from '@shared/components/track-list/models/interfaces';
+
 /**
  * Represents an artist.
  */
-export class Artist {
+export class Artist implements IArtist {
     /**
      * Creates a new instance of the Artist class.
      * @param name Artist name.
