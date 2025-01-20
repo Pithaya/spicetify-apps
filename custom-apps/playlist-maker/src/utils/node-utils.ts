@@ -22,6 +22,7 @@ import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-process
 import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
 import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
 import { ModeProcessor } from '../models/nodes/filter/mode-processor';
+import { AlbumSourceProcessor } from '../models/nodes/sources/album-source-processor';
 
 const nodeProcessorFactory: Record<
     CustomNodeType,
@@ -35,6 +36,8 @@ const nodeProcessorFactory: Record<
         new PlaylistSourceProcessor(node.id, [], node.data),
     topTracksSource: (node, incomers) =>
         new TopTracksSourceProcessor(node.id, [], node.data),
+    albumSource: (node, incomers) =>
+        new AlbumSourceProcessor(node.id, [], node.data),
     deduplicate: (node, incomers) =>
         new DeduplicateProcessor(
             node.id,

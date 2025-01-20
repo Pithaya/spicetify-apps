@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { SourceNodeHeader } from '../../shared/NodeHeader';
-import { Node } from '../../shared/Node';
-import { NodeContent } from '../../shared/NodeContent';
+import { SourceNodeHeader } from '../shared/NodeHeader';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
 import type { PlaylistData } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type { Playlist } from '@shared/platform/rootlist';
 import type { UserAPI } from '@shared/platform/user';
 import { Select } from '@shared/components/inputs/Select/Select';
-import { TextInput } from '../../../inputs/TextInput';
-import { NumberInput } from '../../../inputs/NumberInput';
+import { TextInput } from '../../inputs/TextInput';
+import { NumberInput } from '../../inputs/NumberInput';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { Controller } from 'react-hook-form';
-import { NodeField } from '../../shared/NodeField';
+import { NodeField } from '../shared/NodeField';
 import {
     numberValueSetter,
     stringValueSetter,
@@ -21,7 +21,7 @@ import {
 import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
-import { NodeTitle } from '../../shared/NodeTitle';
+import { NodeTitle } from '../shared/NodeTitle';
 
 // TODO: custom select with search field
 // TODO: order playlists by name

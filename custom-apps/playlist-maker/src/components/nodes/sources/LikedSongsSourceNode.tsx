@@ -1,42 +1,47 @@
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type LocalTracksData } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
-import { Node } from '../../shared/Node';
-import { SourceNodeHeader } from '../../shared/NodeHeader';
-import { NodeContent } from '../../shared/NodeContent';
-import { TextInput } from '../../../inputs/TextInput';
+import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
+import { SourceNodeHeader } from '../shared/NodeHeader';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { TextInput } from '../../inputs/TextInput';
+import { NodeField } from '../shared/NodeField';
+import {
+    numberValueSetter,
+    stringValueSetter,
+} from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { NumberInput } from '../../inputs/NumberInput';
+import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { NodeField } from '../../shared/NodeField';
-import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { Controller } from 'react-hook-form';
 import { Select } from '@shared/components/inputs/Select/Select';
-import { NodeTitle } from '../../shared/NodeTitle';
+import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<LocalTracksData> = {
+const defaultValues: LocalNodeData<LikedSongsData> = {
     filter: undefined,
-    sortField: 'DURATION',
+    offset: undefined,
+    limit: undefined,
+    sortField: 'ADDED_AT',
     sortOrder: 'DESC',
 };
 
-const propertyValues: Record<LocalTracksData['sortField'], string> = {
-    ALBUM: 'Album',
-    ARTIST: 'Artist',
-    TITLE: 'Name',
-    DURATION: 'Duration',
+const propertyValues: Record<LikedSongsData['sortField'], string> = {
     ADDED_AT: 'Added at',
-    NO_SORT: 'No sort',
+    ALBUM_NAME: 'Album',
+    ARTIST_NAME: 'Artist',
+    NAME: 'Name',
 };
 
-const orderValues: Record<LocalTracksData['sortOrder'], string> = {
+const orderValues: Record<LikedSongsData['sortOrder'], string> = {
     ASC: 'Ascending',
     DESC: 'Descending',
 };
 
-export function LocalTracksSourceNode(
-    props: Readonly<NodeProps<LocalTracksData>>,
+export function LikedSongsSourceNode(
+    props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
-    const { control, register, errors } = useNodeForm<LocalTracksData>(
+    const { control, register, errors } = useNodeForm<LikedSongsData>(
         props.id,
         props.data,
         defaultValues,
@@ -46,17 +51,57 @@ export function LocalTracksSourceNode(
         <Node isExecuting={props.data.isExecuting}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Local tracks" />
+                <NodeTitle title="Liked songs" />
 
                 <NodeField
-                    tooltip="Search filter to apply"
                     label="Filter"
+                    tooltip="Search filter to apply"
                     error={errors.filter}
                 >
                     <TextInput
                         placeholder="Search"
                         {...register('filter', {
                             setValueAs: stringValueSetter,
+                        })}
+                    />
+                </NodeField>
+
+                <NodeField
+                    label="Offset"
+                    tooltip="Number of elements to skip"
+                    error={errors.offset}
+                >
+                    <NumberInput
+                        placeholder="0"
+                        {...register('offset', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
+                        })}
+                    />
+                </NodeField>
+
+                <NodeField
+                    label="Limit"
+                    tooltip="Number of elements to take. Leave empty to take all elements."
+                    error={errors.limit}
+                >
+                    <NumberInput
+                        placeholder="None"
+                        {...register('limit', {
+                            setValueAs: numberValueSetter,
+                            min: {
+                                value: 0,
+                                message: 'The value must be greater than 0',
+                            },
+                            validate: {
+                                whole: wholeNumber,
+                            },
                         })}
                     />
                 </NodeField>
@@ -131,7 +176,6 @@ export function LocalTracksSourceNode(
                                 onItemClicked={(item) => {
                                     onChange(item.value);
                                 }}
-                                disabled={props.data.sortField === 'NO_SORT'}
                             />
                         )}
                     />
