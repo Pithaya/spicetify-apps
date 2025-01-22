@@ -13,10 +13,11 @@ export const TextInput = forwardRef(function TextInput(
 ): JSX.Element {
     return (
         <input
-            className={
-                styles['text-input'] +
-                (props.className ? ` ${props.className}` : '')
-            }
+            className={Spicetify.classnames(
+                styles['text-input'],
+                props.className,
+                'nodrag',
+            )}
             type="text"
             placeholder={props.placeholder}
             ref={ref}

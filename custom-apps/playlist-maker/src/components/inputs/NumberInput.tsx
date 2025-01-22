@@ -12,7 +12,7 @@ export const NumberInput = forwardRef(function NumberInput(
 ): JSX.Element {
     return (
         <input
-            className={styles['number-input']}
+            className={Spicetify.classnames(styles['number-input'], 'nodrag')}
             type="number"
             placeholder={props.placeholder}
             ref={ref}
