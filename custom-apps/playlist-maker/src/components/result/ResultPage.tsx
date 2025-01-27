@@ -1,23 +1,26 @@
-import React, { useMemo } from 'react';
-import styles from './ResultPage.module.scss';
-import useAppStore from '../../stores/store';
-import { useShallow } from 'zustand/react/shallow';
 import type {
     LibraryHeaders,
     TrackListHeaderOption,
 } from '@shared/components/track-list/models/sort-option';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
-import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
 import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
-import { TrackWrapper } from '../../models/track-wrapper';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { History } from '@shared/platform/history';
-import { getId } from '@shared/utils/uri-utils';
+import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import type { History } from '@shared/platform/history';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import {
+    getTranslatedDuration,
+    getTranslation,
+} from '@shared/utils/translations.utils';
+import { getId } from '@shared/utils/uri-utils';
 import { ArrowRightFromLine } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { TrackWrapper } from '../../models/track-wrapper';
+import useAppStore from '../../stores/store';
 import { CreatePlaylistModal } from './modals/CreatePlaylistModal';
+import styles from './ResultPage.module.scss';
 
 export function ResultPage(): JSX.Element {
     const history = getPlatformApiOrThrow<History>('History');
@@ -105,6 +108,27 @@ export function ResultPage(): JSX.Element {
                                     className={styles['help-button']}
                                 ></Spicetify.ReactComponent.ButtonSecondary>
                             </Spicetify.ReactComponent.TooltipWrapper>
+                            {tracks.length > 0 && (
+                                <p>
+                                    {getTranslation(
+                                        [
+                                            'tracklist-header.songs-counter',
+                                            tracks.length === 1
+                                                ? 'one'
+                                                : 'other',
+                                        ],
+                                        tracks.length,
+                                    )}
+                                    <span className="main-entityHeader-divider"></span>
+                                    {getTranslatedDuration(
+                                        tracks.reduce(
+                                            (acc, track) =>
+                                                acc + track.duration,
+                                            0,
+                                        ),
+                                    )}
+                                </p>
+                            )}
                         </div>
                     </div>
 
