@@ -57,9 +57,18 @@ export type LibraryAPIOperationCompleteEvent = LibraryAPIEvent<{
     silent: boolean;
 }>;
 
+export const LibraryAPITrackSortOptionFields = [
+    'ADDED_AT',
+    'ALBUM_NAME',
+    'NAME',
+    'ARTIST_NAME',
+] as const;
+
+export const LibraryAPITrackSortOptionOrders = ['DESC', 'ASC'] as const;
+
 export type LibraryAPITrackSortOption = {
-    field: 'ADDED_AT' | 'ALBUM_NAME' | 'NAME' | 'ARTIST_NAME';
-    order: 'DESC' | 'ASC';
+    field: (typeof LibraryAPITrackSortOptionFields)[number];
+    order: (typeof LibraryAPITrackSortOptionOrders)[number];
 };
 
 export type LibraryAPITrack = {

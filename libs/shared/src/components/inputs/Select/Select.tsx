@@ -9,7 +9,7 @@ export type Props = {
     selectLabel: string;
     items: Item[];
     onItemClicked: (item: Item) => void;
-    selectedValue: string | null;
+    selectedValue: string | undefined;
     disabled?: boolean;
 };
 
@@ -18,7 +18,7 @@ export function Select(props: Readonly<Props>): JSX.Element {
         <select
             className="main-dropDown-dropDown"
             disabled={props.disabled}
-            value={props.selectedValue ?? undefined}
+            value={props.selectedValue}
             onChange={(event) => {
                 const item = props.items.find(
                     (i) => i.value === event.target.value,
@@ -29,8 +29,8 @@ export function Select(props: Readonly<Props>): JSX.Element {
                 }
             }}
         >
-            {props.selectedValue === null && (
-                <option value={undefined} disabled selected={true}>
+            {!props.selectedValue && (
+                <option value={props.selectedValue} disabled selected={true}>
                     {props.selectLabel}
                 </option>
             )}

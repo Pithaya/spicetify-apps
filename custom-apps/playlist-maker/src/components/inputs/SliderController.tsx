@@ -1,23 +1,32 @@
 import React from 'react';
-import { Controller, type Control } from 'react-hook-form';
+import {
+    Controller,
+    type Control,
+    type FieldPath,
+    type FieldValues,
+} from 'react-hook-form';
 import { getTrackBackground, Range } from 'react-range';
 
 // TODO: Handle RTL
 
-type Props = {
-    control: Control<{ range: { min: number; max: number } }>;
+type RangeForm = { range: { min: number; max: number } } & FieldValues;
+
+type Props<T extends RangeForm> = {
+    control: Control<T>;
     min: number;
     max: number;
     step: number;
 };
 
-export function SliderController(props: Readonly<Props>): JSX.Element {
+export function SliderController<T extends RangeForm>(
+    props: Readonly<Props<T>>,
+): JSX.Element {
     const { min, max, step } = props;
 
     return (
         <div className="nodrag">
             <Controller
-                name="range"
+                name={'range' as FieldPath<T>}
                 control={props.control}
                 render={({ field: { onChange, value } }) => (
                     <div

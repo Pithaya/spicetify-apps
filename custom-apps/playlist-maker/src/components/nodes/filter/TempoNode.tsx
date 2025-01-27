@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    MAX_TEMPO,
+    MIN_TEMPO,
+    TempoDataSchema,
+    type TempoData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/tempo-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { TempoData } from 'custom-apps/playlist-maker/src/models/nodes/filter/tempo-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<TempoData> = {
+const defaultValues: TempoData = {
     range: {
-        min: 0,
-        max: 1000,
+        min: MIN_TEMPO,
+        max: MAX_TEMPO,
     },
+    isExecuting: undefined,
 };
 
 export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
@@ -21,6 +26,7 @@ export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
         props.id,
         props.data,
         defaultValues,
+        TempoDataSchema,
     );
 
     return (
@@ -42,8 +48,8 @@ export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1000}
+                        min={MIN_TEMPO}
+                        max={MAX_TEMPO}
                         step={1}
                     />
                 </div>

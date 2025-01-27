@@ -1,10 +1,16 @@
-import { type WorkflowTrack } from '../../track';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-export type ModeData = BaseNodeData & {
-    mode: string;
-};
+export const ModeDataSchema = z
+    .object({
+        mode: z.union([z.literal('0'), z.literal('1')]),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type ModeData = z.infer<typeof ModeDataSchema>;
 
 export class ModeProcessor extends NodeProcessor<ModeData> {
     protected override async getResultsInternal(

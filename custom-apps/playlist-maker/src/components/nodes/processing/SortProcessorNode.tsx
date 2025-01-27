@@ -1,19 +1,21 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    OrderByDataSchema,
+    type OrderByData,
+} from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { ProcessingNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SelectController } from '../../inputs/SelectController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { type OrderByData } from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../shared/NodeField';
-import { Controller } from 'react-hook-form';
-import { Select } from '@shared/components/inputs/Select/Select';
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<OrderByData> = {
+const defaultValues: OrderByData = {
     order: 'asc',
     property: 'name',
+    isExecuting: undefined,
 };
 
 const propertyValues: Record<OrderByData['property'], string> = {
@@ -36,6 +38,7 @@ export function SortProcessorNode(
         props.id,
         props.data,
         defaultValues,
+        OrderByDataSchema,
     );
 
     return (
@@ -44,77 +47,29 @@ export function SortProcessorNode(
             <NodeContent>
                 <NodeTitle title="Sort" />
 
-                <NodeField
-                    label="Property"
-                    error={
-                        errors.property === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.property.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Property" error={errors.property}>
+                    <SelectController
+                        label="Property to sort on"
                         name="property"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Property to sort on"
-                                selectedValue={value ?? null}
-                                items={Object.entries(propertyValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(propertyValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>
-                <NodeField
-                    label="Order"
-                    error={
-                        errors.order === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.order.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Order" error={errors.order}>
+                    <SelectController
+                        label="Sort order"
                         name="order"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Sort order"
-                                selectedValue={value ?? null}
-                                items={Object.entries(orderValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(orderValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>

@@ -1,23 +1,26 @@
-import React from 'react';
-import styles from './GenreNode.module.scss';
-import { Handle, type NodeProps, Position } from 'reactflow';
+import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    GenreFilterDataSchema,
+    type GenreFilterData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/genre-processor';
+import React from 'react';
+import { Controller } from 'react-hook-form';
+import { Handle, Position, type NodeProps } from 'reactflow';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
-import type { GenreFilterData } from 'custom-apps/playlist-maker/src/models/nodes/filter/genre-processor';
-import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../shared/NodeField';
-import { Controller } from 'react-hook-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
+import styles from './GenreNode.module.scss';
 
 const genres: Record<string, string[]> = genresJson;
 
-const defaultValues: LocalNodeData<GenreFilterData> = {
+const defaultValues: GenreFilterData = {
     genreCategories: [],
+    isExecuting: undefined,
 };
 
 export function GenreNode(
@@ -27,6 +30,7 @@ export function GenreNode(
         props.id,
         props.data,
         defaultValues,
+        GenreFilterDataSchema,
     );
 
     return (
@@ -61,12 +65,6 @@ export function GenreNode(
                     <Controller
                         name="genreCategories"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v.length === 0
-                                    ? 'This field is required'
-                                    : true,
-                        }}
                         render={({ field: { onChange, value } }) => (
                             <MultiSelect
                                 selectLabel="Select genres"

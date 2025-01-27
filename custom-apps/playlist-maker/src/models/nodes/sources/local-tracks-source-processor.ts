@@ -1,16 +1,23 @@
 import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
 import { type WorkflowTrack } from '../../track';
-import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import type {
-    LocalFilesAPI,
-    LocalTrackSortOption,
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import {
+    LocalTrackSortOptionFields,
+    LocalTrackSortOptionOrders,
+    type LocalFilesAPI,
 } from '@shared/platform/local-files';
+import { z } from 'zod';
 
-export type LocalTracksData = BaseNodeData & {
-    filter?: string;
-    sortField: LocalTrackSortOption['field'] | 'NO_SORT';
-    sortOrder: LocalTrackSortOption['order'];
-};
+export const LocalTracksDataSchema = z
+    .object({
+        filter: z.string().optional(),
+        sortField: z.enum(LocalTrackSortOptionFields).or(z.literal('NO_SORT')),
+        sortOrder: z.enum(LocalTrackSortOptionOrders),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type LocalTracksData = z.infer<typeof LocalTracksDataSchema>;
 
 /**
  * Source node that returns local songs.

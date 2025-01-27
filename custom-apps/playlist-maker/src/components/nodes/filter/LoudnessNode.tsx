@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    LoudnessDataSchema,
+    MAX_LOUDNESS,
+    MIN_LOUDNESS,
+    type LoudnessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/loudness-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { LoudnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/loudness-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<LoudnessData> = {
+const defaultValues: LoudnessData = {
     range: {
-        min: -60,
-        max: 10,
+        min: MIN_LOUDNESS,
+        max: MAX_LOUDNESS,
     },
+    isExecuting: undefined,
 };
 
 export function LoudnessNode(
@@ -23,6 +28,7 @@ export function LoudnessNode(
         props.id,
         props.data,
         defaultValues,
+        LoudnessDataSchema,
     );
 
     return (
@@ -44,8 +50,8 @@ export function LoudnessNode(
 
                     <SliderController
                         control={control}
-                        min={-60}
-                        max={10}
+                        min={MIN_LOUDNESS}
+                        max={MAX_LOUDNESS}
                         step={0.01}
                     />
                 </div>

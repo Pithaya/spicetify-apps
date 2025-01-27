@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    AcousticnessDataSchema,
+    MAX_ACOUSTICNESS,
+    MIN_ACOUSTICNESS,
+    type AcousticnessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/acousticness-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { type AcousticnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/acousticness-processor';
-import { SliderController } from '../shared/SliderController';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<AcousticnessData> = {
+const defaultValues: AcousticnessData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_ACOUSTICNESS,
+        max: MAX_ACOUSTICNESS,
     },
+    isExecuting: undefined,
 };
 
 export function AcousticnessNode(
@@ -23,6 +28,7 @@ export function AcousticnessNode(
         props.id,
         props.data,
         defaultValues,
+        AcousticnessDataSchema,
     );
 
     return (
@@ -44,8 +50,8 @@ export function AcousticnessNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_ACOUSTICNESS}
+                        max={MAX_ACOUSTICNESS}
                         step={0.01}
                     />
                 </div>

@@ -1,4 +1,4 @@
-import { throwIfNotOfType } from '@shared/utils/validation-utils';
+import { z } from 'zod';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type QueryNpvEpisodeData = {
@@ -32,14 +32,26 @@ export type QueryNpvEpisodeData = {
     };
 };
 
+const ParamsSchema = z
+    .object({
+        uri: z
+            .string()
+            .nonempty()
+            .refine((value) => Spicetify.URI.isEpisode(value), {
+                message: 'Invalid episode URI',
+            }),
+    })
+    .strict()
+    .readonly();
+
+export type Params = z.infer<typeof ParamsSchema>;
+
 export async function queryNpvEpisode(
-    uri: Spicetify.URI,
+    params: Params,
 ): Promise<QueryNpvEpisodeData> {
-    throwIfNotOfType(uri, Spicetify.URI.Type.EPISODE);
+    ParamsSchema.parse(params);
 
     const { queryNpvEpisode } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(queryNpvEpisode, {
-        uri: uri.toString(),
-    });
+    return await sendGraphQLQuery(queryNpvEpisode, params);
 }

@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    EnergyDataSchema,
+    MAX_ENERGY,
+    MIN_ENERGY,
+    type EnergyData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/energy-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { EnergyData } from 'custom-apps/playlist-maker/src/models/nodes/filter/energy-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<EnergyData> = {
+const defaultValues: EnergyData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_ENERGY,
+        max: MAX_ENERGY,
     },
+    isExecuting: undefined,
 };
 
 export function EnergyNode(
@@ -23,6 +28,7 @@ export function EnergyNode(
         props.id,
         props.data,
         defaultValues,
+        EnergyDataSchema,
     );
 
     return (
@@ -45,8 +51,8 @@ export function EnergyNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_ENERGY}
+                        max={MAX_ENERGY}
                         step={0.01}
                     />
                 </div>

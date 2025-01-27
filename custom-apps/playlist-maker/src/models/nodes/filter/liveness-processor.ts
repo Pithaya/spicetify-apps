@@ -1,13 +1,22 @@
-import { type WorkflowTrack } from '../../track';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-export type LivenessData = BaseNodeData & {
-    range: {
-        min: number;
-        max: number;
-    };
-};
+export const MIN_LIVENESS = 0;
+export const MAX_LIVENESS = 1;
+
+export const LivenessDataSchema = z
+    .object({
+        range: z.object({
+            min: z.number().min(MIN_LIVENESS).max(MAX_LIVENESS),
+            max: z.number().min(MIN_LIVENESS).max(MAX_LIVENESS),
+        }),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type LivenessData = z.infer<typeof LivenessDataSchema>;
 
 export class LivenessProcessor extends NodeProcessor<LivenessData> {
     protected override async getResultsInternal(

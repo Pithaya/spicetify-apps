@@ -1,39 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { SourceNodeHeader } from '../shared/NodeHeader';
+import { useMap } from '@shared/hooks/use-map';
+import type { UserAPI } from '@shared/platform/user';
+import { getEntries } from '@shared/utils/map-utils';
+import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    PlaylistDataSchema,
+    type PlaylistData,
+} from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
+import {
+    setValueAsNumber,
+    setValueAsString,
+} from 'custom-apps/playlist-maker/src/utils/form-utils';
+import React, { useEffect } from 'react';
+import { useWatch } from 'react-hook-form';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { NumberInput } from '../../inputs/NumberInput';
+import { SelectController } from '../../inputs/SelectController';
+import { TextInput } from '../../inputs/TextInput';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import type { PlaylistData } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { Playlist } from '@shared/platform/rootlist';
-import type { UserAPI } from '@shared/platform/user';
-import { Select } from '@shared/components/inputs/Select/Select';
-import { TextInput } from '../../inputs/TextInput';
-import { NumberInput } from '../../inputs/NumberInput';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { Controller } from 'react-hook-form';
 import { NodeField } from '../shared/NodeField';
-import {
-    numberValueSetter,
-    stringValueSetter,
-} from 'custom-apps/playlist-maker/src/utils/form-utils';
-import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
+import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
 // TODO: custom select with search field
 // TODO: order playlists by name
-// FIXME: leaving and coming back to the page trigger the playlist selection validation with undefined, and shows the error message
 
-const defaultValues: LocalNodeData<PlaylistData> = {
-    playlist: undefined,
+const defaultValues: PlaylistData = {
+    playlistUri: '',
+    playlistName: '',
     offset: undefined,
     filter: undefined,
     limit: undefined,
     sortField: 'NO_SORT',
     sortOrder: 'ASC',
+    isExecuting: undefined,
+    onlyMine: false,
 };
 
 const propertyValues: Record<PlaylistData['sortField'], string> = {
@@ -57,10 +60,18 @@ export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
     const { register, errors, setValue, getValues, control } =
-        useNodeForm<PlaylistData>(props.id, props.data, defaultValues);
+        useNodeForm<PlaylistData>(
+            props.id,
+            props.data,
+            defaultValues,
+            PlaylistDataSchema,
+        );
 
-    const [playlists, setPlaylists] = useState<Playlist[]>([]);
-    const [onlyMine, setOnlyMine] = useState<boolean>(false);
+    const [playlists, setPlaylists] = useMap<string, string>([
+        [props.data.playlistUri, props.data.playlistName],
+    ]);
+
+    const playlistUri = useWatch({ control, name: 'playlistUri' });
 
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
@@ -69,27 +80,43 @@ export function LibraryPlaylistSourceNode(
 
             let playlists = await getRootlistPlaylists();
 
-            if (onlyMine) {
+            if (props.data.onlyMine) {
                 playlists = playlists.filter((p) => p.owner.uri === user.uri);
             }
 
-            setPlaylists(playlists);
+            setPlaylists(playlists.map((p) => [p.uri, p.name]));
         }
 
         void getPlaylists();
-    }, [onlyMine]);
+    }, [props.data.onlyMine, setPlaylists]);
 
     useEffect(() => {
-        const selectedUri = getValues('playlist.uri');
+        // When the list of playlists changes, check if the selected playlist is still valid
+        const selectedPlaylistUri = getValues('playlistUri');
 
-        if (selectedUri === undefined) {
+        if (!selectedPlaylistUri) {
             return;
         }
 
-        if (!playlists.map((p) => p.uri).includes(selectedUri)) {
-            setValue('playlist', undefined, { shouldValidate: true });
+        if (!playlists.has(selectedPlaylistUri)) {
+            setValue('playlistUri', '', { shouldValidate: true });
         }
     }, [playlists, setValue, getValues]);
+
+    useEffect(() => {
+        // On selected playlist change, update the playlist name
+        if (!playlistUri) {
+            return;
+        }
+
+        if (playlists.has(playlistUri)) {
+            setValue('playlistName', playlists.get(playlistUri)!, {
+                shouldValidate: false,
+            });
+        } else {
+            setValue('playlistName', '', { shouldValidate: false });
+        }
+    }, [playlistUri, playlists, setValue]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -97,57 +124,19 @@ export function LibraryPlaylistSourceNode(
             <NodeContent>
                 <NodeTitle title="Playlist" />
 
-                <label>
-                    <TextComponent elementType="small">
-                        Only my playlists
-                    </TextComponent>
-                    <input
-                        type="checkbox"
-                        checked={onlyMine}
-                        onChange={(e) => {
-                            setOnlyMine(!onlyMine);
-                        }}
-                    />
-                </label>
+                <NodeField label="Only my playlists" error={errors.onlyMine}>
+                    <input type="checkbox" {...register('onlyMine')} />
+                </NodeField>
 
-                <NodeField
-                    label="Playlist"
-                    error={
-                        errors.playlist === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.playlist.message,
-                              }
-                    }
-                >
-                    <Controller
-                        name="playlist"
+                <NodeField label="Playlist" error={errors.playlistUri}>
+                    <SelectController
+                        label="Select a playlist"
+                        name="playlistUri"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Select a playlist"
-                                selectedValue={
-                                    value === undefined ? null : value.uri
-                                }
-                                items={playlists.map((p) => ({
-                                    value: p.uri,
-                                    label: p.name,
-                                }))}
-                                onItemClicked={(item) => {
-                                    onChange({
-                                        uri: item.value,
-                                        name: item.label,
-                                    });
-                                }}
-                            />
-                        )}
+                        items={getEntries(playlists).map((p) => ({
+                            value: p.key,
+                            label: p.value,
+                        }))}
                     />
                 </NodeField>
 
@@ -159,7 +148,7 @@ export function LibraryPlaylistSourceNode(
                     <TextInput
                         placeholder="Search"
                         {...register('filter', {
-                            setValueAs: stringValueSetter,
+                            setValueAs: setValueAsString,
                         })}
                     />
                 </NodeField>
@@ -172,14 +161,7 @@ export function LibraryPlaylistSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
@@ -192,90 +174,34 @@ export function LibraryPlaylistSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
 
-                <NodeField
-                    label="Sort by"
-                    error={
-                        errors.sortField === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.sortField.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Sort by" error={errors.sortField}>
+                    <SelectController
+                        label="Property to sort on"
                         name="sortField"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Property to sort on"
-                                selectedValue={value ?? null}
-                                items={Object.entries(propertyValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(propertyValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>
-                <NodeField
-                    label="Order"
-                    error={
-                        errors.sortOrder === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.sortOrder.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Order" error={errors.sortOrder}>
+                    <SelectController
+                        label="Sort order"
                         name="sortOrder"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Sort order"
-                                selectedValue={value ?? null}
-                                items={Object.entries(orderValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                                disabled={props.data.sortField === 'NO_SORT'}
-                            />
+                        items={Object.entries(orderValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>

@@ -1,5 +1,5 @@
 import { type WorkflowTrack } from '../../track';
-import { NodeProcessor, type BaseNodeData } from '../node-processor';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { getId } from '@shared/utils/uri-utils';
 import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
@@ -13,15 +13,21 @@ import {
     removeExpired,
     setArtistsGenresCache,
 } from 'custom-apps/playlist-maker/src/utils/storage-utils';
+import { z } from 'zod';
 
 const genres: Record<string, string[]> = genresJson;
 
 // TODO: Add this to settings
 export const artistGenresStoreTime = 1000 * 60 * 60 * 24 * 10; // 10 days
 
-export type GenreFilterData = BaseNodeData & {
-    genreCategories: string[];
-};
+export const GenreFilterDataSchema = z
+    .object({
+        genreCategories: z.array(z.string()),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type GenreFilterData = z.infer<typeof GenreFilterDataSchema>;
 
 export class GenreProcessor extends NodeProcessor<GenreFilterData> {
     protected override async getResultsInternal(

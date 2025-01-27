@@ -1,4 +1,4 @@
-import { throwIfNotOfType } from '@shared/utils/validation-utils';
+import { z } from 'zod';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type GetTrackNameData = {
@@ -8,19 +8,29 @@ export type GetTrackNameData = {
     };
 };
 
+const ParamsSchema = z
+    .object({
+        uri: z
+            .string()
+            .nonempty()
+            .refine((value) => Spicetify.URI.isTrack(value), {
+                message: 'Invalid track URI',
+            }),
+    })
+    .strict()
+    .readonly();
+
+export type Params = z.infer<typeof ParamsSchema>;
+
 /**
  * Get the name of a track.
- * @param uri The URI of the track.
+ * @param params The query params.
  * @returns The name of the track.
  */
-export async function getTrackName(
-    uri: Spicetify.URI,
-): Promise<GetTrackNameData> {
-    throwIfNotOfType(uri, Spicetify.URI.Type.TRACK);
+export async function getTrackName(params: Params): Promise<GetTrackNameData> {
+    ParamsSchema.parse(params);
 
     const { getTrackName } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(getTrackName, {
-        uri: uri.toString(),
-    });
+    return await sendGraphQLQuery(getTrackName, params);
 }

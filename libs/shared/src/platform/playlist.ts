@@ -6,23 +6,28 @@ export type PlaylistParameters = {
     withSync?: boolean;
 };
 
+export const PlaylistSortOptionFields = [
+    'TITLE',
+    'ADDED_AT',
+    'ADDED_BY',
+    'ALBUM',
+    'ARTIST',
+    'DURATION',
+    'SHOW_NAME',
+    'PUBLISH_DATE',
+] as const;
+
+export const PlaylistSortOptionOrders = ['DESC', 'ASC'] as const;
+
 export type PlaylistSortOption = {
-    field:
-        | 'TITLE'
-        | 'ADDED_AT'
-        | 'ADDED_BY'
-        | 'ALBUM'
-        | 'ARTIST'
-        | 'DURATION'
-        | 'SHOW_NAME'
-        | 'PUBLISH_DATE';
-    order: 'DESC' | 'ASC';
+    field: (typeof PlaylistSortOptionFields)[number];
+    order: (typeof PlaylistSortOptionOrders)[number];
 };
 
 export type QueryParameters = {
-    filter: string;
-    limit: number;
-    offset: number;
+    filter?: string;
+    limit?: number;
+    offset?: number;
     sort?: PlaylistSortOption;
 };
 

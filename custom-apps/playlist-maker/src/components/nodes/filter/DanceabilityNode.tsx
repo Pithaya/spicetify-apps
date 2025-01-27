@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    DanceabilityDataSchema,
+    MAX_DANCEABILITY,
+    MIN_DANCEABILITY,
+    type DanceabilityData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { DanceabilityData } from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<DanceabilityData> = {
+const defaultValues: DanceabilityData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_DANCEABILITY,
+        max: MAX_DANCEABILITY,
     },
+    isExecuting: undefined,
 };
 
 export function DanceabilityNode(
@@ -23,6 +28,7 @@ export function DanceabilityNode(
         props.id,
         props.data,
         defaultValues,
+        DanceabilityDataSchema,
     );
 
     return (
@@ -47,8 +53,8 @@ export function DanceabilityNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_DANCEABILITY}
+                        max={MAX_DANCEABILITY}
                         step={0.01}
                     />
                 </div>

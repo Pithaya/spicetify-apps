@@ -58,9 +58,19 @@ export type LocalTrack = {
     is19PlusOnly: boolean;
 };
 
+export const LocalTrackSortOptionFields = [
+    'ALBUM',
+    'TITLE',
+    'ARTIST',
+    'DURATION',
+    'ADDED_AT',
+] as const;
+
+export const LocalTrackSortOptionOrders = ['DESC', 'ASC'] as const;
+
 export type LocalTrackSortOption = {
-    field: 'ALBUM' | 'TITLE' | 'ARTIST' | 'DURATION' | 'ADDED_AT';
-    order: 'DESC' | 'ASC';
+    field: (typeof LocalTrackSortOptionFields)[number];
+    order: (typeof LocalTrackSortOptionOrders)[number];
 };
 
 export type LocalFilesAPI = {
