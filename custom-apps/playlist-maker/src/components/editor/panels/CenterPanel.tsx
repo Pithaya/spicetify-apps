@@ -3,7 +3,6 @@ import useDialogStore from 'custom-apps/playlist-maker/src/stores/dialog-store';
 import useAppStore, {
     type AppState,
 } from 'custom-apps/playlist-maker/src/stores/store';
-import { setValueAsString } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { saveWorkflowToStorage } from 'custom-apps/playlist-maker/src/utils/storage-utils';
 import { BadgePlus, Network, Save } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
@@ -17,7 +16,7 @@ import { WorkflowsModal } from '../../workflows/WorkflowsModal';
 import styles from './CenterPanel.module.scss';
 
 const FormSchema = z.object({
-    workflowName: z.string().nonempty(),
+    workflowName: z.string().nonempty({ message: 'Name cannot be empty' }),
 });
 
 type Form = z.infer<typeof FormSchema>;
@@ -122,9 +121,7 @@ export function CenterPanel(): JSX.Element {
                     <TextInput
                         className={styles['title-input']}
                         placeholder=""
-                        {...register('workflowName', {
-                            setValueAs: setValueAsString,
-                        })}
+                        {...register('workflowName')}
                     />
                     <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">
                         <Spicetify.ReactComponent.ButtonTertiary

@@ -1,18 +1,18 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     LocalTracksDataSchema,
     type LocalTracksData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
-import { Node } from '../shared/Node';
-import { SourceNodeHeader } from '../shared/NodeHeader';
-import { NodeContent } from '../shared/NodeContent';
-import { TextInput } from '../../inputs/TextInput';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { NodeField } from '../shared/NodeField';
-import { NodeTitle } from '../shared/NodeTitle';
-import { setValueAsString } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { setValueAsOptionalString } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
 import { SelectController } from '../../inputs/SelectController';
+import { TextInput } from '../../inputs/TextInput';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { NodeField } from '../shared/NodeField';
+import { SourceNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: LocalTracksData = {
     filter: undefined,
@@ -59,7 +59,7 @@ export function LocalTracksSourceNode(
                     <TextInput
                         placeholder="Search"
                         {...register('filter', {
-                            setValueAs: setValueAsString,
+                            setValueAs: setValueAsOptionalString,
                         })}
                     />
                 </NodeField>

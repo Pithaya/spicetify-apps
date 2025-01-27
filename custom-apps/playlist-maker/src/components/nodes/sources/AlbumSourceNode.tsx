@@ -1,22 +1,19 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { SourceNodeHeader } from '../shared/NodeHeader';
-import { Node } from '../shared/Node';
-import { NodeContent } from '../shared/NodeContent';
-import { TextInput } from '../../inputs/TextInput';
-import { NodeField } from '../shared/NodeField';
-import {
-    setValueAsNumber,
-    setValueAsString,
-} from 'custom-apps/playlist-maker/src/utils/form-utils';
-import { NumberInput } from '../../inputs/NumberInput';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { NodeTitle } from '../shared/NodeTitle';
 import {
     type AlbumData,
     AlbumDataSchema,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { setValueAsOptionalNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import React from 'react';
+import { Handle, type NodeProps, Position } from 'reactflow';
+import { NumberInput } from '../../inputs/NumberInput';
+import { TextInput } from '../../inputs/TextInput';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { NodeField } from '../shared/NodeField';
+import { SourceNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: AlbumData = {
     uri: '',
@@ -43,12 +40,7 @@ export function AlbumSourceNode(
                 <NodeTitle title="Album" />
 
                 <NodeField label="URI" tooltip="Album URI" error={errors.uri}>
-                    <TextInput
-                        placeholder="URI"
-                        {...register('uri', {
-                            setValueAs: setValueAsString,
-                        })}
-                    />
+                    <TextInput placeholder="URI" {...register('uri')} />
                 </NodeField>
 
                 <NodeField
@@ -59,7 +51,7 @@ export function AlbumSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>
@@ -72,7 +64,7 @@ export function AlbumSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>

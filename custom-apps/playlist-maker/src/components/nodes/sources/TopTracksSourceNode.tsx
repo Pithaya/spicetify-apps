@@ -1,18 +1,18 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { SourceNodeHeader } from '../shared/NodeHeader';
-import { Node } from '../shared/Node';
-import { NodeContent } from '../shared/NodeContent';
-import { NodeField } from '../shared/NodeField';
-import { NumberInput } from '../../inputs/NumberInput';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     TopTracksDataSchema,
     type TopTracksData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/top-tracks-source-processor';
-import { NodeTitle } from '../shared/NodeTitle';
-import { setValueAsNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { setValueAsOptionalNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { NumberInput } from '../../inputs/NumberInput';
 import { SelectController } from '../../inputs/SelectController';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { NodeField } from '../shared/NodeField';
+import { SourceNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const defaultValues: TopTracksData = {
     timeRange: 'short_term',
@@ -64,7 +64,7 @@ export function TopTracksSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>
@@ -77,7 +77,7 @@ export function TopTracksSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>

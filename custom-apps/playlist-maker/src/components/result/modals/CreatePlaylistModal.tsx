@@ -5,7 +5,6 @@ import type { Folder, RootlistAPI } from '@shared/platform/rootlist';
 import { getRootlistFolders } from '@shared/utils/rootlist-utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import useAppStore from 'custom-apps/playlist-maker/src/stores/store';
-import { setValueAsString } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -16,7 +15,7 @@ import { TextInput } from '../../inputs/TextInput';
 import styles from './CreatePlaylistModal.module.scss';
 
 const FormSchema = z.object({
-    playlistName: z.string().nonempty(),
+    playlistName: z.string().nonempty({ message: 'Name cannot be empty' }),
     parentFolder: z.string().optional(),
 });
 
@@ -113,9 +112,7 @@ export function CreatePlaylistModal(): JSX.Element {
 
                     <TextInput
                         placeholder={'Playlist name'}
-                        {...register('playlistName', {
-                            setValueAs: setValueAsString,
-                        })}
+                        {...register('playlistName')}
                     />
                 </label>
                 <InputError error={errors.playlistName} />

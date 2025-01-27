@@ -9,8 +9,8 @@ import {
     type PlaylistData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
 import {
-    setValueAsNumber,
-    setValueAsString,
+    setValueAsOptionalNumber,
+    setValueAsOptionalString,
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import React, { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
@@ -148,7 +148,7 @@ export function LibraryPlaylistSourceNode(
                     <TextInput
                         placeholder="Search"
                         {...register('filter', {
-                            setValueAs: setValueAsString,
+                            setValueAs: setValueAsOptionalString,
                         })}
                     />
                 </NodeField>
@@ -161,7 +161,7 @@ export function LibraryPlaylistSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>
@@ -174,7 +174,7 @@ export function LibraryPlaylistSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: setValueAsNumber,
+                            setValueAs: setValueAsOptionalNumber,
                         })}
                     />
                 </NodeField>
