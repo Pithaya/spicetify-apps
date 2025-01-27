@@ -1,40 +1,45 @@
-import { type WorkflowTrack } from '../../track';
-import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import { getAlbum, type GetAlbumData } from '@shared/graphQL/queries/get-album';
 import type { SimpleTrack } from '@shared/components/track-list/models/interfaces';
+import { GRAPHQL_MAX_LIMIT } from '@shared/graphQL/constants';
+import { getAlbum, type GetAlbumData } from '@shared/graphQL/queries/get-album';
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-export type AlbumData = BaseNodeData & {
-    uri?: string;
-    offset?: number;
-    limit?: number;
-    onlyLiked: boolean;
-};
+export const AlbumDataSchema = z
+    .object({
+        uri: z
+            .string()
+            .nonempty({ message: 'Album URI is required' })
+            .refine((value) => Spicetify.URI.isAlbum(value), {
+                message: 'Invalid album URI',
+            }),
+        offset: z.number().nonnegative().int().optional(),
+        limit: z.number().nonnegative().int().max(GRAPHQL_MAX_LIMIT).optional(),
+        onlyLiked: z.boolean(),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type AlbumData = z.infer<typeof AlbumDataSchema>;
 
 /**
  * Source node that returns tracks from an album.
  */
 export class AlbumSourceProcessor extends NodeProcessor<AlbumData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        let { offset, limit, uri, onlyLiked } = this.data;
+        const {
+            offset = 0,
+            limit = GRAPHQL_MAX_LIMIT,
+            uri,
+            onlyLiked,
+        } = this.data;
 
-        if (uri === undefined) {
-            throw new Error('No URI provided for album source.');
-        }
-
-        if (offset === undefined) {
-            offset = 0;
-        }
-
-        if (limit === undefined) {
-            limit = 100;
-        }
-
-        const album: GetAlbumData = await getAlbum(
-            Spicetify.URI.fromString(uri),
+        const album: GetAlbumData = await getAlbum({
+            uri,
             offset,
             limit,
-            Spicetify.Locale.getLocale(),
-        );
+            locale: Spicetify.Locale.getLocale(),
+        });
 
         let tracks = album.albumUnion.tracksV2.items.map((item) => item.track);
 

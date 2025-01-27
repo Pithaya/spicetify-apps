@@ -4,20 +4,21 @@ import { SourceNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
-import { numberValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { NumberInput } from '../../inputs/NumberInput';
-import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { type TopTracksData } from 'custom-apps/playlist-maker/src/models/nodes/sources/top-tracks-source-processor';
-import { Controller } from 'react-hook-form';
-import { Select } from '@shared/components/inputs/Select/Select';
+import {
+    TopTracksDataSchema,
+    type TopTracksData,
+} from 'custom-apps/playlist-maker/src/models/nodes/sources/top-tracks-source-processor';
 import { NodeTitle } from '../shared/NodeTitle';
+import { setValueAsNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { SelectController } from '../../inputs/SelectController';
 
-const defaultValues: LocalNodeData<TopTracksData> = {
+const defaultValues: TopTracksData = {
     timeRange: 'short_term',
     offset: undefined,
     limit: undefined,
+    isExecuting: undefined,
 };
 
 export function TopTracksSourceNode(
@@ -27,6 +28,7 @@ export function TopTracksSourceNode(
         props.id,
         props.data,
         defaultValues,
+        TopTracksDataSchema,
     );
 
     return (
@@ -35,46 +37,22 @@ export function TopTracksSourceNode(
             <NodeContent>
                 <NodeTitle title="Top tracks" />
 
-                <NodeField
-                    label="Time range"
-                    error={
-                        errors.timeRange === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.timeRange.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Time range" error={errors.timeRange}>
+                    <SelectController
+                        label="Select a time range"
                         name="timeRange"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Select a time range"
-                                selectedValue={value ?? null}
-                                items={[
-                                    {
-                                        label: 'Short term',
-                                        value: 'short_term',
-                                    },
-                                    {
-                                        label: 'Medium term',
-                                        value: 'medium_term',
-                                    },
-                                    { label: 'Long term', value: 'long_term' },
-                                ]}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
-                        )}
+                        items={[
+                            {
+                                label: 'Short term',
+                                value: 'short_term',
+                            },
+                            {
+                                label: 'Medium term',
+                                value: 'medium_term',
+                            },
+                            { label: 'Long term', value: 'long_term' },
+                        ]}
                     />
                 </NodeField>
 
@@ -86,14 +64,7 @@ export function TopTracksSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
@@ -106,14 +77,7 @@ export function TopTracksSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>

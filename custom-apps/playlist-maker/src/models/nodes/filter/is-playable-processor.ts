@@ -1,10 +1,16 @@
 import { type WorkflowTrack } from '../../track';
 import { TrackWrapper } from '../../track-wrapper';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { z } from 'zod';
 
-export type IsPlayableData = BaseNodeData & {
-    isPlayable: boolean;
-};
+export const IsPlayableDataSchema = z
+    .object({
+        isPlayable: z.boolean(),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type IsPlayableData = z.infer<typeof IsPlayableDataSchema>;
 
 export class IsPlayableProcessor extends NodeProcessor<IsPlayableData> {
     protected override async getResultsInternal(

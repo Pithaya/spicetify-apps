@@ -1,13 +1,22 @@
-import { type WorkflowTrack } from '../../track';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-export type ValenceData = BaseNodeData & {
-    range: {
-        min: number;
-        max: number;
-    };
-};
+export const MIN_VALENCE = 0;
+export const MAX_VALENCE = 1;
+
+export const ValenceDataSchema = z
+    .object({
+        range: z.object({
+            min: z.number().min(MIN_VALENCE).max(MAX_VALENCE),
+            max: z.number().min(MIN_VALENCE).max(MAX_VALENCE),
+        }),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type ValenceData = z.infer<typeof ValenceDataSchema>;
 
 export class ValenceProcessor extends NodeProcessor<ValenceData> {
     protected override async getResultsInternal(

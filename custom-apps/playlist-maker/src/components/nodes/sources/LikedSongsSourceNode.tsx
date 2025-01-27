@@ -1,29 +1,30 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    LikedSongsDataSchema,
+    type LikedSongsData,
+} from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
+import {
+    setValueAsNumber,
+    setValueAsString,
+} from 'custom-apps/playlist-maker/src/utils/form-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { type LikedSongsData } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
-import { SourceNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { NumberInput } from '../../inputs/NumberInput';
+import { SelectController } from '../../inputs/SelectController';
+import { TextInput } from '../../inputs/TextInput';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { TextInput } from '../../inputs/TextInput';
 import { NodeField } from '../shared/NodeField';
-import {
-    numberValueSetter,
-    stringValueSetter,
-} from 'custom-apps/playlist-maker/src/utils/form-utils';
-import { NumberInput } from '../../inputs/NumberInput';
-import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { Controller } from 'react-hook-form';
-import { Select } from '@shared/components/inputs/Select/Select';
+import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<LikedSongsData> = {
+const defaultValues: LikedSongsData = {
     filter: undefined,
     offset: undefined,
     limit: undefined,
     sortField: 'ADDED_AT',
     sortOrder: 'DESC',
+    isExecuting: undefined,
 };
 
 const propertyValues: Record<LikedSongsData['sortField'], string> = {
@@ -45,6 +46,7 @@ export function LikedSongsSourceNode(
         props.id,
         props.data,
         defaultValues,
+        LikedSongsDataSchema,
     );
 
     return (
@@ -61,7 +63,7 @@ export function LikedSongsSourceNode(
                     <TextInput
                         placeholder="Search"
                         {...register('filter', {
-                            setValueAs: stringValueSetter,
+                            setValueAs: setValueAsString,
                         })}
                     />
                 </NodeField>
@@ -74,14 +76,7 @@ export function LikedSongsSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
@@ -94,90 +89,35 @@ export function LikedSongsSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
 
-                <NodeField
-                    label="Sort by"
-                    error={
-                        errors.sortField === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.sortField.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Sort by" error={errors.sortField}>
+                    <SelectController
                         name="sortField"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Property to sort on"
-                                selectedValue={value ?? null}
-                                items={Object.entries(propertyValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(propertyValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
+                        label="Property to sort on"
                     />
                 </NodeField>
-                <NodeField
-                    label="Order"
-                    error={
-                        errors.sortOrder === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.sortOrder.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Order" error={errors.sortOrder}>
+                    <SelectController
                         name="sortOrder"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Sort order"
-                                selectedValue={value ?? null}
-                                items={Object.entries(orderValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(orderValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
+                        label="Sort order"
                     />
                 </NodeField>
             </NodeContent>

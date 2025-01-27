@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    MAX_VALENCE,
+    MIN_VALENCE,
+    ValenceDataSchema,
+    type ValenceData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { ValenceData } from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<ValenceData> = {
+const defaultValues: ValenceData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_VALENCE,
+        max: MAX_VALENCE,
     },
+    isExecuting: undefined,
 };
 
 export function ValenceNode(
@@ -23,6 +28,7 @@ export function ValenceNode(
         props.id,
         props.data,
         defaultValues,
+        ValenceDataSchema,
     );
 
     return (
@@ -45,8 +51,8 @@ export function ValenceNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_VALENCE}
+                        max={MAX_VALENCE}
                         step={0.01}
                     />
                 </div>

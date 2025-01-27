@@ -1,18 +1,26 @@
-import React, { useCallback, useEffect } from 'react';
-import styles from './CenterPanel.module.scss';
-import { Panel } from 'reactflow';
-import { TextInput } from '../../inputs/TextInput';
+import { zodResolver } from '@hookform/resolvers/zod';
+import useDialogStore from 'custom-apps/playlist-maker/src/stores/dialog-store';
 import useAppStore, {
     type AppState,
 } from 'custom-apps/playlist-maker/src/stores/store';
-import { useShallow } from 'zustand/react/shallow';
-import { WorkflowsModal } from '../../workflows/WorkflowsModal';
-import { BadgePlus, Network, Save } from 'lucide-react';
+import { setValueAsString } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { saveWorkflowToStorage } from 'custom-apps/playlist-maker/src/utils/storage-utils';
-import useDialogStore from 'custom-apps/playlist-maker/src/stores/dialog-store';
-import { InputError } from '../../inputs/InputError';
+import { BadgePlus, Network, Save } from 'lucide-react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { Panel } from 'reactflow';
+import { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
+import { InputError } from '../../inputs/InputError';
+import { TextInput } from '../../inputs/TextInput';
+import { WorkflowsModal } from '../../workflows/WorkflowsModal';
+import styles from './CenterPanel.module.scss';
+
+const FormSchema = z.object({
+    workflowName: z.string().nonempty(),
+});
+
+type Form = z.infer<typeof FormSchema>;
 
 export function CenterPanel(): JSX.Element {
     const {
@@ -53,12 +61,13 @@ export function CenterPanel(): JSX.Element {
         control,
         getValues,
         setValue,
-    } = useForm<{ workflowName: string | undefined }>({
+    } = useForm<Form>({
         mode: 'onChange',
         disabled: anyExecuting,
         defaultValues: {
             workflowName,
         },
+        resolver: zodResolver(FormSchema),
     });
 
     const formValues = useWatch({ control });
@@ -114,8 +123,7 @@ export function CenterPanel(): JSX.Element {
                         className={styles['title-input']}
                         placeholder=""
                         {...register('workflowName', {
-                            required: true,
-                            setValueAs: stringValueSetter,
+                            setValueAs: setValueAsString,
                         })}
                     />
                     <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">

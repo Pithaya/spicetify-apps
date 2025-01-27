@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    InstrumentalnessDataSchema,
+    MAX_INSTRUMENTALNESS,
+    MIN_INSTRUMENTALNESS,
+    type InstrumentalnessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { InstrumentalnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<InstrumentalnessData> = {
+const defaultValues: InstrumentalnessData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_INSTRUMENTALNESS,
+        max: MAX_INSTRUMENTALNESS,
     },
+    isExecuting: undefined,
 };
 
 export function InstrumentalnessNode(
@@ -23,6 +28,7 @@ export function InstrumentalnessNode(
         props.id,
         props.data,
         defaultValues,
+        InstrumentalnessDataSchema,
     );
 
     return (
@@ -45,8 +51,8 @@ export function InstrumentalnessNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_INSTRUMENTALNESS}
+                        max={MAX_INSTRUMENTALNESS}
                         step={0.01}
                     />
                 </div>

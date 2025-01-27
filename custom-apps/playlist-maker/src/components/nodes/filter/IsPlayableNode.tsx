@@ -1,16 +1,19 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    IsPlayableDataSchema,
+    type IsPlayableData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { type IsPlayableData } from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<IsPlayableData> = {
+const defaultValues: IsPlayableData = {
     isPlayable: true,
+    isExecuting: undefined,
 };
 
 export function IsPlayableNode(
@@ -20,6 +23,7 @@ export function IsPlayableNode(
         props.id,
         props.data,
         defaultValues,
+        IsPlayableDataSchema,
     );
 
     return (

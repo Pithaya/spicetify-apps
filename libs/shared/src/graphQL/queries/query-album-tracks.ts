@@ -1,4 +1,5 @@
-import { throwIfNotOfType } from '@shared/utils/validation-utils';
+import { z } from 'zod';
+import { GRAPHQL_MAX_LIMIT } from '../constants';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 type Profile = {
@@ -64,25 +65,33 @@ export type QueryAlbumTracksData = {
     albumUnion: AlbumUnion;
 };
 
+const ParamsSchema = z
+    .object({
+        uri: z
+            .string()
+            .nonempty()
+            .refine((value) => Spicetify.URI.isAlbum(value), {
+                message: 'Invalid album URI',
+            }),
+        offset: z.number().nonnegative().int(),
+        limit: z.number().nonnegative().int().max(GRAPHQL_MAX_LIMIT),
+    })
+    .strict()
+    .readonly();
+
+export type Params = z.infer<typeof ParamsSchema>;
+
 /**
  * Get the tracks of an album.
- * @param uri The URI of the album.
- * @param offset The offset for the album tracks.
- * @param limit The limit for the album tracks.
+ * @param params The query params.
  * @returns The data for the album.
  */
 export async function queryAlbumTracks(
-    uri: Spicetify.URI,
-    offset: number,
-    limit: number,
+    params: Params,
 ): Promise<QueryAlbumTracksData> {
-    throwIfNotOfType(uri, Spicetify.URI.Type.ALBUM);
+    ParamsSchema.parse(params);
 
     const { queryAlbumTracks } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(queryAlbumTracks, {
-        uri: uri.toString(),
-        offset,
-        limit,
-    });
+    return await sendGraphQLQuery(queryAlbumTracks, params);
 }

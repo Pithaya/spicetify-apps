@@ -6,22 +6,24 @@ import { NodeContent } from '../shared/NodeContent';
 import { TextInput } from '../../inputs/TextInput';
 import { NodeField } from '../shared/NodeField';
 import {
-    numberValueSetter,
-    stringValueSetter,
+    setValueAsNumber,
+    setValueAsString,
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { NumberInput } from '../../inputs/NumberInput';
-import { wholeNumber } from 'custom-apps/playlist-maker/src/utils/validation-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { NodeTitle } from '../shared/NodeTitle';
-import { type AlbumData } from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
+import {
+    type AlbumData,
+    AlbumDataSchema,
+} from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
-const defaultValues: LocalNodeData<AlbumData> = {
-    uri: undefined,
+const defaultValues: AlbumData = {
+    uri: '',
     limit: undefined,
     offset: undefined,
     onlyLiked: false,
+    isExecuting: undefined,
 };
 
 export function AlbumSourceNode(
@@ -31,6 +33,7 @@ export function AlbumSourceNode(
         props.id,
         props.data,
         defaultValues,
+        AlbumDataSchema,
     );
 
     return (
@@ -43,8 +46,7 @@ export function AlbumSourceNode(
                     <TextInput
                         placeholder="URI"
                         {...register('uri', {
-                            setValueAs: stringValueSetter,
-                            required: 'This field is required',
+                            setValueAs: setValueAsString,
                         })}
                     />
                 </NodeField>
@@ -57,14 +59,7 @@ export function AlbumSourceNode(
                     <NumberInput
                         placeholder="0"
                         {...register('offset', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>
@@ -77,14 +72,7 @@ export function AlbumSourceNode(
                     <NumberInput
                         placeholder="None"
                         {...register('limit', {
-                            setValueAs: numberValueSetter,
-                            min: {
-                                value: 0,
-                                message: 'The value must be greater than 0',
-                            },
-                            validate: {
-                                whole: wholeNumber,
-                            },
+                            setValueAs: setValueAsNumber,
                         })}
                     />
                 </NodeField>

@@ -1,24 +1,29 @@
-import React, { useCallback, useEffect } from 'react';
-import styles from './CreatePlaylistModal.module.scss';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import useAppStore from 'custom-apps/playlist-maker/src/stores/store';
-import { useForm } from 'react-hook-form';
-import { useShallow } from 'zustand/react/shallow';
-import { InputError } from '../../inputs/InputError';
-import { TextInput } from '../../inputs/TextInput';
-import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { type PlaylistAPI } from '@shared/platform/playlist';
 import type { Folder, RootlistAPI } from '@shared/platform/rootlist';
 import { getRootlistFolders } from '@shared/utils/rootlist-utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { type PlaylistAPI } from '@shared/platform/playlist';
+import useAppStore from 'custom-apps/playlist-maker/src/stores/store';
+import { setValueAsString } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import React, { useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
+import { InputError } from '../../inputs/InputError';
+import { SelectController } from '../../inputs/SelectController';
+import { TextInput } from '../../inputs/TextInput';
+import styles from './CreatePlaylistModal.module.scss';
 
-type Form = {
-    playlistName: string | undefined;
-    parentFolder: string | undefined;
-};
+const FormSchema = z.object({
+    playlistName: z.string().nonempty(),
+    parentFolder: z.string().optional(),
+});
+
+type Form = z.infer<typeof FormSchema>;
 
 const defaultValues: Form = {
-    playlistName: undefined,
+    playlistName: 'My playlist',
     parentFolder: undefined,
 };
 
@@ -39,12 +44,14 @@ export function CreatePlaylistModal(): JSX.Element {
         register,
         formState: { errors, isValid },
         getValues,
+        control,
     } = useForm<Form>({
         mode: 'onChange',
         defaultValues: {
             ...defaultValues,
             playlistName: workflowName,
         },
+        resolver: zodResolver(FormSchema),
     });
 
     const createPlaylist = useCallback(async () => {
@@ -107,8 +114,7 @@ export function CreatePlaylistModal(): JSX.Element {
                     <TextInput
                         placeholder={'Playlist name'}
                         {...register('playlistName', {
-                            setValueAs: stringValueSetter,
-                            required: true,
+                            setValueAs: setValueAsString,
                         })}
                     />
                 </label>
@@ -119,20 +125,15 @@ export function CreatePlaylistModal(): JSX.Element {
                         Parent folder
                     </TextComponent>
 
-                    <select
-                        className="main-dropDown-dropDown"
-                        style={{ width: '100%' }}
-                        {...register('parentFolder', {
-                            setValueAs: stringValueSetter,
-                        })}
-                    >
-                        <option value="">Root</option>
-                        {folders.map((f) => (
-                            <option key={f.uri} value={f.uri}>
-                                {f.name}
-                            </option>
-                        ))}
-                    </select>
+                    <SelectController
+                        label="Root"
+                        name="parentFolder"
+                        control={control}
+                        items={folders.map((f) => ({
+                            label: f.name,
+                            value: f.uri,
+                        }))}
+                    />
                 </label>
 
                 <div className={styles['button-wrapper']}>

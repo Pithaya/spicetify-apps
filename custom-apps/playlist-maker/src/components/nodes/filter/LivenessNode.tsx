@@ -1,19 +1,24 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    LivenessDataSchema,
+    MAX_LIVENESS,
+    MIN_LIVENESS,
+    type LivenessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { LivenessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
+import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LocalNodeData<LivenessData> = {
+const defaultValues: LivenessData = {
     range: {
-        min: 0,
-        max: 1,
+        min: MIN_LIVENESS,
+        max: MAX_LIVENESS,
     },
+    isExecuting: undefined,
 };
 
 export function LivenessNode(
@@ -23,6 +28,7 @@ export function LivenessNode(
         props.id,
         props.data,
         defaultValues,
+        LivenessDataSchema,
     );
 
     return (
@@ -45,8 +51,8 @@ export function LivenessNode(
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_LIVENESS}
+                        max={MAX_LIVENESS}
                         step={0.01}
                     />
                 </div>

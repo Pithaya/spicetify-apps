@@ -4,15 +4,18 @@ import { FilterNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import { NodeTitle } from '../shared/NodeTitle';
-import type { ModeData } from 'custom-apps/playlist-maker/src/models/nodes/filter/mode-processor';
+import {
+    ModeDataSchema,
+    type ModeData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/mode-processor';
 import { NodeField } from '../shared/NodeField';
-import { Controller } from 'react-hook-form';
-import { type Item, Select } from '@shared/components/inputs/Select/Select';
+import { type Item } from '@shared/components/inputs/Select/Select';
+import { SelectController } from '../../inputs/SelectController';
 
-const defaultValues: LocalNodeData<ModeData> = {
+const defaultValues: ModeData = {
     mode: '1',
+    isExecuting: undefined,
 };
 
 const modes: Item[] = [
@@ -25,6 +28,7 @@ export function ModeNode(props: Readonly<NodeProps<ModeData>>): JSX.Element {
         props.id,
         props.data,
         defaultValues,
+        ModeDataSchema,
     );
 
     return (
@@ -33,37 +37,12 @@ export function ModeNode(props: Readonly<NodeProps<ModeData>>): JSX.Element {
             <NodeContent>
                 <NodeTitle title="Mode" />
 
-                <NodeField
-                    label="Mode"
-                    error={
-                        errors.mode === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.mode.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Mode" error={errors.mode}>
+                    <SelectController
+                        label="Mode"
                         name="mode"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Mode"
-                                selectedValue={value ?? null}
-                                items={modes}
-                                onItemClicked={(item) => {
-                                    console.log(item);
-                                    onChange(item.value);
-                                }}
-                            />
-                        )}
+                        items={modes}
                     />
                 </NodeField>
             </NodeContent>

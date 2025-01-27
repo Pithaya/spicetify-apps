@@ -1,5 +1,6 @@
-import { useShallow } from 'zustand/react/shallow';
-import useAppStore from '../stores/store';
+import { zodResolver } from '@hookform/resolvers/zod';
+import deepEqual from 'deep-equal';
+import { useEffect } from 'react';
 import {
     type Control,
     type DefaultValues,
@@ -11,23 +12,21 @@ import {
     useForm,
     useWatch,
 } from 'react-hook-form';
-import { useEffect } from 'react';
-import {
-    type LocalNodeData,
-    type BaseNodeData,
-} from '../models/nodes/node-processor';
-import deepEqual from 'deep-equal';
+import type { z } from 'zod';
+import { useShallow } from 'zustand/react/shallow';
+import useAppStore from '../stores/store';
 
-export function useNodeForm<TNodeData extends BaseNodeData & FieldValues>(
+export function useNodeForm<TForm extends FieldValues>(
     nodeId: string,
-    nodeData: TNodeData,
-    defaultValues: DefaultValues<LocalNodeData<TNodeData>>,
+    nodeData: TForm,
+    defaultValues: DefaultValues<TForm>,
+    schema: z.Schema<any, any>,
 ): {
-    register: UseFormRegister<LocalNodeData<TNodeData>>;
-    errors: FieldErrors<LocalNodeData<TNodeData>>;
-    setValue: UseFormSetValue<LocalNodeData<TNodeData>>;
-    getValues: UseFormGetValues<LocalNodeData<TNodeData>>;
-    control: Control<LocalNodeData<TNodeData>, any>;
+    register: UseFormRegister<TForm>;
+    errors: FieldErrors<TForm>;
+    setValue: UseFormSetValue<TForm>;
+    getValues: UseFormGetValues<TForm>;
+    control: Control<TForm, any>;
 } {
     const {
         updateNodeData,
@@ -53,19 +52,20 @@ export function useNodeForm<TNodeData extends BaseNodeData & FieldValues>(
         reset,
         getValues,
         setValue,
-    } = useForm<LocalNodeData<TNodeData>>({
+    } = useForm<TForm>({
         mode: 'onChange',
         disabled: anyExecuting,
         defaultValues: {
             ...defaultValues,
             ...nodeData,
         },
+        resolver: zodResolver(schema),
     });
 
     const formValues = useWatch({ control });
 
     useEffect(() => {
-        updateNodeData<LocalNodeData<TNodeData>>(nodeId, formValues);
+        updateNodeData<TForm>(nodeId, formValues);
     }, [nodeId, updateNodeData, formValues]);
 
     useEffect(() => {

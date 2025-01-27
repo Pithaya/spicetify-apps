@@ -1,14 +1,18 @@
+import { z } from 'zod';
 import useAppStore from '../../stores/store';
 import type { WorkflowTrack } from '../track';
 
-export type BaseNodeData = {
-    isExecuting: boolean;
-};
+export const BaseNodeDataSchema = z
+    .object({
+        /**
+         * Whether the node is currently executing.
+         * Typed as true | undefined instead of boolean to avoid it being persisted as "false" when saving a workflow.
+         */
+        isExecuting: z.literal(true).optional(),
+    })
+    .strict();
 
-export type LocalNodeData<TNodeData extends BaseNodeData> = Omit<
-    TNodeData,
-    'isExecuting'
->;
+export type BaseNodeData = z.infer<typeof BaseNodeDataSchema>;
 
 export abstract class NodeProcessor<T extends BaseNodeData> {
     private readonly updateNodeData = useAppStore.getState().updateNodeData;
@@ -36,7 +40,7 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
             this.resultCache = await this.getResultsInternal(input);
         }
 
-        this.setExecuting(false);
+        this.setExecuting(undefined);
 
         return this.resultCache;
     }
@@ -63,7 +67,7 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
         return inputs;
     }
 
-    private setExecuting(isExecuting: boolean): void {
+    private setExecuting(isExecuting: true | undefined): void {
         this.updateNodeData<BaseNodeData>(this.currentNodeId, {
             isExecuting,
         });

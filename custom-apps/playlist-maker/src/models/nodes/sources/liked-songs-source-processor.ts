@@ -1,18 +1,31 @@
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type WorkflowTrack } from '../../track';
-import { NodeProcessor, type BaseNodeData } from '../node-processor';
-import type {
-    LibraryAPI,
-    LibraryAPITrackSortOption,
+import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
+import {
+    LibraryAPITrackSortOptionFields,
+    LibraryAPITrackSortOptionOrders,
+    type LibraryAPI,
 } from '@shared/platform/library';
+import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-export type LikedSongsData = BaseNodeData & {
-    offset?: number;
-    limit?: number;
-    filter?: string;
-    sortField: LibraryAPITrackSortOption['field'];
-    sortOrder: LibraryAPITrackSortOption['order'];
-};
+export const LikedSongsDataSchema = z
+    .object({
+        offset: z.number().nonnegative().int().optional(),
+        limit: z
+            .number()
+            .nonnegative()
+            .int()
+            .max(PLATFORM_API_MAX_LIMIT)
+            .optional(),
+        filter: z.string().optional(),
+        sortField: z.enum(LibraryAPITrackSortOptionFields),
+        sortOrder: z.enum(LibraryAPITrackSortOptionOrders),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type LikedSongsData = z.infer<typeof LikedSongsDataSchema>;
 
 /**
  * Source node that returns liked songs.

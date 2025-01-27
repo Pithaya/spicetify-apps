@@ -1,0 +1,1 @@
+export const PLATFORM_API_MAX_LIMIT = 50000;
