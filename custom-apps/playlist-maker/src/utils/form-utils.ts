@@ -5,7 +5,7 @@
  * @param value The input value.
  * @returns A string, or undefined.
  */
-export function setValueAsString(
+export function setValueAsOptionalString(
     value: string | null | undefined,
 ): string | undefined {
     if (!value) {
@@ -22,7 +22,7 @@ export function setValueAsString(
  * @param value The input value.
  * @returns A number, or undefined.
  */
-export function setValueAsNumber(
+export function setValueAsOptionalNumber(
     value: string | null | undefined,
 ): number | undefined {
     if (!value) {
