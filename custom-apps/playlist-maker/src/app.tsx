@@ -5,16 +5,17 @@ import { CHANGE_NOTES } from './change-notes';
 
 // Can't use `import 'reactflow/dist/style.css';` because of postcss2 issue
 import '../../../node_modules/reactflow/dist/style.css';
-import './css/reactflow.scss';
 import './css/overrides.scss';
+import './css/reactflow.scss';
+import './css/tailwind.css';
 
-import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { History } from '@shared/platform/history';
 import type { TopBarItem } from '@shared/components/top-bar/top-bar-item';
-import { EDITOR_ROUTE, RESULT_ROUTE } from './constants';
+import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
+import type { History } from '@shared/platform/history';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { EditorPage } from './components/editor/EditorPage';
 import { ResultPage } from './components/result/ResultPage';
+import { EDITOR_ROUTE, RESULT_ROUTE } from './constants';
 
 export const topBarItems: TopBarItem[] = [
     {

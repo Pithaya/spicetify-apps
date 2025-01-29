@@ -1,10 +1,9 @@
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import React, {
-    type PropsWithChildren,
     type DragEvent,
     type KeyboardEvent,
+    type PropsWithChildren,
 } from 'react';
-import styles from './Sidebar.module.scss';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { type CustomNodeType } from '../../models/nodes/node-types';
 import { useAppStore } from '../../stores/store';
 
@@ -43,8 +42,9 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                             onNodeSelected(props.nodeType);
                         }
                     }}
+                    className="bg-transparent border-none !py-1 w-full cursor-grab text-start hover:bg-spice-highlight"
                 >
-                    <TextComponent elementType="span">
+                    <TextComponent elementType="span" fontSize="medium">
                         {props.label}
                     </TextComponent>
                 </button>
@@ -57,175 +57,192 @@ function SidenavCollapsible(
     props: Readonly<PropsWithChildren<{ label: string }>>,
 ): JSX.Element {
     return (
-        <details style={{ marginTop: '0.5rem' }}>
+        <details>
             <summary>
                 <TextComponent
                     elementType="h2"
                     weight="bold"
                     fontSize="large"
-                    style={{ marginTop: '1rem', display: 'inline' }}
+                    className="inline"
                 >
                     {props.label}
                 </TextComponent>
             </summary>
-            {props.children}
+            <div className="!mt-2">{props.children}</div>
         </details>
+    );
+}
+
+function SidebarTitle(props: Readonly<{ label: string }>): JSX.Element {
+    return (
+        <>
+            <TextComponent elementType="h1" fontSize="x-large">
+                {props.label}
+            </TextComponent>
+            <hr className="divide-solid opacity-60" />
+        </>
     );
 }
 
 export function Sidenav(): JSX.Element {
     return (
-        <div className={styles['sidebar']}>
-            <TextComponent elementType="h1">Sources</TextComponent>
-            <hr />
+        <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
+                <SidebarTitle label="Sources" />
 
-            <SidenavCollapsible label="Library">
+                <SidenavCollapsible label="Library">
+                    <ul>
+                        <SidenavItem
+                            label="Liked songs"
+                            nodeType="likedSongsSource"
+                            tooltip="Get tracks from your liked songs."
+                        />
+                        <SidenavItem
+                            label="Local files"
+                            nodeType="localTracksSource"
+                            tooltip="Get tracks from your local files."
+                        />
+                        <SidenavItem
+                            label="Top tracks"
+                            nodeType="topTracksSource"
+                            tooltip="Get tracks from your top tracks."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Playlists">
+                    <ul>
+                        <SidenavItem
+                            label="Library playlist"
+                            nodeType="libraryPlaylistSource"
+                            tooltip="Get tracks from a playlist in your library."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Albums">
+                    <ul>
+                        <SidenavItem
+                            label="Album"
+                            nodeType="albumSource"
+                            tooltip="Get tracks from an album."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <SidebarTitle label="Filters" />
+
+                <SidenavCollapsible label="Genres">
+                    <ul>
+                        <SidenavItem
+                            label="Genre"
+                            nodeType="genre"
+                            tooltip="Filter tracks by genre."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Track property">
+                    <ul>
+                        <SidenavItem
+                            label="Is playable"
+                            nodeType="isPlayable"
+                            tooltip="Filter tracks that are playable."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Audio features">
+                    <ul>
+                        <SidenavItem
+                            label="Acousticness"
+                            nodeType="acousticness"
+                            tooltip="Filter tracks by acousticness."
+                        />
+                        <SidenavItem
+                            label="Danceability"
+                            nodeType="danceability"
+                            tooltip="Filter tracks by danceability."
+                        />
+                        <SidenavItem
+                            label="Energy"
+                            nodeType="energy"
+                            tooltip="Filter tracks by energy."
+                        />
+                        <SidenavItem
+                            label="Instrumentalness"
+                            nodeType="instrumentalness"
+                            tooltip="Filter tracks by instrumentalness."
+                        />
+                        <SidenavItem
+                            label="Liveness"
+                            nodeType="liveness"
+                            tooltip="Filter tracks by liveness."
+                        />
+                        <SidenavItem
+                            label="Speechiness"
+                            nodeType="speechiness"
+                            tooltip="Filter tracks by speechiness."
+                        />
+                        <SidenavItem
+                            label="Valence"
+                            nodeType="valence"
+                            tooltip="Filter tracks by valence."
+                        />
+                        <SidenavItem
+                            label="Loudness"
+                            nodeType="loudness"
+                            tooltip="Filter tracks by loudness."
+                        />
+                        <SidenavItem
+                            label="Tempo"
+                            nodeType="tempo"
+                            tooltip="Filter tracks by tempo."
+                        />
+                        <SidenavItem
+                            label="Mode"
+                            nodeType="mode"
+                            tooltip="Filter tracks by mode."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <SidebarTitle label="Processing" />
+
                 <ul>
                     <SidenavItem
-                        label="Liked songs"
-                        nodeType="likedSongsSource"
-                        tooltip="Get tracks from your liked songs."
+                        label="Deduplicate"
+                        nodeType="deduplicate"
+                        tooltip="Remove duplicate tracks."
                     />
                     <SidenavItem
-                        label="Local files"
-                        nodeType="localTracksSource"
-                        tooltip="Get tracks from your local files."
+                        label="Shuffle"
+                        nodeType="shuffle"
+                        tooltip="Shuffle the tracks."
                     />
                     <SidenavItem
-                        label="Top tracks"
-                        nodeType="topTracksSource"
-                        tooltip="Get tracks from your top tracks."
+                        label="Sort"
+                        nodeType="sort"
+                        tooltip="Sort the tracks."
                     />
                 </ul>
-            </SidenavCollapsible>
+            </div>
 
-            <SidenavCollapsible label="Playlists">
+            <div className="flex flex-col gap-2">
+                <SidebarTitle label="Result" />
+
                 <ul>
                     <SidenavItem
-                        label="Library playlist"
-                        nodeType="libraryPlaylistSource"
-                        tooltip="Get tracks from a playlist in your library."
+                        label="Result"
+                        nodeType="result"
+                        tooltip="The workflow result."
                     />
                 </ul>
-            </SidenavCollapsible>
-
-            <SidenavCollapsible label="Albums">
-                <ul>
-                    <SidenavItem
-                        label="Album"
-                        nodeType="albumSource"
-                        tooltip="Get tracks from an album."
-                    />
-                </ul>
-            </SidenavCollapsible>
-
-            <TextComponent elementType="h1">Filters</TextComponent>
-            <hr />
-
-            <SidenavCollapsible label="Genres">
-                <ul>
-                    <SidenavItem
-                        label="Genre"
-                        nodeType="genre"
-                        tooltip="Filter tracks by genre."
-                    />
-                </ul>
-            </SidenavCollapsible>
-
-            <SidenavCollapsible label="Track property">
-                <ul>
-                    <SidenavItem
-                        label="Is playable"
-                        nodeType="isPlayable"
-                        tooltip="Filter tracks that are playable."
-                    />
-                </ul>
-            </SidenavCollapsible>
-
-            <SidenavCollapsible label="Audio features">
-                <ul>
-                    <SidenavItem
-                        label="Acousticness"
-                        nodeType="acousticness"
-                        tooltip="Filter tracks by acousticness."
-                    />
-                    <SidenavItem
-                        label="Danceability"
-                        nodeType="danceability"
-                        tooltip="Filter tracks by danceability."
-                    />
-                    <SidenavItem
-                        label="Energy"
-                        nodeType="energy"
-                        tooltip="Filter tracks by energy."
-                    />
-                    <SidenavItem
-                        label="Instrumentalness"
-                        nodeType="instrumentalness"
-                        tooltip="Filter tracks by instrumentalness."
-                    />
-                    <SidenavItem
-                        label="Liveness"
-                        nodeType="liveness"
-                        tooltip="Filter tracks by liveness."
-                    />
-                    <SidenavItem
-                        label="Speechiness"
-                        nodeType="speechiness"
-                        tooltip="Filter tracks by speechiness."
-                    />
-                    <SidenavItem
-                        label="Valence"
-                        nodeType="valence"
-                        tooltip="Filter tracks by valence."
-                    />
-                    <SidenavItem
-                        label="Loudness"
-                        nodeType="loudness"
-                        tooltip="Filter tracks by loudness."
-                    />
-                    <SidenavItem
-                        label="Tempo"
-                        nodeType="tempo"
-                        tooltip="Filter tracks by tempo."
-                    />
-                    <SidenavItem
-                        label="Mode"
-                        nodeType="mode"
-                        tooltip="Filter tracks by mode."
-                    />
-                </ul>
-            </SidenavCollapsible>
-
-            <TextComponent elementType="h1">Processing</TextComponent>
-            <hr />
-            <ul>
-                <SidenavItem
-                    label="Deduplicate"
-                    nodeType="deduplicate"
-                    tooltip="Remove duplicate tracks."
-                />
-                <SidenavItem
-                    label="Shuffle"
-                    nodeType="shuffle"
-                    tooltip="Shuffle the tracks."
-                />
-                <SidenavItem
-                    label="Sort"
-                    nodeType="sort"
-                    tooltip="Sort the tracks."
-                />
-            </ul>
-
-            <TextComponent elementType="h1">Result</TextComponent>
-            <hr />
-            <ul>
-                <SidenavItem
-                    label="Result"
-                    nodeType="result"
-                    tooltip="The workflow result."
-                />
-            </ul>
+            </div>
         </div>
     );
 }

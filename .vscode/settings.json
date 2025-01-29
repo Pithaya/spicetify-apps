@@ -9,5 +9,15 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
         "source.addMissingImports.ts": "explicit"
+    },
+    "editor.quickSuggestions": {
+        "strings": "on"
+    },
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "tailwindCSS.includeLanguages": {
+        "javascript": "javascript",
+        "html": "HTML"
     }
 }

@@ -4,18 +4,20 @@
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
-        "build": "spicetify-creator",
+        "build": "npm run generate-css && spicetify-creator",
         "build-local": "spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps playlist-maker && spicetify apply",
         "unapply": "spicetify config custom_apps playlist-maker- && spicetify apply",
         "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
-        "format": "npx prettier --write src/"
+        "format": "npx prettier --write src/",
+        "generate-css": "npx @tailwindcss/cli -i ./src/css/app.module.scss -o ./src/css/tailwind.css --minify"
     },
     "license": "MIT",
     "devDependencies": {
         "@hookform/resolvers": "^3.10.0",
+        "@tailwindcss/cli": "^4.0.0",
         "@types/deep-equal": "^1.0.4",
         "@types/jsdom": "^21.1.7",
         "deep-equal": "^2.2.3",
@@ -25,6 +27,7 @@
         "react-range": "^1.10.0",
         "reactflow": "^11.11.3",
         "spcr-whats-new": "^1.0.1",
+        "tailwindcss": "^4.0.0",
         "uuid": "^10.0.0",
         "zod": "^3.24.1",
         "zustand": "^4.5.2"
