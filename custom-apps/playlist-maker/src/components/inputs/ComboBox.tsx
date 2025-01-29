@@ -1,6 +1,7 @@
 import { useCombobox } from 'downshift';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 type Item = {
     id: string;
@@ -43,6 +44,17 @@ function getBooksFilter(inputValue: string): (book: Item) => boolean {
 
 export function Combobox(): JSX.Element {
     const [items, setItems] = React.useState(books);
+    const [selectedItem, setSelectedItem] = React.useState<Item | null>(null);
+    const [debouncedInput, setDebouncedInput] = React.useState<string>('');
+
+    const debouncedInputCallback = useDebouncedCallback((value) => {
+        setDebouncedInput(value);
+    }, 200);
+
+    useEffect(() => {
+        setItems(books.filter(getBooksFilter(debouncedInput)));
+    }, [debouncedInput]);
+
     const {
         isOpen,
         getToggleButtonProps,
@@ -51,14 +63,17 @@ export function Combobox(): JSX.Element {
         getInputProps,
         highlightedIndex,
         getItemProps,
-        selectedItem,
     } = useCombobox({
         onInputValueChange({ inputValue }) {
-            setItems(books.filter(getBooksFilter(inputValue)));
+            debouncedInputCallback(inputValue);
         },
         items,
         itemToString(item) {
             return item ? item.title : '';
+        },
+        selectedItem,
+        onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
+            setSelectedItem(newSelectedItem);
         },
     });
 
