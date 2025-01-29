@@ -6,6 +6,11 @@
     --color-spice-text: var(--spice-text);
     --color-spice-sidebar: var(--spice-sidebar);
     --color-spice-main: var(--spice-main);
+    --color-spice-tab-active: var(--spice-tab-active);
+    --color-spice-highlight-elevated: var(--spice-highlight-elevated);
+    --color-spice-highlight-elevated-hover: hsl(
+        from rgb(var(--spice-rgb-highlight-elevated)) h s calc(l + 12)
+    );
 }
 
 @utility gap-panel {
