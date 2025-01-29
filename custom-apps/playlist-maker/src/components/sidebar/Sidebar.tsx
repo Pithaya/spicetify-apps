@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { type CustomNodeType } from '../../models/nodes/node-types';
 import { useAppStore } from '../../stores/store';
+import { Combobox } from '../inputs/ComboBox';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;
@@ -88,6 +89,18 @@ export function Sidenav(): JSX.Element {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mx-1.5">
+                    <Combobox />
+
+                    <select className="main-dropDown-dropDown">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" disabled>
+                            3
+                        </option>
+                    </select>
+                </div>
+
                 <SidebarTitle label="Sources" />
 
                 <SidenavCollapsible label="Library">

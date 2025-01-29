@@ -1,14 +1,16 @@
-import React, { type PropsWithChildren } from 'react';
-import styles from './NodeField.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import React, { type PropsWithChildren } from 'react';
 import { type FieldError } from 'react-hook-form';
 import { InputError } from '../../inputs/InputError';
+import styles from './NodeField.module.scss';
 
 export type Props = PropsWithChildren<{
     label: string;
     tooltip?: string;
     error: FieldError | undefined;
 }>;
+
+// TODO: Add nodrag on node field & remove from input components
 
 export function NodeField(props: Readonly<Props>): JSX.Element {
     const label = (
