@@ -71,10 +71,17 @@ export function ResultPage(): JSX.Element {
     };
 
     return (
-        <div className={styles['container']}>
-            <div className={styles['grid-container']}>
-                <div className={styles['padding']} />
-                <div className={styles['main']}>
+        <div className="app-container">
+            <div
+                className={Spicetify.classnames(
+                    styles['grid-container'],
+                    'gap-panel h-full w-full',
+                )}
+            >
+                <div
+                    className={Spicetify.classnames(styles['padding'], 'panel')}
+                />
+                <div className={Spicetify.classnames(styles['main'], 'panel')}>
                     <div className="main-actionBar-ActionBar contentSpacing">
                         <div className="main-actionBar-ActionBarRow">
                             <div className="main-playButton-PlayButton">

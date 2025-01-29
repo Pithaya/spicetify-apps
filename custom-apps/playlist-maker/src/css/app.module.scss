@@ -2,4 +2,22 @@
 
 @theme inline {
     --color-spice-highlight: var(--spice-highlight);
+    --color-spice-error: var(--spice-notification-error);
+    --color-spice-text: var(--spice-text);
+    --color-spice-sidebar: var(--spice-sidebar);
+    --color-spice-main: var(--spice-main);
+}
+
+@utility gap-panel {
+    gap: var(--panel-gap);
+}
+
+@layer components {
+    .app-container {
+        @apply absolute left-0 right-0 top-0 bottom-0 bg-spice-sidebar;
+    }
+
+    .panel {
+        @apply bg-spice-main rounded-lg;
+    }
 }
