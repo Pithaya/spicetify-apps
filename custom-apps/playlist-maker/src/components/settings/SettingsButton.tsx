@@ -1,18 +1,23 @@
-import React from 'react';
-import styles from './SettingsButton.module.scss';
 import { Settings } from 'lucide-react';
+import React from 'react';
 import { SettingsModal } from './SettingsModal';
 
 export function SettingsButton(): JSX.Element {
     return (
-        <div className={styles['settings-panel']}>
+        <div className="flex flex-col items-center">
             <Spicetify.ReactComponent.TooltipWrapper
                 label="Settings"
                 placement="right"
             >
                 <Spicetify.ReactComponent.ButtonTertiary
                     aria-label="Settings"
-                    iconOnly={() => <Settings size={20} strokeWidth={1.5} />}
+                    iconOnly={() => (
+                        <Settings
+                            size={20}
+                            strokeWidth={1.5}
+                            className="text-spice-text"
+                        />
+                    )}
                     buttonSize="sm"
                     onClick={() => {
                         Spicetify.PopupModal.display({
@@ -21,7 +26,7 @@ export function SettingsButton(): JSX.Element {
                             isLarge: true,
                         });
                     }}
-                    className={styles['settings-button']}
+                    className="p-1"
                 ></Spicetify.ReactComponent.ButtonTertiary>
             </Spicetify.ReactComponent.TooltipWrapper>
         </div>
