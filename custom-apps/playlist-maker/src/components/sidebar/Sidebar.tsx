@@ -42,7 +42,7 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                             onNodeSelected(props.nodeType);
                         }
                     }}
-                    className="bg-transparent border-none !py-1 w-full cursor-grab text-start hover:bg-spice-highlight"
+                    className="hover:bg-spice-highlight w-full cursor-grab border-none bg-transparent !py-1 text-start"
                 >
                     <TextComponent elementType="span" fontSize="medium">
                         {props.label}

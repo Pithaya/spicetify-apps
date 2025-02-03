@@ -1,28 +1,50 @@
-import useAppStore from '../stores/store';
 import { type Edge, getIncomers, type Node } from 'reactflow';
-import { type CustomNodeType } from '../models/nodes/node-types';
-import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
-import { type NodeProcessor } from '../models/nodes/node-processor';
-import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
-import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
-import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
-import { GenreProcessor } from '../models/nodes/filter/genre-processor';
-import { PlaylistSourceProcessor } from '../models/nodes/sources/my-playlists-source-processor';
-import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
-import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
-import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
-import { SortProcessor } from '../models/nodes/processing/sort-processor';
 import { AcousticnessProcessor } from '../models/nodes/filter/acousticness-processor';
 import { DanceabilityProcessor } from '../models/nodes/filter/danceability-processor';
 import { EnergyProcessor } from '../models/nodes/filter/energy-processor';
+import { GenreProcessor } from '../models/nodes/filter/genre-processor';
 import { InstrumentalnessProcessor } from '../models/nodes/filter/instrumentalness-processor';
+import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
 import { LivenessProcessor } from '../models/nodes/filter/liveness-processor';
 import { LoudnessProcessor } from '../models/nodes/filter/loudness-processor';
-import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
-import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
-import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
 import { ModeProcessor } from '../models/nodes/filter/mode-processor';
+import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
+import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
+import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
+import { type NodeProcessor } from '../models/nodes/node-processor';
+import { type CustomNodeType } from '../models/nodes/node-types';
+import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
+import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
+import { SortProcessor } from '../models/nodes/processing/sort-processor';
+import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
 import { AlbumSourceProcessor } from '../models/nodes/sources/album-source-processor';
+import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
+import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
+import {
+    type PlaylistData,
+    PlaylistSourceProcessor,
+} from '../models/nodes/sources/my-playlists-source-processor';
+import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
+import useAppStore from '../stores/store';
+
+export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
+    if (type === 'libraryPlaylistSource') {
+        const data: PlaylistData = {
+            playlistUri: '',
+            playlistName: '',
+            offset: undefined,
+            filter: undefined,
+            limit: undefined,
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            isExecuting: undefined,
+            onlyMine: false,
+        };
+        return data;
+    }
+
+    return {};
+};
 
 const nodeProcessorFactory: Record<
     CustomNodeType,

@@ -1,22 +1,23 @@
-import { create } from 'zustand';
 import {
+    addEdge,
+    applyEdgeChanges,
+    applyNodeChanges,
     type Connection,
     type Edge,
     type EdgeChange,
     type Node,
     type NodeChange,
-    addEdge,
-    type OnNodesChange,
-    type OnEdgesChange,
     type OnConnect,
-    applyNodeChanges,
-    applyEdgeChanges,
-    type XYPosition,
+    type OnEdgesChange,
+    type OnNodesChange,
     type ReactFlowInstance,
+    type XYPosition,
 } from 'reactflow';
+import { v4 as uuidv4 } from 'uuid';
+import { create } from 'zustand';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { type WorkflowTrack } from '../models/track';
-import { v4 as uuidv4 } from 'uuid';
+import { getDefaultValueForNodeType } from '../utils/node-utils';
 import type { SavedWorkflow } from '../utils/storage-utils';
 
 let id = 0;
@@ -100,14 +101,15 @@ export const useAppStore = create<AppState>((set, get) => ({
             hasPendingChanges: true,
         });
     },
-    addNode: (nodeType: CustomNodeType, position: XYPosition) => {
+    addNode: <T>(nodeType: CustomNodeType, position: XYPosition) => {
         const newNode = {
             id: getId(),
             type: nodeType,
             position,
-            data: {},
+            data: getDefaultValueForNodeType(nodeType) as Partial<T>,
         };
 
+        console.log('adding node', newNode);
         set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });
     },
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => {

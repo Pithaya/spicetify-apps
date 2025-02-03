@@ -1,6 +1,4 @@
-import { useMap } from '@shared/hooks/use-map';
 import type { UserAPI } from '@shared/platform/user';
-import { getEntries } from '@shared/utils/map-utils';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
@@ -12,32 +10,20 @@ import {
     setValueAsOptionalNumber,
     setValueAsOptionalString,
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
-import React, { useEffect } from 'react';
-import { useWatch } from 'react-hook-form';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
+import { Music } from 'lucide-react';
+import React, { useCallback } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
+import { Combobox, type ItemRendererProps } from '../../inputs/ComboBox';
 import { NumberInput } from '../../inputs/NumberInput';
 import { SelectController } from '../../inputs/SelectController';
 import { TextInput } from '../../inputs/TextInput';
 import { Node } from '../shared/Node';
+import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
-
-// TODO: custom select with search field
-// TODO: order playlists by name
-
-const defaultValues: PlaylistData = {
-    playlistUri: '',
-    playlistName: '',
-    offset: undefined,
-    filter: undefined,
-    limit: undefined,
-    sortField: 'NO_SORT',
-    sortOrder: 'ASC',
-    isExecuting: undefined,
-    onlyMine: false,
-};
 
 const propertyValues: Record<PlaylistData['sortField'], string> = {
     ALBUM: 'Album',
@@ -56,67 +42,102 @@ const orderValues: Record<PlaylistData['sortOrder'], string> = {
     DESC: 'Descending',
 };
 
+type PlaylistItem = {
+    id: string;
+    uri: string;
+    name: string;
+    image: string | null;
+    ownerName: string;
+};
+
+function PlaylistItemRenderer(
+    props: Readonly<ItemRendererProps<PlaylistItem>>,
+): JSX.Element {
+    return (
+        <div className="flex max-h-[80px] items-stretch gap-2">
+            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
+                {props.item.image && (
+                    <img
+                        src={props.item.image}
+                        className="rounded-md object-contain"
+                        alt="playlist"
+                    />
+                )}
+                {props.item.image === null && (
+                    <Music size={60} strokeWidth={1} />
+                )}
+            </div>
+
+            <div className="flex min-w-0 flex-col items-stretch justify-center">
+                <span
+                    className={Spicetify.classnames(
+                        'truncate',
+                        props.isSelected ? 'font-bold' : '',
+                    )}
+                >
+                    {props.item.name}
+                </span>
+                <span className="truncate text-sm">
+                    by {props.item.ownerName}
+                </span>
+            </div>
+        </div>
+    );
+}
+
 export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
-    const { register, errors, setValue, getValues, control } =
-        useNodeForm<PlaylistData>(
-            props.id,
-            props.data,
-            defaultValues,
-            PlaylistDataSchema,
-        );
+    const onlyMyPlaylists = props.data.onlyMine;
 
-    const [playlists, setPlaylists] = useMap<string, string>([
-        [props.data.playlistUri, props.data.playlistName],
-    ]);
+    const { register, errors, control } = useNodeForm<PlaylistData>(
+        props.id,
+        props.data,
+        getDefaultValueForNodeType('libraryPlaylistSource'),
+        PlaylistDataSchema,
+    );
 
-    const playlistUri = useWatch({ control, name: 'playlistUri' });
-
-    useEffect(() => {
-        async function getPlaylists(): Promise<void> {
+    const getPlaylists = useCallback(
+        async (input: string): Promise<PlaylistItem[]> => {
+            console.log(
+                'getting playlists with input ',
+                input,
+                onlyMyPlaylists,
+            );
             const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
             const user = await userAPI.getUser();
 
-            let playlists = await getRootlistPlaylists();
+            let playlists = await getRootlistPlaylists(input);
 
-            if (props.data.onlyMine) {
+            playlists = playlists.filter((p) => p.name !== '');
+
+            if (onlyMyPlaylists) {
                 playlists = playlists.filter((p) => p.owner.uri === user.uri);
             }
 
-            setPlaylists(playlists.map((p) => [p.uri, p.name]));
-        }
+            playlists = playlists.toSorted((a, b) =>
+                a.name.localeCompare(b.name),
+            );
 
-        void getPlaylists();
-    }, [props.data.onlyMine, setPlaylists]);
+            console.log('playlists', playlists);
 
-    useEffect(() => {
-        // When the list of playlists changes, check if the selected playlist is still valid
-        const selectedPlaylistUri = getValues('playlistUri');
+            return playlists.map((p) => ({
+                id: p.uri,
+                name: p.name,
+                uri: p.uri,
+                image:
+                    p.images.length > 0
+                        ? (p.images.find((i) => i.label === 'small')?.url ??
+                          p.images[0].url)
+                        : null,
+                ownerName: p.owner.displayName,
+            }));
+        },
+        [onlyMyPlaylists],
+    );
 
-        if (!selectedPlaylistUri) {
-            return;
-        }
-
-        if (!playlists.has(selectedPlaylistUri)) {
-            setValue('playlistUri', '', { shouldValidate: true });
-        }
-    }, [playlists, setValue, getValues]);
-
-    useEffect(() => {
-        // On selected playlist change, update the playlist name
-        if (!playlistUri) {
-            return;
-        }
-
-        if (playlists.has(playlistUri)) {
-            setValue('playlistName', playlists.get(playlistUri)!, {
-                shouldValidate: false,
-            });
-        } else {
-            setValue('playlistName', '', { shouldValidate: false });
-        }
-    }, [playlistUri, playlists, setValue]);
+    // TODO: remove playlistName from data
+    // TODO: remove logs
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -128,17 +149,15 @@ export function LibraryPlaylistSourceNode(
                     <input type="checkbox" {...register('onlyMine')} />
                 </NodeField>
 
-                <NodeField label="Playlist" error={errors.playlistUri}>
-                    <SelectController
-                        label="Select a playlist"
-                        name="playlistUri"
-                        control={control}
-                        items={getEntries(playlists).map((p) => ({
-                            value: p.key,
-                            label: p.value,
-                        }))}
+                <NodeComboField error={errors.onlyMine}>
+                    <Combobox
+                        fetchItems={getPlaylists}
+                        itemRenderer={PlaylistItemRenderer}
+                        itemToString={(item: PlaylistItem) => item.name}
+                        label="Playlist"
+                        placeholder="Search for a playlist"
                     />
-                </NodeField>
+                </NodeComboField>
 
                 <NodeField
                     tooltip="Search filter to apply"

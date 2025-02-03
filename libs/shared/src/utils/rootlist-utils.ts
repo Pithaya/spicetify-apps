@@ -25,14 +25,16 @@ export async function getRootlistFolders(): Promise<Folder[]> {
     return folders;
 }
 
-export async function getRootlistPlaylists(): Promise<Playlist[]> {
+export async function getRootlistPlaylists(
+    filter?: string,
+): Promise<Playlist[]> {
     const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
 
-    const rootlistFolder = await rootlistAPI.getContents();
+    const rootlistFolder = await rootlistAPI.getContents({
+        flatten: true,
+        filter,
+    });
 
-    const flattenItems = (items: (Playlist | Folder)[]): Playlist[] =>
-        items.flatMap((i) => (isPlaylist(i) ? i : [...flattenItems(i.items)]));
-
-    const playlists: Playlist[] = flattenItems(rootlistFolder.items);
+    const playlists: Playlist[] = rootlistFolder.items.filter(isPlaylist);
     return playlists;
 }
