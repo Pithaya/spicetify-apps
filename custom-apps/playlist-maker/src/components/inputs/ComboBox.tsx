@@ -3,48 +3,29 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-type Item = {
+type TItem = {
     id: string;
-    author: string;
-    title: string;
 };
 
-const books: Item[] = [
-    { id: 'book-1', author: 'Harper Lee', title: 'To Kill a Mockingbird' },
-    { id: 'book-2', author: 'Lev Tolstoy', title: 'War and Peace' },
-    { id: 'book-3', author: 'Fyodor Dostoyevsy', title: 'The Idiot' },
-    { id: 'book-4', author: 'Oscar Wilde', title: 'A Picture of Dorian Gray' },
-    { id: 'book-5', author: 'George Orwell', title: '1984' },
-    { id: 'book-6', author: 'Jane Austen', title: 'Pride and Prejudice' },
-    { id: 'book-7', author: 'Marcus Aurelius', title: 'Meditations' },
-    {
-        id: 'book-8',
-        author: 'Fyodor Dostoevsky',
-        title: 'The Brothers Karamazov',
-    },
-    { id: 'book-9', author: 'Lev Tolstoy', title: 'Anna Karenina' },
-    {
-        id: 'book-10',
-        author: 'Fyodor Dostoevsky',
-        title: 'Crime and Punishment',
-    },
-];
+export type ItemRendererProps<T extends TItem> = {
+    item: T;
+    index: number;
+    isHighlighted: boolean;
+    isSelected: boolean;
+};
 
-function getBooksFilter(inputValue: string): (book: Item) => boolean {
-    const lowerCasedInputValue = inputValue.toLowerCase();
+export type Props<T extends TItem> = {
+    fetchItems: (input: string) => T[];
+    itemToString: (item: T) => string;
+    itemRenderer: (props: ItemRendererProps<T>) => JSX.Element;
+};
+export function Combobox<T extends TItem>(
+    props: Readonly<Props<T>>,
+): JSX.Element {
+    const { fetchItems } = props;
 
-    return function booksFilter(book: Item) {
-        return (
-            !inputValue ||
-            book.title.toLowerCase().includes(lowerCasedInputValue) ||
-            book.author.toLowerCase().includes(lowerCasedInputValue)
-        );
-    };
-}
-
-export function Combobox(): JSX.Element {
-    const [items, setItems] = React.useState(books);
-    const [selectedItem, setSelectedItem] = React.useState<Item | null>(null);
+    const [items, setItems] = React.useState<T[]>([]);
+    const [selectedItem, setSelectedItem] = React.useState<T | null>(null);
     const [debouncedInput, setDebouncedInput] = React.useState<string>('');
 
     const debouncedInputCallback = useDebouncedCallback((value) => {
@@ -52,8 +33,9 @@ export function Combobox(): JSX.Element {
     }, 200);
 
     useEffect(() => {
-        setItems(books.filter(getBooksFilter(debouncedInput)));
-    }, [debouncedInput]);
+        console.log('fetching items');
+        setItems(fetchItems(debouncedInput));
+    }, [debouncedInput, fetchItems]);
 
     const {
         isOpen,
@@ -69,7 +51,7 @@ export function Combobox(): JSX.Element {
         },
         items,
         itemToString(item) {
-            return item ? item.title : '';
+            return item ? props.itemToString(item) : '';
         },
         selectedItem,
         onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
@@ -127,8 +109,12 @@ export function Combobox(): JSX.Element {
                             key={item.id}
                             {...getItemProps({ item, index })}
                         >
-                            <span>{item.title}</span>
-                            <span className="text-sm">{item.author}</span>
+                            {props.itemRenderer({
+                                item,
+                                index,
+                                isHighlighted: highlightedIndex === index,
+                                isSelected: selectedItem === item,
+                            })}
                         </li>
                     ))}
             </ul>
