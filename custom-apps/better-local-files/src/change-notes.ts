@@ -1,1 +1,1 @@
-export const CHANGE_NOTES = ['Fixed the top padding'];
+export const CHANGE_NOTES = ['Fixed crash on start'];

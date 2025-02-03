@@ -1813,10 +1813,6 @@ declare namespace Spicetify {
 		 */
 		const ButtonTertiary: any;
 		/**
-         * Dropdown menu
-         */
-        const Dropdown: any;
-		/**
 		 * Chip
 		 */
 		const Chip: any;
