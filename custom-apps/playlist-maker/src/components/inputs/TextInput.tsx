@@ -1,6 +1,6 @@
 import React, { type ForwardedRef, forwardRef } from 'react';
-import styles from './TextInput.module.scss';
 import type { UseFormRegister } from 'react-hook-form';
+import styles from './TextInput.module.scss';
 
 export type Props = {
     placeholder: string;
@@ -16,7 +16,6 @@ export const TextInput = forwardRef(function TextInput(
             className={Spicetify.classnames(
                 styles['text-input'],
                 props.className,
-                'nodrag',
             )}
             type="text"
             placeholder={props.placeholder}
