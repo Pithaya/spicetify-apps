@@ -1,7 +1,6 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { CircleHelp } from 'lucide-react';
 import React from 'react';
-import styles from './NodeTitle.module.scss';
 
 type Props = {
     title: string;
@@ -10,7 +9,7 @@ type Props = {
 
 export function NodeTitle(props: Readonly<Props>): JSX.Element {
     return (
-        <div className={styles['node-title']}>
+        <div className="!mb-2 flex items-center gap-2">
             <TextComponent elementType="p" weight="bold" paddingBottom="0">
                 {props.title}
             </TextComponent>

@@ -1,6 +1,6 @@
 import React, { type ForwardedRef, forwardRef } from 'react';
-import styles from './NumberInput.module.scss';
 import { type UseFormRegister } from 'react-hook-form';
+import styles from './NumberInput.module.scss';
 
 export type Props = {
     placeholder: string;
@@ -12,7 +12,7 @@ export const NumberInput = forwardRef(function NumberInput(
 ): JSX.Element {
     return (
         <input
-            className={Spicetify.classnames(styles['number-input'], 'nodrag')}
+            className={Spicetify.classnames(styles['number-input'])}
             type="number"
             placeholder={props.placeholder}
             ref={ref}

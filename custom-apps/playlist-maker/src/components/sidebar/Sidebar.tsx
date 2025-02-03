@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 import { type CustomNodeType } from '../../models/nodes/node-types';
 import { useAppStore } from '../../stores/store';
-import { Combobox, type ItemRendererProps } from '../inputs/ComboBox';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;
@@ -85,76 +84,10 @@ function SidebarTitle(props: Readonly<{ label: string }>): JSX.Element {
     );
 }
 
-type Item = {
-    id: string;
-    author: string;
-    title: string;
-};
-
-const books: Item[] = [
-    { id: 'book-1', author: 'Harper Lee', title: 'To Kill a Mockingbird' },
-    { id: 'book-2', author: 'Lev Tolstoy', title: 'War and Peace' },
-    { id: 'book-3', author: 'Fyodor Dostoyevsy', title: 'The Idiot' },
-    { id: 'book-4', author: 'Oscar Wilde', title: 'A Picture of Dorian Gray' },
-    { id: 'book-5', author: 'George Orwell', title: '1984' },
-    { id: 'book-6', author: 'Jane Austen', title: 'Pride and Prejudice' },
-    { id: 'book-7', author: 'Marcus Aurelius', title: 'Meditations' },
-    {
-        id: 'book-8',
-        author: 'Fyodor Dostoevsky',
-        title: 'The Brothers Karamazov',
-    },
-    { id: 'book-9', author: 'Lev Tolstoy', title: 'Anna Karenina' },
-    {
-        id: 'book-10',
-        author: 'Fyodor Dostoevsky',
-        title: 'Crime and Punishment',
-    },
-];
-
-function getBooksFilter(inputValue: string): (book: Item) => boolean {
-    const lowerCasedInputValue = inputValue.toLowerCase();
-
-    return function booksFilter(book: Item) {
-        return (
-            !inputValue ||
-            book.title.toLowerCase().includes(lowerCasedInputValue) ||
-            book.author.toLowerCase().includes(lowerCasedInputValue)
-        );
-    };
-}
-
-function ItemRenderer(props: Readonly<ItemRendererProps<Item>>): JSX.Element {
-    return (
-        <>
-            <span>{props.item.title}</span>
-            <span className="text-sm">{props.item.author}</span>
-        </>
-    );
-}
-
 export function Sidenav(): JSX.Element {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2 mx-1.5">
-                    <Combobox
-                        fetchItems={(input) =>
-                            books.filter(getBooksFilter(input))
-                        }
-                        itemRenderer={ItemRenderer}
-                        itemToString={(item: Item) => item.title}
-                    />
-
-                    <select className="main-dropDown-dropDown">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3" disabled>
-                            3
-                        </option>
-                    </select>
-                </div>
-
                 <SidebarTitle label="Sources" />
 
                 <SidenavCollapsible label="Library">

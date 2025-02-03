@@ -1,6 +1,5 @@
-import React from 'react';
-import styles from './NodeHeader.module.scss';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import React from 'react';
 
 export type Props = {
     label: string;
@@ -11,7 +10,7 @@ export type Props = {
 export function NodeHeader(props: Readonly<Props>): JSX.Element {
     return (
         <div
-            className={styles['node-header']}
+            className="rounded-t-sm border-t !px-2 !py-0.5"
             style={{
                 backgroundColor: props.backgroundColor,
                 color: props.textColor,
