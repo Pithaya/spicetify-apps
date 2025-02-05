@@ -31,7 +31,6 @@ export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
     if (type === 'libraryPlaylistSource') {
         const data: PlaylistData = {
             playlistUri: '',
-            playlistName: '',
             offset: undefined,
             filter: undefined,
             limit: undefined,

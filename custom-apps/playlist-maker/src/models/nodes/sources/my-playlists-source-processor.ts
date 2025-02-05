@@ -17,7 +17,6 @@ export const PlaylistDataSchema = z
             .refine((value) => Spicetify.URI.isPlaylistV1OrV2(value), {
                 message: 'Invalid playlist URI',
             }),
-        playlistName: z.string().nonempty(),
         offset: z.number().nonnegative().int().optional(),
         limit: z
             .number()

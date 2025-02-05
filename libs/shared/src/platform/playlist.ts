@@ -29,6 +29,7 @@ export type QueryParameters = {
     limit?: number;
     offset?: number;
     sort?: PlaylistSortOption;
+    isExtraColumnsEnabled?: boolean;
 };
 
 export type Playlist = {

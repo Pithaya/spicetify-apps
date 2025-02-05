@@ -8,6 +8,7 @@ import {
     type FieldValues,
     type UseFormGetValues,
     type UseFormRegister,
+    type UseFormSetError,
     type UseFormSetValue,
     useForm,
     useWatch,
@@ -27,6 +28,7 @@ export function useNodeForm<TForm extends FieldValues>(
     setValue: UseFormSetValue<TForm>;
     getValues: UseFormGetValues<TForm>;
     control: Control<TForm, any>;
+    setError: UseFormSetError<TForm>;
 } {
     const {
         updateNodeData,
@@ -52,6 +54,7 @@ export function useNodeForm<TForm extends FieldValues>(
         reset,
         getValues,
         setValue,
+        setError,
     } = useForm<TForm>({
         mode: 'onChange',
         disabled: anyExecuting,
@@ -68,7 +71,9 @@ export function useNodeForm<TForm extends FieldValues>(
         updateNodeData<TForm>(nodeId, formValues);
     }, [nodeId, updateNodeData, formValues]);
 
+    // TODO: remove and reset all nodes before loading a new workflow instead
     useEffect(() => {
+        // TODO: remove this when all nodes are added with default values
         if (Object.keys(nodeData).length === 0) {
             // If nodeData is empty, default values are not yet set
             return;
@@ -104,5 +109,6 @@ export function useNodeForm<TForm extends FieldValues>(
         setValue,
         getValues,
         control,
+        setError,
     };
 }
