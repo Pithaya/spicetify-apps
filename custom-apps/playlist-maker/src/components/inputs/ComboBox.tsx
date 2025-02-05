@@ -5,22 +5,24 @@ import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 // Used to force open the combobox
-const forceOpen = true;
+const forceOpen = false;
 
 // TODO: remove logs
 
-type TItem = {
+export type TComboboxItem = {
     id: string;
 };
 
-export type ItemRendererProps<T extends TItem> = {
+export type ItemRendererProps<T extends TComboboxItem> = {
     item: T;
     index: number;
     isHighlighted: boolean;
     isSelected: boolean;
 };
 
-export type Props<T extends TItem> = {
+export type Props<T extends TComboboxItem> = {
+    selectedItem: T | null;
+    onSelectedItemChange: (item: T | null) => void;
     fetchItems: (input: string) => Promise<T[]>;
     itemToString: (item: T) => string;
     itemRenderer: (props: ItemRendererProps<T>) => JSX.Element;
@@ -28,25 +30,24 @@ export type Props<T extends TItem> = {
     placeholder: string;
 };
 
-export function Combobox<T extends TItem>(
+export function Combobox<T extends TComboboxItem>(
     props: Readonly<Props<T>>,
 ): JSX.Element {
-    const { fetchItems } = props;
+    const { fetchItems, selectedItem, onSelectedItemChange } = props;
 
     const [items, setItems] = useState<T[]>([]);
-    const [selectedItem, setSelectedItem] = useState<T | null>(null);
     const [debouncedInput, setDebouncedInput] = useState<string>('');
 
     const debouncedInputCallback = useDebouncedCallback((value) => {
         setDebouncedInput(value);
-        console.log('debounced input:', value);
+        console.log('COMBO - debounced input:', value);
     }, 200);
 
     useEffect(() => {
         const fetchItemsAsync = async (): Promise<void> => {
-            console.log('fetching items with input ', debouncedInput);
+            console.log('COMBO - fetching items with input ', debouncedInput);
             const items = await fetchItems(debouncedInput);
-            console.log('fetched items:', items);
+            console.log('COMBO - fetched items:', items);
             setItems(items);
         };
 
@@ -71,7 +72,7 @@ export function Combobox<T extends TItem>(
         },
         selectedItem,
         onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
-            setSelectedItem(newSelectedItem);
+            onSelectedItemChange(newSelectedItem);
         },
     });
 

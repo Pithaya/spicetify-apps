@@ -109,7 +109,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             data: getDefaultValueForNodeType(nodeType) as Partial<T>,
         };
 
-        console.log('adding node', newNode);
+        console.log('STORE - adding node', newNode);
         set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });
     },
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => {

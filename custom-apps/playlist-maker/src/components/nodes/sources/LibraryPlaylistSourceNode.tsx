@@ -1,3 +1,4 @@
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import type { UserAPI } from '@shared/platform/user';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
@@ -12,9 +13,11 @@ import {
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import { Music } from 'lucide-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import { Combobox, type ItemRendererProps } from '../../inputs/ComboBox';
+import { type ItemRendererProps } from '../../inputs/ComboBox';
+import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberInput } from '../../inputs/NumberInput';
 import { SelectController } from '../../inputs/SelectController';
 import { TextInput } from '../../inputs/TextInput';
@@ -88,20 +91,12 @@ function PlaylistItemRenderer(
 export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
-    const onlyMyPlaylists = props.data.onlyMine;
-
-    const { register, errors, control } = useNodeForm<PlaylistData>(
-        props.id,
-        props.data,
-        getDefaultValueForNodeType('libraryPlaylistSource'),
-        PlaylistDataSchema,
-    );
+    const { onlyMine: onlyMyPlaylists } = props.data;
 
     const getPlaylists = useCallback(
         async (input: string): Promise<PlaylistItem[]> => {
             console.log(
-                'getting playlists with input ',
-                input,
+                `NODE - getting playlists with input "${input}"`,
                 onlyMyPlaylists,
             );
             const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
@@ -119,7 +114,7 @@ export function LibraryPlaylistSourceNode(
                 a.name.localeCompare(b.name),
             );
 
-            console.log('playlists', playlists);
+            console.log('NODE - got playlists', playlists);
 
             return playlists.map((p) => ({
                 id: p.uri,
@@ -136,7 +131,67 @@ export function LibraryPlaylistSourceNode(
         [onlyMyPlaylists],
     );
 
-    // TODO: remove playlistName from data
+    const [selectedPlaylist, setSelectedPlaylist] =
+        useState<PlaylistItem | null>(null);
+
+    const { register, errors, control, setValue, setError } =
+        useNodeForm<PlaylistData>(
+            props.id,
+            props.data,
+            getDefaultValueForNodeType('libraryPlaylistSource'),
+            PlaylistDataSchema,
+        );
+
+    /*
+    useEffect(() => {
+        const getPlaylist = async (): Promise<void> => {
+            const playlistApi =
+                getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+
+            const { playlistUri } = props.data;
+            console.log('NODE - node init with playlist', playlistUri);
+
+            if (playlistUri !== '') {
+                try {
+                    const playlist = await playlistApi.getPlaylist(
+                        playlistUri,
+                        {},
+                        {},
+                    );
+                    setSelectedPlaylist({
+                        id: playlist.metadata.uri,
+                        name: playlist.metadata.name,
+                        uri: playlist.metadata.uri,
+                        image:
+                            playlist.metadata.images.length > 0
+                                ? playlist.metadata.images[0].url
+                                : null,
+                        ownerName: playlist.metadata.owner.displayName,
+                    });
+                } catch (e) {
+                    console.error('Failed to fetch playlist', e);
+                    setError('playlistUri', {
+                        message: 'Invalid playlist URI',
+                    });
+                    setValue('playlistUri', '');
+                }
+            }
+        };
+
+        void getPlaylist();
+    }, []);
+*/
+    const playlistUri = useWatch({ control, name: 'playlistUri' });
+
+    useEffect(() => {
+        // Triggers on form value change (item selection, workflow load, node initialization)
+        console.log(
+            'NODE - playlist URI form value changed',
+            playlistUri,
+            ', selected item: ',
+            selectedPlaylist?.id,
+        );
+    }, [playlistUri]);
     // TODO: remove logs
 
     return (
@@ -146,11 +201,24 @@ export function LibraryPlaylistSourceNode(
                 <NodeTitle title="Playlist" />
 
                 <NodeField label="Only my playlists" error={errors.onlyMine}>
-                    <input type="checkbox" {...register('onlyMine')} />
+                    <div className="flex justify-end">
+                        <input type="checkbox" {...register('onlyMine')} />
+                    </div>
                 </NodeField>
 
-                <NodeComboField error={errors.onlyMine}>
-                    <Combobox
+                <TextComponent
+                    elementType="p"
+                    fontSize="small"
+                    semanticColor="textSubdued"
+                >
+                    Selected: {props.data.playlistUri}
+                </TextComponent>
+                <NodeComboField error={errors.playlistUri}>
+                    <ComboBoxController
+                        control={control}
+                        name="playlistUri"
+                        selectedItem={selectedPlaylist}
+                        onSelectedItemChange={setSelectedPlaylist}
                         fetchItems={getPlaylists}
                         itemRenderer={PlaylistItemRenderer}
                         itemToString={(item: PlaylistItem) => item.name}
