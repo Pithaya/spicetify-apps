@@ -20,9 +20,6 @@ import { type WorkflowTrack } from '../models/track';
 import { getDefaultValueForNodeType } from '../utils/node-utils';
 import type { SavedWorkflow } from '../utils/storage-utils';
 
-let id = 0;
-const getId = (): string => (++id).toString();
-
 function isMove(change: NodeChange): boolean {
     return change.type === 'position' && change.position !== undefined;
 }
@@ -103,7 +100,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
     addNode: <T>(nodeType: CustomNodeType, position: XYPosition) => {
         const newNode = {
-            id: getId(),
+            id: uuidv4(),
             type: nodeType,
             position,
             data: getDefaultValueForNodeType(nodeType) as Partial<T>,
@@ -134,7 +131,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ workflowName, hasPendingChanges: true });
     },
     resetState: () => {
-        id = 0;
         set({
             nodes: [],
             edges: [],
@@ -148,10 +144,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ hasPendingChanges: false });
     },
     loadWorkflow: (workflow: SavedWorkflow) => {
-        id =
-            workflow.nodes.length > 0
-                ? Math.max(...workflow.nodes.map((node) => parseInt(node.id)))
-                : 0;
         const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
         get().reactFlowInstance?.setViewport({ x, y, zoom });
         set({

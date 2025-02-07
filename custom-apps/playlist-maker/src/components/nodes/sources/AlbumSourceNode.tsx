@@ -5,6 +5,7 @@ import {
     AlbumDataSchema,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
 import { setValueAsOptionalNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { NumberInput } from '../../inputs/NumberInput';
@@ -15,21 +16,13 @@ import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: AlbumData = {
-    uri: '',
-    limit: undefined,
-    offset: undefined,
-    onlyLiked: false,
-    isExecuting: undefined,
-};
-
 export function AlbumSourceNode(
     props: Readonly<NodeProps<AlbumData>>,
 ): JSX.Element {
     const { register, errors } = useNodeForm<AlbumData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('albumSource'),
         AlbumDataSchema,
     );
 

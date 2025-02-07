@@ -5,6 +5,7 @@ import {
     ValenceDataSchema,
     type ValenceData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: ValenceData = {
-    range: {
-        min: MIN_VALENCE,
-        max: MAX_VALENCE,
-    },
-    isExecuting: undefined,
-};
-
 export function ValenceNode(
     props: Readonly<NodeProps<ValenceData>>,
 ): JSX.Element {
     const { control } = useNodeForm<ValenceData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('valence'),
         ValenceDataSchema,
     );
 

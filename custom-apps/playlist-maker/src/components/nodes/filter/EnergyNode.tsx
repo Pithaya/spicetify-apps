@@ -5,6 +5,7 @@ import {
     MIN_ENERGY,
     type EnergyData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/energy-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: EnergyData = {
-    range: {
-        min: MIN_ENERGY,
-        max: MAX_ENERGY,
-    },
-    isExecuting: undefined,
-};
-
 export function EnergyNode(
     props: Readonly<NodeProps<EnergyData>>,
 ): JSX.Element {
     const { control } = useNodeForm<EnergyData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('energy'),
         EnergyDataSchema,
     );
 

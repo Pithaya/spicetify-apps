@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import deepEqual from 'deep-equal';
 import { useEffect } from 'react';
 import {
     type Control,
@@ -51,7 +50,6 @@ export function useNodeForm<TForm extends FieldValues>(
         formState: { errors },
         trigger,
         control,
-        reset,
         getValues,
         setValue,
         setError,
@@ -70,28 +68,6 @@ export function useNodeForm<TForm extends FieldValues>(
     useEffect(() => {
         updateNodeData<TForm>(nodeId, formValues);
     }, [nodeId, updateNodeData, formValues]);
-
-    // TODO: remove and reset all nodes before loading a new workflow instead
-    useEffect(() => {
-        // TODO: remove this when all nodes are added with default values
-        if (Object.keys(nodeData).length === 0) {
-            // If nodeData is empty, default values are not yet set
-            return;
-        }
-
-        // If we load a new workflow with the same nodes, the nodes component won't be recreated
-        // So when data has changed outside of the form, sync the form
-        // undefined values are not stored, so we apply the default values
-        const areEquals = deepEqual(
-            { ...defaultValues, ...nodeData },
-            getValues(),
-            { strict: true },
-        );
-
-        if (!areEquals) {
-            reset(nodeData);
-        }
-    }, [nodeData, defaultValues, getValues, reset]);
 
     useEffect(() => {
         addValidationCallback(nodeId, async () => {
