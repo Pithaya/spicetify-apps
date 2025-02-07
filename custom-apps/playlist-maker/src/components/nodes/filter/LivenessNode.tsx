@@ -5,6 +5,7 @@ import {
     MIN_LIVENESS,
     type LivenessData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LivenessData = {
-    range: {
-        min: MIN_LIVENESS,
-        max: MAX_LIVENESS,
-    },
-    isExecuting: undefined,
-};
-
 export function LivenessNode(
     props: Readonly<NodeProps<LivenessData>>,
 ): JSX.Element {
     const { control } = useNodeForm<LivenessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('liveness'),
         LivenessDataSchema,
     );
 

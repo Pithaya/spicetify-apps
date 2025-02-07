@@ -5,6 +5,7 @@ import {
     MIN_ACOUSTICNESS,
     type AcousticnessData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/acousticness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: AcousticnessData = {
-    range: {
-        min: MIN_ACOUSTICNESS,
-        max: MAX_ACOUSTICNESS,
-    },
-    isExecuting: undefined,
-};
-
 export function AcousticnessNode(
     props: Readonly<NodeProps<AcousticnessData>>,
 ): JSX.Element {
     const { control } = useNodeForm<AcousticnessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('acousticness'),
         AcousticnessDataSchema,
     );
 

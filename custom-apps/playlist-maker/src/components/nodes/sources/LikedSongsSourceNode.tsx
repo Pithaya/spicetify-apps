@@ -7,6 +7,7 @@ import {
     setValueAsOptionalNumber,
     setValueAsOptionalString,
 } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { NumberInput } from '../../inputs/NumberInput';
@@ -17,15 +18,6 @@ import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
-
-const defaultValues: LikedSongsData = {
-    filter: undefined,
-    offset: undefined,
-    limit: undefined,
-    sortField: 'ADDED_AT',
-    sortOrder: 'DESC',
-    isExecuting: undefined,
-};
 
 const propertyValues: Record<LikedSongsData['sortField'], string> = {
     ADDED_AT: 'Added at',
@@ -45,7 +37,7 @@ export function LikedSongsSourceNode(
     const { control, register, errors } = useNodeForm<LikedSongsData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('likedSongsSource'),
         LikedSongsDataSchema,
     );
 

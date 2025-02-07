@@ -1,34 +1,106 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
-import { AcousticnessProcessor } from '../models/nodes/filter/acousticness-processor';
-import { DanceabilityProcessor } from '../models/nodes/filter/danceability-processor';
-import { EnergyProcessor } from '../models/nodes/filter/energy-processor';
-import { GenreProcessor } from '../models/nodes/filter/genre-processor';
-import { InstrumentalnessProcessor } from '../models/nodes/filter/instrumentalness-processor';
-import { IsPlayableProcessor } from '../models/nodes/filter/is-playable-processor';
-import { LivenessProcessor } from '../models/nodes/filter/liveness-processor';
-import { LoudnessProcessor } from '../models/nodes/filter/loudness-processor';
-import { ModeProcessor } from '../models/nodes/filter/mode-processor';
-import { SpeechinessProcessor } from '../models/nodes/filter/speechiness-processor';
-import { TempoProcessor } from '../models/nodes/filter/tempo-processor';
-import { ValenceProcessor } from '../models/nodes/filter/valence-processor';
+import {
+    type AcousticnessData,
+    AcousticnessProcessor,
+    MAX_ACOUSTICNESS,
+    MIN_ACOUSTICNESS,
+} from '../models/nodes/filter/acousticness-processor';
+import {
+    type DanceabilityData,
+    DanceabilityProcessor,
+    MAX_DANCEABILITY,
+    MIN_DANCEABILITY,
+} from '../models/nodes/filter/danceability-processor';
+import {
+    type EnergyData,
+    EnergyProcessor,
+    MAX_ENERGY,
+    MIN_ENERGY,
+} from '../models/nodes/filter/energy-processor';
+import {
+    type GenreFilterData,
+    GenreProcessor,
+} from '../models/nodes/filter/genre-processor';
+import {
+    type InstrumentalnessData,
+    InstrumentalnessProcessor,
+    MAX_INSTRUMENTALNESS,
+    MIN_INSTRUMENTALNESS,
+} from '../models/nodes/filter/instrumentalness-processor';
+import {
+    type IsPlayableData,
+    IsPlayableProcessor,
+} from '../models/nodes/filter/is-playable-processor';
+import {
+    type LivenessData,
+    LivenessProcessor,
+    MAX_LIVENESS,
+    MIN_LIVENESS,
+} from '../models/nodes/filter/liveness-processor';
+import {
+    type LoudnessData,
+    LoudnessProcessor,
+    MAX_LOUDNESS,
+    MIN_LOUDNESS,
+} from '../models/nodes/filter/loudness-processor';
+import {
+    type ModeData,
+    ModeProcessor,
+} from '../models/nodes/filter/mode-processor';
+import {
+    MAX_SPEECHINESS,
+    MIN_SPEECHINESS,
+    type SpeechinessData,
+    SpeechinessProcessor,
+} from '../models/nodes/filter/speechiness-processor';
+import {
+    MAX_TEMPO,
+    MIN_TEMPO,
+    type TempoData,
+    TempoProcessor,
+} from '../models/nodes/filter/tempo-processor';
+import {
+    MAX_VALENCE,
+    MIN_VALENCE,
+    type ValenceData,
+    ValenceProcessor,
+} from '../models/nodes/filter/valence-processor';
 import { type NodeProcessor } from '../models/nodes/node-processor';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
-import { SortProcessor } from '../models/nodes/processing/sort-processor';
+import {
+    type OrderByData,
+    SortProcessor,
+} from '../models/nodes/processing/sort-processor';
 import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
-import { AlbumSourceProcessor } from '../models/nodes/sources/album-source-processor';
-import { LikedSongsSourceProcessor } from '../models/nodes/sources/liked-songs-source-processor';
-import { LocalTracksSourceProcessor } from '../models/nodes/sources/local-tracks-source-processor';
+import {
+    type AlbumData,
+    AlbumSourceProcessor,
+} from '../models/nodes/sources/album-source-processor';
+import {
+    type LikedSongsData,
+    LikedSongsSourceProcessor,
+} from '../models/nodes/sources/liked-songs-source-processor';
+import {
+    type LocalTracksData,
+    LocalTracksSourceProcessor,
+} from '../models/nodes/sources/local-tracks-source-processor';
 import {
     type PlaylistData,
     PlaylistSourceProcessor,
 } from '../models/nodes/sources/my-playlists-source-processor';
-import { TopTracksSourceProcessor } from '../models/nodes/sources/top-tracks-source-processor';
+import {
+    type TopTracksData,
+    TopTracksSourceProcessor,
+} from '../models/nodes/sources/top-tracks-source-processor';
 import useAppStore from '../stores/store';
 
-export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
-    if (type === 'libraryPlaylistSource') {
+const nodeDefautValuesFactory: Record<
+    CustomNodeType,
+    () => Record<string, unknown>
+> = {
+    libraryPlaylistSource: () => {
         const data: PlaylistData = {
             playlistUri: '',
             offset: undefined,
@@ -40,9 +112,194 @@ export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
             onlyMine: false,
         };
         return data;
-    }
+    },
+    acousticness: () => {
+        const data: AcousticnessData = {
+            range: {
+                min: MIN_ACOUSTICNESS,
+                max: MAX_ACOUSTICNESS,
+            },
+            isExecuting: undefined,
+        };
 
-    return {};
+        return data;
+    },
+    danceability: () => {
+        const data: DanceabilityData = {
+            range: {
+                min: MIN_DANCEABILITY,
+                max: MAX_DANCEABILITY,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    energy: () => {
+        const data: EnergyData = {
+            range: {
+                min: MIN_ENERGY,
+                max: MAX_ENERGY,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    genre: () => {
+        const data: GenreFilterData = {
+            genreCategories: [],
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    instrumentalness: () => {
+        const data: InstrumentalnessData = {
+            range: {
+                min: MIN_INSTRUMENTALNESS,
+                max: MAX_INSTRUMENTALNESS,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    isPlayable: () => {
+        const data: IsPlayableData = {
+            isPlayable: true,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    liveness: () => {
+        const data: LivenessData = {
+            range: {
+                min: MIN_LIVENESS,
+                max: MAX_LIVENESS,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    loudness: () => {
+        const data: LoudnessData = {
+            range: {
+                min: MIN_LOUDNESS,
+                max: MAX_LOUDNESS,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    speechiness: () => {
+        const data: SpeechinessData = {
+            range: {
+                min: MIN_SPEECHINESS,
+                max: MAX_SPEECHINESS,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    tempo: () => {
+        const data: TempoData = {
+            range: {
+                min: MIN_TEMPO,
+                max: MAX_TEMPO,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    valence: () => {
+        const data: ValenceData = {
+            range: {
+                min: MIN_VALENCE,
+                max: MAX_VALENCE,
+            },
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    sort: () => {
+        const data: OrderByData = {
+            order: 'asc',
+            property: 'name',
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    albumSource: () => {
+        const data: AlbumData = {
+            uri: '',
+            limit: undefined,
+            offset: undefined,
+            onlyLiked: false,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    likedSongsSource: () => {
+        const data: LikedSongsData = {
+            filter: undefined,
+            offset: undefined,
+            limit: undefined,
+            sortField: 'ADDED_AT',
+            sortOrder: 'DESC',
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    localTracksSource: () => {
+        const data: LocalTracksData = {
+            filter: undefined,
+            sortField: 'DURATION',
+            sortOrder: 'DESC',
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    topTracksSource: () => {
+        const data: TopTracksData = {
+            timeRange: 'short_term',
+            offset: undefined,
+            limit: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    mode: () => {
+        const data: ModeData = {
+            mode: '1',
+            isExecuting: undefined,
+        };
+        return data;
+    },
+    shuffle: () => {
+        return { isExecuting: undefined };
+    },
+    deduplicate: () => {
+        return { isExecuting: undefined };
+    },
+    result: () => {
+        return { isExecuting: undefined };
+    },
+};
+
+export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
+    return nodeDefautValuesFactory[type]();
 };
 
 const nodeProcessorFactory: Record<

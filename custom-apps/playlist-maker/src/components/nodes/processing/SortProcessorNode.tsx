@@ -3,6 +3,7 @@ import {
     OrderByDataSchema,
     type OrderByData,
 } from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SelectController } from '../../inputs/SelectController';
@@ -11,12 +12,6 @@ import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
-
-const defaultValues: OrderByData = {
-    order: 'asc',
-    property: 'name',
-    isExecuting: undefined,
-};
 
 const propertyValues: Record<OrderByData['property'], string> = {
     album: 'Album',
@@ -37,7 +32,7 @@ export function SortProcessorNode(
     const { errors, control } = useNodeForm<OrderByData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('sort'),
         OrderByDataSchema,
     );
 

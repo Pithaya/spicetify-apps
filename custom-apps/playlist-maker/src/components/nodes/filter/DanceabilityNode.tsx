@@ -5,6 +5,7 @@ import {
     MIN_DANCEABILITY,
     type DanceabilityData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: DanceabilityData = {
-    range: {
-        min: MIN_DANCEABILITY,
-        max: MAX_DANCEABILITY,
-    },
-    isExecuting: undefined,
-};
-
 export function DanceabilityNode(
     props: Readonly<NodeProps<DanceabilityData>>,
 ): JSX.Element {
     const { control } = useNodeForm<DanceabilityData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('danceability'),
         DanceabilityDataSchema,
     );
 

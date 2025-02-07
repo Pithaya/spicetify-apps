@@ -1,22 +1,18 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { FilterNodeHeader } from '../shared/NodeHeader';
-import { Node } from '../shared/Node';
-import { NodeContent } from '../shared/NodeContent';
+import { type Item } from '@shared/components/inputs/Select/Select';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { NodeTitle } from '../shared/NodeTitle';
 import {
     ModeDataSchema,
     type ModeData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/mode-processor';
-import { NodeField } from '../shared/NodeField';
-import { type Item } from '@shared/components/inputs/Select/Select';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
 import { SelectController } from '../../inputs/SelectController';
-
-const defaultValues: ModeData = {
-    mode: '1',
-    isExecuting: undefined,
-};
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { NodeField } from '../shared/NodeField';
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const modes: Item[] = [
     { label: 'Major', value: '1' },
@@ -27,7 +23,7 @@ export function ModeNode(props: Readonly<NodeProps<ModeData>>): JSX.Element {
     const { control, errors } = useNodeForm<ModeData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('mode'),
         ModeDataSchema,
     );
 

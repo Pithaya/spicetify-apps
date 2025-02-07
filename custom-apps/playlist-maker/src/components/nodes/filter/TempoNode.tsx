@@ -5,6 +5,7 @@ import {
     TempoDataSchema,
     type TempoData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/tempo-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,19 +14,11 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: TempoData = {
-    range: {
-        min: MIN_TEMPO,
-        max: MAX_TEMPO,
-    },
-    isExecuting: undefined,
-};
-
 export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
     const { control } = useNodeForm<TempoData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('tempo'),
         TempoDataSchema,
     );
 

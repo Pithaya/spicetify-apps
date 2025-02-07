@@ -5,6 +5,7 @@ import {
     MIN_LOUDNESS,
     type LoudnessData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/loudness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: LoudnessData = {
-    range: {
-        min: MIN_LOUDNESS,
-        max: MAX_LOUDNESS,
-    },
-    isExecuting: undefined,
-};
-
 export function LoudnessNode(
     props: Readonly<NodeProps<LoudnessData>>,
 ): JSX.Element {
     const { control } = useNodeForm<LoudnessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('loudness'),
         LoudnessDataSchema,
     );
 

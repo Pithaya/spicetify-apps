@@ -5,6 +5,7 @@ import {
     MIN_INSTRUMENTALNESS,
     type InstrumentalnessData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SliderController } from '../../inputs/SliderController';
@@ -13,21 +14,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: InstrumentalnessData = {
-    range: {
-        min: MIN_INSTRUMENTALNESS,
-        max: MAX_INSTRUMENTALNESS,
-    },
-    isExecuting: undefined,
-};
-
 export function InstrumentalnessNode(
     props: Readonly<NodeProps<InstrumentalnessData>>,
 ): JSX.Element {
     const { control } = useNodeForm<InstrumentalnessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('instrumentalness'),
         InstrumentalnessDataSchema,
     );
 

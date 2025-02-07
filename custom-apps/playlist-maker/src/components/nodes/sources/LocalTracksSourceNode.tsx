@@ -4,6 +4,7 @@ import {
     type LocalTracksData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
 import { setValueAsOptionalString } from 'custom-apps/playlist-maker/src/utils/form-utils';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SelectController } from '../../inputs/SelectController';
@@ -13,13 +14,6 @@ import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
-
-const defaultValues: LocalTracksData = {
-    filter: undefined,
-    sortField: 'DURATION',
-    sortOrder: 'DESC',
-    isExecuting: undefined,
-};
 
 const propertyValues: Record<LocalTracksData['sortField'], string> = {
     ALBUM: 'Album',
@@ -41,7 +35,7 @@ export function LocalTracksSourceNode(
     const { control, register, errors } = useNodeForm<LocalTracksData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('localTracksSource'),
         LocalTracksDataSchema,
     );
 

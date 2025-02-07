@@ -6,6 +6,7 @@ import {
     GenreFilterDataSchema,
     type GenreFilterData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/genre-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { Handle, Position, type NodeProps } from 'reactflow';
@@ -18,18 +19,13 @@ import styles from './GenreNode.module.scss';
 
 const genres: Record<string, string[]> = genresJson;
 
-const defaultValues: GenreFilterData = {
-    genreCategories: [],
-    isExecuting: undefined,
-};
-
 export function GenreNode(
     props: Readonly<NodeProps<GenreFilterData>>,
 ): JSX.Element {
     const { errors, control, getValues } = useNodeForm<GenreFilterData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('genre'),
         GenreFilterDataSchema,
     );
 

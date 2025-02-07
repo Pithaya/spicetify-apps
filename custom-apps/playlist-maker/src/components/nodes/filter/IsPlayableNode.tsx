@@ -4,6 +4,7 @@ import {
     IsPlayableDataSchema,
     type IsPlayableData,
 } from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { Node } from '../shared/Node';
@@ -11,18 +12,13 @@ import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const defaultValues: IsPlayableData = {
-    isPlayable: true,
-    isExecuting: undefined,
-};
-
 export function IsPlayableNode(
     props: Readonly<NodeProps<IsPlayableData>>,
 ): JSX.Element {
     const { register } = useNodeForm<IsPlayableData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('isPlayable'),
         IsPlayableDataSchema,
     );
 
