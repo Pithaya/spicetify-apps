@@ -24,7 +24,7 @@ export function SliderController<T extends RangeForm>(
     const { min, max, step } = props;
 
     return (
-        <div className="nodrag">
+        <div>
             <Controller
                 name={'range' as FieldPath<T>}
                 control={props.control}

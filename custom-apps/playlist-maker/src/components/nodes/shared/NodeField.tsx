@@ -3,6 +3,8 @@ import React, { type PropsWithChildren } from 'react';
 import { type FieldError } from 'react-hook-form';
 import { InputError } from '../../inputs/InputError';
 
+// TODO: help icon for the tooltip
+
 export type Props = PropsWithChildren<{
     label: string;
     tooltip?: string;
@@ -25,7 +27,7 @@ export function NodeField(props: Readonly<Props>): JSX.Element {
                 </Spicetify.ReactComponent.TooltipWrapper>
             )}
             {!props.tooltip && label}
-            <div className="nowheel nodrag w-[200px]">
+            <div className="w-[200px]">
                 {props.children}
                 <InputError error={props.error} />
             </div>

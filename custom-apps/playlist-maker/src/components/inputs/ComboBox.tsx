@@ -9,6 +9,9 @@ const forceOpen = false;
 
 // TODO: remove logs
 
+// TODO: initial value for selectedItem and inputValue (?)
+// TODO: clear button
+
 export type TComboboxItem = {
     id: string;
 };
