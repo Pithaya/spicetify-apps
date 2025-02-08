@@ -6,11 +6,8 @@ import {
     type FieldErrors,
     type FieldValues,
     type UseFormGetValues,
-    type UseFormRegister,
     type UseFormSetError,
-    type UseFormSetValue,
     useForm,
-    useWatch,
 } from 'react-hook-form';
 import type { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
@@ -22,12 +19,11 @@ export function useNodeForm<TForm extends FieldValues>(
     defaultValues: DefaultValues<TForm>,
     schema: z.Schema<any, any>,
 ): {
-    register: UseFormRegister<TForm>;
     errors: FieldErrors<TForm>;
-    setValue: UseFormSetValue<TForm>;
     getValues: UseFormGetValues<TForm>;
     control: Control<TForm, any>;
     setError: UseFormSetError<TForm>;
+    updateNodeField: (field: Partial<TForm>) => void;
 } {
     const {
         updateNodeData,
@@ -45,30 +41,26 @@ export function useNodeForm<TForm extends FieldValues>(
         }),
     );
 
+    const updateNodeField = (field: Partial<TForm>): void => {
+        updateNodeData<TForm>(nodeId, field);
+    };
+
     const {
-        register,
         formState: { errors },
         trigger,
         control,
         getValues,
-        setValue,
         setError,
     } = useForm<TForm>({
         mode: 'onChange',
         disabled: anyExecuting,
-        defaultValues: {
-            ...defaultValues,
-            ...nodeData,
-        },
+        defaultValues,
+        values: nodeData,
         resolver: zodResolver(schema),
     });
 
-    const formValues = useWatch({ control });
-
-    useEffect(() => {
-        updateNodeData<TForm>(nodeId, formValues);
-    }, [nodeId, updateNodeData, formValues]);
-
+    // Save this node's trigger function in the store
+    // So that the store can trigger validation for this node
     useEffect(() => {
         addValidationCallback(nodeId, async () => {
             return await trigger();
@@ -80,11 +72,10 @@ export function useNodeForm<TForm extends FieldValues>(
     }, [nodeId, addValidationCallback, removeValidationCallback, trigger]);
 
     return {
-        register,
         errors,
-        setValue,
         getValues,
         control,
         setError,
+        updateNodeField,
     };
 }

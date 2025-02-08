@@ -7,28 +7,37 @@ import {
     type FieldValues,
 } from 'react-hook-form';
 
-type Props<T extends FieldValues> = {
+type Props<T extends FieldValues, TItemValue extends string> = {
     control: Control<T>;
     name: FieldPath<T>;
     label: string;
-    items: Item[];
+    items: Item<TItemValue>[];
+    onChange?: (value: TItemValue | undefined) => void;
 };
 
-export function SelectController<T extends FieldValues>(
-    props: Readonly<Props<T>>,
-): JSX.Element {
+export function SelectController<
+    T extends FieldValues,
+    TItemValue extends string,
+>(props: Readonly<Props<T, TItemValue>>): JSX.Element {
     return (
         <Controller
             name={props.name}
             control={props.control}
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Select
                     selectLabel={props.label}
-                    selectedValue={value ?? undefined}
+                    selectedValue={value}
                     items={props.items}
                     onItemClicked={(item) => {
                         onChange(item.value);
+
+                        if (props.onChange) {
+                            props.onChange(item.value);
+                        }
                     }}
+                    onBlur={onBlur}
+                    name={name}
+                    ref={ref}
                 />
             )}
         />

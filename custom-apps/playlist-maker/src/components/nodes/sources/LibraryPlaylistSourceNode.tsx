@@ -1,4 +1,5 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import type { PlaylistAPI } from '@shared/platform/playlist';
 import type { UserAPI } from '@shared/platform/user';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
@@ -7,20 +8,16 @@ import {
     PlaylistDataSchema,
     type PlaylistData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
-import {
-    setValueAsOptionalNumber,
-    setValueAsOptionalString,
-} from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
+import { LoaderCircle, Music } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useWatch } from 'react-hook-form';
 import { Handle, Position, type NodeProps } from 'reactflow';
+import { CheckboxController } from '../../inputs/CheckboxController';
 import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
-import { NumberInput } from '../../inputs/NumberInput';
+import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
-import { TextInput } from '../../inputs/TextInput';
+import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -91,7 +88,7 @@ function PlaylistItemRenderer(
 export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
-    const { onlyMine: onlyMyPlaylists } = props.data;
+    const { onlyMine: onlyMyPlaylists, offset } = props.data;
 
     const getPlaylists = useCallback(
         async (input: string): Promise<PlaylistItem[]> => {
@@ -133,8 +130,9 @@ export function LibraryPlaylistSourceNode(
 
     const [selectedPlaylist, setSelectedPlaylist] =
         useState<PlaylistItem | null>(null);
+    const [isPlaylistComboReady, setIsPlaylistComboReady] = useState(false);
 
-    const { register, errors, control, setValue, setError } =
+    const { errors, control, setError, getValues, updateNodeField } =
         useNodeForm<PlaylistData>(
             props.id,
             props.data,
@@ -142,67 +140,86 @@ export function LibraryPlaylistSourceNode(
             PlaylistDataSchema,
         );
 
-    /*
     useEffect(() => {
+        // On init, get the initial value for the selected playlist
+        // if the playlistUri is not empty
+
+        const { playlistUri } = props.data;
+
+        if (playlistUri === '') {
+            setIsPlaylistComboReady(true);
+            return;
+        }
+
         const getPlaylist = async (): Promise<void> => {
             const playlistApi =
                 getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
 
-            const { playlistUri } = props.data;
-            console.log('NODE - node init with playlist', playlistUri);
+            console.log(
+                'NODE - node init with playlist',
+                playlistUri,
+                ' and ready',
+                isPlaylistComboReady,
+            );
 
-            if (playlistUri !== '') {
-                try {
-                    const playlist = await playlistApi.getPlaylist(
-                        playlistUri,
-                        {},
-                        {},
-                    );
-                    setSelectedPlaylist({
-                        id: playlist.metadata.uri,
-                        name: playlist.metadata.name,
-                        uri: playlist.metadata.uri,
-                        image:
-                            playlist.metadata.images.length > 0
-                                ? playlist.metadata.images[0].url
-                                : null,
-                        ownerName: playlist.metadata.owner.displayName,
-                    });
-                } catch (e) {
-                    console.error('Failed to fetch playlist', e);
-                    setError('playlistUri', {
-                        message: 'Invalid playlist URI',
-                    });
-                    setValue('playlistUri', '');
-                }
+            try {
+                const playlist = await playlistApi.getPlaylist(
+                    playlistUri,
+                    {},
+                    {},
+                );
+                setSelectedPlaylist({
+                    id: playlist.metadata.uri,
+                    name: playlist.metadata.name,
+                    uri: playlist.metadata.uri,
+                    image:
+                        playlist.metadata.images.length > 0
+                            ? playlist.metadata.images[0].url
+                            : null,
+                    ownerName: playlist.metadata.owner.displayName,
+                });
+                setIsPlaylistComboReady(true);
+            } catch (e) {
+                console.error('Failed to fetch playlist', e);
+                setError('playlistUri', {
+                    message: 'Invalid playlist URI',
+                });
+                updateNodeField({ playlistUri: '' });
             }
+
+            setIsPlaylistComboReady(true);
         };
 
         void getPlaylist();
     }, []);
-*/
-    const playlistUri = useWatch({ control, name: 'playlistUri' });
 
     useEffect(() => {
-        // Triggers on form value change (item selection, workflow load, node initialization)
         console.log(
-            'NODE - playlist URI form value changed',
-            playlistUri,
-            ', selected item: ',
-            selectedPlaylist?.id,
+            'NODE - offset has changed in props.data useEffect',
+            offset,
         );
-    }, [playlistUri]);
-    // TODO: remove logs
+    }, [offset]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>
             <SourceNodeHeader />
+
+            <p>Form Values:</p>
+            <p>{JSON.stringify(getValues())}</p>
+            <p>props.data : </p>
+            <p>{JSON.stringify(props.data)}</p>
             <NodeContent>
                 <NodeTitle title="Playlist" />
 
                 <NodeField label="Only my playlists" error={errors.onlyMine}>
                     <div className="flex justify-end">
-                        <input type="checkbox" {...register('onlyMine')} />
+                        <CheckboxController
+                            control={control}
+                            name="onlyMine"
+                            onChange={(value) => {
+                                updateNodeField({ onlyMine: value });
+                            }}
+                        />
                     </div>
                 </NodeField>
 
@@ -214,17 +231,29 @@ export function LibraryPlaylistSourceNode(
                     Selected: {props.data.playlistUri}
                 </TextComponent>
                 <NodeComboField error={errors.playlistUri}>
-                    <ComboBoxController
-                        control={control}
-                        name="playlistUri"
-                        selectedItem={selectedPlaylist}
-                        onSelectedItemChange={setSelectedPlaylist}
-                        fetchItems={getPlaylists}
-                        itemRenderer={PlaylistItemRenderer}
-                        itemToString={(item: PlaylistItem) => item.name}
-                        label="Playlist"
-                        placeholder="Search for a playlist"
-                    />
+                    {isPlaylistComboReady && (
+                        <ComboBoxController
+                            control={control}
+                            name="playlistUri"
+                            selectedItem={selectedPlaylist}
+                            onSelectedItemChange={setSelectedPlaylist}
+                            fetchItems={getPlaylists}
+                            itemRenderer={PlaylistItemRenderer}
+                            itemToString={(item: PlaylistItem) => item.name}
+                            label="Playlist"
+                            placeholder="Search for a playlist"
+                            required
+                        />
+                    )}
+                    {!isPlaylistComboReady && (
+                        <div className="bg-spice-tab-active flex h-[34px] items-center justify-end rounded-sm !pe-1">
+                            <LoaderCircle
+                                size={24}
+                                strokeWidth={1}
+                                className="animate-spin"
+                            />
+                        </div>
+                    )}
                 </NodeComboField>
 
                 <NodeField
@@ -232,11 +261,13 @@ export function LibraryPlaylistSourceNode(
                     label="Filter"
                     error={errors.filter}
                 >
-                    <TextInput
+                    <TextController
                         placeholder="Search"
-                        {...register('filter', {
-                            setValueAs: setValueAsOptionalString,
-                        })}
+                        name="filter"
+                        control={control}
+                        onChange={(value) => {
+                            updateNodeField({ filter: value });
+                        }}
                     />
                 </NodeField>
 
@@ -245,11 +276,13 @@ export function LibraryPlaylistSourceNode(
                     tooltip="Number of elements to skip"
                     error={errors.offset}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="0"
-                        {...register('offset', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="offset"
+                        onChange={(value) => {
+                            updateNodeField({ offset: value });
+                        }}
                     />
                 </NodeField>
 
@@ -258,11 +291,13 @@ export function LibraryPlaylistSourceNode(
                     tooltip="Number of elements to take. Leave empty to take all elements."
                     error={errors.limit}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="None"
-                        {...register('limit', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="limit"
+                        onChange={(value) => {
+                            updateNodeField({ limit: value });
+                        }}
                     />
                 </NodeField>
 
@@ -277,6 +312,9 @@ export function LibraryPlaylistSourceNode(
                                 value: key,
                             }),
                         )}
+                        onChange={(value) => {
+                            updateNodeField({ sortField: value as any });
+                        }}
                     />
                 </NodeField>
                 <NodeField label="Order" error={errors.sortOrder}>
@@ -290,6 +328,9 @@ export function LibraryPlaylistSourceNode(
                                 value: key,
                             }),
                         )}
+                        onChange={(value) => {
+                            updateNodeField({ sortOrder: value as any });
+                        }}
                     />
                 </NodeField>
             </NodeContent>

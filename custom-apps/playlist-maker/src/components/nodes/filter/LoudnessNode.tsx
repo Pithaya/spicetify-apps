@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function LoudnessNode(
     props: Readonly<NodeProps<LoudnessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<LoudnessData>(
+    const { control, updateNodeField } = useNodeForm<LoudnessData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('loudness'),
@@ -46,6 +46,9 @@ export function LoudnessNode(
                         min={MIN_LOUDNESS}
                         max={MAX_LOUDNESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

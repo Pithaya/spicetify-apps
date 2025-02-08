@@ -16,6 +16,7 @@ type Props<T extends RangeForm> = {
     min: number;
     max: number;
     step: number;
+    onChange: (value: { min: number; max: number }) => void;
 };
 
 export function SliderController<T extends RangeForm>(
@@ -28,14 +29,8 @@ export function SliderController<T extends RangeForm>(
             <Controller
                 name={'range' as FieldPath<T>}
                 control={props.control}
-                render={({ field: { onChange, value } }) => (
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                render={({ field: { onChange, value, ref } }) => (
+                    <div className="flex flex-wrap justify-center">
                         <Range
                             values={[value.min, value.max]}
                             step={step}
@@ -43,11 +38,14 @@ export function SliderController<T extends RangeForm>(
                             max={max}
                             rtl={false}
                             onChange={(values) => {
-                                onChange({
+                                const value = {
                                     min: values[0],
                                     max: values[1],
-                                });
+                                };
+                                onChange(value);
+                                props.onChange(value);
                             }}
+                            ref={ref}
                             renderTrack={({ props, children }) => (
                                 <div
                                     onMouseDown={props.onMouseDown}

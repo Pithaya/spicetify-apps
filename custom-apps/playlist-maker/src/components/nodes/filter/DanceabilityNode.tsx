@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function DanceabilityNode(
     props: Readonly<NodeProps<DanceabilityData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<DanceabilityData>(
+    const { control, updateNodeField } = useNodeForm<DanceabilityData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('danceability'),
@@ -49,6 +49,9 @@ export function DanceabilityNode(
                         min={MIN_DANCEABILITY}
                         max={MAX_DANCEABILITY}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

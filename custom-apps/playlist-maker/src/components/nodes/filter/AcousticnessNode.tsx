@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function AcousticnessNode(
     props: Readonly<NodeProps<AcousticnessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<AcousticnessData>(
+    const { control, updateNodeField } = useNodeForm<AcousticnessData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('acousticness'),
@@ -46,6 +46,9 @@ export function AcousticnessNode(
                         min={MIN_ACOUSTICNESS}
                         max={MAX_ACOUSTICNESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

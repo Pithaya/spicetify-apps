@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function ValenceNode(
     props: Readonly<NodeProps<ValenceData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<ValenceData>(
+    const { control, updateNodeField } = useNodeForm<ValenceData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('valence'),
@@ -47,6 +47,9 @@ export function ValenceNode(
                         min={MIN_VALENCE}
                         max={MAX_VALENCE}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

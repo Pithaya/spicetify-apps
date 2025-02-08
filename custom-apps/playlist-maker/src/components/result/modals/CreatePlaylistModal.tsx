@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 import { InputError } from '../../inputs/InputError';
 import { SelectController } from '../../inputs/SelectController';
-import { TextInput } from '../../inputs/TextInput';
+import { TextController } from '../../inputs/TextController';
 import styles from './CreatePlaylistModal.module.scss';
 
 const FormSchema = z.object({
@@ -40,7 +40,6 @@ export function CreatePlaylistModal(): JSX.Element {
     );
 
     const {
-        register,
         formState: { errors, isValid },
         getValues,
         control,
@@ -110,9 +109,10 @@ export function CreatePlaylistModal(): JSX.Element {
                         Playlist name
                     </TextComponent>
 
-                    <TextInput
+                    <TextController
                         placeholder={'Playlist name'}
-                        {...register('playlistName')}
+                        control={control}
+                        name="playlistName"
                     />
                 </label>
                 <InputError error={errors.playlistName} />

@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function EnergyNode(
     props: Readonly<NodeProps<EnergyData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<EnergyData>(
+    const { control, updateNodeField } = useNodeForm<EnergyData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('energy'),
@@ -47,6 +47,9 @@ export function EnergyNode(
                         min={MIN_ENERGY}
                         max={MAX_ENERGY}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

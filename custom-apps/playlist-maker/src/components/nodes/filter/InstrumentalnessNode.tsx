@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function InstrumentalnessNode(
     props: Readonly<NodeProps<InstrumentalnessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<InstrumentalnessData>(
+    const { control, updateNodeField } = useNodeForm<InstrumentalnessData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('instrumentalness'),
@@ -47,6 +47,9 @@ export function InstrumentalnessNode(
                         min={MIN_INSTRUMENTALNESS}
                         max={MAX_INSTRUMENTALNESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

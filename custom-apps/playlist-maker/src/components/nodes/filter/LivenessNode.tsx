@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function LivenessNode(
     props: Readonly<NodeProps<LivenessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<LivenessData>(
+    const { control, updateNodeField } = useNodeForm<LivenessData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('liveness'),
@@ -47,6 +47,9 @@ export function LivenessNode(
                         min={MIN_LIVENESS}
                         max={MAX_LIVENESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

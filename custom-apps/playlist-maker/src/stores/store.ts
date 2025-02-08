@@ -147,8 +147,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
         get().reactFlowInstance?.setViewport({ x, y, zoom });
         set({
-            nodes: workflow.nodes || [],
-            edges: workflow.edges || [],
+            nodes: workflow.nodes,
+            edges: workflow.edges,
             hasPendingChanges: false,
             workflowId: workflow.id,
             workflowName: workflow.name,
