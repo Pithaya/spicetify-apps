@@ -9,9 +9,10 @@ import {
     type PlaylistData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/my-playlists-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { LoaderCircle, Music } from 'lucide-react';
+import { Music } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
+import { useDebouncedCallback } from 'use-debounce';
 import { CheckboxController } from '../../inputs/CheckboxController';
 import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
@@ -88,10 +89,26 @@ function PlaylistItemRenderer(
 export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
-    const { onlyMine: onlyMyPlaylists, offset } = props.data;
+    const { onlyMine: onlyMyPlaylists, playlistUri } = props.data;
+
+    const { errors, control, setError, getValues, updateNodeField } =
+        useNodeForm<PlaylistData>(
+            props.id,
+            props.data,
+            getDefaultValueForNodeType('libraryPlaylistSource'),
+            PlaylistDataSchema,
+        );
+
+    // ----- COMBOBOX -----
+
+    const [selectedPlaylist, setSelectedPlaylist] =
+        useState<PlaylistItem | null>(null);
+    const [inputValue, setInputValue] = useState<string>('');
+    const [items, setItems] = useState<PlaylistItem[]>([]);
+    const [debouncedInput, setDebouncedInput] = useState<string>('');
 
     const getPlaylists = useCallback(
-        async (input: string): Promise<PlaylistItem[]> => {
+        async (input: string): Promise<void> => {
             console.log(
                 `NODE - getting playlists with input "${input}"`,
                 onlyMyPlaylists,
@@ -113,7 +130,7 @@ export function LibraryPlaylistSourceNode(
 
             console.log('NODE - got playlists', playlists);
 
-            return playlists.map((p) => ({
+            const items = playlists.map((p) => ({
                 id: p.uri,
                 name: p.name,
                 uri: p.uri,
@@ -124,43 +141,18 @@ export function LibraryPlaylistSourceNode(
                         : null,
                 ownerName: p.owner.displayName,
             }));
+
+            setItems(items);
         },
         [onlyMyPlaylists],
     );
 
-    const [selectedPlaylist, setSelectedPlaylist] =
-        useState<PlaylistItem | null>(null);
-    const [isPlaylistComboReady, setIsPlaylistComboReady] = useState(false);
-
-    const { errors, control, setError, getValues, updateNodeField } =
-        useNodeForm<PlaylistData>(
-            props.id,
-            props.data,
-            getDefaultValueForNodeType('libraryPlaylistSource'),
-            PlaylistDataSchema,
-        );
-
-    useEffect(() => {
-        // On init, get the initial value for the selected playlist
-        // if the playlistUri is not empty
-
-        const { playlistUri } = props.data;
-
-        if (playlistUri === '') {
-            setIsPlaylistComboReady(true);
-            return;
-        }
-
-        const getPlaylist = async (): Promise<void> => {
+    const getPlaylist = useCallback(
+        async (playlistUri: string): Promise<void> => {
             const playlistApi =
                 getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
 
-            console.log(
-                'NODE - node init with playlist',
-                playlistUri,
-                ' and ready',
-                isPlaylistComboReady,
-            );
+            console.log('NODE - getting playlist for uri', playlistUri);
 
             try {
                 const playlist = await playlistApi.getPlaylist(
@@ -168,7 +160,8 @@ export function LibraryPlaylistSourceNode(
                     {},
                     {},
                 );
-                setSelectedPlaylist({
+
+                const playlistItem = {
                     id: playlist.metadata.uri,
                     name: playlist.metadata.name,
                     uri: playlist.metadata.uri,
@@ -177,8 +170,11 @@ export function LibraryPlaylistSourceNode(
                             ? playlist.metadata.images[0].url
                             : null,
                     ownerName: playlist.metadata.owner.displayName,
-                });
-                setIsPlaylistComboReady(true);
+                };
+
+                setSelectedPlaylist(playlistItem);
+                setInputValue(playlist.metadata.name);
+                setItems([playlistItem]);
             } catch (e) {
                 console.error('Failed to fetch playlist', e);
                 setError('playlistUri', {
@@ -186,19 +182,88 @@ export function LibraryPlaylistSourceNode(
                 });
                 updateNodeField({ playlistUri: '' });
             }
+        },
+        [setError, updateNodeField],
+    );
 
-            setIsPlaylistComboReady(true);
+    const itemToString = (item: PlaylistItem): string => item.name;
+
+    // reset : reset combo + update form
+    const resetSelection = (): void => {
+        updateNodeField({ playlistUri: '' });
+        setSelectedPlaylist(null);
+        setInputValue('');
+    };
+
+    const debouncedInputCallback = useDebouncedCallback((value) => {
+        console.log('NODE - debounced input:', value);
+        //setDebouncedInput(value);
+
+        void getPlaylists(value);
+    }, 200);
+
+    // On type: update debounced input to trigger a search
+    const onInputChanged = (value: string): void => {
+        console.log('NODE - input changed:', value);
+        setInputValue(value);
+        debouncedInputCallback(value);
+    };
+
+    // On select click, update input and form
+    const onItemSelected = (item: PlaylistItem | null): void => {
+        console.log('NODE - item selected:', item?.id);
+        updateNodeField({
+            playlistUri: item?.uri ?? '',
+        });
+        setSelectedPlaylist(item);
+        setInputValue(item ? itemToString(item) : '');
+    };
+
+    // on debounced input change, fetch items
+    /*
+    useEffect(() => {
+        const fetchItemsAsync = async (): Promise<void> => {
+            const items = await getPlaylists(debouncedInput);
+            console.log(
+                'NODE - fetched items with input :',
+                debouncedInput,
+                items,
+            );
+            setItems(items);
         };
 
-        void getPlaylist();
-    }, []);
+        void fetchItemsAsync();
+    }, [debouncedInput, getPlaylists]);
+    */
+
+    // When the playlist uri changes (init, load, item selection),
+    // set the combobox selected item
+    useEffect(() => {
+        // First init, set to null (default)
+        if (playlistUri === '') {
+            console.log('CHANGE - empty playlist');
+            setSelectedPlaylist(null);
+            setInputValue('');
+            void getPlaylists('');
+            return;
+        }
+
+        /*
+        if (playlistUri === selectedPlaylist?.uri) {
+            console.log('NODE RELOAD - with playlist no change', playlistUri);
+            return;
+        }*/
+
+        console.log('CHANGE - new playlist', playlistUri);
+        void getPlaylist(playlistUri);
+    }, [playlistUri, getPlaylist, getPlaylists]);
 
     useEffect(() => {
         console.log(
-            'NODE - offset has changed in props.data useEffect',
-            offset,
+            'NODE - playlistUri has changed in props.data useEffect',
+            playlistUri,
         );
-    }, [offset]);
+    }, [playlistUri]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -231,29 +296,21 @@ export function LibraryPlaylistSourceNode(
                     Selected: {props.data.playlistUri}
                 </TextComponent>
                 <NodeComboField error={errors.playlistUri}>
-                    {isPlaylistComboReady && (
-                        <ComboBoxController
-                            control={control}
-                            name="playlistUri"
-                            selectedItem={selectedPlaylist}
-                            onSelectedItemChange={setSelectedPlaylist}
-                            fetchItems={getPlaylists}
-                            itemRenderer={PlaylistItemRenderer}
-                            itemToString={(item: PlaylistItem) => item.name}
-                            label="Playlist"
-                            placeholder="Search for a playlist"
-                            required
-                        />
-                    )}
-                    {!isPlaylistComboReady && (
-                        <div className="bg-spice-tab-active flex h-[34px] items-center justify-end rounded-sm !pe-1">
-                            <LoaderCircle
-                                size={24}
-                                strokeWidth={1}
-                                className="animate-spin"
-                            />
-                        </div>
-                    )}
+                    <ComboBoxController
+                        control={control}
+                        name="playlistUri"
+                        selectedItem={selectedPlaylist}
+                        onItemSelected={onItemSelected}
+                        items={items}
+                        itemRenderer={PlaylistItemRenderer}
+                        itemToString={itemToString}
+                        label="Playlist"
+                        placeholder="Search for a playlist"
+                        required
+                        inputValue={inputValue}
+                        onInputChanged={onInputChanged}
+                        onClear={resetSelection}
+                    />
                 </NodeComboField>
 
                 <NodeField

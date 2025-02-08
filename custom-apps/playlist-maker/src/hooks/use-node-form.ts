@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
     type Control,
     type DefaultValues,
@@ -41,9 +41,12 @@ export function useNodeForm<TForm extends FieldValues>(
         }),
     );
 
-    const updateNodeField = (field: Partial<TForm>): void => {
-        updateNodeData<TForm>(nodeId, field);
-    };
+    const updateNodeField = useCallback(
+        (field: Partial<TForm>): void => {
+            updateNodeData<TForm>(nodeId, field);
+        },
+        [nodeId, updateNodeData],
+    );
 
     const {
         formState: { errors },

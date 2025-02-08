@@ -1,16 +1,12 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useCombobox } from 'downshift';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import React from 'react';
 
 // Used to force open the combobox
 const forceOpen = false;
 
 // TODO: remove logs
-
-// TODO: initial value for selectedItem and inputValue (?)
-// TODO: clear button
 
 export type TComboboxItem = {
     id: string;
@@ -25,37 +21,21 @@ export type ItemRendererProps<T extends TComboboxItem> = {
 
 export type Props<T extends TComboboxItem> = {
     selectedItem: T | null;
-    onSelectedItemChange: (item: T | null) => void;
-    fetchItems: (input: string) => Promise<T[]>;
+    onItemSelected: (item: T) => void;
+    items: T[];
     itemToString: (item: T) => string;
     itemRenderer: (props: ItemRendererProps<T>) => JSX.Element;
     label: string;
     placeholder: string;
+    inputValue: string;
+    onInputChanged: (inputValue: string) => void;
+    onClear: () => void;
 };
 
 export function Combobox<T extends TComboboxItem>(
     props: Readonly<Props<T>>,
 ): JSX.Element {
-    const { fetchItems, selectedItem, onSelectedItemChange } = props;
-
-    const [items, setItems] = useState<T[]>([]);
-    const [debouncedInput, setDebouncedInput] = useState<string>('');
-
-    const debouncedInputCallback = useDebouncedCallback((value) => {
-        setDebouncedInput(value);
-        console.log('COMBO - debounced input:', value);
-    }, 200);
-
-    useEffect(() => {
-        const fetchItemsAsync = async (): Promise<void> => {
-            console.log('COMBO - fetching items with input ', debouncedInput);
-            const items = await fetchItems(debouncedInput);
-            console.log('COMBO - fetched items:', items);
-            setItems(items);
-        };
-
-        void fetchItemsAsync();
-    }, [debouncedInput, fetchItems]);
+    const { selectedItem, items, inputValue } = props;
 
     const {
         isOpen,
@@ -66,8 +46,16 @@ export function Combobox<T extends TComboboxItem>(
         highlightedIndex,
         getItemProps,
     } = useCombobox({
-        onInputValueChange({ inputValue }) {
-            debouncedInputCallback(inputValue);
+        onInputValueChange({ inputValue, selectedItem }) {
+            // Only trigger event on type, not on item selection
+            if (
+                selectedItem &&
+                inputValue === props.itemToString(selectedItem)
+            ) {
+                return;
+            }
+
+            props.onInputChanged(inputValue);
         },
         items,
         itemToString(item) {
@@ -75,8 +63,9 @@ export function Combobox<T extends TComboboxItem>(
         },
         selectedItem,
         onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
-            onSelectedItemChange(newSelectedItem);
+            props.onItemSelected(newSelectedItem);
         },
+        inputValue,
     });
 
     return (
@@ -98,6 +87,13 @@ export function Combobox<T extends TComboboxItem>(
                         id="combobox-search"
                         {...getInputProps()}
                     />
+                    {selectedItem !== null && (
+                        <Spicetify.ReactComponent.TooltipWrapper label="Clear selection">
+                            <button aria-label="clear selection" type="button">
+                                <X size={16} onClick={props.onClear} />
+                            </button>
+                        </Spicetify.ReactComponent.TooltipWrapper>
+                    )}
                     <button
                         aria-label="toggle menu"
                         className="!px-2"
