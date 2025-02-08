@@ -15,7 +15,7 @@ import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
 export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
-    const { control } = useNodeForm<TempoData>(
+    const { control, updateNodeField } = useNodeForm<TempoData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('tempo'),
@@ -44,6 +44,9 @@ export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
                         min={MIN_TEMPO}
                         max={MAX_TEMPO}
                         step={1}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

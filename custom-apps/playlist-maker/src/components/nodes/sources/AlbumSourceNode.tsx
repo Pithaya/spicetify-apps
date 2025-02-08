@@ -4,12 +4,12 @@ import {
     type AlbumData,
     AlbumDataSchema,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
-import { setValueAsOptionalNumber } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { NumberInput } from '../../inputs/NumberInput';
-import { TextInput } from '../../inputs/TextInput';
+import { CheckboxController } from '../../inputs/CheckboxController';
+import { NumberController } from '../../inputs/NumberController';
+import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
@@ -19,7 +19,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function AlbumSourceNode(
     props: Readonly<NodeProps<AlbumData>>,
 ): JSX.Element {
-    const { register, errors } = useNodeForm<AlbumData>(
+    const { errors, control, updateNodeField } = useNodeForm<AlbumData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('albumSource'),
@@ -33,7 +33,15 @@ export function AlbumSourceNode(
                 <NodeTitle title="Album" />
 
                 <NodeField label="URI" tooltip="Album URI" error={errors.uri}>
-                    <TextInput placeholder="URI" {...register('uri')} />
+                    <TextController
+                        placeholder="URI"
+                        control={control}
+                        name="uri"
+                        required={true}
+                        onChange={(value) => {
+                            updateNodeField({ uri: value });
+                        }}
+                    />
                 </NodeField>
 
                 <NodeField
@@ -41,11 +49,13 @@ export function AlbumSourceNode(
                     tooltip="Number of elements to skip"
                     error={errors.offset}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="0"
-                        {...register('offset', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="offset"
+                        onChange={(value) => {
+                            updateNodeField({ offset: value });
+                        }}
                     />
                 </NodeField>
 
@@ -54,11 +64,13 @@ export function AlbumSourceNode(
                     tooltip="Number of elements to take. Leave empty to take all elements."
                     error={errors.limit}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="None"
-                        {...register('limit', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="limit"
+                        onChange={(value) => {
+                            updateNodeField({ limit: value });
+                        }}
                     />
                 </NodeField>
 
@@ -66,7 +78,15 @@ export function AlbumSourceNode(
                     <TextComponent elementType="small">
                         Only liked
                     </TextComponent>
-                    <input type="checkbox" {...register('onlyLiked')} />
+                    <div className="flex justify-end">
+                        <CheckboxController
+                            control={control}
+                            name="onlyLiked"
+                            onChange={(value) => {
+                                updateNodeField({ onlyLiked: value });
+                            }}
+                        />
+                    </div>
                 </label>
             </NodeContent>
             <Handle

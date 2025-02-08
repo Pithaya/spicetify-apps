@@ -7,6 +7,7 @@ import {
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
+import { CheckboxController } from '../../inputs/CheckboxController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
@@ -15,12 +16,14 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function IsPlayableNode(
     props: Readonly<NodeProps<IsPlayableData>>,
 ): JSX.Element {
-    const { register } = useNodeForm<IsPlayableData>(
+    const { control, updateNodeField } = useNodeForm<IsPlayableData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('isPlayable'),
         IsPlayableDataSchema,
     );
+
+    // TODO: NodeCheckboxField
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -32,7 +35,13 @@ export function IsPlayableNode(
                     <TextComponent elementType="small">
                         Is playable ?
                     </TextComponent>
-                    <input type="checkbox" {...register('isPlayable')} />
+                    <CheckboxController
+                        control={control}
+                        name="isPlayable"
+                        onChange={(value) => {
+                            updateNodeField({ isPlayable: value });
+                        }}
+                    />
                 </label>
             </NodeContent>
             <Handle

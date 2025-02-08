@@ -14,13 +14,15 @@ import { NodeField } from '../shared/NodeField';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const modes: Item[] = [
+// TODO: Mode enum
+
+const modes: Item<'1' | '0'>[] = [
     { label: 'Major', value: '1' },
     { label: 'Minor', value: '0' },
 ];
 
 export function ModeNode(props: Readonly<NodeProps<ModeData>>): JSX.Element {
-    const { control, errors } = useNodeForm<ModeData>(
+    const { control, errors, updateNodeField } = useNodeForm<ModeData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('mode'),
@@ -39,6 +41,9 @@ export function ModeNode(props: Readonly<NodeProps<ModeData>>): JSX.Element {
                         name="mode"
                         control={control}
                         items={modes}
+                        onChange={(value) => {
+                            updateNodeField({ mode: value });
+                        }}
                     />
                 </NodeField>
             </NodeContent>

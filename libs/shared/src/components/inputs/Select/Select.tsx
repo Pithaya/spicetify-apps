@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { type RefCallback } from 'react';
 
-export type Item = {
-    value: string;
+export type Item<T extends string> = {
+    value: T;
     label: string;
 };
 
-export type Props = {
+export type Props<T extends string> = {
     selectLabel: string;
-    items: Item[];
-    onItemClicked: (item: Item) => void;
+    items: Item<T>[];
+    onItemClicked: (item: Item<T>) => void;
     selectedValue: string | undefined;
     disabled?: boolean;
+    onBlur?: () => void;
+    name: string;
+    ref?: RefCallback<HTMLSelectElement>;
 };
 
-export function Select(props: Readonly<Props>): JSX.Element {
+export function Select<T extends string>(
+    props: Readonly<Props<T>>,
+): JSX.Element {
     return (
         <select
             className="main-dropDown-dropDown"
+            name={props.name}
             disabled={props.disabled}
             value={props.selectedValue}
             onChange={(event) => {
@@ -28,6 +34,8 @@ export function Select(props: Readonly<Props>): JSX.Element {
                     props.onItemClicked(item);
                 }
             }}
+            onBlur={props.onBlur}
+            ref={props.ref}
         >
             {!props.selectedValue && (
                 <option value={props.selectedValue} disabled selected={true}>

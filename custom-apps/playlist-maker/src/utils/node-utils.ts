@@ -96,6 +96,7 @@ import {
 } from '../models/nodes/sources/top-tracks-source-processor';
 import useAppStore from '../stores/store';
 
+// Use undefined instead of null so that empty form values will not be persisted in storage.
 const nodeDefautValuesFactory: Record<
     CustomNodeType,
     () => Record<string, unknown>

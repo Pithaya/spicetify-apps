@@ -17,7 +17,7 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function SpeechinessNode(
     props: Readonly<NodeProps<SpeechinessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<SpeechinessData>(
+    const { control, updateNodeField } = useNodeForm<SpeechinessData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('speechiness'),
@@ -47,6 +47,9 @@ export function SpeechinessNode(
                         min={MIN_SPEECHINESS}
                         max={MAX_SPEECHINESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

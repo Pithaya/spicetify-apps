@@ -1,40 +1,55 @@
+import type { Item } from '@shared/components/inputs/Select/Select';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     LikedSongsDataSchema,
     type LikedSongsData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
-import {
-    setValueAsOptionalNumber,
-    setValueAsOptionalString,
-} from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import { NumberInput } from '../../inputs/NumberInput';
+import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
-import { TextInput } from '../../inputs/TextInput';
+import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const propertyValues: Record<LikedSongsData['sortField'], string> = {
-    ADDED_AT: 'Added at',
-    ALBUM_NAME: 'Album',
-    ARTIST_NAME: 'Artist',
-    NAME: 'Name',
-};
+const sortFieldItems: Item<LikedSongsData['sortField']>[] = [
+    {
+        label: 'Added at',
+        value: 'ADDED_AT',
+    },
+    {
+        label: 'Album',
+        value: 'ALBUM_NAME',
+    },
+    {
+        label: 'Artist',
+        value: 'ARTIST_NAME',
+    },
+    {
+        label: 'Name',
+        value: 'NAME',
+    },
+];
 
-const orderValues: Record<LikedSongsData['sortOrder'], string> = {
-    ASC: 'Ascending',
-    DESC: 'Descending',
-};
+const sortOrderItems: Item<LikedSongsData['sortOrder']>[] = [
+    {
+        label: 'Ascending',
+        value: 'ASC',
+    },
+    {
+        label: 'Descending',
+        value: 'DESC',
+    },
+];
 
 export function LikedSongsSourceNode(
     props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
-    const { control, register, errors } = useNodeForm<LikedSongsData>(
+    const { control, errors, updateNodeField } = useNodeForm<LikedSongsData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('likedSongsSource'),
@@ -52,11 +67,13 @@ export function LikedSongsSourceNode(
                     tooltip="Search filter to apply"
                     error={errors.filter}
                 >
-                    <TextInput
+                    <TextController
+                        control={control}
                         placeholder="Search"
-                        {...register('filter', {
-                            setValueAs: setValueAsOptionalString,
-                        })}
+                        name="filter"
+                        onChange={(value) => {
+                            updateNodeField({ filter: value });
+                        }}
                     />
                 </NodeField>
 
@@ -65,11 +82,13 @@ export function LikedSongsSourceNode(
                     tooltip="Number of elements to skip"
                     error={errors.offset}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="0"
-                        {...register('offset', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="offset"
+                        onChange={(value) => {
+                            updateNodeField({ offset: value });
+                        }}
                     />
                 </NodeField>
 
@@ -78,11 +97,13 @@ export function LikedSongsSourceNode(
                     tooltip="Number of elements to take. Leave empty to take all elements."
                     error={errors.limit}
                 >
-                    <NumberInput
+                    <NumberController
                         placeholder="None"
-                        {...register('limit', {
-                            setValueAs: setValueAsOptionalNumber,
-                        })}
+                        control={control}
+                        name="limit"
+                        onChange={(value) => {
+                            updateNodeField({ limit: value });
+                        }}
                     />
                 </NodeField>
 
@@ -90,26 +111,22 @@ export function LikedSongsSourceNode(
                     <SelectController
                         name="sortField"
                         control={control}
-                        items={Object.entries(propertyValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={sortFieldItems}
                         label="Property to sort on"
+                        onChange={(value) => {
+                            updateNodeField({ sortField: value });
+                        }}
                     />
                 </NodeField>
                 <NodeField label="Order" error={errors.sortOrder}>
                     <SelectController
                         name="sortOrder"
                         control={control}
-                        items={Object.entries(orderValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={sortOrderItems}
                         label="Sort order"
+                        onChange={(value) => {
+                            updateNodeField({ sortOrder: value });
+                        }}
                     />
                 </NodeField>
             </NodeContent>

@@ -3,12 +3,11 @@ import {
     LocalTracksDataSchema,
     type LocalTracksData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/local-tracks-source-processor';
-import { setValueAsOptionalString } from 'custom-apps/playlist-maker/src/utils/form-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { SelectController } from '../../inputs/SelectController';
-import { TextInput } from '../../inputs/TextInput';
+import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
@@ -32,7 +31,7 @@ const orderValues: Record<LocalTracksData['sortOrder'], string> = {
 export function LocalTracksSourceNode(
     props: Readonly<NodeProps<LocalTracksData>>,
 ): JSX.Element {
-    const { control, register, errors } = useNodeForm<LocalTracksData>(
+    const { control, errors, updateNodeField } = useNodeForm<LocalTracksData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('localTracksSource'),
@@ -50,11 +49,13 @@ export function LocalTracksSourceNode(
                     label="Filter"
                     error={errors.filter}
                 >
-                    <TextInput
+                    <TextController
                         placeholder="Search"
-                        {...register('filter', {
-                            setValueAs: setValueAsOptionalString,
-                        })}
+                        control={control}
+                        name="filter"
+                        onChange={(value) => {
+                            updateNodeField({ filter: value });
+                        }}
                     />
                 </NodeField>
 
@@ -69,6 +70,9 @@ export function LocalTracksSourceNode(
                                 value: key,
                             }),
                         )}
+                        onChange={(value) => {
+                            updateNodeField({ sortField: value as any });
+                        }}
                     />
                 </NodeField>
                 <NodeField label="Order" error={errors.sortOrder}>
@@ -82,6 +86,9 @@ export function LocalTracksSourceNode(
                                 value: key,
                             }),
                         )}
+                        onChange={(value) => {
+                            updateNodeField({ sortOrder: value as any });
+                        }}
                     />
                 </NodeField>
             </NodeContent>

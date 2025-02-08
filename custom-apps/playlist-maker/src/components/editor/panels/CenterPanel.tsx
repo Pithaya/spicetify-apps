@@ -11,7 +11,7 @@ import { Panel } from 'reactflow';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 import { InputError } from '../../inputs/InputError';
-import { TextInput } from '../../inputs/TextInput';
+import { TextController } from '../../inputs/TextController';
 import { WorkflowsModal } from '../../workflows/WorkflowsModal';
 import styles from './CenterPanel.module.scss';
 
@@ -55,7 +55,6 @@ export function CenterPanel(): JSX.Element {
     );
 
     const {
-        register,
         formState: { errors, isValid },
         control,
         getValues,
@@ -118,10 +117,11 @@ export function CenterPanel(): JSX.Element {
         >
             <div>
                 <div className={styles['flex-row']}>
-                    <TextInput
-                        className={styles['title-input']}
+                    <TextController
                         placeholder=""
-                        {...register('workflowName')}
+                        control={control}
+                        name="workflowName"
+                        required
                     />
                     <Spicetify.ReactComponent.TooltipWrapper label="Save workflow">
                         <Spicetify.ReactComponent.ButtonTertiary
