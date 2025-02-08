@@ -19,10 +19,18 @@
 
 @layer components {
     .app-container {
-        @apply absolute left-0 right-0 top-0 bottom-0 bg-spice-sidebar;
+        @apply bg-spice-sidebar absolute top-0 right-0 bottom-0 left-0;
     }
 
     .panel {
         @apply bg-spice-main rounded-lg;
+    }
+}
+
+@layer base {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 }

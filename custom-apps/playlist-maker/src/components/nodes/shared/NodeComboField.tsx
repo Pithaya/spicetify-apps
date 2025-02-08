@@ -8,7 +8,7 @@ export type Props = PropsWithChildren<{
 
 export function NodeComboField(props: Readonly<Props>): JSX.Element {
     return (
-        <div className="nowheel nodrag">
+        <div>
             {props.children}
             <InputError error={props.error} />
         </div>

@@ -6,7 +6,7 @@ export function NodeContent(
     return (
         <div
             className={Spicetify.classnames(
-                'flex flex-col gap-1 !p-2',
+                'nowheel nodrag flex cursor-default flex-col gap-1 !p-2',
                 props.className,
             )}
         >

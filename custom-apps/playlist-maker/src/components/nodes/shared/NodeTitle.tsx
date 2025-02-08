@@ -19,10 +19,9 @@ export function NodeTitle(props: Readonly<Props>): JSX.Element {
                     showDelay={100}
                 >
                     <CircleHelp
-                        className="nodrag"
                         size={14}
                         strokeWidth={1.5}
-                        style={{ cursor: 'help' }}
+                        className="cursor-help"
                     />
                 </Spicetify.ReactComponent.TooltipWrapper>
             )}
