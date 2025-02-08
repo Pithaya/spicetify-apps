@@ -29,17 +29,19 @@ export function ComboBoxController<
             control={props.control}
             render={({ field: { onChange } }) => (
                 <Combobox
-                    fetchItems={props.fetchItems}
+                    items={props.items}
                     itemRenderer={props.itemRenderer}
                     itemToString={props.itemToString}
                     label={props.label}
                     placeholder={props.placeholder}
                     selectedItem={props.selectedItem}
-                    onSelectedItemChange={(item) => {
-                        console.log('COMBOCTRL - selected item changed', item);
-                        props.onSelectedItemChange(item);
+                    onItemSelected={(item) => {
+                        props.onItemSelected(item);
                         onChange(item?.id ?? (required ? '' : undefined));
                     }}
+                    inputValue={props.inputValue}
+                    onInputChanged={props.onInputChanged}
+                    onClear={props.onClear}
                 />
             )}
         />
