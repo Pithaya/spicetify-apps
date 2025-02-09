@@ -133,7 +133,7 @@ export function Sidenav(): JSX.Element {
                         />
                         <SidenavItem
                             label="Saved album"
-                            nodeType="albumSource"
+                            nodeType="libraryAlbumSource"
                             tooltip="Get tracks from an album in your library."
                         />
                     </ul>

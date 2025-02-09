@@ -16,7 +16,7 @@ import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNo
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { ResultNode } from '../../components/nodes/result/ResultNode';
-import { AlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
+import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylistSourceNode';
 import { LikedSongsSourceNode } from '../../components/nodes/sources/LikedSongsSourceNode';
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracksSourceNode';
@@ -27,7 +27,7 @@ type SourceNodes =
     | 'localTracksSource'
     | 'libraryPlaylistSource'
     | 'topTracksSource'
-    | 'albumSource';
+    | 'libraryAlbumSource';
 
 type FilterNodes =
     | 'genre'
@@ -56,7 +56,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     localTracksSource: LocalTracksSourceNode,
     libraryPlaylistSource: LibraryPlaylistSourceNode,
     topTracksSource: TopTracksSourceNode,
-    albumSource: AlbumSourceNode,
+    libraryAlbumSource: LibraryAlbumSourceNode,
     deduplicate: DeduplicateNode,
     genre: GenreNode,
     isPlayable: IsPlayableNode,
