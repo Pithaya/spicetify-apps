@@ -30,7 +30,7 @@ export type LibraryAPI = {
     }>;
 
     getContents: (params?: {
-        expandedFolders: unknown[];
+        expandedFolders?: unknown[];
         textFilter?: string;
         filters?: string[];
         offset?: number;
@@ -38,10 +38,10 @@ export type LibraryAPI = {
         filtersPickedByUser?: boolean;
         folderUri?: string;
         sortOrder?: string;
-        includeLikedSongs: boolean;
-        includeLocalFiles: boolean;
-        includePreReleases: boolean;
-        includeYourEpisodes: boolean;
+        includeLikedSongs?: boolean;
+        includeLocalFiles?: boolean;
+        includePreReleases?: boolean;
+        includeYourEpisodes?: boolean;
     }) => Promise<GetContentsResponse>;
 };
 

@@ -238,7 +238,7 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
-    albumSource: () => {
+    libraryAlbumSource: () => {
         const data: AlbumData = {
             uri: '',
             limit: undefined,
@@ -315,7 +315,7 @@ const nodeProcessorFactory: Record<
         new PlaylistSourceProcessor(node.id, [], node.data),
     topTracksSource: (node, incomers) =>
         new TopTracksSourceProcessor(node.id, [], node.data),
-    albumSource: (node, incomers) =>
+    libraryAlbumSource: (node, incomers) =>
         new AlbumSourceProcessor(node.id, [], node.data),
     deduplicate: (node, incomers) =>
         new DeduplicateProcessor(

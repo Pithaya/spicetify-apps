@@ -10,7 +10,11 @@ export type Props = PropsWithChildren<{
 
 export function NodeCheckboxField(props: Readonly<Props>): JSX.Element {
     return (
-        <NodeField label={props.label} error={props.error}>
+        <NodeField
+            label={props.label}
+            error={props.error}
+            tooltip={props.tooltip}
+        >
             <div className="flex justify-end">{props.children}</div>
         </NodeField>
     );

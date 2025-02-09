@@ -20,12 +20,12 @@ import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
 import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
+import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
-import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 
 const propertyValues: Record<PlaylistData['sortField'], string> = {
     ALBUM: 'Album',
@@ -179,10 +179,12 @@ export function LibraryPlaylistSourceNode(
         [setError, updateNodeField],
     );
 
-    const itemToString = (item: PlaylistItem): string => item.name;
+    const itemToString = useCallback(
+        (item: PlaylistItem): string => item.name,
+        [],
+    );
 
     const {
-        syncComboboxValues,
         inputValue,
         items,
         onInputChanged,
@@ -190,37 +192,19 @@ export function LibraryPlaylistSourceNode(
         resetSelection,
         selectedItem,
         syncInputWithSelectedItem,
-    } = useComboboxValues<PlaylistItem>(getPlaylists, itemToString, (item) => {
-        updateNodeField({ playlistUri: item?.uri ?? '' });
-    });
+        onSelectedIdChanged,
+    } = useComboboxValues<PlaylistItem>(
+        getPlaylist,
+        getPlaylists,
+        itemToString,
+        (item) => {
+            updateNodeField({ playlistUri: item?.uri ?? '' });
+        },
+    );
 
-    // When the playlist uri changes (init, load, item selection),
-    // set the combobox selected item
     useEffect(() => {
-        async function onPlaylistUriChanged(): Promise<void> {
-            // First init, set to null (default)
-            if (playlistUri === '') {
-                console.log('CHANGE - empty playlist');
-                const playlists = await getPlaylists('');
-                syncComboboxValues(null, '', playlists);
-
-                return;
-            }
-
-            console.log('CHANGE - new playlist', playlistUri);
-            const playlist = await getPlaylist(playlistUri);
-
-            if (playlist === null) {
-                syncComboboxValues(null, '', []);
-            } else {
-                syncComboboxValues(playlist, itemToString(playlist), [
-                    playlist,
-                ]);
-            }
-        }
-
-        void onPlaylistUriChanged();
-    }, [playlistUri, getPlaylist, getPlaylists, syncComboboxValues]);
+        void onSelectedIdChanged(playlistUri);
+    }, [playlistUri, onSelectedIdChanged]);
 
     return (
         <Node isExecuting={props.data.isExecuting}>
