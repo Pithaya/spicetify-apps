@@ -42,6 +42,7 @@ export function ComboBoxController<
                     inputValue={props.inputValue}
                     onInputChanged={props.onInputChanged}
                     onClear={props.onClear}
+                    onBlur={props.onBlur}
                 />
             )}
         />

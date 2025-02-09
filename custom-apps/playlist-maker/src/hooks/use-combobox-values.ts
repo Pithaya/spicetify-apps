@@ -10,6 +10,7 @@ type UseComboboxValuesReturn<T extends TComboboxItem> = {
     inputValue: string;
     onInputChanged: (value: string) => void;
     resetSelection: () => void;
+    syncInputWithSelectedItem: () => void;
 };
 
 export function useComboboxValues<T extends TComboboxItem>(
@@ -66,6 +67,12 @@ export function useComboboxValues<T extends TComboboxItem>(
         [],
     );
 
+    // Sync input with selected item
+    // Used on blur to cancel an incomplete search
+    const syncInputWithSelectedItem = (): void => {
+        setInputValue(selectedItem ? itemToString(selectedItem) : '');
+    };
+
     return {
         syncComboboxValues,
         selectedItem,
@@ -74,5 +81,6 @@ export function useComboboxValues<T extends TComboboxItem>(
         inputValue,
         onInputChanged,
         resetSelection,
+        syncInputWithSelectedItem,
     };
 }

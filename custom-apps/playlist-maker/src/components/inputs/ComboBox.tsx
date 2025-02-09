@@ -30,6 +30,7 @@ export type Props<T extends TComboboxItem> = {
     inputValue: string;
     onInputChanged: (inputValue: string) => void;
     onClear: () => void;
+    onBlur: () => void;
 };
 
 export function Combobox<T extends TComboboxItem>(
@@ -86,6 +87,9 @@ export function Combobox<T extends TComboboxItem>(
                         className="w-full truncate !p-1.5"
                         id="combobox-search"
                         {...getInputProps()}
+                        onBlur={() => {
+                            props.onBlur();
+                        }}
                     />
                     {selectedItem !== null && (
                         <Spicetify.ReactComponent.TooltipWrapper label="Clear selection">
