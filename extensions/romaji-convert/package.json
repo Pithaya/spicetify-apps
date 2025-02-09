@@ -17,6 +17,7 @@
     "devDependencies": {
         "i18next": "^23.7.6",
         "kuroshiro": "^1.2.0",
-        "kuroshiro-analyzer-kuromoji": "^1.1.0"
+        "kuroshiro-analyzer-kuromoji": "^1.1.0",
+        "lucide-react": "^0.475.0"
     }
 }
