@@ -1,24 +1,21 @@
-import React from 'react';
-import { SubmenuItem } from './SubmenuItem';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import {
-    ALBUM_ROUTE,
-    ARTIST_ROUTE,
-    SPOTIFY_MENU_CLASSES,
-} from 'custom-apps/better-local-files/src/constants/constants';
-import { ArtistSelectionMenu } from './ArtistSelectionMenu';
-import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type { ITrack } from '@shared/components/track-list/models/interfaces';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import { addToQueuePath } from '@shared/icons/icons';
 import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
+import { addToQueuePath } from '@shared/icons/icons';
 import type { LibraryAPI } from '@shared/platform/library';
 import type { PlayerAPI } from '@shared/platform/player';
-import type { ITrack } from '@shared/components/track-list/models/interfaces';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getTranslation } from '@shared/utils/translations.utils';
+import React from 'react';
+import { ArtistSelectionMenu } from '../menus/ArtistSelectionMenu';
+import { Menu } from '../menus/Menu';
+import { PlaylistSelectionMenu } from '../menus/PlaylistSelectionMenu';
+import { SubmenuItem } from '../menus/SubmenuItem';
 
 export type Props = {
     track: ITrack;
+    onArtistClick: (uri: string) => void;
+    onAlbumClick: (uri: string) => void;
 };
 
 export function RowMenu(props: Readonly<Props>): JSX.Element {
@@ -83,7 +80,7 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
     }
 
     return (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
+        <Menu>
             <SubmenuItem
                 label={getTranslation(['contextmenu.add-to-playlist'])}
                 submenu={
@@ -107,7 +104,7 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
             {props.track.artists.length === 1 ? (
                 <Spicetify.ReactComponent.MenuItem
                     onClick={() => {
-                        navigateTo(ARTIST_ROUTE, props.track.artists[0].uri);
+                        props.onArtistClick(props.track.artists[0].uri);
                     }}
                     leadingIcon={<SpotifyIcon icon="artist" iconSize={16} />}
                 >
@@ -117,7 +114,10 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
                 <SubmenuItem
                     label={getTranslation(['contextmenu.go-to-artist'])}
                     submenu={
-                        <ArtistSelectionMenu artists={props.track.artists} />
+                        <ArtistSelectionMenu
+                            artists={props.track.artists}
+                            onArtistClick={props.onArtistClick}
+                        />
                     }
                     leadingIcon={<SpotifyIcon icon="artist" iconSize={16} />}
                 />
@@ -125,12 +125,12 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
 
             <Spicetify.ReactComponent.MenuItem
                 onClick={() => {
-                    navigateTo(ALBUM_ROUTE, props.track.album.uri);
+                    props.onAlbumClick(props.track.album.uri);
                 }}
                 leadingIcon={<SpotifyIcon icon="album" iconSize={16} />}
             >
                 <span>{getTranslation(['contextmenu.go-to-album'])}</span>
             </Spicetify.ReactComponent.MenuItem>
-        </Spicetify.ReactComponent.Menu>
+        </Menu>
     );
 }

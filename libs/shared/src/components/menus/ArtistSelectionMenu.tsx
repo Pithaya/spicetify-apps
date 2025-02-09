@@ -1,22 +1,19 @@
-import {
-    ARTIST_ROUTE,
-    SPOTIFY_MENU_CLASSES,
-} from 'custom-apps/better-local-files/src/constants/constants';
-import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import React from 'react';
+import { Menu } from './Menu';
 
 export type Props = {
     artists: { name: string; uri: string }[];
+    onArtistClick: (uri: string) => void;
 };
 
 export function ArtistSelectionMenu(props: Readonly<Props>): JSX.Element {
     return (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
+        <Menu>
             {props.artists.map((a) => {
                 return (
                     <Spicetify.ReactComponent.MenuItem
                         onClick={() => {
-                            navigateTo(ARTIST_ROUTE, a.uri);
+                            props.onArtistClick(a.uri);
                         }}
                         key={a.uri}
                     >
@@ -24,6 +21,6 @@ export function ArtistSelectionMenu(props: Readonly<Props>): JSX.Element {
                     </Spicetify.ReactComponent.MenuItem>
                 );
             })}
-        </Spicetify.ReactComponent.Menu>
+        </Menu>
     );
 }

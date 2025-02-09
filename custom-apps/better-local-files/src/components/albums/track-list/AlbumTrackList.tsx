@@ -1,22 +1,25 @@
-import React from 'react';
-import { playContext, playTrack } from '../../../utils/player.utils';
-import { PlayButton } from '@shared/components/ui/PlayButton';
+import { MultiTrackMenu } from '@shared/components/menus/MultiTrackMenu';
 import type { SubTracksList } from '@shared/components/track-list/TrackListGrid';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
+import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
 import { TrackListRowTitle } from '@shared/components/track-list/TrackListRowTitle';
 import type {
     HeaderKey,
     LibraryHeaders,
     TrackListHeaderOption,
 } from '@shared/components/track-list/models/sort-option';
-import { DiscDivider } from './DiscDivider';
-import { MoreButton } from '../../shared/buttons/MoreButton';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import { getTranslation } from '@shared/utils/translations.utils';
+import {
+    ALBUM_ROUTE,
+    ARTIST_ROUTE,
+} from 'custom-apps/better-local-files/src/constants/constants';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
-import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import { RowMenu } from '../../shared/menus/RowMenu';
+import React from 'react';
+import { playContext, playTrack } from '../../../utils/player.utils';
+import { MoreButton } from '../../shared/buttons/MoreButton';
+import { DiscDivider } from './DiscDivider';
 
 export type Props = {
     albumName: string;
@@ -98,7 +101,17 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                     ];
                 }}
                 displayType="list"
-                getRowMenu={(track) => <RowMenu track={track} />}
+                getRowMenu={(track) => (
+                    <RowMenu
+                        track={track}
+                        onArtistClick={(uri) => {
+                            navigateTo(ARTIST_ROUTE, uri);
+                        }}
+                        onAlbumClick={(uri) => {
+                            navigateTo(ALBUM_ROUTE, uri);
+                        }}
+                    />
+                )}
             ></TrackListGrid>
         </>
     );
