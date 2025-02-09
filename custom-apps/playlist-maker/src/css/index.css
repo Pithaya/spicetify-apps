@@ -12,6 +12,8 @@
     --color-spice-highlight-elevated-hover: hsl(
         from rgb(var(--spice-rgb-highlight-elevated)) h s calc(l + 12)
     );
+    --color-spice-main-elevated: var(--spice-main-elevated);
+    --color-spice-button: var(--spice-button);
 }
 
 @utility gap-panel {

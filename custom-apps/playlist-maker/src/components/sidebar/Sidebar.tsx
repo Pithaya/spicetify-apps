@@ -22,7 +22,7 @@ function PlaceholderSidenavItem(
                 label="Coming soon"
                 showDelay={100}
             >
-                <li className="text-spice-subtext w-full cursor-not-allowed border-none bg-transparent !py-1 text-start">
+                <li className="w-full cursor-not-allowed border-none bg-transparent !py-1 text-start opacity-50">
                     <TextComponent elementType="span" fontSize="medium">
                         {props.label}
                     </TextComponent>
@@ -61,13 +61,9 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                             onNodeSelected(props.nodeType);
                         }
                     }}
-                    className="hover:bg-spice-highlight w-full cursor-grab border-none bg-transparent !py-1 text-start"
+                    className="hover:bg-spice-highlight hover:!text-spice-text w-full cursor-grab border-none bg-transparent !py-1 text-start"
                 >
-                    <TextComponent
-                        elementType="span"
-                        fontSize="medium"
-                        semanticColor="textBase"
-                    >
+                    <TextComponent elementType="span" fontSize="medium">
                         {props.label}
                     </TextComponent>
                 </button>
@@ -109,7 +105,7 @@ function SidebarTitle(props: Readonly<{ label: string }>): JSX.Element {
 
 export function Sidenav(): JSX.Element {
     return (
-        <div className="text-spice-text flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
                 <SidebarTitle label="Sources" />
 

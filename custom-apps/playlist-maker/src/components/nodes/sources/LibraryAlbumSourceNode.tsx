@@ -1,4 +1,3 @@
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     type AlbumData,
@@ -11,6 +10,7 @@ import { CheckboxController } from '../../inputs/CheckboxController';
 import { NumberController } from '../../inputs/NumberController';
 import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
+import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
@@ -74,20 +74,19 @@ export function AlbumSourceNode(
                     />
                 </NodeField>
 
-                <label>
-                    <TextComponent elementType="small">
-                        Only liked
-                    </TextComponent>
-                    <div className="flex justify-end">
-                        <CheckboxController
-                            control={control}
-                            name="onlyLiked"
-                            onChange={(value) => {
-                                updateNodeField({ onlyLiked: value });
-                            }}
-                        />
-                    </div>
-                </label>
+                <NodeCheckboxField
+                    label="Only liked songs"
+                    tooltip="Only keep songs that are liked in this album"
+                    error={errors.onlyLiked}
+                >
+                    <CheckboxController
+                        control={control}
+                        name="onlyLiked"
+                        onChange={(value) => {
+                            updateNodeField({ onlyLiked: value });
+                        }}
+                    />
+                </NodeCheckboxField>
             </NodeContent>
             <Handle
                 type="source"
