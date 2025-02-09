@@ -47,17 +47,6 @@ export function Combobox<T extends TComboboxItem>(
         highlightedIndex,
         getItemProps,
     } = useCombobox({
-        onInputValueChange({ inputValue, selectedItem }) {
-            // Only trigger event on type, not on item selection
-            if (
-                selectedItem &&
-                inputValue === props.itemToString(selectedItem)
-            ) {
-                return;
-            }
-
-            props.onInputChanged(inputValue);
-        },
         items,
         itemToString(item) {
             return item ? props.itemToString(item) : '';
@@ -83,10 +72,26 @@ export function Combobox<T extends TComboboxItem>(
                 </label>
                 <div className="bg-spice-tab-active flex gap-0.5 rounded-sm !pe-1">
                     <input
+                        {...getInputProps({
+                            onChange: (
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                                const value = e.target.value;
+
+                                // Only trigger event on type, not on item selection
+                                if (
+                                    selectedItem &&
+                                    value === props.itemToString(selectedItem)
+                                ) {
+                                    return;
+                                }
+
+                                props.onInputChanged(value);
+                            },
+                        })}
                         placeholder={props.placeholder}
                         className="w-full truncate !p-1.5"
                         id="combobox-search"
-                        {...getInputProps()}
                         onBlur={() => {
                             props.onBlur();
                         }}
