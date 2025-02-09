@@ -79,6 +79,10 @@ import {
     AlbumSourceProcessor,
 } from '../models/nodes/sources/album-source-processor';
 import {
+    type ArtistData,
+    ArtistTracksSourceProcessor,
+} from '../models/nodes/sources/artist-tracks-source-processor';
+import {
     type LikedSongsData,
     LikedSongsSourceProcessor,
 } from '../models/nodes/sources/liked-songs-source-processor';
@@ -297,6 +301,14 @@ const nodeDefautValuesFactory: Record<
     result: () => {
         return { isExecuting: undefined };
     },
+    libraryArtistSource: () => {
+        const data: ArtistData = {
+            uri: '',
+            isExecuting: undefined,
+            trackType: 'liked',
+        };
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (type: CustomNodeType): any => {
@@ -317,6 +329,12 @@ const nodeProcessorFactory: Record<
         new TopTracksSourceProcessor(node.id, [], node.data),
     libraryAlbumSource: (node, incomers) =>
         new AlbumSourceProcessor(node.id, [], node.data),
+    libraryArtistSource: (node, incomers) =>
+        new ArtistTracksSourceProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
     deduplicate: (node, incomers) =>
         new DeduplicateProcessor(
             node.id,

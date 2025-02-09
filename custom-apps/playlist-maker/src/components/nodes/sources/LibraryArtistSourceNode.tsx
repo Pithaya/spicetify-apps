@@ -1,7 +1,8 @@
+import { type Item } from '@shared/components/inputs/Select/Select';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
+import { queryArtistOverview } from '@shared/graphQL/queries/query-artist-overview';
 import {
-    type GetContentsAlbumItem,
+    type GetContentsArtistItem,
     type GetContentsItem,
     GetContentsRootFilterIds,
     type LibraryAPI,
@@ -10,41 +11,58 @@ import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
-    type AlbumData,
-    AlbumDataSchema,
-} from 'custom-apps/playlist-maker/src/models/nodes/sources/album-source-processor';
+    type ArtistData,
+    ArtistDataSchema,
+    type ArtistTrackType,
+} from 'custom-apps/playlist-maker/src/models/nodes/sources/artist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { CheckboxController } from '../../inputs/CheckboxController';
 import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
-import { NumberController } from '../../inputs/NumberController';
+import { SelectController } from '../../inputs/SelectController';
 import { Node } from '../shared/Node';
-import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-type AlbumItem = {
+const trackTypeItems: Item<ArtistTrackType>[] = [
+    {
+        label: 'Liked tracks',
+        value: 'liked',
+    },
+    {
+        label: 'Top tracks & popular releases',
+        value: 'top',
+    },
+    {
+        label: 'Latest release',
+        value: 'latest',
+    },
+    {
+        label: 'All tracks',
+        value: 'discography',
+    },
+];
+
+type ArtistItem = {
     id: string;
     uri: string;
     name: string;
     image: string | null;
-    artists: string;
 };
 
-function isContentAlbumItem(
+function isContentArtistItem(
     item: GetContentsItem,
-): item is GetContentsAlbumItem {
-    return item.type === 'album';
+): item is GetContentsArtistItem {
+    return item.type === 'artist';
 }
 
-function AlbumItemRenderer(
-    props: Readonly<ItemRendererProps<AlbumItem>>,
+function ArtistItemRenderer(
+    props: Readonly<ItemRendererProps<ArtistItem>>,
 ): JSX.Element {
     return (
         <div className="flex max-h-[80px] items-stretch gap-2">
@@ -52,8 +70,8 @@ function AlbumItemRenderer(
                 {props.item.image && (
                     <img
                         src={props.item.image}
-                        className="rounded-md object-contain"
-                        alt="album"
+                        className="rounded-full object-contain"
+                        alt="artist"
                     />
                 )}
                 {props.item.image === null && (
@@ -70,45 +88,43 @@ function AlbumItemRenderer(
                 >
                     {props.item.name}
                 </span>
-                <span className="truncate text-sm">{props.item.artists}</span>
             </div>
         </div>
     );
 }
 
-export function LibraryAlbumSourceNode(
-    props: Readonly<NodeProps<AlbumData>>,
+export function LibraryArtistSourceNode(
+    props: Readonly<NodeProps<ArtistData>>,
 ): JSX.Element {
     const { uri } = props.data;
-    const { errors, control, updateNodeField } = useNodeForm<AlbumData>(
+    const { errors, control, updateNodeField } = useNodeForm<ArtistData>(
         props.id,
         props.data,
-        getDefaultValueForNodeType('libraryAlbumSource'),
-        AlbumDataSchema,
+        getDefaultValueForNodeType('libraryArtistSource'),
+        ArtistDataSchema,
     );
 
-    const getAlbums = useCallback(
-        async (input: string): Promise<AlbumItem[]> => {
+    const getArtists = useCallback(
+        async (input: string): Promise<ArtistItem[]> => {
             const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
 
             const response = await libraryApi.getContents({
-                filters: [GetContentsRootFilterIds.ALBUM],
+                filters: [GetContentsRootFilterIds.ARTIST],
                 textFilter: input,
                 filtersPickedByUser: true,
                 offset: 0,
                 limit: 5000,
             });
 
-            const albums: GetContentsAlbumItem[] = response.items
-                .filter(isContentAlbumItem)
+            const artists: GetContentsArtistItem[] = response.items
+                .filter(isContentArtistItem)
                 .toSorted((a, b) => a.name.localeCompare(b.name));
 
-            const items = albums.map((album) => ({
-                id: album.uri,
-                name: album.name,
-                uri: album.uri,
-                image: album.images.length > 0 ? album.images[0].url : null,
-                artists: album.artists.map((artist) => artist.name).join(', '),
+            const items = artists.map((artist) => ({
+                id: artist.uri,
+                name: artist.name,
+                uri: artist.uri,
+                image: artist.images.length > 0 ? artist.images[0].url : null,
             }));
 
             return items;
@@ -116,36 +132,33 @@ export function LibraryAlbumSourceNode(
         [],
     );
 
-    const getAlbum = useCallback(
-        async (albumUri: string): Promise<AlbumItem | null> => {
+    const getArtist = useCallback(
+        async (artistUri: string): Promise<ArtistItem | null> => {
             try {
-                const album = await getGraphQlAlbum({
-                    uri: albumUri,
-                    offset: 0,
-                    limit: 0,
+                const artist = await queryArtistOverview({
+                    uri: artistUri,
                     locale: Spicetify.Locale.getLocale(),
                 });
 
-                if (album.albumUnion.__typename === 'NotFound') {
-                    throw new Error('Album not found');
+                if (artist.artistUnion.__typename === 'NotFound') {
+                    throw new Error('Artist not found');
                 }
 
-                const albumItem: AlbumItem = {
-                    id: album.albumUnion.uri,
-                    name: album.albumUnion.name,
-                    uri: album.albumUnion.uri,
+                const artistItem: ArtistItem = {
+                    id: artist.artistUnion.uri,
+                    name: artist.artistUnion.profile.name,
+                    uri: artist.artistUnion.uri,
                     image:
-                        album.albumUnion.coverArt.sources.length > 0
-                            ? album.albumUnion.coverArt.sources[0].url
+                        artist.artistUnion.visuals.avatarImage.sources.length >
+                        0
+                            ? artist.artistUnion.visuals.avatarImage.sources[0]
+                                  .url
                             : null,
-                    artists: album.albumUnion.artists.items
-                        .map((artist) => artist.profile.name)
-                        .join(', '),
                 };
 
-                return albumItem;
+                return artistItem;
             } catch (e) {
-                console.error('Failed to fetch album', e);
+                console.error('Failed to fetch artist', e);
                 updateNodeField({ uri: '' });
 
                 return null;
@@ -155,7 +168,7 @@ export function LibraryAlbumSourceNode(
     );
 
     const itemToString = useCallback(
-        (item: AlbumItem): string => item.name,
+        (item: ArtistItem): string => item.name,
         [],
     );
 
@@ -168,9 +181,9 @@ export function LibraryAlbumSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
-    } = useComboboxValues<AlbumItem>(
-        getAlbum,
-        getAlbums,
+    } = useComboboxValues<ArtistItem>(
+        getArtist,
+        getArtists,
         itemToString,
         (item) => {
             updateNodeField({ uri: item?.uri ?? '' });
@@ -185,7 +198,7 @@ export function LibraryAlbumSourceNode(
         <Node isExecuting={props.data.isExecuting}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Album" />
+                <NodeTitle title="Artist" />
 
                 <NodeComboField error={errors.uri}>
                     <ComboBoxController
@@ -194,10 +207,10 @@ export function LibraryAlbumSourceNode(
                         selectedItem={selectedItem}
                         onItemSelected={onItemSelected}
                         items={items}
-                        itemRenderer={AlbumItemRenderer}
+                        itemRenderer={ArtistItemRenderer}
                         itemToString={itemToString}
-                        label="Album"
-                        placeholder="Search for an album"
+                        label="Artist"
+                        placeholder="Search for an artist"
                         required
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
@@ -214,48 +227,20 @@ export function LibraryAlbumSourceNode(
                 </TextComponent>
 
                 <NodeField
-                    label="Offset"
-                    tooltip="Number of elements to skip"
-                    error={errors.offset}
+                    label="Type of tracks"
+                    error={errors.trackType}
+                    tooltip="Type of tracks to get from the artist : top tracks & popular releases, liked tracks, latest release or all tracks."
                 >
-                    <NumberController
-                        placeholder="0"
+                    <SelectController
+                        label="Type of tracks"
+                        name="trackType"
                         control={control}
-                        name="offset"
+                        items={trackTypeItems}
                         onChange={(value) => {
-                            updateNodeField({ offset: value });
+                            updateNodeField({ trackType: value as any });
                         }}
                     />
                 </NodeField>
-
-                <NodeField
-                    label="Limit"
-                    tooltip="Number of elements to take. Leave empty to take all elements."
-                    error={errors.limit}
-                >
-                    <NumberController
-                        placeholder="None"
-                        control={control}
-                        name="limit"
-                        onChange={(value) => {
-                            updateNodeField({ limit: value });
-                        }}
-                    />
-                </NodeField>
-
-                <NodeCheckboxField
-                    label="Only liked songs"
-                    tooltip="Only keep songs that are liked in this album"
-                    error={errors.onlyLiked}
-                >
-                    <CheckboxController
-                        control={control}
-                        name="onlyLiked"
-                        onChange={(value) => {
-                            updateNodeField({ onlyLiked: value });
-                        }}
-                    />
-                </NodeCheckboxField>
             </NodeContent>
             <Handle
                 type="source"
