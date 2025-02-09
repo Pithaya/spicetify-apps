@@ -1,15 +1,17 @@
+import type { Image } from './shared';
+
 export type ShowMetadata = {
     type: 'show';
     uri: string;
     name: string;
     description: string;
     htmlDescription: string;
-    coverArt: { url: string; width: number; height: number }[];
+    coverArt: Image[];
     trailer: {
         type: 'episode';
         uri: string;
         name: string;
-        coverArt: { url: string; width: number; height: number }[];
+        coverArt: Image[];
         audio: {
             items: unknown[];
         };
@@ -39,7 +41,7 @@ export type ShowMetadata = {
             description: string;
             htmlDescription: string;
             episodeType: string;
-            coverArt: { url: string; width: number; height: number }[];
+            coverArt: Image[];
             playedState: {
                 playPositionMilliseconds: number;
                 playPosition: number;
