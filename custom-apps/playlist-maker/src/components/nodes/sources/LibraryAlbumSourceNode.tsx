@@ -21,7 +21,6 @@ import { CheckboxController } from '../../inputs/CheckboxController';
 import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
-import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeComboField } from '../shared/NodeComboField';
@@ -81,13 +80,12 @@ export function LibraryAlbumSourceNode(
     props: Readonly<NodeProps<AlbumData>>,
 ): JSX.Element {
     const { uri } = props.data;
-    const { errors, control, updateNodeField, setError } =
-        useNodeForm<AlbumData>(
-            props.id,
-            props.data,
-            getDefaultValueForNodeType('libraryAlbumSource'),
-            AlbumDataSchema,
-        );
+    const { errors, control, updateNodeField } = useNodeForm<AlbumData>(
+        props.id,
+        props.data,
+        getDefaultValueForNodeType('libraryAlbumSource'),
+        AlbumDataSchema,
+    );
 
     const getAlbums = useCallback(
         async (input: string): Promise<AlbumItem[]> => {
@@ -128,6 +126,10 @@ export function LibraryAlbumSourceNode(
                     locale: Spicetify.Locale.getLocale(),
                 });
 
+                if (album.albumUnion.__typename === 'NotFound') {
+                    throw new Error('Album not found');
+                }
+
                 const albumItem: AlbumItem = {
                     id: album.albumUnion.uri,
                     name: album.albumUnion.name,
@@ -143,17 +145,13 @@ export function LibraryAlbumSourceNode(
 
                 return albumItem;
             } catch (e) {
-                // TODO: test error set
                 console.error('Failed to fetch album', e);
-                setError('uri', {
-                    message: 'Invalid album URI',
-                });
                 updateNodeField({ uri: '' });
 
                 return null;
             }
         },
-        [setError, updateNodeField],
+        [updateNodeField],
     );
 
     const itemToString = useCallback(
@@ -188,18 +186,6 @@ export function LibraryAlbumSourceNode(
             <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Album" />
-
-                <NodeField label="URI" tooltip="Album URI" error={errors.uri}>
-                    <TextController
-                        placeholder="URI"
-                        control={control}
-                        name="uri"
-                        required={true}
-                        onChange={(value) => {
-                            updateNodeField({ uri: value });
-                        }}
-                    />
-                </NodeField>
 
                 <NodeComboField error={errors.uri}>
                     <ComboBoxController
