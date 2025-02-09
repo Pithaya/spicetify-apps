@@ -136,6 +136,11 @@ export function Sidenav(): JSX.Element {
                             nodeType="libraryAlbumSource"
                             tooltip="Get tracks from an album in your library."
                         />
+                        <SidenavItem
+                            label="Saved artist"
+                            nodeType="libraryArtistSource"
+                            tooltip="Get tracks from an artist in your library."
+                        />
                     </ul>
                 </SidenavCollapsible>
 

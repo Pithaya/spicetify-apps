@@ -247,9 +247,11 @@ export type GetContentsShowItem = {
 
 export enum GetContentsRootFilterIds {
     ALBUM = '0',
-    ARTISTS = '1',
-    PLAYLISTS = '2',
-    PODCASTS = '3',
+    ARTIST = '1',
+    PLAYLIST = '2',
+    PODCAST = '3',
+    AUDIOBOOK = '4',
+    CONCERT = '5',
     DOWNLOADED = '100',
 }
 
