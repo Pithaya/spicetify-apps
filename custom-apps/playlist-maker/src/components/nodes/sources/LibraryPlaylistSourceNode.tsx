@@ -91,7 +91,7 @@ export function LibraryPlaylistSourceNode(
 ): JSX.Element {
     const { onlyMine: onlyMyPlaylists, playlistUri } = props.data;
 
-    const { errors, control, setError, getValues, updateNodeField } =
+    const { errors, control, setError, updateNodeField } =
         useNodeForm<PlaylistData>(
             props.id,
             props.data,
@@ -188,6 +188,7 @@ export function LibraryPlaylistSourceNode(
         onItemSelected,
         resetSelection,
         selectedItem,
+        syncInputWithSelectedItem,
     } = useComboboxValues<PlaylistItem>(getPlaylists, itemToString, (item) => {
         updateNodeField({ playlistUri: item?.uri ?? '' });
     });
@@ -224,14 +225,13 @@ export function LibraryPlaylistSourceNode(
         <Node isExecuting={props.data.isExecuting}>
             <SourceNodeHeader />
 
-            <p>Form Values:</p>
-            <p>{JSON.stringify(getValues())}</p>
-            <p>props.data : </p>
-            <p>{JSON.stringify(props.data)}</p>
             <NodeContent>
                 <NodeTitle title="Playlist" />
 
-                <NodeField label="Only my playlists" error={errors.onlyMine}>
+                <NodeField
+                    label="Search only my playlists"
+                    error={errors.onlyMine}
+                >
                     <div className="flex justify-end">
                         <CheckboxController
                             control={control}
@@ -243,13 +243,6 @@ export function LibraryPlaylistSourceNode(
                     </div>
                 </NodeField>
 
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected: {props.data.playlistUri}
-                </TextComponent>
                 <NodeComboField error={errors.playlistUri}>
                     <ComboBoxController
                         control={control}
@@ -265,8 +258,19 @@ export function LibraryPlaylistSourceNode(
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
+                        onBlur={syncInputWithSelectedItem}
                     />
                 </NodeComboField>
+                <TextComponent
+                    elementType="p"
+                    fontSize="small"
+                    semanticColor="textSubdued"
+                >
+                    Selected:{' '}
+                    {props.data.playlistUri === ''
+                        ? '-'
+                        : props.data.playlistUri}
+                </TextComponent>
 
                 <NodeField
                     tooltip="Search filter to apply"
