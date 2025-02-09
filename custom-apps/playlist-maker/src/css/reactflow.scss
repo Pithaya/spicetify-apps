@@ -35,3 +35,10 @@
         }
     }
 }
+
+.react-flow__node {
+    &:focus {
+        outline: solid rgb(from var(--spice-button) r g b / 0.5) 2px !important;
+        border-radius: 6px;
+    }
+}

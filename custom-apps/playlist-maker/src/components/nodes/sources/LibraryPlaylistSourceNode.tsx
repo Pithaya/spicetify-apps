@@ -25,6 +25,7 @@ import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
+import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 
 const propertyValues: Record<PlaylistData['sortField'], string> = {
     ALBUM: 'Album',
@@ -228,20 +229,18 @@ export function LibraryPlaylistSourceNode(
             <NodeContent>
                 <NodeTitle title="Playlist" />
 
-                <NodeField
+                <NodeCheckboxField
                     label="Search only my playlists"
                     error={errors.onlyMine}
                 >
-                    <div className="flex justify-end">
-                        <CheckboxController
-                            control={control}
-                            name="onlyMine"
-                            onChange={(value) => {
-                                updateNodeField({ onlyMine: value });
-                            }}
-                        />
-                    </div>
-                </NodeField>
+                    <CheckboxController
+                        control={control}
+                        name="onlyMine"
+                        onChange={(value) => {
+                            updateNodeField({ onlyMine: value });
+                        }}
+                    />
+                </NodeCheckboxField>
 
                 <NodeComboField error={errors.playlistUri}>
                     <ComboBoxController

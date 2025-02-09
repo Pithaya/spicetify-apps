@@ -1,4 +1,3 @@
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     IsPlayableDataSchema,
@@ -9,6 +8,7 @@ import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { CheckboxController } from '../../inputs/CheckboxController';
 import { Node } from '../shared/Node';
+import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeContent } from '../shared/NodeContent';
 import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
@@ -16,14 +16,12 @@ import { NodeTitle } from '../shared/NodeTitle';
 export function IsPlayableNode(
     props: Readonly<NodeProps<IsPlayableData>>,
 ): JSX.Element {
-    const { control, updateNodeField } = useNodeForm<IsPlayableData>(
+    const { control, updateNodeField, errors } = useNodeForm<IsPlayableData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('isPlayable'),
         IsPlayableDataSchema,
     );
-
-    // TODO: NodeCheckboxField
 
     return (
         <Node isExecuting={props.data.isExecuting}>
@@ -31,10 +29,10 @@ export function IsPlayableNode(
             <NodeContent>
                 <NodeTitle title="Is playable" />
 
-                <label>
-                    <TextComponent elementType="small">
-                        Is playable ?
-                    </TextComponent>
+                <NodeCheckboxField
+                    label="Is playable ?"
+                    error={errors.isPlayable}
+                >
                     <CheckboxController
                         control={control}
                         name="isPlayable"
@@ -42,7 +40,7 @@ export function IsPlayableNode(
                             updateNodeField({ isPlayable: value });
                         }}
                     />
-                </label>
+                </NodeCheckboxField>
             </NodeContent>
             <Handle
                 type="target"
