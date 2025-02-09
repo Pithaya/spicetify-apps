@@ -1,13 +1,13 @@
 import { getSelectedElementName } from '@shared/utils/context-menu';
+import i18next from 'i18next';
+import Kuroshiro from 'kuroshiro';
+import { Languages } from 'lucide-react';
+import React from 'react';
 import {
     settingsService,
     type KuroshiroSettingsService,
 } from './kuroshiro-settings.service';
 import { kuroshiroService, type KuroshiroService } from './kuroshiro.service';
-import Kuroshiro from 'kuroshiro';
-import i18next from 'i18next';
-import { MENU_ICON } from '../models/constants';
-import React from 'react';
 
 /**
  * The "convert to" context menu.
@@ -39,6 +39,9 @@ export class ContextMenuService {
             this.contextMenuItem.deregister();
         }
 
+        const MENU_ICON: string = Spicetify.ReactDOMServer.renderToString(
+            <Languages size={16} strokeWidth={1} color="var(--text-subdued)" />,
+        );
         this.contextMenuItem = new Spicetify.ContextMenu.Item(
             i18next.t('contextMenu.name', {
                 syllabary: this.settingsService.targetSyllabary,
