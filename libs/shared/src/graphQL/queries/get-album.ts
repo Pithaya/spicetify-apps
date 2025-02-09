@@ -117,7 +117,7 @@ type TracksV2 = {
 };
 
 type AlbumUnion = {
-    __typename: 'Album';
+    __typename: 'Album' | 'NotFound';
     copyright: Copyright;
     courtesyLine: unknown;
     date: Date;

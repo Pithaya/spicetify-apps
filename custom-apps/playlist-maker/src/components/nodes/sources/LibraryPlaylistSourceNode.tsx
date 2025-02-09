@@ -92,13 +92,12 @@ export function LibraryPlaylistSourceNode(
 ): JSX.Element {
     const { onlyMine: onlyMyPlaylists, playlistUri } = props.data;
 
-    const { errors, control, setError, updateNodeField } =
-        useNodeForm<PlaylistData>(
-            props.id,
-            props.data,
-            getDefaultValueForNodeType('libraryPlaylistSource'),
-            PlaylistDataSchema,
-        );
+    const { errors, control, updateNodeField } = useNodeForm<PlaylistData>(
+        props.id,
+        props.data,
+        getDefaultValueForNodeType('libraryPlaylistSource'),
+        PlaylistDataSchema,
+    );
 
     const getPlaylists = useCallback(
         async (input: string): Promise<PlaylistItem[]> => {
@@ -168,15 +167,12 @@ export function LibraryPlaylistSourceNode(
                 return playlistItem;
             } catch (e) {
                 console.error('Failed to fetch playlist', e);
-                setError('playlistUri', {
-                    message: 'Invalid playlist URI',
-                });
                 updateNodeField({ playlistUri: '' });
 
                 return null;
             }
         },
-        [setError, updateNodeField],
+        [updateNodeField],
     );
 
     const itemToString = useCallback(
