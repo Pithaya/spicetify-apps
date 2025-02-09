@@ -13,6 +13,25 @@ type SidenavItemProps = {
     tooltip: string;
 };
 
+function PlaceholderSidenavItem(
+    props: Readonly<{ label: string }>,
+): JSX.Element {
+    return (
+        <li>
+            <Spicetify.ReactComponent.TooltipWrapper
+                label="Coming soon"
+                showDelay={100}
+            >
+                <li className="text-spice-subtext w-full cursor-not-allowed border-none bg-transparent !py-1 text-start">
+                    <TextComponent elementType="span" fontSize="medium">
+                        {props.label}
+                    </TextComponent>
+                </li>
+            </Spicetify.ReactComponent.TooltipWrapper>
+        </li>
+    );
+}
+
 function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
     const addNode = useAppStore((state) => state.addNode);
 
@@ -44,7 +63,11 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                     }}
                     className="hover:bg-spice-highlight w-full cursor-grab border-none bg-transparent !py-1 text-start"
                 >
-                    <TextComponent elementType="span" fontSize="medium">
+                    <TextComponent
+                        elementType="span"
+                        fontSize="medium"
+                        semanticColor="textBase"
+                    >
                         {props.label}
                     </TextComponent>
                 </button>
@@ -86,7 +109,7 @@ function SidebarTitle(props: Readonly<{ label: string }>): JSX.Element {
 
 export function Sidenav(): JSX.Element {
     return (
-        <div className="flex flex-col gap-2">
+        <div className="text-spice-text flex flex-col gap-2">
             <div className="flex flex-col gap-2">
                 <SidebarTitle label="Sources" />
 
@@ -107,26 +130,23 @@ export function Sidenav(): JSX.Element {
                             nodeType="topTracksSource"
                             tooltip="Get tracks from your top tracks."
                         />
-                    </ul>
-                </SidenavCollapsible>
-
-                <SidenavCollapsible label="Playlists">
-                    <ul>
                         <SidenavItem
-                            label="Library playlist"
+                            label="Saved playlist"
                             nodeType="libraryPlaylistSource"
                             tooltip="Get tracks from a playlist in your library."
                         />
+                        <SidenavItem
+                            label="Saved album"
+                            nodeType="albumSource"
+                            tooltip="Get tracks from an album in your library."
+                        />
                     </ul>
                 </SidenavCollapsible>
 
-                <SidenavCollapsible label="Albums">
+                <SidenavCollapsible label="Search">
                     <ul>
-                        <SidenavItem
-                            label="Album"
-                            nodeType="albumSource"
-                            tooltip="Get tracks from an album."
-                        />
+                        <PlaceholderSidenavItem label="Playlist" />
+                        <PlaceholderSidenavItem label="Album" />
                     </ul>
                 </SidenavCollapsible>
             </div>
