@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import type { PlaylistAPI } from '@shared/platform/playlist';
 import type { Playlist } from '@shared/platform/rootlist';
 import type { UserAPI } from '@shared/platform/user';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import React, { useEffect, useState } from 'react';
+import { Menu } from './Menu';
 
 export type Props = {
     tracksUri: string[];
@@ -35,7 +35,7 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
     }
 
     return (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
+        <Menu>
             {playlists.map((p) => {
                 return (
                     <Spicetify.ReactComponent.MenuItem
@@ -48,6 +48,6 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
                     </Spicetify.ReactComponent.MenuItem>
                 );
             })}
-        </Spicetify.ReactComponent.Menu>
+        </Menu>
     );
 }

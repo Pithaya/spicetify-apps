@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
-import styles from '../../../css/app.module.scss';
-import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
-import { navigateTo } from '../../../utils/history.utils';
+import { MultiTrackMenu } from '@shared/components/menus/MultiTrackMenu';
 import { PlayButton } from '@shared/components/ui/PlayButton';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import React, { useRef } from 'react';
+import styles from '../../../css/app.module.scss';
+import { navigateTo } from '../../../utils/history.utils';
 
 export type Props = {
     album: Album;

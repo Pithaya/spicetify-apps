@@ -5,6 +5,7 @@ import type {
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
 import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
 import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
+import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import type { History } from '@shared/platform/history';
@@ -190,10 +191,28 @@ export function ResultPage(): JSX.Element {
                         }}
                         displayType={'list'}
                         getRowMenu={(track) => (
-                            <Spicetify.ReactComponent.TrackMenu
-                                uri={track.uri}
-                                artists={track.artists}
-                                albumUri={track.album.uri}
+                            <RowMenu
+                                track={track}
+                                onArtistClick={(uri) => {
+                                    const historyApi =
+                                        getPlatformApiOrThrow<History>(
+                                            'History',
+                                        );
+                                    const artistUri =
+                                        Spicetify.URI.fromString(uri);
+                                    const artistUrl = artistUri.toURLPath(true);
+                                    historyApi.push(artistUrl);
+                                }}
+                                onAlbumClick={(uri) => {
+                                    const historyApi =
+                                        getPlatformApiOrThrow<History>(
+                                            'History',
+                                        );
+                                    const albumUri =
+                                        Spicetify.URI.fromString(uri);
+                                    const albumUrl = albumUri.toURLPath(true);
+                                    historyApi.push(albumUrl);
+                                }}
                             />
                         )}
                     />

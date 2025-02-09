@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import styles from './TrackListGrid.module.scss';
-import { TrackListRow } from './TrackListRow';
-import { TrackListHeader } from './TrackListHeader';
-import type { Props as TrackListHeaderProps } from './TrackListHeader';
+import type { DisplayType } from '@shared/components/track-list/models/sort-option';
 import { useCurrentPlayerTrackUri } from '@shared/hooks/use-current-uri';
 import { type PlayStatus, usePlayStatus } from '@shared/hooks/use-play-status';
 import { getTranslation } from '@shared/utils/translations.utils';
-import type { DisplayType } from '@shared/components/track-list/models/sort-option';
+import React, { useMemo, useState } from 'react';
 import type { ITrack } from './models/interfaces';
+import styles from './TrackListGrid.module.scss';
+import type { Props as TrackListHeaderProps } from './TrackListHeader';
+import { TrackListHeader } from './TrackListHeader';
+import { TrackListRow } from './TrackListRow';
 
 export type SubTracksList = {
     headerRow: JSX.Element;

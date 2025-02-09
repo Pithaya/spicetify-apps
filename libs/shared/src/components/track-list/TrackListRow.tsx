@@ -1,23 +1,23 @@
-import React, {
-    Children,
-    type MouseEventHandler,
-    type PropsWithChildren,
-    useRef,
-    useState,
-    useEffect,
-} from 'react';
-import { getTranslation } from '@shared/utils/translations.utils';
-import type { ITrack } from './models/interfaces';
-import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import type { DisplayType } from './models/sort-option';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import type {
     LibraryAPI,
     LibraryAPIOperationCompleteEvent,
 } from '@shared/platform/library';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getTranslation } from '@shared/utils/translations.utils';
+import React, {
+    Children,
+    type MouseEventHandler,
+    type PropsWithChildren,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+import type { ITrack } from './models/interfaces';
+import type { DisplayType } from './models/sort-option';
 
 export type Props = {
     track: ITrack;
