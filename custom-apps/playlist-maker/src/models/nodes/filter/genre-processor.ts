@@ -1,12 +1,9 @@
-import { type WorkflowTrack } from '../../track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 import { splitInChunks } from '@shared/utils/array-utils';
-import { getId } from '@shared/utils/uri-utils';
-import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
-import type { Artist } from '@spotify-web-api';
-import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 import { wait } from '@shared/utils/promise-utils';
+import { getId } from '@shared/utils/uri-utils';
 import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
+import type { Artist } from '@spotify-web-api';
+import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
 import {
     createWithExpiry,
     getArtistsGenresCache,
@@ -14,8 +11,10 @@ import {
     setArtistsGenresCache,
 } from 'custom-apps/playlist-maker/src/utils/storage-utils';
 import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
-const genres: Record<string, string[]> = genresJson;
+const genres: Record<string, string[]> = {};
 
 // TODO: Add this to settings
 export const artistGenresStoreTime = 1000 * 60 * 60 * 24 * 10; // 10 days
