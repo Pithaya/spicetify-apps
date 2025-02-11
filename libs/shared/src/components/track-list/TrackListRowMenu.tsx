@@ -2,10 +2,13 @@ import type { ITrack } from '@shared/components/track-list/models/interfaces';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
 import { addToQueuePath } from '@shared/icons/icons';
+import type { History } from '@shared/platform/history';
 import type { LibraryAPI } from '@shared/platform/library';
 import type { PlayerAPI } from '@shared/platform/player';
+import { getRadioPlaylist } from '@shared/spclient/get-radio-playlist';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
+import { Radio } from 'lucide-react';
 import React from 'react';
 import { ArtistSelectionMenu } from '../menus/ArtistSelectionMenu';
 import { Menu } from '../menus/Menu';
@@ -79,6 +82,13 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
         ]);
     }
 
+    async function goToTrackRadio(): Promise<void> {
+        const radioUri = await getRadioPlaylist(props.track.uri);
+
+        const history = getPlatformApiOrThrow<History>('History');
+        history.push(Spicetify.URI.fromString(radioUri).toURLPath(true));
+    }
+
     return (
         <Menu>
             <SubmenuItem
@@ -131,6 +141,17 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
             >
                 <span>{getTranslation(['contextmenu.go-to-album'])}</span>
             </Spicetify.ReactComponent.MenuItem>
+
+            {!Spicetify.URI.isLocalTrack(props.track.uri) && (
+                <Spicetify.ReactComponent.MenuItem
+                    onClick={goToTrackRadio}
+                    leadingIcon={<Radio size={16} />}
+                >
+                    <span>
+                        {getTranslation(['contextmenu.go-to-song-radio'])}
+                    </span>
+                </Spicetify.ReactComponent.MenuItem>
+            )}
         </Menu>
     );
 }

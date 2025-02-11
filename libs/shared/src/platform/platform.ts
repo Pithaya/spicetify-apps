@@ -1,18 +1,19 @@
 // Last updated: March 2023
 
+import type { AuthorizationAPI } from './authorization';
 import type { ClipboardAPI } from './clipboard';
+import type { History } from './history';
+import type { LibraryAPI } from './library';
 import type { LocalFilesAPI } from './local-files';
+import type { LocalStorageAPI } from './local-storage';
 import type { PlayerAPI } from './player';
 import type { PlaylistAPI } from './playlist';
+import type { RequestBuilder } from './request-builder';
 import type { RootlistAPI } from './rootlist';
 import type { Session } from './session';
+import type { ShowAPI } from './show';
 import type { Translations } from './translations';
 import type { UserAPI } from './user';
-import type { History } from './history';
-import type { ShowAPI } from './show';
-import type { LocalStorageAPI } from './local-storage';
-import type { LibraryAPI } from './library';
-import type { AuthorizationAPI } from './authorization';
 
 export type Platform = {
     Session: Session;
@@ -64,4 +65,5 @@ export type Platform = {
     EqualizerAPI: unknown;
     BuddyFeedAPI: unknown;
     PanelAP: unknown;
+    RequestBuilder: RequestBuilder;
 };
