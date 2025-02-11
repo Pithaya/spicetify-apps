@@ -1,6 +1,5 @@
 import { MultiSelect } from '@shared/components/inputs/Select/MultiSelect';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import genresJson from 'custom-apps/playlist-maker/src/assets/genres.json';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     GenreFilterDataSchema,
@@ -17,7 +16,7 @@ import { FilterNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 import styles from './GenreNode.module.scss';
 
-const genres: Record<string, string[]> = genresJson;
+const genres: Record<string, string[]> = {};
 
 export function GenreNode(
     props: Readonly<NodeProps<GenreFilterData>>,
