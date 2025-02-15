@@ -1,21 +1,19 @@
-import React from 'react';
+import type { Album } from '@shared/api/models/album';
+import type { Artist } from '@shared/api/models/artist';
+import type { Episode } from '@shared/api/models/episode';
+import type { Playlist } from '@shared/api/models/playlist';
+import type { Show } from '@shared/api/models/show';
+import type { Track } from '@shared/api/models/track';
 import type { ClipboardAPI } from '@shared/platform/clipboard';
 import {
-    waitForSpicetify,
     waitForPlatformApi,
+    waitForSpicetify,
 } from '@shared/utils/spicetify-utils';
 import { getId } from '@shared/utils/uri-utils';
+import { getApiData } from '@shared/utils/web-api-utils';
 import i18next from 'i18next';
 import { Clipboard } from 'lucide-react';
-import { getApiData } from '@shared/utils/web-api-utils';
-import type {
-    Album,
-    Artist,
-    Episode,
-    Playlist,
-    Show,
-    Track,
-} from '@spotify-web-api';
+import React from 'react';
 
 let locale: typeof Spicetify.Locale;
 let clipboardApi: ClipboardAPI;

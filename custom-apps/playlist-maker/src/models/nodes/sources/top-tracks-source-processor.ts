@@ -1,5 +1,9 @@
-import { getAllPages, getCosmosSdkClient } from '@shared/utils/web-api-utils';
-import { type Track as ApiTrack } from '@spotify-web-api';
+import {
+    getCurrentUserTopTracks,
+    MAX_TOP_TRACKS_LIMIT,
+} from '@shared/api/endpoints/current-user/get-top-tracks';
+import { type Track as ApiTrack } from '@shared/api/models/track';
+import { getAllPages } from '@shared/utils/web-api-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -20,19 +24,17 @@ export type TopTracksData = z.infer<typeof TopTracksDataSchema>;
  */
 export class TopTracksSourceProcessor extends NodeProcessor<TopTracksData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        const sdk = getCosmosSdkClient();
-
-        const { offset = 0, limit: maxItemsToTake } = this.data;
+        const { offset = 0, limit: maxItemsToTake, timeRange } = this.data;
 
         const items = await getAllPages<ApiTrack>(
             async (offset, limit) =>
-                await sdk.currentUser.topItems(
-                    'tracks',
-                    this.data.timeRange,
+                await getCurrentUserTopTracks({
+                    timeRange,
                     limit,
                     offset,
-                ),
+                }),
             offset,
+            MAX_TOP_TRACKS_LIMIT,
             maxItemsToTake,
         );
 

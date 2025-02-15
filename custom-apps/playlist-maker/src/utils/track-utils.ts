@@ -1,27 +1,28 @@
+import {
+    getTracksAudioFeatures,
+    MAX_GET_MULTIPLE_AUDIO_FEATURES_IDS,
+} from '@shared/api/endpoints/tracks/get-tracks-audio-features';
+import type { AudioFeatures } from '@shared/api/models/audio-features';
 import { splitInChunks } from '@shared/utils/array-utils';
-import type { WorkflowTrack } from '../models/track';
-import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
-import { getId } from '@shared/utils/uri-utils';
 import { wait } from '@shared/utils/promise-utils';
-import type { AudioFeatures } from '@spotify-web-api';
+import type { WorkflowTrack } from '../models/track';
 
 export async function setAudioFeatures(tracks: WorkflowTrack[]): Promise<void> {
-    const sdk = getCosmosSdkClient();
     // Local tracks don't have audio features
     const filteredTracks = tracks.filter(
-        (track) =>
-            Spicetify.URI.fromString(track.uri).type !==
-            Spicetify.URI.Type.LOCAL_TRACK,
+        (track) => !Spicetify.URI.isLocalTrack(track.uri),
     );
-    const chunks = splitInChunks(filteredTracks, 50);
+
+    const chunks = splitInChunks(
+        filteredTracks,
+        MAX_GET_MULTIPLE_AUDIO_FEATURES_IDS,
+    );
 
     for (const chunk of chunks) {
-        const tracksIds: string[] = chunk
-            .map((track) => getId(Spicetify.URI.fromString(track.uri)))
-            .filter((id) => id) as string[];
-
         const chunkResult: (AudioFeatures | null)[] =
-            await sdk.tracks.audioFeatures(tracksIds);
+            await getTracksAudioFeatures({
+                uris: chunk.map((track) => track.uri) as [string, ...string[]],
+            });
 
         for (const track of chunk) {
             const feature = chunkResult.find(

@@ -1,6 +1,6 @@
+import type { Track as WebAPITrack } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
-import type { Track as WebAPITrack } from '@spotify-web-api';
 
 export type SimpleTrack = {
     uri: string;

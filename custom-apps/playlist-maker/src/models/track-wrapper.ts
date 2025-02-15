@@ -1,3 +1,4 @@
+import type { Track } from '@shared/api/models/track';
 import type {
     IAlbum,
     IArtist,
@@ -7,7 +8,6 @@ import type {
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
 import type { AdditionalTrackData, WorkflowTrack } from './track';
-import type { Track } from '@spotify-web-api';
 
 export class TrackWrapper implements ITrack {
     public get uri(): string {

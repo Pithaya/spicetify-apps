@@ -1,20 +1,6 @@
 import type { RequestBuilder } from '@shared/platform/request-builder';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 
-type Response<TBody> = {
-    url: string;
-    status: number;
-    headers: unknown;
-    body: TBody;
-    offline: boolean;
-    timing: unknown;
-    metadata: unknown;
-    retries: {
-        count: number;
-    };
-    ok: boolean;
-};
-
 type GetRadioPlaylistResponse = {
     total: number;
     mediaItems: [
@@ -46,12 +32,12 @@ export async function getRadioPlaylist(uri: string): Promise<string> {
         .build()
         .withHost('https://spclient.wg.spotify.com/inspiredby-mix/v2')
         .withPath(`/seed_to_playlist/${uri}`)
+        .withEndpointIdentifier('/seed_to_playlist/{uri}')
         .withQueryParameters({
             'response-format': 'json',
         })
         .withoutMarket()
-        .withEndpointIdentifier('/seed_to_playlist/{uri}')
-        .send<Response<GetRadioPlaylistResponse>>();
+        .send<GetRadioPlaylistResponse>();
 
     if (response.status !== 200) {
         throw new Error('Failed to get the radio playlist.');

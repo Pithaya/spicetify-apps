@@ -6,3 +6,7 @@ export function splitInChunks<T>(array: T[], chunkSize: number): T[][] {
 
     return result;
 }
+
+export function isNotEmpty<T>(array: T[]): array is [T, ...T[]] {
+    return array.length > 0;
+}
