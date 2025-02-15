@@ -1,8 +1,8 @@
-import type { Segment } from '@spotify-web-api';
-import { JukeboxSettings } from '../models/jukebox-settings';
-import { SongGraph } from '../models/graph/song-graph';
-import { Edge } from '../models/graph/edge';
+import type { Segment } from '@shared/api/models/audio-analysis';
 import { Beat } from '../models/graph/beat';
+import { Edge } from '../models/graph/edge';
+import { SongGraph } from '../models/graph/song-graph';
+import { JukeboxSettings } from '../models/jukebox-settings';
 import type { RemixedTimeInterval } from '../models/remixer.types';
 
 /**

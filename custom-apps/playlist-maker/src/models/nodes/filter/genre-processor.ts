@@ -1,9 +1,10 @@
+import {
+    getArtists,
+    MAX_GET_MULTIPLE_ARTISTS_IDS,
+} from '@shared/api/endpoints/artists/get-artists';
+import type { Artist } from '@shared/api/models/artist';
 import { splitInChunks } from '@shared/utils/array-utils';
 import { wait } from '@shared/utils/promise-utils';
-import { getId } from '@shared/utils/uri-utils';
-import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
-import type { Artist } from '@spotify-web-api';
-import { MAX_GET_MULTIPLE_ARTISTS_IDS } from '@spotify-web-api';
 import {
     createWithExpiry,
     getArtistsGenresCache,
@@ -75,7 +76,6 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
     ): Promise<Map<string, string[]>> {
         const artistCache = removeExpired(getArtistsGenresCache());
 
-        const sdk = getCosmosSdkClient();
         const artists = tracks
             .flatMap((track) => track.artists)
             .filter((artist) => !artistCache.has(artist.uri));
@@ -84,11 +84,12 @@ export class GenreProcessor extends NodeProcessor<GenreFilterData> {
         const artistsData: Artist[] = [];
 
         for (const chunk of chunks) {
-            const artistsId: string[] = chunk
-                .map((artist) => getId(Spicetify.URI.fromString(artist.uri)))
-                .filter((id) => id) as string[];
-
-            const chunkResult = await sdk.artists.get(artistsId);
+            const chunkResult = await getArtists({
+                uris: chunk.map((artist) => artist.uri) as [
+                    string,
+                    ...string[],
+                ],
+            });
             artistsData.push(...chunkResult);
             // TODO: Handle 429 error and use Retry-After header
             await wait(1000 / 50); // 50 requests per second

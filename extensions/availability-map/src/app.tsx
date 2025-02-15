@@ -1,28 +1,19 @@
-import React from 'react';
+import { getTrack } from '@shared/api/endpoints/tracks/get-track';
+import type { Session } from '@shared/platform/session';
 import {
     waitForPlatformApi,
     waitForSpicetify,
 } from '@shared/utils/spicetify-utils';
-import i18next from 'i18next';
-import { EarthLock } from 'lucide-react';
-import { WorldMap } from './components/WorldMap/WorldMap';
-import { getId } from '@shared/utils/uri-utils';
 import { registerLocale } from 'i18n-iso-countries';
 import * as enLocale from 'i18n-iso-countries/langs/en.json';
 import * as frLocale from 'i18n-iso-countries/langs/fr.json';
-import type { Session } from '@shared/platform/session';
-import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
+import i18next from 'i18next';
+import { EarthLock } from 'lucide-react';
+import React from 'react';
+import { WorldMap } from './components/WorldMap/WorldMap';
 
 async function showAvailability(uris: string[], locale: string): Promise<void> {
-    const uri: Spicetify.URI = Spicetify.URI.fromString(uris[0]);
-    const id = getId(uri);
-
-    if (id === null) {
-        return;
-    }
-
-    const sdk = getCosmosSdkClient();
-    const track = await sdk.tracks.get(id);
+    const track = await getTrack({ uri: uris[0] });
 
     Spicetify.PopupModal.display({
         title: i18next.t('modalTitle'),

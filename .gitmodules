@@ -1,3 +1,0 @@
-[submodule "libs/spotify-web-api-ts-sdk"]
-	path = libs/spotify-web-api-ts-sdk
-	url = https://github.com/Pithaya/spotify-web-api-ts-sdk.git
