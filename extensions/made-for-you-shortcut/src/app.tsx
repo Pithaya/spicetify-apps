@@ -5,15 +5,13 @@ import { IconNavLink } from '@shared/components/navbar/IconNavLink';
 import { NavBarLink } from '@shared/components/navbar/NavBarLink';
 import { waitForElement } from '@shared/utils/dom-utils';
 import { renderElement } from '@shared/utils/react-utils';
-import { waitFor, waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
-    await waitFor(() => Spicetify.CosmosAsync);
-    await waitFor(() => Spicetify.ReactDOM);
 
     // Legacy id, works but navigation link is not shown as active when on page
     let genreId: string = 'made-for-x-hub';
@@ -23,11 +21,7 @@ async function main(): Promise<void> {
     let offset = 0;
 
     do {
-        result = await getCategories({ limit, offset });
-
-        if (result === null) {
-            break;
-        }
+        result = await getCategories({ limit, offset, locale: 'en_US' });
 
         const madeForYouCategory = result.items.find(
             (category) => category.name === 'Made For You',
@@ -40,7 +34,7 @@ async function main(): Promise<void> {
 
         // Get the next page
         offset += limit;
-    } while (result?.next);
+    } while (result.next);
 
     const locale: typeof Spicetify.Locale = Spicetify.Locale;
 
