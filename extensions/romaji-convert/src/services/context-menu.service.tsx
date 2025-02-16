@@ -72,6 +72,7 @@ export class ContextMenuService {
             this.selectedElementName,
         );
 
+        // TODO: Validate that notificationFontSize is an integer
         Spicetify.showNotification(
             <div>
                 <p

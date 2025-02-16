@@ -14,6 +14,7 @@ const ParamsSchema = z
             .int()
             .max(MAX_GET_MULTIPLE_CATEGORIES_LIMIT)
             .optional(),
+        locale: z.string().optional(),
     })
     .strict()
     .readonly();
@@ -35,7 +36,7 @@ export async function getCategories(params: Params): Promise<Page<Category>> {
         .withQueryParameters({
             limit: params.limit?.toString(),
             offset: params.offset?.toString(),
-            locale: Spicetify.Locale.getLocale(),
+            locale: params.locale ?? Spicetify.Locale.getLocale(),
         })
         .send<Categories>();
 
