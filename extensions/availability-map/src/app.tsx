@@ -1,9 +1,5 @@
 import { getTrack } from '@shared/api/endpoints/tracks/get-track';
-import type { Session } from '@shared/platform/session';
-import {
-    waitForPlatformApi,
-    waitForSpicetify,
-} from '@shared/utils/spicetify-utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { registerLocale } from 'i18n-iso-countries';
 import * as enLocale from 'i18n-iso-countries/langs/en.json';
 import * as frLocale from 'i18n-iso-countries/langs/fr.json';
@@ -13,15 +9,12 @@ import React from 'react';
 import { WorldMap } from './components/WorldMap/WorldMap';
 
 async function showAvailability(uris: string[], locale: string): Promise<void> {
-    const track = await getTrack({ uri: uris[0] });
+    const track = await getTrack({ uri: uris[0], withoutMarket: true });
 
     Spicetify.PopupModal.display({
         title: i18next.t('modalTitle'),
         content: (
-            <WorldMap
-                trackMarkets={track?.available_markets ?? []}
-                locale={locale}
-            />
+            <WorldMap trackMarkets={track.available_markets} locale={locale} />
         ),
         isLarge: true,
     });
@@ -33,9 +26,6 @@ function isSingleTrack(uris: string[]): boolean {
 
 async function main(): Promise<void> {
     await waitForSpicetify();
-
-    // Wait for the locale to be loaded
-    await waitForPlatformApi<Session>('Session');
 
     const locale: typeof Spicetify.Locale = Spicetify.Locale;
 
@@ -68,7 +58,9 @@ async function main(): Promise<void> {
             void showAvailability(uris, locale.getLocale());
         },
         isSingleTrack,
-        <EarthLock size={16} color="var(--text-subdued)" strokeWidth={1} />,
+        Spicetify.ReactDOMServer.renderToString(
+            <EarthLock size={16} color="var(--text-subdued)" strokeWidth={1} />,
+        ),
         false,
     );
 

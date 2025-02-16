@@ -35,7 +35,7 @@ export function TextComponent(
 ): JSX.Element {
     const { elementType = 'span', children, fontSize, style, ...rest } = props;
 
-    let SpicetifyTextComponent: JSX.Element;
+    let SpicetifyTextComponent: React.ElementType;
 
     switch (elementType) {
         case 'h1':
@@ -64,6 +64,7 @@ export function TextComponent(
             break;
         case 'small':
             SpicetifyTextComponent =
+                // eslint-disable-next-line @typescript-eslint/no-deprecated
                 Spicetify.ReactComponent.TextComponent.small;
             break;
         case 'span':

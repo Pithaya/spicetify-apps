@@ -1,14 +1,9 @@
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { History, HistoryEntry } from '../../platform/history';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React, { useEffect, useState } from 'react';
-import type { LocalStorageAPI } from '@shared/platform/local-storage';
+import { type HistoryEntry } from '../../platform/history';
 
 function isSideBarCollapsed(): boolean {
-    return (
-        getPlatformApiOrThrow<LocalStorageAPI>('LocalStorageAPI').getItem(
-            'ylx-sidebar-state',
-        ) === 1
-    );
+    return getPlatform().LocalStorageAPI.getItem('ylx-sidebar-state') === 1;
 }
 
 function isLibraryXEnabled(sidebar: HTMLElement): boolean {
@@ -26,11 +21,11 @@ export type NavBarLinkProps = {
 };
 
 export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
     const initialActive = history.location.pathname === props.href;
     const sidebar = document.querySelector<HTMLDivElement>('.Root__nav-bar');
 
-    if (sidebar == null) {
+    if (sidebar === null) {
         throw new Error('Could not find sidebar');
     }
 
@@ -45,7 +40,7 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
             setActive(e.pathname === href);
         }
 
-        const history = getPlatformApiOrThrow<History>('History');
+        const history = getPlatform().History;
         const unsubscribe = history.listen(handleHistoryChange);
         return unsubscribe;
     }, [href]);
@@ -93,10 +88,6 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
         history.push(props.href);
     }
 
-    if (sidebar == null) {
-        return <></>;
-    }
-
     if (isLibX) {
         const link = (
             <a
@@ -138,25 +129,23 @@ export function NavBarLink(props: Readonly<NavBarLinkProps>): JSX.Element {
         );
     } else {
         return (
-            <>
-                <li className="main-navBar-navBarItem" data-id={props.href}>
-                    <a
-                        draggable="false"
-                        className={`link-subtle main-navBar-navBarLink ${
-                            active ? 'main-navBar-navBarLinkActive active' : ''
-                        }`}
-                        onClick={navigate}
-                    >
-                        <div className="icon collection-icon">{props.icon}</div>
-                        <div className="icon collection-active-icon">
-                            {props.activeIcon}
-                        </div>
-                        <span className="ellipsis-one-line main-type-mestoBold">
-                            {props.label}
-                        </span>
-                    </a>
-                </li>
-            </>
+            <li className="main-navBar-navBarItem" data-id={props.href}>
+                <a
+                    draggable="false"
+                    className={`link-subtle main-navBar-navBarLink ${
+                        active ? 'main-navBar-navBarLinkActive active' : ''
+                    }`}
+                    onClick={navigate}
+                >
+                    <div className="icon collection-icon">{props.icon}</div>
+                    <div className="icon collection-active-icon">
+                        {props.activeIcon}
+                    </div>
+                    <span className="ellipsis-one-line main-type-mestoBold">
+                        {props.label}
+                    </span>
+                </a>
+            </li>
         );
     }
 }
