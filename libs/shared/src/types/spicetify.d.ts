@@ -1242,11 +1242,11 @@ declare namespace Spicetify {
                 name: string,
                 onClick: OnClickCallback,
                 shouldAdd?: ShouldAddCallback,
-                icon?: Icon | string | JSX.Element,
+                icon?: Icon | string,
                 disabled?: boolean,
             );
             name: string;
-            icon: Icon | string | JSX.Element;
+            icon: Icon | string;
             disabled: boolean;
             /**
              * A function returning boolean determines whether item should be prepended.
@@ -1319,13 +1319,11 @@ declare namespace Spicetify {
 	}
 
 	/** React instance to create components */
-	const React: any;
+	const React: typeof import('react');
 	/** React DOM instance to render and mount components */
-	const ReactDOM: any;
+	const ReactDOM: typeof import('react-dom') & typeof import('react-dom/client');
 	/** React DOM Server instance to render components to string */
-	const ReactDOMServer: {
-		renderToString: (element: React.ReactNode) => string;
-	};
+	const ReactDOMServer: typeof import('react-dom/server');
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {
@@ -1782,18 +1780,18 @@ declare namespace Spicetify {
 		 * Props:
 		 * @see Spicetify.ReactComponent.TextComponentProps
 		 */
-		const TextComponent: {
-			h1: JSX.Element;
-			h2: JSX.Element;
-			h3: JSX.Element;
-			h4: JSX.Element;
-			h5: JSX.Element;
-			h6: JSX.Element;
-			li: JSX.Element;
-			p: JSX.Element;
-			small: JSX.Element;
-			span: JSX.Element;
-		};
+		const TextComponent: React.ElementType & {
+            h1: React.ElementType;
+            h2: React.ElementType;
+            h3: React.ElementType;
+            h4: React.ElementType;
+            h5: React.ElementType;
+            h6: React.ElementType;
+            li: React.ElementType;
+            p: React.ElementType;
+            small: React.ElementType;
+            span: React.ElementType;
+        };
 		/**
 		 * Component to render Spotify-style confirm dialog
 		 *
@@ -2392,5 +2390,15 @@ declare namespace Spicetify {
 		 * @return Locale uppercase text
 		 */
 		function toLocaleUpperCase(text: string): string;
+	}
+	type EventCallback = () => void | Promise<void>;
+	class Event {
+        callbacks: EventCallback[];
+        on: (callback: EventCallback) => void;
+        fire: () => void;
+    }
+	namespace Events {
+		const platformLoaded: Event;
+		const webpackLoaded: Event;
 	}
 }

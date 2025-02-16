@@ -61,7 +61,10 @@ export default [
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
             '@typescript-eslint/consistent-type-imports': [
                 'error',
-                { fixStyle: 'inline-type-imports' },
+                {
+                    disallowTypeAnnotations: false,
+                    fixStyle: 'inline-type-imports',
+                },
             ],
             '@typescript-eslint/strict-boolean-expressions': [
                 'error',
@@ -83,6 +86,7 @@ export default [
                     argsIgnorePattern: '^_',
                 },
             ],
+            '@typescript-eslint/no-unnecessary-type-parameters': 'off',
             'sonarjs/void-use': 'off',
         },
     },

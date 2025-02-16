@@ -122,7 +122,7 @@ async function getDataForIds<T>(
 ): Promise<(T | null)[]> {
     if (uris.length > maxUris) {
         Spicetify.showNotification(
-            `Cannot get more than ${maxUris} tracks at once`,
+            `Cannot get more than ${maxUris.toFixed()} tracks at once`,
             true,
         );
 
@@ -172,7 +172,7 @@ export async function getAllPages<T>(
 
         offset += limit;
         limit = Math.min(...[maxLimit, maxItemsCount - items.length]);
-    } while (currentPage?.next !== null && items.length < maxItemsCount);
+    } while (currentPage.next !== null && items.length < maxItemsCount);
 
     return items;
 }

@@ -11,6 +11,7 @@ const ParamsSchema = z
             .refine((value) => Spicetify.URI.isTrack(value), {
                 message: 'Invalid track URI',
             }),
+        withoutMarket: z.boolean().optional(),
     })
     .strict()
     .readonly();
@@ -22,7 +23,7 @@ export async function getTrack(params: Params): Promise<Track> {
 
     const id = getId(Spicetify.URI.fromString(params.uri));
 
-    const sender = getWebApiRequestSender();
+    const sender = getWebApiRequestSender(params.withoutMarket);
 
     const response = await sender
         .withPath(`/tracks/${id}`)

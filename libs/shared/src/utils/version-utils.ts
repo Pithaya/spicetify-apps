@@ -1,6 +1,6 @@
 import { compare } from 'compare-versions';
-import type { History, HistoryEntry } from '../platform/history';
-import { waitForPlatformApi } from './spicetify-utils';
+import { type HistoryEntry } from '../platform/history';
+import { getPlatform } from './spicetify-utils';
 
 async function getRemoteVersion(appName: string): Promise<string> {
     const branch = 'main';
@@ -8,7 +8,7 @@ async function getRemoteVersion(appName: string): Promise<string> {
         `https://raw.githubusercontent.com/Pithaya/spicetify-apps/${branch}/custom-apps/${appName}/package.json`,
     );
 
-    const packageJson = await response.json();
+    const packageJson = (await response.json()) as { version: string };
 
     return packageJson.version;
 }
@@ -32,7 +32,7 @@ export async function addUpdateChecker(
     localVersion: string,
     appName: string,
 ): Promise<void> {
-    const history = await waitForPlatformApi<History>('History');
+    const history = getPlatform().History;
 
     const checkVersion: () => Promise<void> = async () => {
         if (!(await isUpToDate(localVersion, appName))) {
