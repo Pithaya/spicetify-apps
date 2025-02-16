@@ -1,4 +1,7 @@
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
+import { LoadingIcon } from '@shared/icons/Loading';
+import { getPlatform } from '@shared/utils/spicetify-utils';
+import { useObservableEagerState } from 'observable-hooks';
 import React, { useEffect } from 'react';
 import whatsNew from 'spcr-whats-new';
 import { version } from '../package.json';
@@ -7,8 +10,6 @@ import { AlbumPage } from './components/albums/pages/AlbumPage';
 import { AlbumsPage } from './components/albums/pages/AlbumsPage';
 import { ArtistPage } from './components/artists/pages/ArtistPage';
 import { ArtistsPage } from './components/artists/pages/ArtistsPage';
-import { LoadingIcon } from '@shared/icons/Loading';
-import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
 import { TracksPage } from './components/tracks/pages/TracksPage';
 import {
     ALBUM_ROUTE,
@@ -19,8 +20,6 @@ import {
     TRACKS_ROUTE,
 } from './constants/constants';
 import styles from './css/app.module.scss';
-import { useObservableEagerState } from 'observable-hooks';
-import type { History } from '@shared/platform/history';
 
 function App(): JSX.Element {
     const isReady = useObservableEagerState(window.localTracksService.isReady$);
@@ -55,7 +54,7 @@ function App(): JSX.Element {
         void init();
     }, []);
 
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
     const location = history.location;
 
     let currentPage = <></>;
@@ -106,7 +105,7 @@ function App(): JSX.Element {
                         {showTracksProgress && <p>Processing tracks...</p>}
                         {showAlbumsProgress && (
                             <p>
-                                {`Processing album ${processedAlbums} of ${albumCount}...`}
+                                {`Processing album ${processedAlbums.toFixed()} of ${albumCount.toFixed()}...`}
                             </p>
                         )}
                     </div>

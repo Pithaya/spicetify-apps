@@ -1,8 +1,6 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { PlaylistAPI } from '@shared/platform/playlist';
-import type { UserAPI } from '@shared/platform/user';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -105,7 +103,7 @@ export function LibraryPlaylistSourceNode(
                 `NODE - getting playlists with input "${input}"`,
                 onlyMyPlaylists,
             );
-            const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
+            const userAPI = getPlatform().UserAPI;
             const user = await userAPI.getUser();
 
             let playlists = await getRootlistPlaylists(input);
@@ -141,8 +139,7 @@ export function LibraryPlaylistSourceNode(
 
     const getPlaylist = useCallback(
         async (playlistUri: string): Promise<PlaylistItem | null> => {
-            const playlistApi =
-                getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+            const playlistApi = getPlatform().PlaylistAPI;
 
             console.log('NODE - getting playlist for uri', playlistUri);
 

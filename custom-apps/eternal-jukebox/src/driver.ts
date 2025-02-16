@@ -1,5 +1,4 @@
-import type { PlayerAPI } from '@shared/platform/player';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import type { Observable } from 'rxjs';
 import {
     distinctUntilChanged,
@@ -266,9 +265,7 @@ export class Driver {
         if (DEBUG) {
             console.time('seek');
         }
-        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').seekTo(
-            playerPositionAfterJump,
-        );
+        await getPlatform().PlayerAPI.seekTo(playerPositionAfterJump);
 
         if (DEBUG) {
             console.timeEnd('seek');

@@ -61,7 +61,7 @@ export function MultiSelect(props: Readonly<Props>): JSX.Element {
             <div className={`main-dropDown-dropDown ${styles['dropdown']}`}>
                 <span>
                     {props.selectedValues.length > 0
-                        ? `${props.selectedValues.length} elements selected`
+                        ? `${props.selectedValues.length.toFixed()} elements selected`
                         : props.selectLabel}
                 </span>
                 <ChevronDown size={14} />

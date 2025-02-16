@@ -1,8 +1,6 @@
-import type { PlaylistAPI } from '@shared/platform/playlist';
 import type { Playlist } from '@shared/platform/rootlist';
-import type { UserAPI } from '@shared/platform/user';
 import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React, { useEffect, useState } from 'react';
 import { Menu } from './Menu';
 
@@ -15,7 +13,7 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
 
     useEffect(() => {
         async function getPlaylists(): Promise<void> {
-            const userAPI = getPlatformApiOrThrow<UserAPI>('UserAPI');
+            const userAPI = getPlatform().UserAPI;
             const user = await userAPI.getUser();
 
             const playlists = await getRootlistPlaylists();
@@ -30,7 +28,7 @@ export function PlaylistSelectionMenu(props: Readonly<Props>): JSX.Element {
     }, []);
 
     async function addToPlaylist(playlistUri: string): Promise<void> {
-        const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+        const playlistAPI = getPlatform().PlaylistAPI;
         await playlistAPI.add(playlistUri, props.tracksUri, { after: 'end' });
     }
 

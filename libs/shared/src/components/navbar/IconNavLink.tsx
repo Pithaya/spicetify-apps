@@ -1,6 +1,6 @@
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React, { type MouseEvent, useEffect, useState } from 'react';
-import type { History, HistoryEntry } from '../../platform/history';
+import type { HistoryEntry } from '../../platform/history';
 
 export type IconNavLinkProps = {
     icon: JSX.Element;
@@ -11,7 +11,7 @@ export type IconNavLinkProps = {
 };
 
 export function IconNavLink(props: Readonly<IconNavLinkProps>): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
     const initialActive = history.location.pathname === props.href;
 
     const href = props.href;
@@ -23,7 +23,7 @@ export function IconNavLink(props: Readonly<IconNavLinkProps>): JSX.Element {
             setActive(e.pathname === href);
         }
 
-        const history = getPlatformApiOrThrow<History>('History');
+        const history = getPlatform().History;
         const unsubscribe = history.listen(handleHistoryChange);
         return unsubscribe;
     }, [href]);

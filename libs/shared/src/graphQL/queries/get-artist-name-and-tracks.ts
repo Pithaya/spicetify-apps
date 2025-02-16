@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
+import { type QueryDefinition } from '../models/query-definition';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 type TopTrackItem = {
@@ -52,7 +53,7 @@ export async function getArtistNameAndTracks(
 ): Promise<GetArtistNameAndTracksData> {
     ParamsSchema.parse(params);
 
-    const getArtistNameAndTracks = {
+    const getArtistNameAndTracks: QueryDefinition = {
         name: 'getArtistNameAndTracks',
         operation: 'query',
         sha256Hash:

@@ -2,11 +2,8 @@ import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
-import type {
-    LibraryAPI,
-    LibraryAPIOperationCompleteEvent,
-} from '@shared/platform/library';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type { LibraryAPIOperationCompleteEvent } from '@shared/platform/library';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
 import React, {
     Children,
@@ -33,7 +30,7 @@ export type Props = {
             event: React.DragEvent,
             params?: {
                 itemUris?: string[];
-                itemMimeTypes?: (unknown | undefined)[];
+                itemMimeTypes?: unknown[];
                 dragLabelText?: string;
                 contextUri?: string;
                 sectionId?: number;
@@ -56,21 +53,21 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
     const [trackInLibrary, setTrackInLibrary] = useIsInLibrary(props.track.uri);
 
     async function addToLikedSongs(): Promise<void> {
-        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+        const libraryApi = getPlatform().LibraryAPI;
         await libraryApi.add({
             uris: [props.track.uri],
         });
     }
 
     async function removeFromLikedSongs(): Promise<void> {
-        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+        const libraryApi = getPlatform().LibraryAPI;
         await libraryApi.remove({
             uris: [props.track.uri],
         });
     }
 
     useEffect(() => {
-        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+        const libraryApi = getPlatform().LibraryAPI;
 
         if (!visible) {
             // Only listen to the event when the row is visible
@@ -129,9 +126,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
         >
             <Spicetify.ReactComponent.ButtonTertiary
                 aria-label={getTranslation(['remove_from_your_liked_songs'])}
-                iconOnly={() => (
-                    <SpotifyIcon icon="check-alt-fill" iconSize={16} />
-                )}
+                iconOnly={<SpotifyIcon icon="check-alt-fill" iconSize={16} />}
                 buttonSize="sm"
                 style={{
                     padding: 0,

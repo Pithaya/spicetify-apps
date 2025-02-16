@@ -1,13 +1,12 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { History } from '@shared/platform/history';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React from 'react';
 import { tests } from './tests/playlist-maker/playlist-node/playlist-node.tests';
 
 import './css/tailwind.css';
 
 function App(): JSX.Element {
-    const historyApi = getPlatformApiOrThrow<History>('History');
+    const historyApi = getPlatform().History;
 
     function setup(): void {
         historyApi.push('/playlist-maker');

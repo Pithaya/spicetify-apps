@@ -2,11 +2,8 @@ import type { ITrack } from '@shared/components/track-list/models/interfaces';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
 import { addToQueuePath } from '@shared/icons/icons';
-import type { History } from '@shared/platform/history';
-import type { LibraryAPI } from '@shared/platform/library';
-import type { PlayerAPI } from '@shared/platform/player';
 import { getRadioPlaylist } from '@shared/spclient/get-radio-playlist';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
 import { Radio } from 'lucide-react';
 import React from 'react';
@@ -65,27 +62,25 @@ export function RowMenu(props: Readonly<Props>): JSX.Element {
     }
 
     async function addToLikedSongs(): Promise<void> {
-        await getPlatformApiOrThrow<LibraryAPI>('LibraryAPI').add({
+        await getPlatform().LibraryAPI.add({
             uris: [props.track.uri],
         });
     }
 
     async function removeFromLikedSongs(): Promise<void> {
-        await getPlatformApiOrThrow<LibraryAPI>('LibraryAPI').remove({
+        await getPlatform().LibraryAPI.remove({
             uris: [props.track.uri],
         });
     }
 
     async function addToQueue(): Promise<void> {
-        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').addToQueue([
-            { uri: props.track.uri },
-        ]);
+        await getPlatform().PlayerAPI.addToQueue([{ uri: props.track.uri }]);
     }
 
     async function goToTrackRadio(): Promise<void> {
         const radioUri = await getRadioPlaylist(props.track.uri);
 
-        const history = getPlatformApiOrThrow<History>('History');
+        const history = getPlatform().History;
         history.push(Spicetify.URI.fromString(radioUri).toURLPath(true));
     }
 

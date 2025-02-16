@@ -48,14 +48,14 @@ export type LibraryAPI = {
 export type LibraryAPIEventType = 'operation_complete';
 
 export type LibraryAPIEventManager = {
-    addListener: (
+    addListener: <T>(
         type: LibraryAPIEventType,
-        listener: (event: LibraryAPIEvent<any>) => void,
+        listener: (event: LibraryAPIEvent<T>) => void,
     ) => LibraryAPIEventManager;
 
-    removeListener: (
+    removeListener: <T>(
         type: LibraryAPIEventType,
-        listener: (event: LibraryAPIEvent<any>) => void,
+        listener: (event: LibraryAPIEvent<T>) => void,
     ) => LibraryAPIEventManager;
 };
 
@@ -70,7 +70,7 @@ export type LibraryAPIEvent<T> = {
 export type LibraryAPIOperationCompleteEvent = LibraryAPIEvent<{
     operation: 'add' | 'remove';
     uris: string[];
-    error: null | unknown;
+    error: unknown;
     silent: boolean;
 }>;
 

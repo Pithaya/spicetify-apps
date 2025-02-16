@@ -8,9 +8,7 @@ import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListR
 import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { type History } from '@shared/platform/history';
-import { type PlayerAPI } from '@shared/platform/player';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import {
     getTranslatedDuration,
     getTranslation,
@@ -25,7 +23,7 @@ import { CreatePlaylistModal } from './modals/CreatePlaylistModal';
 import styles from './ResultPage.module.scss';
 
 export function ResultPage(): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
 
     const { result } = useAppStore(
         useShallow((state) => ({
@@ -59,8 +57,7 @@ export function ResultPage(): JSX.Element {
               }
             : undefined;
 
-        const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
-        await playerApi.play(
+        await getPlatform().PlayerAPI.play(
             {
                 uri: '',
                 pages: [{ items: result }],
@@ -122,7 +119,7 @@ export function ResultPage(): JSX.Element {
                                                 ? 'one'
                                                 : 'other',
                                         ],
-                                        tracks.length,
+                                        tracks.length.toFixed(),
                                     )}
                                     <span className="main-entityHeader-divider"></span>
                                     {getTranslatedDuration(
@@ -191,20 +188,14 @@ export function ResultPage(): JSX.Element {
                             <RowMenu
                                 track={track}
                                 onArtistClick={(uri) => {
-                                    const historyApi =
-                                        getPlatformApiOrThrow<History>(
-                                            'History',
-                                        );
+                                    const historyApi = getPlatform().History;
                                     const artistUri =
                                         Spicetify.URI.fromString(uri);
                                     const artistUrl = artistUri.toURLPath(true);
                                     historyApi.push(artistUrl);
                                 }}
                                 onAlbumClick={(uri) => {
-                                    const historyApi =
-                                        getPlatformApiOrThrow<History>(
-                                            'History',
-                                        );
+                                    const historyApi = getPlatform().History;
                                     const albumUri =
                                         Spicetify.URI.fromString(uri);
                                     const albumUrl = albumUri.toURLPath(true);

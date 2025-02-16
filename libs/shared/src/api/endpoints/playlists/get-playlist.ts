@@ -8,7 +8,7 @@ const ParamsSchema = z
         uri: z
             .string()
             .nonempty({ message: 'Playlist URI is required' })
-            .refine((value) => Spicetify.URI.isPlaylist(value), {
+            .refine((value) => Spicetify.URI.isPlaylistV1OrV2(value), {
                 message: 'Invalid playlist URI',
             }),
     })

@@ -75,7 +75,7 @@ export type LocalTrackSortOption = {
 
 export type LocalFilesAPI = {
     getTracks: (
-        sort?: LocalTrackSortOption | undefined,
-        search?: string | '',
+        sort?: LocalTrackSortOption,
+        search?: string,
     ) => Promise<LocalTrack[]>;
 };

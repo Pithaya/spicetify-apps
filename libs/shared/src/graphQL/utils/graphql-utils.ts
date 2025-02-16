@@ -1,30 +1,24 @@
-import type { GraphQLErrorResponse } from '../models/graphql-error-response';
-import type { GraphQLResponse } from '../models/graphql-response';
+import { type GraphQLResponse } from '../models/graphql-response';
+import { type QueryDefinition } from '../models/query-definition';
 
-// TODO: Remove and replace with destructure
-function isErrorResponse<T>(
-    response: GraphQLResponse<T | null>,
-): response is GraphQLErrorResponse {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (response as any).errors !== undefined;
-}
-
-function throwWithErrorMessage(response: GraphQLErrorResponse): never {
-    throw new Error(response.errors.map((e) => e.message).join('\n'));
+function throwWithErrorMessage(
+    errors: NonNullable<GraphQLResponse<unknown>['errors']>,
+): never {
+    throw new Error(errors.map((e) => e.message).join('\n'));
 }
 
 export async function sendGraphQLQuery<T>(
-    definition: any,
-    variables?: Record<string, any>,
+    definition: QueryDefinition,
+    variables?: Record<string, string | number | boolean>,
 ): Promise<T> {
-    const response: GraphQLResponse<T> = await Spicetify.GraphQL.Request(
+    const { data, errors } = (await Spicetify.GraphQL.Request(
         definition,
         variables,
-    );
+    )) as GraphQLResponse<T>;
 
-    if (isErrorResponse(response)) {
-        throwWithErrorMessage(response);
+    if (errors) {
+        throwWithErrorMessage(errors);
     }
 
-    return response.data;
+    return data;
 }
