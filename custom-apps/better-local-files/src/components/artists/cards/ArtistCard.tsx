@@ -60,6 +60,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                     }
                 >
                     <div
+                        tabIndex={0}
                         className={`${styles['main-card-card']} main-card-card`}
                         onClick={() => {
                             navigateTo(ARTIST_ROUTE, props.artist.uri);
@@ -74,7 +75,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                                             draggable="false"
                                             loading="lazy"
                                             src={props.artist.image}
-                                            alt="artist image"
+                                            alt="artist avatar"
                                             className="main-image-image main-cardImage-image main-cardImage-circular main-image-loading main-image-loaded"
                                             onError={(e) =>
                                                 (e.currentTarget.outerHTML =

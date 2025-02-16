@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type MouseEvent } from 'react';
 
 export type Props = {
     label: string;
@@ -37,7 +37,9 @@ export function SubmenuItem(props: Readonly<Props>): JSX.Element {
             menu={props.submenu}
         >
             <div
-                onMouseEnter={(e: any) => {
+                role="menu"
+                tabIndex={0}
+                onMouseEnter={(e: MouseEvent<HTMLDivElement>) => {
                     e.currentTarget.click();
                 }}
                 dangerouslySetInnerHTML={{

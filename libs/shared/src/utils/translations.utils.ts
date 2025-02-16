@@ -4,10 +4,14 @@ import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 export function getTranslation(keys: string[], ...params: any[]): string {
     const translations = getPlatformApiOrThrow<Translations>('Translations');
 
-    let valueObject: any | string = translations;
+    let valueObject: Translations | string = translations;
 
     for (const key of keys) {
-        valueObject = valueObject[key];
+        if (typeof valueObject === 'string') {
+            throw new Error(`Key "${key}" not found in translations.`);
+        }
+
+        valueObject = valueObject[key] as Translations | string;
     }
 
     let value = valueObject as string;

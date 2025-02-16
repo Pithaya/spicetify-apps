@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import { Infinity } from 'lucide-react';
+import { Infinity as InfinityIcon } from 'lucide-react';
 import { useSubscription } from 'observable-hooks';
+import React, { type MouseEvent, useState } from 'react';
 
-export function PlaybarButton(props: { className: string }): JSX.Element {
+type Props = {
+    className: string;
+};
+
+export function PlaybarButton(props: Readonly<Props>): JSX.Element {
     const [isActive, setIsActive] = useState(false);
 
     useSubscription(window.jukebox.stateChanged$, setIsActive);
@@ -22,11 +26,11 @@ export function PlaybarButton(props: { className: string }): JSX.Element {
             <Spicetify.ReactComponent.ButtonTertiary
                 aria-label={label}
                 buttonSize={'sm'}
-                onClick={async (e: any) => {
+                onClick={async (e: MouseEvent) => {
                     e.stopPropagation();
                     await toggleJukebox();
                 }}
-                iconOnly={() => <Infinity size={24} />}
+                iconOnly={<InfinityIcon size={24} />}
                 className={Spicetify.classnames(props.className, {
                     active: isActive,
                 })}

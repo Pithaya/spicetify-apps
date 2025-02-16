@@ -7,5 +7,5 @@ import { type IAlbum } from '@shared/components/track-list/models/interfaces';
  * @returns The image url.
  */
 export function getImageUrlFromAlbum(album: IAlbum): string {
-    return album.images.length === 0 ? '' : album.images[0].url ?? '';
+    return album.images.length === 0 ? '' : album.images[0].url;
 }

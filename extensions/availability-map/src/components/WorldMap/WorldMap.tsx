@@ -1,10 +1,10 @@
-import React from 'react';
-import styles from './WorldMap.module.scss';
 import { geoMercator, geoPath } from 'd3-geo';
-import { feature } from 'topojson-client';
 import type { Feature, FeatureCollection, GeoJsonProperties } from 'geojson';
-import { topology } from './topology';
 import { getName } from 'i18n-iso-countries';
+import React from 'react';
+import { feature } from 'topojson-client';
+import { topology } from './topology';
+import styles from './WorldMap.module.scss';
 
 export type Props = {
     locale: string;
@@ -22,7 +22,7 @@ const svgHeight = 450;
 const featureCollection: FeatureCollection = feature(
     topology,
     topology.objects.countries,
-) as any as FeatureCollection;
+) as unknown as FeatureCollection;
 const projection = geoMercator()
     .rotate([-11, 0])
     .fitSize([svgWidth, svgHeight], featureCollection);
@@ -46,7 +46,7 @@ export function WorldMap(props: Readonly<Props>): JSX.Element {
     return (
         <svg preserveAspectRatio="xMidYMid" viewBox="0 0 700 450">
             <g className="countries">
-                {geographies.map((d, i) => (
+                {geographies.map((d) => (
                     <Spicetify.ReactComponent.TooltipWrapper
                         label={getName(d.properties?.code, props.locale)}
                         showDelay={100}
@@ -54,8 +54,9 @@ export function WorldMap(props: Readonly<Props>): JSX.Element {
                     >
                         <path
                             d={geoPath().projection(projection)(d) ?? undefined}
-                            className={`${d.properties?.name}-${d.properties
-                                ?.code} ${styles[getClass(d.properties)]}`}
+                            className={`${d.properties?.name}-${
+                                d.properties?.code
+                            } ${styles[getClass(d.properties)]}`}
                             fill="transparent"
                             strokeWidth={0.5}
                         />

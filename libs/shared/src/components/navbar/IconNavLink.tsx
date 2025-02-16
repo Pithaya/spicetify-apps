@@ -1,6 +1,6 @@
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import React, { type MouseEvent, useEffect, useState } from 'react';
 import type { History, HistoryEntry } from '../../platform/history';
-import React, { useEffect, useState } from 'react';
 
 export type IconNavLinkProps = {
     icon: JSX.Element;
@@ -37,7 +37,7 @@ export function IconNavLink(props: Readonly<IconNavLinkProps>): JSX.Element {
             <Spicetify.ReactComponent.ButtonTertiary
                 aria-label={props.label}
                 buttonSize={'md'}
-                onClick={(e: any) => {
+                onClick={(e: MouseEvent) => {
                     e.stopPropagation();
                     navigate();
                 }}

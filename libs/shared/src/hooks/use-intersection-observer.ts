@@ -11,9 +11,10 @@ export function useIntersectionObserver(
             threshold: 0,
         };
 
-        const observer = new IntersectionObserver((entries, observer) => {
+        const observer = new IntersectionObserver((entries) => {
             setVisible(entries.some((e) => e.isIntersecting));
         }, options);
+
         observer.observe(elementRef.current!);
 
         return () => {

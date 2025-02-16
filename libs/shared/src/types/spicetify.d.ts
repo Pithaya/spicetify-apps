@@ -1234,31 +1234,37 @@ declare namespace Spicetify {
 
 		// Single context menu item
 		class Item {
-			/**
-			 * List of valid icons to use.
-			 */
-			static readonly iconList: Icon[];
-			constructor(name: string, onClick: OnClickCallback, shouldAdd?: ShouldAddCallback, icon?: Icon, disabled?: boolean);
-			name: string;
-			icon: Icon | string;
-			disabled: boolean;
-			/**
-			 * A function returning boolean determines whether item should be prepended.
-			 */
-			shouldAdd: ShouldAddCallback;
-			/**
-			 * A function to call when item is clicked
-			 */
-			onClick: OnClickCallback;
-			/**
-			 * Item is only available in Context Menu when method "register" is called.
-			 */
-			register: () => void;
-			/**
-			 * Stop Item to be prepended into Context Menu.
-			 */
-			deregister: () => void;
-		}
+            /**
+             * List of valid icons to use.
+             */
+            static readonly iconList: Icon[];
+            constructor(
+                name: string,
+                onClick: OnClickCallback,
+                shouldAdd?: ShouldAddCallback,
+                icon?: Icon | string | JSX.Element,
+                disabled?: boolean,
+            );
+            name: string;
+            icon: Icon | string | JSX.Element;
+            disabled: boolean;
+            /**
+             * A function returning boolean determines whether item should be prepended.
+             */
+            shouldAdd: ShouldAddCallback;
+            /**
+             * A function to call when item is clicked
+             */
+            onClick: OnClickCallback;
+            /**
+             * Item is only available in Context Menu when method "register" is called.
+             */
+            register: () => void;
+            /**
+             * Stop Item to be prepended into Context Menu.
+             */
+            deregister: () => void;
+        }
 
 		/**
 		 * Create a sub menu to contain `Item`s.
@@ -1301,7 +1307,7 @@ declare namespace Spicetify {
 			 * You can specify a string for simple text display
 			 * or a HTML element for interactive config/setting menu
 			 */
-			content: string | Element;
+			content: string | Element | JSX.Element;
 			/**
 			 * Bigger window
 			 */
@@ -1317,7 +1323,9 @@ declare namespace Spicetify {
 	/** React DOM instance to render and mount components */
 	const ReactDOM: any;
 	/** React DOM Server instance to render components to string */
-	const ReactDOMServer: any;
+	const ReactDOMServer: {
+		renderToString: (element: React.ReactNode) => string;
+	};
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {
@@ -1774,7 +1782,18 @@ declare namespace Spicetify {
 		 * Props:
 		 * @see Spicetify.ReactComponent.TextComponentProps
 		 */
-		const TextComponent: any;
+		const TextComponent: {
+			h1: JSX.Element;
+			h2: JSX.Element;
+			h3: JSX.Element;
+			h4: JSX.Element;
+			h5: JSX.Element;
+			h6: JSX.Element;
+			li: JSX.Element;
+			p: JSX.Element;
+			small: JSX.Element;
+			span: JSX.Element;
+		};
 		/**
 		 * Component to render Spotify-style confirm dialog
 		 *

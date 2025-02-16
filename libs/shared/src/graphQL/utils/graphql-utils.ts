@@ -1,9 +1,11 @@
 import type { GraphQLErrorResponse } from '../models/graphql-error-response';
 import type { GraphQLResponse } from '../models/graphql-response';
 
-function isErrorResponse(
-    response: GraphQLResponse<any>,
+// TODO: Remove and replace with destructure
+function isErrorResponse<T>(
+    response: GraphQLResponse<T | null>,
 ): response is GraphQLErrorResponse {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (response as any).errors !== undefined;
 }
 

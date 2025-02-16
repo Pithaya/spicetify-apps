@@ -1,4 +1,4 @@
 export type ClipboardAPI = {
-    copy: (value: any) => Promise<void>;
+    copy: (value: object | string) => Promise<void>;
     paste: () => Promise<string>;
 };

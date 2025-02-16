@@ -8,7 +8,8 @@ import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListR
 import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { History } from '@shared/platform/history';
+import { type History } from '@shared/platform/history';
+import { type PlayerAPI } from '@shared/platform/player';
 import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {
     getTranslatedDuration,
@@ -51,15 +52,15 @@ export function ResultPage(): JSX.Element {
         },
     ];
 
-    const playTracks = (trackUri?: string): void => {
+    const playTracks = async (trackUri?: string): Promise<void> => {
         const skip = trackUri
             ? {
                   uri: trackUri,
               }
             : undefined;
 
-        // TODO: Use playerAPI
-        (Spicetify.Player as any).origin.play(
+        const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
+        await playerApi.play(
             {
                 uri: '',
                 pages: [{ items: result }],
@@ -90,7 +91,7 @@ export function ResultPage(): JSX.Element {
                                     disabled={tracks.length === 0}
                                     size="lg"
                                     onClick={() => {
-                                        playTracks();
+                                        void playTracks();
                                     }}
                                 />
                             </div>
@@ -100,16 +101,12 @@ export function ResultPage(): JSX.Element {
                                 <Spicetify.ReactComponent.ButtonSecondary
                                     disabled={tracks.length === 0}
                                     aria-label="Create playlist from tracks"
-                                    iconOnly={() => (
-                                        <ArrowRightFromLine size={30} />
-                                    )}
+                                    iconOnly={<ArrowRightFromLine size={30} />}
                                     buttonSize="lg"
                                     onClick={() => {
                                         Spicetify.PopupModal.display({
                                             title: 'Create playlist',
-                                            content: React.createElement(
-                                                CreatePlaylistModal,
-                                            ) as any,
+                                            content: <CreatePlaylistModal />,
                                             isLarge: true,
                                         });
                                     }}
@@ -146,7 +143,7 @@ export function ResultPage(): JSX.Element {
                         gridLabel={getTranslation(['local-files'])}
                         useTrackNumber={false}
                         onPlayTrack={(uri) => {
-                            playTracks(uri);
+                            void playTracks(uri);
                         }}
                         headers={headers}
                         getRowContent={(track) => {

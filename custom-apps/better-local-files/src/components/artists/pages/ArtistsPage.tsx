@@ -1,7 +1,3 @@
-import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
-import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
-import { getTranslation } from '@shared/utils/translations.utils';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import type {
     HeaderKey,
     LibraryHeaders,
@@ -9,6 +5,10 @@ import type {
     SortOption,
     SortOrder,
 } from '@shared/components/track-list/models/sort-option';
+import { getTranslation } from '@shared/utils/translations.utils';
+import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
+import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
@@ -27,7 +27,7 @@ export function ArtistsPage(): JSX.Element {
     ];
 
     const artists = Array.from(window.localTracksService.getArtists()).map(
-        ([key, value]) => value,
+        ([_, value]) => value,
     );
 
     function filterArtists(artists: Artist[], search: string): Artist[] {

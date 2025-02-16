@@ -39,7 +39,7 @@ export class Album implements IAlbum {
     public getTracks(): Track[] {
         const result: Track[] = [];
 
-        this.discs.forEach((tracks, discNumber) => result.push(...tracks));
+        this.discs.forEach((tracks) => result.push(...tracks));
 
         return result;
     }
