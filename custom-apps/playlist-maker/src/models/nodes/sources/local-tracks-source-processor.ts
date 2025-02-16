@@ -1,12 +1,11 @@
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import { type WorkflowTrack } from '../../track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 import {
     LocalTrackSortOptionFields,
     LocalTrackSortOptionOrders,
-    type LocalFilesAPI,
 } from '@shared/platform/local-files';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
+import { type WorkflowTrack } from '../../track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const LocalTracksDataSchema = z
     .object({
@@ -24,8 +23,7 @@ export type LocalTracksData = z.infer<typeof LocalTracksDataSchema>;
  */
 export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
     public override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        const localFilesApi =
-            await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
+        const localFilesApi = getPlatform().LocalFilesAPI;
 
         const { filter, sortField, sortOrder } = this.data;
 

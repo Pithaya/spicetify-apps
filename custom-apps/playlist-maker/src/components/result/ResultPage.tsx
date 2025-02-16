@@ -98,7 +98,9 @@ export function ResultPage(): JSX.Element {
                                 <Spicetify.ReactComponent.ButtonSecondary
                                     disabled={tracks.length === 0}
                                     aria-label="Create playlist from tracks"
-                                    iconOnly={<ArrowRightFromLine size={30} />}
+                                    iconOnly={() => (
+                                        <ArrowRightFromLine size={30} />
+                                    )}
                                     buttonSize="lg"
                                     onClick={() => {
                                         Spicetify.PopupModal.display({

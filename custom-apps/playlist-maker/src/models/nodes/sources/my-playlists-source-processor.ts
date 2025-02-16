@@ -2,9 +2,8 @@ import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import {
     PlaylistSortOptionFields,
     PlaylistSortOptionOrders,
-    type PlaylistAPI,
 } from '@shared/platform/playlist';
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -41,8 +40,7 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
     public override async getResultsInternal(): Promise<WorkflowTrack[]> {
         const playlistUri = this.data.playlistUri;
 
-        const playlistApi =
-            await waitForPlatformApi<PlaylistAPI>('PlaylistAPI');
+        const playlistApi = getPlatform().PlaylistAPI;
 
         const { offset, limit, filter, sortField, sortOrder } = this.data;
 

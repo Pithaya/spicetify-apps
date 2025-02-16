@@ -30,7 +30,7 @@ export function PlaybarButton(props: Readonly<Props>): JSX.Element {
                     e.stopPropagation();
                     await toggleJukebox();
                 }}
-                iconOnly={<InfinityIcon size={24} />}
+                iconOnly={() => <InfinityIcon size={24} />}
                 className={Spicetify.classnames(props.className, {
                     active: isActive,
                 })}

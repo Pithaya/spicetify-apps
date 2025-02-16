@@ -126,7 +126,9 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
         >
             <Spicetify.ReactComponent.ButtonTertiary
                 aria-label={getTranslation(['remove_from_your_liked_songs'])}
-                iconOnly={<SpotifyIcon icon="check-alt-fill" iconSize={16} />}
+                iconOnly={() => (
+                    <SpotifyIcon icon="check-alt-fill" iconSize={16} />
+                )}
                 buttonSize="sm"
                 style={{
                     padding: 0,

@@ -1,5 +1,4 @@
-import type { LocalFilesAPI } from '@shared/platform/local-files';
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, type Observable } from 'rxjs';
@@ -166,9 +165,7 @@ export class LocalTracksService {
      * Process the local tracks to fill the tracks, albums and artists maps.
      */
     private async processLocalTracks(): Promise<void> {
-        const localFilesApi =
-            await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
-        const localTracks = await localFilesApi.getTracks();
+        const localTracks = await getPlatform().LocalFilesAPI.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album

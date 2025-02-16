@@ -2,9 +2,8 @@ import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import {
     LibraryAPITrackSortOptionFields,
     LibraryAPITrackSortOptionOrders,
-    type LibraryAPI,
 } from '@shared/platform/library';
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -32,9 +31,10 @@ export type LikedSongsData = z.infer<typeof LikedSongsDataSchema>;
  */
 export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        const libraryApi = await waitForPlatformApi<LibraryAPI>('LibraryAPI');
+        const libraryApi = getPlatform().LibraryAPI;
 
-        let { offset, limit, filter, sortField, sortOrder } = this.data;
+        const { offset, filter, sortField, sortOrder } = this.data;
+        let limit = this.data.limit;
 
         if (limit === undefined) {
             // If no limit, make a first call to get the total number of liked songs.

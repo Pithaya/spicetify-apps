@@ -1,18 +1,18 @@
-import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { waitForElement } from '@shared/utils/dom-utils';
 import { renderElement } from '@shared/utils/react-utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { addUpdateChecker } from '@shared/utils/version-utils';
-import { Jukebox } from '../models/jukebox';
+import React from 'react';
 import { version } from '../../package.json';
 import { PlaybarButton } from '../components/PlaybarButton';
-import React from 'react';
+import { Jukebox } from '../models/jukebox';
 
 // TODO: Add i18n
 
 void (async () => {
-    window.jukebox = new Jukebox();
-
     await waitForSpicetify();
+
+    window.jukebox = new Jukebox();
 
     let element: Element | null = null;
 

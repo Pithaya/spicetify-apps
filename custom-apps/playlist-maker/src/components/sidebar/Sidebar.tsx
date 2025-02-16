@@ -155,16 +155,6 @@ export function Sidenav(): JSX.Element {
             <div className="flex flex-col gap-2">
                 <SidebarTitle label="Filters" />
 
-                <SidenavCollapsible label="Genres">
-                    <ul>
-                        <SidenavItem
-                            label="Genre"
-                            nodeType="genre"
-                            tooltip="Filter tracks by genre."
-                        />
-                    </ul>
-                </SidenavCollapsible>
-
                 <SidenavCollapsible label="Track property">
                     <ul>
                         <SidenavItem
