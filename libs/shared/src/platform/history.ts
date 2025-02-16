@@ -3,7 +3,7 @@ export type HistoryEntry = {
     key: string;
     pathname: string;
     search: string;
-    state: unknown;
+    state: Record<string, unknown>;
 };
 
 export type History = {

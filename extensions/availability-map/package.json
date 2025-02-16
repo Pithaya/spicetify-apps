@@ -10,7 +10,7 @@
         "launch-watch": "spicetify watch -e",
         "apply": "spicetify config extensions availability-map.js && spicetify apply",
         "unapply": "spicetify config extensions availability-map.js- && spicetify apply",
-        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit & npx eslint src/**",
         "format": "npx prettier --write src/"
     },
     "license": "MIT",

@@ -15,7 +15,7 @@ export function CheckboxComponent(props: Readonly<Props>): JSX.Element {
                 className="x-toggle-input"
                 type="checkbox"
                 checked={props.value}
-                onChange={(e) => {
+                onChange={() => {
                     props.onChange(!props.value);
                 }}
             />

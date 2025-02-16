@@ -18,35 +18,35 @@ export type Playlist = {
         label: 'standard' | 'small' | 'large' | 'xlarge';
         url: string;
     }[];
-    madeFor: any;
+    madeFor: unknown;
     owner: User;
     totalLength: number;
     unfilteredTotalLength: number;
-    totalLikes: any;
-    duration: any;
+    totalLikes: unknown;
+    duration: unknown;
     isLoaded: boolean;
     isOwnedBySelf: boolean;
     isPublished: boolean;
     isRootlistable: boolean;
     isSaved: boolean;
-    hasEpisodes: any;
-    hasSpotifyTracks: any;
+    hasEpisodes: unknown;
+    hasSpotifyTracks: unknown;
     hasSpotifyAudiobooks: boolean;
     canAdd: boolean;
     canRemove: boolean;
-    canPlay: any;
+    canPlay: unknown;
     formatListData: {
         type: string;
-        attributes: Record<string, any>;
+        attributes: Record<string, unknown>;
     };
     canReportAnnotationAbuse: boolean;
     hasDateAdded: boolean;
-    permissions: any;
+    permissions: unknown;
     collaborators: {
         count: number;
-        items: any[];
+        items: unknown[];
     };
-    appliedLenses: any[];
+    appliedLenses: unknown[];
 };
 
 export type RootlistFolder = Folder & {

@@ -10,7 +10,7 @@
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps test-runner && spicetify apply",
         "unapply": "spicetify config custom_apps test-runner- && spicetify apply",
-        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit & npx eslint src/**",
         "format": "npx prettier --write src/",
         "generate-css": "npx @tailwindcss/cli -i ./src/css/index.css -o ./src/css/tailwind.css --minify"
     },

@@ -46,15 +46,15 @@ export class ContextMenuService {
             i18next.t('contextMenu.name', {
                 syllabary: this.settingsService.targetSyllabary,
             }),
-            async () => {
-                await this.convert();
+            () => {
+                void this.convert();
             },
             () => {
                 const selectedName = getSelectedElementName();
                 this.selectedElementName = selectedName ?? '';
                 return Kuroshiro.Util.hasJapanese(this.selectedElementName);
             },
-            MENU_ICON as any,
+            MENU_ICON,
         );
 
         this.contextMenuItem.register();

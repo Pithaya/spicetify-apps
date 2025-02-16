@@ -68,7 +68,7 @@ async function getData(
     return items;
 }
 
-async function copy(text: string | any): Promise<void> {
+async function copy(text: string | object): Promise<void> {
     Spicetify.showNotification(i18next.t('copied'));
     await clipboardApi.copy(text);
 }

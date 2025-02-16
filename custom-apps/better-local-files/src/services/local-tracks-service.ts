@@ -1,14 +1,14 @@
-import { sort } from '../utils/sort.utils';
-import { Album } from '../models/album';
-import { Artist } from '../models/artist';
-import { Track } from '../models/track';
+import type { LocalFilesAPI } from '@shared/platform/local-files';
+import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, type Observable } from 'rxjs';
-import { StorageService } from './storage-service';
+import { Album } from '../models/album';
+import { Artist } from '../models/artist';
 import type { CachedAlbum } from '../models/cached-album';
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import type { LocalFilesAPI } from '@shared/platform/local-files';
-import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
+import { Track } from '../models/track';
+import { sort } from '../utils/sort.utils';
+import { StorageService } from './storage-service';
 
 /**
  * A list of tracks with an associated cover.
@@ -190,7 +190,6 @@ export class LocalTracksService {
 
                 this.albums.set(albumKey, album);
             } else {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 album = this.albums.get(albumKey)!;
             }
 
@@ -492,8 +491,8 @@ export class LocalTracksService {
                 resolve(image);
             };
 
-            image.onerror = (e) => {
-                reject(e);
+            image.onerror = () => {
+                reject(new Error(`Couldn't load image "${imageUrl}"`));
             };
 
             image.src = imageUrl;

@@ -1,10 +1,3 @@
-import React, { useMemo, useState } from 'react';
-import styles from '../../../css/app.module.scss';
-import { AlbumCard } from '../cards/AlbumCard';
-import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
-import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getTranslation } from '@shared/utils/translations.utils';
 import type {
     HeaderKey,
     LibraryHeaders,
@@ -12,8 +5,15 @@ import type {
     SortOption,
     SortOrder,
 } from '@shared/components/track-list/models/sort-option';
-import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
+import { getTranslation } from '@shared/utils/translations.utils';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
 import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
+import React, { useMemo, useState } from 'react';
+import styles from '../../../css/app.module.scss';
+import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
+import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
+import { AlbumCard } from '../cards/AlbumCard';
 
 export function AlbumsPage(): JSX.Element {
     const [search, setSearch] = useState('');
@@ -27,7 +27,7 @@ export function AlbumsPage(): JSX.Element {
     ];
 
     const albums = Array.from(window.localTracksService.getAlbums()).map(
-        ([key, value]) => value,
+        ([_, value]) => value,
     );
 
     function filterAlbums(albums: Album[], search: string): Album[] {

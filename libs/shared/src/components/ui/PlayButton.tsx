@@ -1,6 +1,6 @@
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { getTranslation } from '@shared/utils/translations.utils';
-import React from 'react';
+import React, { type MouseEvent } from 'react';
 
 export type Props = {
     size: Spicetify.ReactComponent.ButtonProps['buttonSize'];
@@ -25,11 +25,11 @@ export function PlayButton(props: Readonly<Props>): JSX.Element {
             size={legacySize}
             buttonSize={props.size}
             disabled={props.disabled}
-            onClick={(e: any) => {
+            onClick={(e: MouseEvent) => {
                 e.stopPropagation();
                 props.onClick();
             }}
-            iconOnly={() => <SpotifyIcon icon="play" />}
+            iconOnly={<SpotifyIcon icon="play" />}
         ></Spicetify.ReactComponent.ButtonPrimary>
     );
 }

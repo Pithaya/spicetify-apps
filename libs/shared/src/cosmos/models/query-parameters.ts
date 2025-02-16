@@ -1,6 +1,6 @@
 export type FilterParameter<T> = {
     property: keyof T;
-    value: any;
+    value: string;
     operator:
         | 'eq'
         | 'ne'

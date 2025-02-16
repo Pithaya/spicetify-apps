@@ -1,19 +1,19 @@
-import React from 'react';
-import { navigateTo } from '../../../utils/history.utils';
-import { AlbumTrackList } from '../track-list/AlbumTrackList';
-import { Header, HeaderImage } from '../../shared/Header';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import type { History } from '@shared/platform/history';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {
     getTranslatedDuration,
     getTranslation,
 } from '@shared/utils/translations.utils';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { History } from '@shared/platform/history';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import React from 'react';
+import { navigateTo } from '../../../utils/history.utils';
+import { Header, HeaderImage } from '../../shared/Header';
+import { AlbumTrackList } from '../track-list/AlbumTrackList';
 
 type Props = {
     album: Album;

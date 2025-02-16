@@ -22,19 +22,13 @@ async function showAvailability(uris: string[], locale: string): Promise<void> {
                 trackMarkets={track?.available_markets ?? []}
                 locale={locale}
             />
-        ) as any,
+        ),
         isLarge: true,
     });
 }
 
-function isTrack(uris: string[]): boolean {
-    const uri: Spicetify.URI = Spicetify.URI.fromString(uris[0]);
-
-    if (uri.type === Spicetify.URI.Type.TRACK) {
-        return true;
-    }
-
-    return false;
+function isSingleTrack(uris: string[]): boolean {
+    return uris.length === 1 && Spicetify.URI.isTrack(uris[0]);
 }
 
 async function main(): Promise<void> {
@@ -70,13 +64,11 @@ async function main(): Promise<void> {
 
     const menuItem = new Spicetify.ContextMenu.Item(
         i18next.t('showAvailability'),
-        async (uris) => {
-            await showAvailability(uris, locale.getLocale());
+        (uris) => {
+            void showAvailability(uris, locale.getLocale());
         },
-        isTrack,
-        Spicetify.ReactDOMServer.renderToString(
-            <EarthLock size={16} color="var(--text-subdued)" strokeWidth={1} />,
-        ),
+        isSingleTrack,
+        <EarthLock size={16} color="var(--text-subdued)" strokeWidth={1} />,
         false,
     );
 

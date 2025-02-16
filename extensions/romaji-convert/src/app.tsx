@@ -107,7 +107,7 @@ async function main(): Promise<void> {
         },
     });
 
-    i18next.services.formatter?.add('lowercase', (value, lng, options) => {
+    i18next.services.formatter?.add('lowercase', (value: string) => {
         return value.toLowerCase();
     });
 
@@ -121,7 +121,7 @@ async function main(): Promise<void> {
         () => {
             Spicetify.PopupModal.display({
                 title: i18next.t('settings.title'),
-                content: React.createElement(SettingsModal) as any,
+                content: <SettingsModal />,
                 isLarge: true,
             });
         },

@@ -439,7 +439,7 @@ export class GraphGenerator {
      */
     private calculateReachability(): number[] {
         const maxIter = 1000;
-        const reaches: number[] = this.graph.beats.map((b) => 0);
+        const reaches: number[] = this.graph.beats.map(() => 0);
 
         this.graph.beats.forEach((beat, beatIndex) => {
             reaches[beatIndex] = this.graph.beats.length - beatIndex;

@@ -1,4 +1,6 @@
-import type { LocalTrack } from '@shared/platform/local-files';
+import { type LocalTrack } from '@shared/platform/local-files';
+import { type PlayerAPI } from '@shared/platform/player';
+import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 
 /**
  * Plays a local track with the given context.
@@ -6,13 +8,16 @@ import type { LocalTrack } from '@shared/platform/local-files';
  * @param trackUri The URI of the track to play.
  * @param context The play context.
  */
-export function playTrack(trackUri: string, context: LocalTrack[]): void {
+export async function playTrack(
+    trackUri: string,
+    context: LocalTrack[],
+): Promise<void> {
     if (context.length === 0 || !context.some((t) => t.uri === trackUri)) {
         return;
     }
 
-    // TODO: Type and use Platform.PlayerAPI
-    (Spicetify.Player as any).origin.play(
+    const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
+    await playerApi.play(
         {
             uri: 'spotify:internal:local-files',
             pages: [{ items: context }],
@@ -30,12 +35,13 @@ export function playTrack(trackUri: string, context: LocalTrack[]): void {
  * Play a list of tracks as a context.
  * @param context A list of tracks to play.
  */
-export function playContext(context: LocalTrack[]): void {
+export async function playContext(context: LocalTrack[]): Promise<void> {
     if (context.length === 0) {
         return;
     }
 
-    (Spicetify.Player as any).origin.play(
+    const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
+    await playerApi.play(
         {
             uri: 'spotify:internal:local-files',
             pages: [{ items: context }],

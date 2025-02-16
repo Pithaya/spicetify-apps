@@ -1,5 +1,5 @@
-import React from 'react';
 import type { PropsWithChildren } from 'react';
+import React from 'react';
 
 export type Props = Spicetify.ReactComponent.TextComponentProps & {
     /**
@@ -35,7 +35,7 @@ export function TextComponent(
 ): JSX.Element {
     const { elementType = 'span', children, fontSize, style, ...rest } = props;
 
-    let SpicetifyTextComponent;
+    let SpicetifyTextComponent: JSX.Element;
 
     switch (elementType) {
         case 'h1':

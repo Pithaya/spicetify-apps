@@ -24,7 +24,6 @@ export class KuroshiroBuilder {
             await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
-        // eslint-disable-next-line new-cap
         const kuroshiro = new (Kuroshiro as any).default();
 
         this.applyKuromojiFix();
@@ -46,7 +45,6 @@ export class KuroshiroBuilder {
             return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/unbound-method
         prototype.realOpen = prototype.open;
 
         (prototype as any).open = function (
@@ -54,7 +52,7 @@ export class KuroshiroBuilder {
             url: string,
             async: boolean,
         ) {
-            if (url.indexOf(dictPath.replace('https://', 'https:/')) === 0) {
+            if (url.startsWith(dictPath.replace('https://', 'https:/'))) {
                 this.realOpen(
                     method,
                     url.replace('https:/', 'https://'),
