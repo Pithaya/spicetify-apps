@@ -1,9 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { type PlaylistAPI } from '@shared/platform/playlist';
-import type { Folder, RootlistAPI } from '@shared/platform/rootlist';
+import type { Folder } from '@shared/platform/rootlist';
 import { getRootlistFolders } from '@shared/utils/rootlist-utils';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import useAppStore from 'custom-apps/playlist-maker/src/stores/store';
 import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -55,8 +54,8 @@ export function CreatePlaylistModal(): JSX.Element {
     const createPlaylist = useCallback(async () => {
         setIsCreating(true);
 
-        const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
-        const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+        const rootlistAPI = getPlatform().RootlistAPI;
+        const playlistAPI = getPlatform().PlaylistAPI;
 
         const { playlistName, parentFolder } = getValues();
 

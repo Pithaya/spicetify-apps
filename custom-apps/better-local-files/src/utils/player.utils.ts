@@ -1,6 +1,5 @@
 import { type LocalTrack } from '@shared/platform/local-files';
-import { type PlayerAPI } from '@shared/platform/player';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 /**
  * Plays a local track with the given context.
@@ -16,8 +15,7 @@ export async function playTrack(
         return;
     }
 
-    const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
-    await playerApi.play(
+    await getPlatform().PlayerAPI.play(
         {
             uri: 'spotify:internal:local-files',
             pages: [{ items: context }],
@@ -40,8 +38,7 @@ export async function playContext(context: LocalTrack[]): Promise<void> {
         return;
     }
 
-    const playerApi = getPlatformApiOrThrow<PlayerAPI>('PlayerAPI');
-    await playerApi.play(
+    await getPlatform().PlayerAPI.play(
         {
             uri: 'spotify:internal:local-files',
             pages: [{ items: context }],

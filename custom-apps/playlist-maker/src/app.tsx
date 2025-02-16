@@ -11,8 +11,7 @@ import './css/tailwind.css';
 
 import type { TopBarItem } from '@shared/components/top-bar/top-bar-item';
 import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
-import type { History } from '@shared/platform/history';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { EditorPage } from './components/editor/EditorPage';
 import { ResultPage } from './components/result/ResultPage';
 import { EDITOR_ROUTE, RESULT_ROUTE } from './constants';
@@ -51,7 +50,7 @@ function App(): JSX.Element {
         void init();
     }, []);
 
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
     const location = history.location;
 
     let currentPage = <></>;

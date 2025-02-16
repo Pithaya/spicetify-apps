@@ -418,6 +418,15 @@ declare namespace Spicetify {
 		 */
 		function playUri(uri: string, context?: any, options?: any): Promise<void>;
 		/**
+		 * Unregister added event listener `songchange`.
+		 * @param type
+		 * @param callback
+		 */
+		function removeEventListener(
+            type: 'songchange',
+            callback: (event?: Event & { data: PlayerState }) => void,
+        ): void;
+		/**
 		 * Unregister added event listener `type`.
 		 * @param type
 		 * @param callback
@@ -2060,7 +2069,15 @@ declare namespace Spicetify {
 		/**
 		 * Collection of GraphQL definitions.
 		 */
-		const Definitions: Record<Query | string, any>;
+		const Definitions: Record<
+            Query | string,
+            {
+                name: string;
+                operation: 'query' | 'mutation';
+                sha256Hash: string;
+                value: null;
+            }
+        >;
 		/**
 		 * Sends a GraphQL query to Spotify.
 		 * @description A preinitialized version of `Spicetify.GraphQL.Handler` using current context.
@@ -2391,13 +2408,14 @@ declare namespace Spicetify {
 		 */
 		function toLocaleUpperCase(text: string): string;
 	}
-	type EventCallback = () => void | Promise<void>;
-	class Event {
-        callbacks: EventCallback[];
-        on: (callback: EventCallback) => void;
-        fire: () => void;
-    }
 	namespace Events {
+		type EventCallback = () => void | Promise<void>;
+		class Event {
+			callbacks: EventCallback[];
+			on: (callback: EventCallback) => void;
+			fire: () => void;
+		}
+
 		const platformLoaded: Event;
 		const webpackLoaded: Event;
 	}

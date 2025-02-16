@@ -1,9 +1,5 @@
-import {
-    type Folder,
-    type Playlist,
-    type RootlistAPI,
-} from '@shared/platform/rootlist';
-import { getPlatformApiOrThrow } from './spicetify-utils';
+import { type Folder, type Playlist } from '@shared/platform/rootlist';
+import { getPlatform } from './spicetify-utils';
 
 function isFolder(item: Folder | Playlist): item is Folder {
     return item.type === 'folder';
@@ -14,7 +10,7 @@ function isPlaylist(item: Folder | Playlist): item is Playlist {
 }
 
 export async function getRootlistFolders(): Promise<Folder[]> {
-    const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
+    const rootlistAPI = getPlatform().RootlistAPI;
 
     const rootlistFolder = await rootlistAPI.getContents();
 
@@ -28,7 +24,7 @@ export async function getRootlistFolders(): Promise<Folder[]> {
 export async function getRootlistPlaylists(
     filter?: string,
 ): Promise<Playlist[]> {
-    const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
+    const rootlistAPI = getPlatform().RootlistAPI;
 
     const rootlistFolder = await rootlistAPI.getContents({
         flatten: true,

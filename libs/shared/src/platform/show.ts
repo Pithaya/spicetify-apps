@@ -15,8 +15,8 @@ export type ShowMetadata = {
         audio: {
             items: unknown[];
         };
-        audioPreview: unknown | null;
-        sharingInfo: unknown | null;
+        audioPreview: unknown;
+        sharingInfo: unknown;
         duration: {
             milliseconds: number;
         };
@@ -51,10 +51,10 @@ export type ShowMetadata = {
             audio: {
                 items: unknown[];
             };
-            audioPreview: unknown | null;
-            sharingInfo: unknown | null;
+            audioPreview: unknown;
+            sharingInfo: unknown;
             segmentsCount: number;
-            podcast: unknown | null;
+            podcast: unknown;
             podcastSubscription: {
                 isPaywalled: boolean;
                 isUserSubscribed: boolean;
@@ -72,7 +72,7 @@ export type ShowMetadata = {
             duration: {
                 milliseconds: number;
             };
-            contentInformation: unknown | null;
+            contentInformation: unknown;
             transcripts: {
                 uri: string;
                 language: string;
@@ -81,7 +81,7 @@ export type ShowMetadata = {
             }[];
         };
     };
-    gatedContentAccessReason: unknown | null;
+    gatedContentAccessReason: unknown;
 };
 
 export type ShowAPI = {

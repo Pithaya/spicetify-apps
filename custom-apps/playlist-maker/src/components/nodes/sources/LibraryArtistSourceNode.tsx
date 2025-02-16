@@ -5,9 +5,8 @@ import {
     type GetContentsArtistItem,
     type GetContentsItem,
     GetContentsRootFilterIds,
-    type LibraryAPI,
 } from '@shared/platform/library';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -106,7 +105,7 @@ export function LibraryArtistSourceNode(
 
     const getArtists = useCallback(
         async (input: string): Promise<ArtistItem[]> => {
-            const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+            const libraryApi = getPlatform().LibraryAPI;
 
             const response = await libraryApi.getContents({
                 filters: [GetContentsRootFilterIds.ARTIST],

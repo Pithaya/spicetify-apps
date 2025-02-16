@@ -10,8 +10,8 @@ export type Props = {
     selectedColorSet?: Spicetify.ColorSet;
 
     className?: string;
-    iconLeading?: (props: any) => any | string;
-    iconTrailing?: (props: any) => any | string;
+    iconLeading?: (props: unknown) => string;
+    iconTrailing?: (props: unknown) => string;
 
     onClick?: () => void;
 };
@@ -20,7 +20,7 @@ export function Chip(props: Readonly<PropsWithChildren<Props>>): JSX.Element {
     const { children, ...rest } = props;
     return (
         <Spicetify.ReactComponent.Chip {...rest}>
-            {props.children}
+            {children}
         </Spicetify.ReactComponent.Chip>
     );
 }

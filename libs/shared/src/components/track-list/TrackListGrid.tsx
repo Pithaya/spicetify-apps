@@ -55,7 +55,7 @@ export function TrackListGrid<T extends string>(
                 selectedTracks.size > 1
                     ? getTranslation(
                           ['tracklist.drag.multiple.label', 'other'],
-                          selectedTracks.size,
+                          selectedTracks.size.toFixed(),
                       )
                     : mapAsArray[0][1].name,
         });
@@ -100,11 +100,11 @@ export function TrackListGrid<T extends string>(
                 ></TrackListHeader>
 
                 <div
-                    className={`${
+                    className={
                         props.displayType === 'compact'
                             ? styles['display-list-compact']
                             : styles['display-list']
-                    }`}
+                    }
                 >
                     {props.tracks.map((track, index) => (
                         <TrackListRow

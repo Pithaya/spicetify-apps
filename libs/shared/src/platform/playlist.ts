@@ -81,7 +81,7 @@ export type Playlist = {
         isLoaded: boolean;
         isOwnedBySelf: boolean;
         isPublished: boolean;
-        madeFor: unknown | null;
+        madeFor: unknown;
         name: string;
         owner: {
             displayName: string;
@@ -111,15 +111,15 @@ export type PlaylistAPI = {
     add: (
         playlistUri: string,
         tracks: string[],
-        options: any | { before?: 'start'; after?: 'end' },
+        options: { before?: 'start'; after?: 'end' },
     ) => Promise<void>;
 
     applyModifications: (
         playlistUri: string,
         modification: {
-            operation: string | 'add';
+            operation: 'add';
             uris: string[];
-            after: 'end' | string;
+            after: 'end';
         },
     ) => Promise<void>;
 

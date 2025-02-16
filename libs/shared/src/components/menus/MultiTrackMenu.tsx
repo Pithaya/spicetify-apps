@@ -1,7 +1,6 @@
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { addToQueuePath } from '@shared/icons/icons';
-import type { PlayerAPI } from '@shared/platform/player';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
 import React from 'react';
 import { type ITrack } from '../track-list/models/interfaces';
@@ -15,7 +14,7 @@ export type Props = {
 
 export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
     async function addToQueue(): Promise<void> {
-        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').addToQueue(
+        await getPlatform().PlayerAPI.addToQueue(
             props.tracks.map((t) => ({ uri: t.uri })),
         );
     }

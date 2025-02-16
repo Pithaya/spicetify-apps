@@ -9,8 +9,8 @@ import {
     type TopTrack,
 } from '@shared/graphQL/queries/query-artist-overview';
 import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
-import type { LibraryAPI, LibraryAPITrack } from '@shared/platform/library';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import type { LibraryAPITrack } from '@shared/platform/library';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -52,7 +52,7 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
     }
 
     private async getLikedTracks(uri: string): Promise<WorkflowTrack[]> {
-        const libraryApi = getPlatformApiOrThrow<LibraryAPI>('LibraryAPI');
+        const libraryApi = getPlatform().LibraryAPI;
 
         const tracks: LibraryAPITrack[] = (
             await libraryApi.getTracks({

@@ -1,6 +1,5 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { History } from '@shared/platform/history';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import {
     getTranslatedDuration,
     getTranslation,
@@ -71,7 +70,7 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                                     ? 'one'
                                     : 'other',
                             ],
-                            props.album.getTracks().length,
+                            props.album.getTracks().length.toFixed(),
                         )}
                     </TextComponent>
                     <TextComponent
@@ -87,9 +86,10 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
 }
 
 export function AlbumPage(): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
+    const state = history.location.state as { uri?: string };
 
-    const albumUri = (history.location.state as any).uri ?? null;
+    const albumUri = state.uri ?? null;
 
     if (albumUri === null) {
         history.replace(ALBUMS_ROUTE);
@@ -107,15 +107,8 @@ export function AlbumPage(): JSX.Element {
 
     return (
         <>
-            {album !== null && (
-                <>
-                    <AlbumHeader album={album} />
-                    <AlbumTrackList
-                        albumName={album.name}
-                        discs={album.discs}
-                    />
-                </>
-            )}
+            <AlbumHeader album={album} />
+            <AlbumTrackList albumName={album.name} discs={album.discs} />
         </>
     );
 }

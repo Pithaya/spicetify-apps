@@ -1,5 +1,4 @@
-import type { PlayerAPI } from '@shared/platform/player';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import React, { useState } from 'react';
 import type { BeatDrawData } from '../../models/visualization/beat-draw-data';
 
@@ -27,9 +26,7 @@ export function VisualizerSlice(props: Readonly<Props>): JSX.Element {
                 setIsHovered(false);
             }}
             onClick={() => {
-                void getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').seekTo(
-                    props.drawData.beat.start,
-                );
+                void getPlatform().PlayerAPI.seekTo(props.drawData.beat.start);
             }}
         >
             <title>Beat {props.drawData.beat.index}</title>

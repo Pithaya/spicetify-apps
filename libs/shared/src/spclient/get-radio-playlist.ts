@@ -1,5 +1,4 @@
-import type { RequestBuilder } from '@shared/platform/request-builder';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 
 type GetRadioPlaylistResponse = {
     total: number;
@@ -24,8 +23,7 @@ export async function getRadioPlaylist(uri: string): Promise<string> {
         throw new Error('The source URI must be a track, artist or album URI.');
     }
 
-    const requestBuilder =
-        getPlatformApiOrThrow<RequestBuilder>('RequestBuilder');
+    const requestBuilder = getPlatform().RequestBuilder;
 
     // goto /playlist/{id}
     const response = await requestBuilder
