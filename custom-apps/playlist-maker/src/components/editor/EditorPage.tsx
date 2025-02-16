@@ -149,7 +149,7 @@ export function EditorPage(): JSX.Element {
                     <div
                         className={Spicetify.classnames(
                             styles['sidenav'],
-                            '!p-5 overflow-scroll panel',
+                            'panel overflow-scroll !p-5',
                         )}
                     >
                         <Sidenav />

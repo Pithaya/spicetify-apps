@@ -35,7 +35,9 @@ export function removeWorkflowFromStorage(id: string): void {
 }
 
 export function getWorkflowsFromStorage(): SavedWorkflow[] {
-    return JSON.parse(Spicetify.LocalStorage.get(WORKFLOW_KEY) ?? '[]');
+    return JSON.parse(
+        Spicetify.LocalStorage.get(WORKFLOW_KEY) ?? '[]',
+    ) as SavedWorkflow[];
 }
 
 export function setArtistsGenresCache(

@@ -29,7 +29,7 @@ export function PlayButton(props: Readonly<Props>): JSX.Element {
                 e.stopPropagation();
                 props.onClick();
             }}
-            iconOnly={<SpotifyIcon icon="play" />}
+            iconOnly={() => <SpotifyIcon icon="play" />}
         ></Spicetify.ReactComponent.ButtonPrimary>
     );
 }
