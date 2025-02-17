@@ -1,0 +1,41 @@
+name: Playlist maker Publish
+
+on:
+    push:
+        branches: ['main']
+        paths: ['custom-apps/playlist-maker/**']
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: ./custom-apps/playlist-maker
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Use Node.js 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'npm'
+                  cache-dependency-path: ./package-lock.json
+            - name: Install dependencies
+              working-directory: ./
+              run: npm ci
+            - name: Build
+              run: npm run build-local
+            - name: Copy Readme
+              run: cp README.md ./dist/README.md
+            - name: Copy preview
+              run: cp preview.png ./dist/preview.png
+            - name: Deploy
+              uses: s0/git-publish-subdir-action@develop
+              env:
+                  REPO: git@github.com:Pithaya/spicetify-apps-dist.git
+                  BRANCH: dist/playlist-maker
+                  FOLDER: ./custom-apps/playlist-maker/dist
+                  SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
