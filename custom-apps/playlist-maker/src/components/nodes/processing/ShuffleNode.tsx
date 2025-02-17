@@ -1,16 +1,16 @@
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
 export function ShuffleNode(
     props: Readonly<NodeProps<BaseNodeData>>,
 ): JSX.Element {
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <ProcessingNodeHeader />
             <NodeContent>
                 <NodeTitle title="Shuffle" />

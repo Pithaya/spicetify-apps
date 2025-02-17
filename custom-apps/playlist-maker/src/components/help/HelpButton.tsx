@@ -1,6 +1,6 @@
+import { CircleHelp } from 'lucide-react';
 import React from 'react';
 import styles from './HelpButton.module.scss';
-import { CircleHelp } from 'lucide-react';
 import { HelpModal } from './HelpModal';
 
 export function HelpButton(): JSX.Element {
@@ -17,7 +17,7 @@ export function HelpButton(): JSX.Element {
                     onClick={() => {
                         Spicetify.PopupModal.display({
                             title: 'Help',
-                            content: React.createElement(HelpModal) as any,
+                            content: <HelpModal />,
                             isLarge: true,
                         });
                     }}

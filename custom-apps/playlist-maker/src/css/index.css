@@ -14,6 +14,7 @@
     );
     --color-spice-main-elevated: var(--spice-main-elevated);
     --color-spice-button: var(--spice-button);
+    --color-spice-button-transparent: rgb(from var(--spice-button) r g b / 0.5);
 }
 
 @utility gap-panel {

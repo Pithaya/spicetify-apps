@@ -23,7 +23,7 @@ export function TempoNode(props: Readonly<NodeProps<TempoData>>): JSX.Element {
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <FilterNodeHeader />
             <NodeContent>
                 <div

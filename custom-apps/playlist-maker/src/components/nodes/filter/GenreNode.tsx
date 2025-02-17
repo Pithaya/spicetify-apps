@@ -29,7 +29,7 @@ export function GenreNode(
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <FilterNodeHeader />
             <NodeContent>
                 <NodeTitle title="Genres" />

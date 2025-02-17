@@ -172,6 +172,7 @@ export function EditorPage(): JSX.Element {
                             deleteKeyCode={['Backspace']}
                             nodeTypes={nodeTypes}
                             isValidConnection={isValidConnection}
+                            selectNodesOnDrag={false}
                         >
                             <TopLeftPanel />
                             <CenterPanel />

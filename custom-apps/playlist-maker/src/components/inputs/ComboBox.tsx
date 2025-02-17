@@ -31,6 +31,7 @@ export type Props<T extends TComboboxItem> = {
     onInputChanged: (inputValue: string) => void;
     onClear: () => void;
     onBlur: () => void;
+    disabled?: boolean;
 };
 
 export function Combobox<T extends TComboboxItem>(
@@ -95,10 +96,15 @@ export function Combobox<T extends TComboboxItem>(
                         onBlur={() => {
                             props.onBlur();
                         }}
+                        disabled={props.disabled}
                     />
                     {selectedItem !== null && (
                         <Spicetify.ReactComponent.TooltipWrapper label="Clear selection">
-                            <button aria-label="clear selection" type="button">
+                            <button
+                                aria-label="clear selection"
+                                type="button"
+                                disabled={props.disabled}
+                            >
                                 <X size={16} onClick={props.onClear} />
                             </button>
                         </Spicetify.ReactComponent.TooltipWrapper>
@@ -108,6 +114,7 @@ export function Combobox<T extends TComboboxItem>(
                         className="!px-2"
                         type="button"
                         {...getToggleButtonProps()}
+                        disabled={props.disabled}
                     >
                         {isOpen ? (
                             <ChevronUp size={16} />
