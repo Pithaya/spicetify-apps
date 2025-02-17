@@ -37,7 +37,7 @@ export function SortProcessorNode(
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <ProcessingNodeHeader />
             <NodeContent>
                 <NodeTitle title="Sort" />

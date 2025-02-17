@@ -27,7 +27,7 @@ export function ComboBoxController<
         <Controller
             name={props.name}
             control={props.control}
-            render={({ field: { onChange } }) => (
+            render={({ field: { onChange }, formState: { disabled } }) => (
                 <Combobox
                     items={props.items}
                     itemRenderer={props.itemRenderer}
@@ -43,6 +43,7 @@ export function ComboBoxController<
                     onInputChanged={props.onInputChanged}
                     onClear={props.onClear}
                     onBlur={props.onBlur}
+                    disabled={disabled}
                 />
             )}
         />

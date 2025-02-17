@@ -25,7 +25,7 @@ export function AcousticnessNode(
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <FilterNodeHeader />
             <NodeContent>
                 <div

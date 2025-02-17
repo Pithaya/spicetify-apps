@@ -200,7 +200,7 @@ export function LibraryPlaylistSourceNode(
     }, [playlistUri, onSelectedIdChanged]);
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
 
             <NodeContent>

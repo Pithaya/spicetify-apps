@@ -181,7 +181,7 @@ export function LibraryAlbumSourceNode(
     }, [uri, onSelectedIdChanged]);
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
             <NodeContent>
                 <NodeTitle title="Album" />

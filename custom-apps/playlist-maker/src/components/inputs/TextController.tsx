@@ -34,6 +34,7 @@ export function TextController<T extends FieldValues>(
             render={({
                 field: { onChange, onBlur, value, name, ref },
                 fieldState: { invalid },
+                formState: { disabled },
             }) => (
                 <input
                     className={Spicetify.classnames(
@@ -60,6 +61,7 @@ export function TextController<T extends FieldValues>(
                     onBlur={onBlur}
                     value={required ? value : toOptionalInput(value)}
                     name={name}
+                    disabled={disabled}
                     ref={ref}
                 />
             )}

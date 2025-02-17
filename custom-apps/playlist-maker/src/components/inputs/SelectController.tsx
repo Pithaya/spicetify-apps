@@ -23,7 +23,10 @@ export function SelectController<
         <Controller
             name={props.name}
             control={props.control}
-            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            render={({
+                field: { onChange, onBlur, value, name, ref },
+                formState: { disabled },
+            }) => (
                 <Select
                     selectLabel={props.label}
                     selectedValue={value}
@@ -37,6 +40,7 @@ export function SelectController<
                     }}
                     onBlur={onBlur}
                     name={name}
+                    disabled={disabled}
                     ref={ref}
                 />
             )}

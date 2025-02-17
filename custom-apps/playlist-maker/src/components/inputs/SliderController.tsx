@@ -29,7 +29,10 @@ export function SliderController<T extends RangeForm>(
             <Controller
                 name={'range' as FieldPath<T>}
                 control={props.control}
-                render={({ field: { onChange, value, ref } }) => (
+                render={({
+                    field: { onChange, value, ref },
+                    formState: { disabled },
+                }) => (
                     <div className="flex flex-wrap justify-center">
                         <Range
                             values={[value.min, value.max]}
@@ -45,6 +48,7 @@ export function SliderController<T extends RangeForm>(
                                 onChange(value);
                                 props.onChange(value);
                             }}
+                            disabled={disabled}
                             ref={ref}
                             renderTrack={({ props, children }) => (
                                 <div
@@ -65,11 +69,17 @@ export function SliderController<T extends RangeForm>(
                                             borderRadius: '4px',
                                             background: getTrackBackground({
                                                 values: [value.min, value.max],
-                                                colors: [
-                                                    '#ccc',
-                                                    'var(--spice-button)',
-                                                    '#ccc',
-                                                ],
+                                                colors: disabled
+                                                    ? [
+                                                          'var(--spice-tab-active)',
+                                                          'var(--spice-button-disabled)',
+                                                          'var(--spice-tab-active)',
+                                                      ]
+                                                    : [
+                                                          'var(--spice-tab-active)',
+                                                          'var(--spice-button)',
+                                                          'var(--spice-tab-active)',
+                                                      ],
                                                 min: min,
                                                 max: max,
                                                 rtl: false,
@@ -90,7 +100,9 @@ export function SliderController<T extends RangeForm>(
                                         height: '14px',
                                         width: '14px',
                                         borderRadius: '7px',
-                                        backgroundColor: 'var(--spice-text)',
+                                        backgroundColor: disabled
+                                            ? 'var(--spice-subtext)'
+                                            : 'var(--spice-text)',
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',

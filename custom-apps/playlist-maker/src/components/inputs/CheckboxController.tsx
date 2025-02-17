@@ -19,7 +19,10 @@ export function CheckboxController<T extends FieldValues>(
         <Controller
             control={props.control}
             name={props.name}
-            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            render={({
+                field: { onChange, onBlur, value, name, ref },
+                formState: { disabled },
+            }) => (
                 <input
                     type="checkbox"
                     onChange={(e) => {
@@ -33,6 +36,7 @@ export function CheckboxController<T extends FieldValues>(
                     onBlur={onBlur}
                     value={value}
                     name={name}
+                    disabled={disabled}
                     ref={ref}
                 />
             )}
