@@ -20,6 +20,7 @@ export const LikedSongsDataSchema = z
         filter: z.string().optional(),
         sortField: z.enum(LibraryAPITrackSortOptionFields),
         sortOrder: z.enum(LibraryAPITrackSortOptionOrders),
+        genres: z.array(z.string()),
     })
     .merge(BaseNodeDataSchema)
     .strict();

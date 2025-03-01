@@ -3,7 +3,6 @@ import { type NodeProps } from 'reactflow';
 import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode';
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
-import { GenreNode } from '../../components/nodes/filter/GenreNode';
 import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
@@ -32,7 +31,6 @@ type SourceNodes =
     | 'libraryArtistSource';
 
 type FilterNodes =
-    | 'genre'
     | 'isPlayable'
     | 'acousticness'
     | 'danceability'
@@ -61,7 +59,6 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     libraryAlbumSource: LibraryAlbumSourceNode,
     libraryArtistSource: LibraryArtistSourceNode,
     deduplicate: DeduplicateNode,
-    genre: GenreNode,
     isPlayable: IsPlayableNode,
     result: ResultNode,
     shuffle: ShuffleNode,

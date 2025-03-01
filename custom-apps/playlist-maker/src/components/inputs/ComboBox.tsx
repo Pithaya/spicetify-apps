@@ -3,11 +3,6 @@ import { useCombobox } from 'downshift';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import React from 'react';
 
-// Used to force open the combobox
-const forceOpen = false;
-
-// TODO: remove logs
-
 export type TComboboxItem = {
     id: string;
 };
@@ -32,12 +27,14 @@ export type Props<T extends TComboboxItem> = {
     onClear: () => void;
     onBlur: () => void;
     disabled?: boolean;
+    // Used to force open the combobox for debug purposes
+    forceOpen?: boolean;
 };
 
 export function Combobox<T extends TComboboxItem>(
     props: Readonly<Props<T>>,
 ): JSX.Element {
-    const { selectedItem, items, inputValue } = props;
+    const { selectedItem, items, inputValue, forceOpen = false } = props;
 
     const {
         isOpen,

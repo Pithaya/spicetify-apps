@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import type { TComboboxItem } from '../components/inputs/ComboBox';
 
+// TODO: remove logs
+
 type UseComboboxValuesReturn<T extends TComboboxItem> = {
     selectedItem: T | null;
     onItemSelected: (item: T | null) => void;
@@ -23,7 +25,7 @@ export function useComboboxValues<T extends TComboboxItem>(
     const [inputValue, setInputValue] = useState<string>('');
     const [items, setItems] = useState<T[]>([]);
 
-    const debouncedInputCallback = useDebouncedCallback((value) => {
+    const debouncedInputCallback = useDebouncedCallback((value: string) => {
         console.log('COMBO - debounced input:', value);
 
         fetchItems(value)
@@ -31,7 +33,7 @@ export function useComboboxValues<T extends TComboboxItem>(
                 console.log('COMBO - debounce fetched items:', items);
                 setItems(items);
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 console.error('COMBO - debounce fetched items error:', error);
             });
     }, 200);
