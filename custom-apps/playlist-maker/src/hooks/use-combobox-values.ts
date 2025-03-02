@@ -51,6 +51,9 @@ export function useComboboxValues<T extends TComboboxItem>(
         console.log('COMBO - item selected:', item?.id);
 
         updateNodeField(item);
+
+        // Item and input will be updated in syncComboboxValues
+        // but do it now to update interface faster
         setSelectedItem(item);
         setInputValue(item ? itemToString(item) : '');
     };
@@ -60,8 +63,19 @@ export function useComboboxValues<T extends TComboboxItem>(
         console.log('COMBO - reset selection');
 
         updateNodeField(null);
+
+        // Item and input will be updated in syncComboboxValues
+        // but do it now to update interface faster
         setSelectedItem(null);
         setInputValue('');
+    };
+
+    // Sync input with selected item
+    // Used on blur to cancel an incomplete search
+    const syncInputWithSelectedItem = (): void => {
+        console.log('COMBO - sync input with selected item');
+
+        setInputValue(selectedItem ? itemToString(selectedItem) : '');
     };
 
     // Sync combobox values
@@ -75,14 +89,6 @@ export function useComboboxValues<T extends TComboboxItem>(
         },
         [],
     );
-
-    // Sync input with selected item
-    // Used on blur to cancel an incomplete search
-    const syncInputWithSelectedItem = (): void => {
-        console.log('COMBO - sync input with selected item');
-
-        setInputValue(selectedItem ? itemToString(selectedItem) : '');
-    };
 
     // When the selected id changes (init, load, item selection),
     // set the combobox selected item

@@ -1,5 +1,6 @@
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { uniqueBy } from '@shared/utils/array-utils';
 import { useCombobox, useMultipleSelection } from 'downshift';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useCallback } from 'react';
@@ -75,10 +76,11 @@ export function MultiSelect<T extends TMultiSelectItem>(
         itemRenderer,
     } = props;
 
+    const allDisplayedItemsSelected = props.items.every((item) =>
+        selectedItems.includes(item),
+    );
     const menuItems = [
-        selectedItems.length === props.items.length
-            ? unselectAllItem
-            : selectAllItem,
+        allDisplayedItemsSelected ? unselectAllItem : selectAllItem,
         ...props.items,
     ];
 
@@ -135,12 +137,23 @@ export function MultiSelect<T extends TMultiSelectItem>(
                 case useCombobox.stateChangeTypes.InputBlur:
                     if (newSelectedItem) {
                         if (newSelectedItem === props.selectAllItem) {
-                            props.onItemsSelected(props.items);
+                            // Add all displayed items to the selected items
+                            props.onItemsSelected(
+                                uniqueBy(
+                                    [...props.selectedItems, ...props.items],
+                                    (item) => item.id,
+                                ),
+                            );
                             return;
                         }
 
                         if (newSelectedItem === props.unselectAllItem) {
-                            props.onItemsSelected([]);
+                            // Remove all displayed items from the selected items
+                            props.onItemsSelected([
+                                ...props.selectedItems.filter(
+                                    (item) => !props.items.includes(item),
+                                ),
+                            ]);
                             return;
                         }
 

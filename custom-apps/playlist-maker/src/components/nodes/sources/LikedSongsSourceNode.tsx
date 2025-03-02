@@ -1,14 +1,17 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
+import { useMultiSelectValues } from 'custom-apps/playlist-maker/src/hooks/use-multiselect-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     LikedSongsDataSchema,
     type LikedSongsData,
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
+import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import { MultiSelect, type ItemRendererProps } from '../../inputs/MultiSelect';
+import { type ItemRendererProps } from '../../inputs/MultiSelect';
+import { MultiSelectController } from '../../inputs/MultiSelectController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
 import { TextController } from '../../inputs/TextController';
@@ -53,6 +56,33 @@ type GenreItem = {
     name: string;
 };
 
+const allGenres: GenreItem[] = [
+    {
+        id: '1',
+        name: 'Rock',
+    },
+    {
+        id: '2',
+        name: 'Pop',
+    },
+    {
+        id: '3',
+        name: 'Hip Hop',
+    },
+    {
+        id: '4',
+        name: 'Jazz',
+    },
+    {
+        id: '5',
+        name: 'Electronic',
+    },
+    {
+        id: '6',
+        name: 'Rock Electronique indépendant de Munich',
+    },
+];
+
 function GenreItemRenderer(
     props: Readonly<ItemRendererProps<GenreItem>>,
 ): JSX.Element {
@@ -76,6 +106,7 @@ function GenreItemRenderer(
 export function LikedSongsSourceNode(
     props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
+    const { genres } = props.data;
     const { control, errors, updateNodeField } = useNodeForm<LikedSongsData>(
         props.id,
         props.data,
@@ -83,34 +114,41 @@ export function LikedSongsSourceNode(
         LikedSongsDataSchema,
     );
 
-    const [selectedItems, setSelectedItems] = useState<GenreItem[]>([]);
-    const [inputValue, setInputValue] = useState<string>('');
-    const [list] = useState<GenreItem[]>([
-        {
-            id: '1',
-            name: 'Rock',
+    const getSelectedGenres = useCallback(
+        (ids: string[]): Promise<GenreItem[]> => {
+            return Promise.resolve(
+                allGenres.filter((genre) => ids.includes(genre.id)),
+            );
         },
-        {
-            id: '2',
-            name: 'Pop',
+        [],
+    );
+
+    const getGenres = useCallback((input: string): Promise<GenreItem[]> => {
+        return Promise.resolve(
+            allGenres.filter((genre) =>
+                genre.name.toLowerCase().includes(input.toLowerCase()),
+            ),
+        );
+    }, []);
+
+    const {
+        items,
+        selectedItems,
+        onSelectedIdsChanged,
+        inputValue,
+        onInputChanged,
+        onItemsSelected,
+    } = useMultiSelectValues<GenreItem>(
+        getSelectedGenres,
+        getGenres,
+        (items) => {
+            updateNodeField({ genres: items.map((item) => item.id) });
         },
-        {
-            id: '3',
-            name: 'Hip Hop',
-        },
-        {
-            id: '4',
-            name: 'Jazz',
-        },
-        {
-            id: '5',
-            name: 'Electronic',
-        },
-        {
-            id: '6',
-            name: 'Rock Electronique indépendant de Munich',
-        },
-    ]);
+    );
+
+    useEffect(() => {
+        void onSelectedIdsChanged(genres);
+    }, [genres, onSelectedIdsChanged]);
 
     return (
         <Node
@@ -190,19 +228,19 @@ export function LikedSongsSourceNode(
                     />
                 </NodeField>
 
-                <MultiSelect
+                <MultiSelectController
+                    control={control}
+                    name="genres"
                     selectedItems={selectedItems}
-                    onItemsSelected={setSelectedItems}
+                    onItemsSelected={onItemsSelected}
                     inputValue={inputValue}
-                    onInputChanged={setInputValue}
+                    onInputChanged={onInputChanged}
                     placeholder="Rock, Pop, Hip Hop..."
                     itemRenderer={GenreItemRenderer}
                     itemToString={(item) => item.name}
-                    items={list}
+                    items={items}
                     label="Genres"
-                    onBlur={() => {
-                        console.log('onblur');
-                    }}
+                    onBlur={Noop}
                     selectAllItem={{ id: 'select-all', name: 'Select all' }}
                     unselectAllItem={{
                         id: 'unselect-all',
