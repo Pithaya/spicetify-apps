@@ -39,8 +39,9 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
         const { offset, filter, sortField, sortOrder, genres } = this.data;
         let limit = this.data.limit;
 
-        if (limit === undefined) {
+        if (limit === undefined || genres.length > 0) {
             // If no limit, make a first call to get the total number of liked songs.
+            // Also get all when we have genres as we will apply the limit after filtering.
             limit = (await libraryApi.getTracks()).unfilteredTotalLength;
         }
 
@@ -57,7 +58,11 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
         let tracks = apiResult.items;
 
         if (genres.length > 0) {
-            tracks = this.filterTracksByGenres(tracks, new Set(genres));
+            tracks = this.filterTracksByGenres(
+                tracks,
+                new Set(genres),
+                this.data.limit,
+            );
         }
 
         return tracks.map((track) => ({
@@ -69,6 +74,7 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
     private filterTracksByGenres(
         tracks: LibraryAPITrack[],
         genres: Set<string>,
+        limit: number | undefined,
     ): LibraryAPITrack[] {
         const result = [];
 
@@ -89,6 +95,6 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
             }
         }
 
-        return result;
+        return limit !== undefined ? result.slice(0, limit) : result;
     }
 }
