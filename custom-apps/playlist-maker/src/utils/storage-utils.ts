@@ -52,7 +52,7 @@ export function setArtistsGenresCache(
 export function getArtistsGenresCache(): Map<string, ItemWithExpiry<string[]>> {
     const cache = JSON.parse(
         Spicetify.LocalStorage.get(ARTIST_GENRES_KEY) ?? '[]',
-    );
+    ) as [string, ItemWithExpiry<string[]>][];
 
     return new Map(cache);
 }

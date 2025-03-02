@@ -8,7 +8,8 @@ import {
 } from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
 import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import React, { useCallback, useEffect } from 'react';
+import { setLibraryGenresToCache } from 'custom-apps/playlist-maker/src/utils/track-utils';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { type ItemRendererProps } from '../../inputs/MultiSelect';
 import { MultiSelectController } from '../../inputs/MultiSelectController';
@@ -56,33 +57,6 @@ type GenreItem = {
     name: string;
 };
 
-const allGenres: GenreItem[] = [
-    {
-        id: '1',
-        name: 'Rock',
-    },
-    {
-        id: '2',
-        name: 'Pop',
-    },
-    {
-        id: '3',
-        name: 'Hip Hop',
-    },
-    {
-        id: '4',
-        name: 'Jazz',
-    },
-    {
-        id: '5',
-        name: 'Electronic',
-    },
-    {
-        id: '6',
-        name: 'Rock Electronique indépendant de Munich',
-    },
-];
-
 function GenreItemRenderer(
     props: Readonly<ItemRendererProps<GenreItem>>,
 ): JSX.Element {
@@ -114,22 +88,29 @@ export function LikedSongsSourceNode(
         LikedSongsDataSchema,
     );
 
+    const [libraryGenres, setLibraryGenres] = useState<GenreItem[]>([]);
+    const [libraryGenresLoading, setLibraryGenresLoading] =
+        useState<boolean>(true);
+
     const getSelectedGenres = useCallback(
         (ids: string[]): Promise<GenreItem[]> => {
             return Promise.resolve(
-                allGenres.filter((genre) => ids.includes(genre.id)),
+                libraryGenres.filter((genre) => ids.includes(genre.id)),
             );
         },
-        [],
+        [libraryGenres],
     );
 
-    const getGenres = useCallback((input: string): Promise<GenreItem[]> => {
-        return Promise.resolve(
-            allGenres.filter((genre) =>
-                genre.name.toLowerCase().includes(input.toLowerCase()),
-            ),
-        );
-    }, []);
+    const getGenres = useCallback(
+        (input: string): Promise<GenreItem[]> => {
+            return Promise.resolve(
+                libraryGenres.filter((genre) =>
+                    genre.name.toLowerCase().includes(input.toLowerCase()),
+                ),
+            );
+        },
+        [libraryGenres],
+    );
 
     const {
         items,
@@ -147,8 +128,37 @@ export function LikedSongsSourceNode(
     );
 
     useEffect(() => {
+        if (libraryGenresLoading) {
+            return;
+        }
+
         void onSelectedIdsChanged(genres);
-    }, [genres, onSelectedIdsChanged]);
+    }, [genres, onSelectedIdsChanged, libraryGenresLoading]);
+
+    useEffect(() => {
+        const fetchGenres = async (): Promise<void> => {
+            const genreCache = await setLibraryGenresToCache();
+            const uniqueGenres = new Set<string>();
+
+            genreCache.forEach((genres) => {
+                for (const genre of genres) {
+                    uniqueGenres.add(genre);
+                }
+            });
+
+            setLibraryGenres(
+                Array.from(uniqueGenres)
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((genre) => ({
+                        id: genre,
+                        name: genre,
+                    })),
+            );
+            setLibraryGenresLoading(false);
+        };
+
+        void fetchGenres();
+    }, []);
 
     return (
         <Node
@@ -239,13 +249,16 @@ export function LikedSongsSourceNode(
                     itemRenderer={GenreItemRenderer}
                     itemToString={(item) => item.name}
                     items={items}
-                    label="Genres"
+                    label={
+                        libraryGenresLoading ? 'Genres (loading...)' : 'Genres'
+                    }
                     onBlur={Noop}
                     selectAllItem={{ id: 'select-all', name: 'Select all' }}
                     unselectAllItem={{
                         id: 'unselect-all',
                         name: 'Unselect all',
                     }}
+                    disabled={libraryGenresLoading}
                 />
             </NodeContent>
             <Handle

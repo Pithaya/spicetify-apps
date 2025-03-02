@@ -14,6 +14,7 @@ import {
 type Props<T extends FieldValues, TItem extends TMultiSelectItem> = {
     control: Control<T>;
     name: FieldPath<T>;
+    disabled: boolean;
 } & MultiSelectProps<TItem>;
 
 export function MultiSelectController<
@@ -38,7 +39,7 @@ export function MultiSelectController<
                     itemToString={props.itemToString}
                     items={props.items}
                     label={props.label}
-                    disabled={disabled}
+                    disabled={props.disabled || disabled}
                     onBlur={props.onBlur}
                     selectAllItem={props.selectAllItem}
                     unselectAllItem={props.unselectAllItem}
