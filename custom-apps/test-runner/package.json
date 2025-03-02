@@ -5,7 +5,7 @@
     "scripts": {
         "init": "npm run build && npm run apply",
         "build": "npm run generate-css && spicetify-creator",
-        "build-local": "spicetify-creator --out=dist --minify",
+        "build-local": "npm run generate-css && spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps test-runner && spicetify apply",
