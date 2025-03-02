@@ -1,5 +1,6 @@
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { useOutsideClick } from '@shared/hooks/use-outside-click';
 import { uniqueBy } from '@shared/utils/array-utils';
 import { useCombobox, useMultipleSelection } from 'downshift';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -231,6 +232,8 @@ export function MultiSelect<T extends TMultiSelectItem>(
         ],
     );
 
+    const menuRef = useOutsideClick<HTMLUListElement>(closeMenu);
+
     return (
         <>
             <div className="relative">
@@ -261,7 +264,6 @@ export function MultiSelect<T extends TMultiSelectItem>(
                             className="w-full truncate !p-1.5"
                             id="multiselect-search"
                             onBlur={() => {
-                                closeMenu();
                                 props.onBlur();
                             }}
                             disabled={props.disabled}
@@ -285,6 +287,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                     className={`bg-spice-highlight-elevated absolute z-10 !mt-1 max-h-80 w-full overflow-scroll rounded-sm !p-0 ${
                         !isOpen && !forceOpen ? 'hidden' : ''
                     }`}
+                    ref={menuRef}
                     {...getMenuProps()}
                 >
                     {(isOpen || forceOpen) && props.items.length > 0 && (
