@@ -1,3 +1,4 @@
+import { getArtist } from '@shared/api/endpoints/artists/get-artist';
 import {
     getArtists,
     MAX_GET_MULTIPLE_ARTISTS_IDS,
@@ -104,6 +105,20 @@ export async function setLibraryGenresToCache(): Promise<
         artistCache.set(
             artistData.uri,
             createWithExpiry(artistData.genres, artistGenresStoreTime),
+        );
+    }
+
+    // Sometimes artists can change URIs so we need to match the old URI with the new one
+    const redirectedArtists = artists.filter(
+        (artist) => !artistCache.has(artist.uri),
+    );
+
+    for (const redirectedArtist of redirectedArtists) {
+        const artist = await getArtist({ uri: redirectedArtist.uri });
+        console.log(`Artist ${redirectedArtist.name} is now ${artist.name}`);
+        artistCache.set(
+            redirectedArtist.uri,
+            createWithExpiry(artist.genres, artistGenresStoreTime),
         );
     }
 
