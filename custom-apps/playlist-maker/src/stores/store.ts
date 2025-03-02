@@ -15,6 +15,7 @@ import {
 } from 'reactflow';
 import { v4 as uuidv4 } from 'uuid';
 import { create } from 'zustand';
+import { type BaseNodeData } from '../models/nodes/node-processor';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { type WorkflowTrack } from '../models/track';
 import { getDefaultValueForNodeType } from '../utils/node-utils';
@@ -30,7 +31,7 @@ function isRemove(change: NodeChange | EdgeChange): boolean {
 
 export type AppState = {
     reactFlowInstance: ReactFlowInstance | null;
-    nodes: Node[];
+    nodes: Node<BaseNodeData>[];
     edges: Edge[];
     result: WorkflowTrack[];
     workflowId: string;
@@ -106,14 +107,13 @@ export const useAppStore = create<AppState>((set, get) => ({
             data: getDefaultValueForNodeType(nodeType) as Partial<T>,
         };
 
-        console.log('STORE - adding node', newNode);
         set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });
     },
     updateNodeData: <T>(nodeId: string, data: Partial<T>) => {
         set({
             nodes: get().nodes.map((node) => {
                 if (node.id === nodeId) {
-                    return { ...node, data: { ...node.data, ...data } };
+                    return { ...node, data: { ...(node.data as T), ...data } };
                 }
 
                 return node;
@@ -121,7 +121,9 @@ export const useAppStore = create<AppState>((set, get) => ({
             hasPendingChanges: true,
         });
         set({
-            anyExecuting: get().nodes.some((node) => node.data.isExecuting),
+            anyExecuting: get().nodes.some(
+                (node) => node.data.isExecuting === true,
+            ),
         });
     },
     setResult: (tracks: WorkflowTrack[]) => {

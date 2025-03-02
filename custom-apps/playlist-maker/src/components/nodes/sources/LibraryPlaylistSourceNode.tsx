@@ -99,10 +99,6 @@ export function LibraryPlaylistSourceNode(
 
     const getPlaylists = useCallback(
         async (input: string): Promise<PlaylistItem[]> => {
-            console.log(
-                `NODE - getting playlists with input "${input}"`,
-                onlyMyPlaylists,
-            );
             const userAPI = getPlatform().UserAPI;
             const user = await userAPI.getUser();
 
@@ -117,8 +113,6 @@ export function LibraryPlaylistSourceNode(
             playlists = playlists.toSorted((a, b) =>
                 a.name.localeCompare(b.name),
             );
-
-            console.log('NODE - got playlists', playlists);
 
             const items = playlists.map((p) => ({
                 id: p.uri,
@@ -140,8 +134,6 @@ export function LibraryPlaylistSourceNode(
     const getPlaylist = useCallback(
         async (playlistUri: string): Promise<PlaylistItem | null> => {
             const playlistApi = getPlatform().PlaylistAPI;
-
-            console.log('NODE - getting playlist for uri', playlistUri);
 
             try {
                 const playlist = await playlistApi.getPlaylist(
@@ -305,7 +297,9 @@ export function LibraryPlaylistSourceNode(
                             }),
                         )}
                         onChange={(value) => {
-                            updateNodeField({ sortField: value as any });
+                            updateNodeField({
+                                sortField: value as PlaylistData['sortField'],
+                            });
                         }}
                     />
                 </NodeField>
@@ -321,7 +315,9 @@ export function LibraryPlaylistSourceNode(
                             }),
                         )}
                         onChange={(value) => {
-                            updateNodeField({ sortOrder: value as any });
+                            updateNodeField({
+                                sortOrder: value as PlaylistData['sortOrder'],
+                            });
                         }}
                     />
                 </NodeField>

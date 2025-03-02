@@ -425,7 +425,6 @@ export async function executeWorkflow(
     nodes: Node[],
     edges: Edge[],
 ): Promise<void> {
-    console.log('Executing workflow with nodes:', nodes);
     const setResult = useAppStore.getState().setResult;
     const updateNodeData = useAppStore.getState().updateNodeData;
     const validationCallbacks =
@@ -495,10 +494,8 @@ export async function executeWorkflow(
         nodesToVisit.push(...incomers);
     }
 
-    console.log('All processors : ', allProcessors);
     try {
         const finalResult = await resultProcessor.getResults(allProcessors);
-        console.log('Final result : ', finalResult);
 
         setResult(finalResult);
         Spicetify.showNotification(

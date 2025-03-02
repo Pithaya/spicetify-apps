@@ -2,8 +2,6 @@ import { useCallback, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import type { TComboboxItem } from '../components/inputs/ComboBox';
 
-// TODO: remove logs
-
 type UseComboboxValuesReturn<T extends TComboboxItem> = {
     selectedItem: T | null;
     onItemSelected: (item: T | null) => void;
@@ -26,30 +24,23 @@ export function useComboboxValues<T extends TComboboxItem>(
     const [items, setItems] = useState<T[]>([]);
 
     const debouncedInputCallback = useDebouncedCallback((value: string) => {
-        console.log('COMBO - debounced input:', value);
-
         fetchItems(value)
             .then((items) => {
-                console.log('COMBO - debounce fetched items:', items);
                 setItems(items);
             })
             .catch((error: unknown) => {
-                console.error('COMBO - debounce fetched items error:', error);
+                console.error('Failed to fetch items', error);
             });
     }, 200);
 
     // On type: refresh items on debounce
     const onInputChanged = (value: string): void => {
-        console.log('COMBO - input changed:', value);
-
         setInputValue(value);
         debouncedInputCallback(value);
     };
 
     // On item selection, update the input and form value
     const onItemSelected = (item: T | null): void => {
-        console.log('COMBO - item selected:', item?.id);
-
         updateNodeField(item);
 
         // Item and input will be updated in syncComboboxValues
@@ -60,8 +51,6 @@ export function useComboboxValues<T extends TComboboxItem>(
 
     // On clear : reset the combobox values and update the form
     const resetSelection = (): void => {
-        console.log('COMBO - reset selection');
-
         updateNodeField(null);
 
         // Item and input will be updated in syncComboboxValues
@@ -73,16 +62,12 @@ export function useComboboxValues<T extends TComboboxItem>(
     // Sync input with selected item
     // Used on blur to cancel an incomplete search
     const syncInputWithSelectedItem = (): void => {
-        console.log('COMBO - sync input with selected item');
-
         setInputValue(selectedItem ? itemToString(selectedItem) : '');
     };
 
     // Sync combobox values
     const syncComboboxValues = useCallback(
         (item: T | null, input: string, items: T[]): void => {
-            console.log('COMBO - sync combo values');
-
             setSelectedItem(item);
             setInputValue(input);
             setItems(items);
@@ -94,18 +79,14 @@ export function useComboboxValues<T extends TComboboxItem>(
     // set the combobox selected item
     const onSelectedIdChanged = useCallback(
         async (selectedId: string): Promise<void> => {
-            console.log('COMBO - on selected id change');
-
             // First init, set to null (default)
             if (selectedId === '') {
-                console.log('COMBO - selected id change - empty id');
                 const items = await fetchItems('');
                 syncComboboxValues(null, '', items);
 
                 return;
             }
 
-            console.log('COMBO - selected id change - new item', selectedId);
             const item = await fetchItem(selectedId);
 
             if (item === null) {

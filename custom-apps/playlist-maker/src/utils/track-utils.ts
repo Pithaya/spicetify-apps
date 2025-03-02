@@ -101,7 +101,6 @@ export async function setLibraryGenresToCache(): Promise<
     }
 
     for (const artistData of artistsData) {
-        // TODO: handle case where artist URI has changed (rename)
         artistCache.set(
             artistData.uri,
             createWithExpiry(artistData.genres, artistGenresStoreTime),
