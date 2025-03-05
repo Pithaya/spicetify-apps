@@ -20,6 +20,7 @@ import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryA
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylistSourceNode';
 import { LikedSongsSourceNode } from '../../components/nodes/sources/LikedSongsSourceNode';
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracksSourceNode';
+import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArtistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 
 type SourceNodes =
@@ -28,7 +29,8 @@ type SourceNodes =
     | 'libraryPlaylistSource'
     | 'topTracksSource'
     | 'libraryAlbumSource'
-    | 'libraryArtistSource';
+    | 'libraryArtistSource'
+    | 'searchArtistSource';
 
 type FilterNodes =
     | 'isPlayable'
@@ -58,6 +60,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     topTracksSource: TopTracksSourceNode,
     libraryAlbumSource: LibraryAlbumSourceNode,
     libraryArtistSource: LibraryArtistSourceNode,
+    searchArtistSource: SearchArtistSourceNode,
     deduplicate: DeduplicateNode,
     isPlayable: IsPlayableNode,
     result: ResultNode,

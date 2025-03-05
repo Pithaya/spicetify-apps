@@ -301,6 +301,14 @@ const nodeDefautValuesFactory: Record<
         };
         return data;
     },
+    searchArtistSource: () => {
+        const data: ArtistData = {
+            uri: '',
+            isExecuting: undefined,
+            trackType: 'liked',
+        };
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -323,12 +331,10 @@ const nodeProcessorFactory: Record<
         new TopTracksSourceProcessor(node.id, [], node.data),
     libraryAlbumSource: (node: Node<AlbumData>, _incomers) =>
         new AlbumSourceProcessor(node.id, [], node.data),
-    libraryArtistSource: (node: Node<ArtistData>, incomers) =>
-        new ArtistTracksSourceProcessor(
-            node.id,
-            incomers.map((node) => node.id),
-            node.data,
-        ),
+    libraryArtistSource: (node: Node<ArtistData>, _incomers) =>
+        new ArtistTracksSourceProcessor(node.id, [], node.data),
+    searchArtistSource: (node: Node<ArtistData>, _incomers) =>
+        new ArtistTracksSourceProcessor(node.id, [], node.data),
     deduplicate: (node: Node<BaseNodeData>, incomers) =>
         new DeduplicateProcessor(
             node.id,
