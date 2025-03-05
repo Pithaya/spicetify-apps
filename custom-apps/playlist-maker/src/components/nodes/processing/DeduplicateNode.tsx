@@ -13,7 +13,10 @@ export function DeduplicateNode(
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <ProcessingNodeHeader />
             <NodeContent>
-                <NodeTitle title="Deduplicate" />
+                <NodeTitle
+                    title="Deduplicate"
+                    tooltip="Remove duplicate tracks."
+                />
             </NodeContent>
             <Handle
                 type="target"

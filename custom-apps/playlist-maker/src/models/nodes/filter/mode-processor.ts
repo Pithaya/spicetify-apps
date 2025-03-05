@@ -11,6 +11,7 @@ export const ModeDataSchema = z
     .strict();
 
 export type ModeData = z.infer<typeof ModeDataSchema>;
+export type Mode = ModeData['mode'];
 
 export class ModeProcessor extends NodeProcessor<ModeData> {
     protected override async getResultsInternal(
@@ -25,7 +26,7 @@ export class ModeProcessor extends NodeProcessor<ModeData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.mode === +this.data.mode,
+                track.audioFeatures.mode === +this.data.mode,
         );
 
         return filtered;

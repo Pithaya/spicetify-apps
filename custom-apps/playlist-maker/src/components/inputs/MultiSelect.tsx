@@ -104,18 +104,6 @@ export function MultiSelect<T extends TMultiSelectItem>(
         stateReducer(state, actionAndChanges) {
             const { changes, type } = actionAndChanges;
 
-            /*
-            if (
-                type !== useCombobox.stateChangeTypes.ItemMouseMove &&
-                type !== useCombobox.stateChangeTypes.MenuMouseLeave &&
-                type !==
-                    useCombobox.stateChangeTypes
-                        .ControlledPropUpdatedSelectedItem
-            ) {
-                debugger;
-            }
-*/
-
             switch (type) {
                 case useCombobox.stateChangeTypes.InputKeyDownEnter:
                 case useCombobox.stateChangeTypes.ItemClick:

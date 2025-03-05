@@ -36,7 +36,7 @@ export function LoudnessNode(
                     }}
                 >
                     <NodeTitle
-                        title="Loudness"
+                        title="Loudness (dB)"
                         tooltip="The overall loudness of a track in decibels (dB). 
                         Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks."
                     />
