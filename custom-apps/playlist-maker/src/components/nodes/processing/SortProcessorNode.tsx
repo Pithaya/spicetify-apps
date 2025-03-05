@@ -1,20 +1,17 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    OrderByDataSchema,
+    type OrderByData,
+} from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SelectController } from '../../inputs/SelectController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { type OrderByData } from 'custom-apps/playlist-maker/src/models/nodes/processing/sort-processor';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import { NodeField } from '../shared/NodeField';
-import { Controller } from 'react-hook-form';
-import { Select } from '@shared/components/inputs/Select/Select';
-
-const defaultValues: LocalNodeData<OrderByData> = {
-    order: 'asc',
-    property: 'name',
-};
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 const propertyValues: Record<OrderByData['property'], string> = {
     album: 'Album',
@@ -35,92 +32,39 @@ export function SortProcessorNode(
     const { errors, control } = useNodeForm<OrderByData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('sort'),
+        OrderByDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Processing"
-                backgroundColor="greenyellow"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <ProcessingNodeHeader />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Sort
-                </TextComponent>
+                <NodeTitle title="Sort" />
 
-                <NodeField
-                    label="Property"
-                    error={
-                        errors.property === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.property.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Property" error={errors.property}>
+                    <SelectController
+                        label="Property to sort on"
                         name="property"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Property to sort on"
-                                selectedValue={value ?? null}
-                                items={Object.entries(propertyValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(propertyValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>
-                <NodeField
-                    label="Order"
-                    error={
-                        errors.order === undefined
-                            ? undefined
-                            : {
-                                  type: 'validate',
-                                  message: errors.order.message,
-                              }
-                    }
-                >
-                    <Controller
+                <NodeField label="Order" error={errors.order}>
+                    <SelectController
+                        label="Sort order"
                         name="order"
                         control={control}
-                        rules={{
-                            validate: (v) =>
-                                v === undefined
-                                    ? 'This field is required'
-                                    : true,
-                        }}
-                        render={({ field: { onChange, value } }) => (
-                            <Select
-                                selectLabel="Sort order"
-                                selectedValue={value ?? null}
-                                items={Object.entries(orderValues).map(
-                                    ([key, label]) => ({
-                                        label,
-                                        value: key,
-                                    }),
-                                )}
-                                onItemClicked={(item) => {
-                                    onChange(item.value);
-                                }}
-                            />
+                        items={Object.entries(orderValues).map(
+                            ([key, label]) => ({
+                                label,
+                                value: key,
+                            }),
                         )}
                     />
                 </NodeField>

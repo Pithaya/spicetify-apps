@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    MAX_SPEECHINESS,
+    MIN_SPEECHINESS,
+    SpeechinessDataSchema,
+    type SpeechinessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/speechiness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { SpeechinessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/speechiness-processor';
-
-const defaultValues: LocalNodeData<SpeechinessData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function SpeechinessNode(
     props: Readonly<NodeProps<SpeechinessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<SpeechinessData>(
+    const { control, updateNodeField } = useNodeForm<SpeechinessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('speechiness'),
+        SpeechinessDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,21 @@ export function SpeechinessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Speechiness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Speechiness"
+                        tooltip="Detects the presence of spoken words in a track. 
+                        Values above 0.66 describe tracks that are probably made entirely of spoken words (e.g. talk show, audio book, poetry). 
+                        Values below 0.33 most likely represent music and other non-speech-like tracks."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_SPEECHINESS}
+                        max={MAX_SPEECHINESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

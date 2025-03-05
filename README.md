@@ -14,3 +14,4 @@ See each app's readme for more details.
 
 -   [Eternal Jukebox (Beta)](./custom-apps/eternal-jukebox/README.md): Loop a song infinitely and (almost) seamlessly.
 -   [Better local files](./custom-apps/better-local-files/README.md): View your local songs, albums and artists.
+-   [Playlist maker](./custom-apps/playlist-maker/README.md): Create playlists using a simple drag and drop editor.

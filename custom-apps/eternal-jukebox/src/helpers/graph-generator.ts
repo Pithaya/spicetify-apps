@@ -1,8 +1,8 @@
-import type { Segment } from '@spotify-web-api';
-import { JukeboxSettings } from '../models/jukebox-settings';
-import { SongGraph } from '../models/graph/song-graph';
-import { Edge } from '../models/graph/edge';
+import type { Segment } from '@shared/api/models/audio-analysis';
 import { Beat } from '../models/graph/beat';
+import { Edge } from '../models/graph/edge';
+import { SongGraph } from '../models/graph/song-graph';
+import { JukeboxSettings } from '../models/jukebox-settings';
 import type { RemixedTimeInterval } from '../models/remixer.types';
 
 /**
@@ -439,7 +439,7 @@ export class GraphGenerator {
      */
     private calculateReachability(): number[] {
         const maxIter = 1000;
-        const reaches: number[] = this.graph.beats.map((b) => 0);
+        const reaches: number[] = this.graph.beats.map(() => 0);
 
         this.graph.beats.forEach((beat, beatIndex) => {
             reaches[beatIndex] = this.graph.beats.length - beatIndex;

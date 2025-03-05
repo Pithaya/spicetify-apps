@@ -1,32 +1,32 @@
-import React, { useMemo, useState } from 'react';
-import styles from '../../../css/app.module.scss';
-import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
-import { playContext, playTrack } from '../../../utils/player.utils';
 import type {
-    HeaderKey,
     DisplayType,
+    HeaderKey,
+    LibraryHeaders,
     SelectedSortOption,
     SortOption,
     SortOrder,
     TrackListHeaderOption,
-    LibraryHeaders,
 } from '@shared/components/track-list/models/sort-option';
+import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
+import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
+import { TrackListRowArtistLink } from '@shared/components/track-list/TrackListRowArtistLink';
+import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
+import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
+import { PlayButton } from '@shared/components/ui/PlayButton';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { getTranslation } from '@shared/utils/translations.utils';
 import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
-import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
-import { PlayButton } from '@shared/components/ui/PlayButton';
-import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
-import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
-import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
 import type { Track } from 'custom-apps/better-local-files/src/models/track';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { TrackListRowArtistLink } from '@shared/components/track-list/TrackListRowArtistLink';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import { RowMenu } from '../../shared/menus/RowMenu';
+import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
+import React, { useMemo, useState } from 'react';
+import styles from '../../../css/app.module.scss';
+import { playContext, playTrack } from '../../../utils/player.utils';
+import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
+import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 
 export type Props = {
     tracks: Track[];
@@ -320,14 +320,26 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             semanticColor="textSubdued"
                             key={track.uri}
                         >
-                            {track.addedAt.toLocaleDateString()}
+                            {track.addedAt
+                                ? track.addedAt.toLocaleDateString()
+                                : ''}
                         </TextComponent>,
                     );
 
                     return contents;
                 }}
                 displayType={selectedDisplayType}
-                getRowMenu={(track) => <RowMenu track={track} />}
+                getRowMenu={(track) => (
+                    <RowMenu
+                        track={track}
+                        onArtistClick={(uri) => {
+                            navigateTo(ARTIST_ROUTE, uri);
+                        }}
+                        onAlbumClick={(uri) => {
+                            navigateTo(ALBUM_ROUTE, uri);
+                        }}
+                    />
+                )}
             />
         </>
     );

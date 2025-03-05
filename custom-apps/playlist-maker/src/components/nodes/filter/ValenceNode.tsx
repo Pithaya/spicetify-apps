@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    MAX_VALENCE,
+    MIN_VALENCE,
+    ValenceDataSchema,
+    type ValenceData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { ValenceData } from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
-
-const defaultValues: LocalNodeData<ValenceData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function ValenceNode(
     props: Readonly<NodeProps<ValenceData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<ValenceData>(
+    const { control, updateNodeField } = useNodeForm<ValenceData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('valence'),
+        ValenceDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,21 @@ export function ValenceNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Valence
-                    </TextComponent>
+                    <NodeTitle
+                        title="Valence"
+                        tooltip="A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. 
+                        Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric),
+                        while tracks with low valence sound more negative (e.g. sad, depressed, angry)."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_VALENCE}
+                        max={MAX_VALENCE}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

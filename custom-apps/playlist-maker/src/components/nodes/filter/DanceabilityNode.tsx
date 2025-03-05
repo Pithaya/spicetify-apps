@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    DanceabilityDataSchema,
+    MAX_DANCEABILITY,
+    MIN_DANCEABILITY,
+    type DanceabilityData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { DanceabilityData } from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
-
-const defaultValues: LocalNodeData<DanceabilityData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function DanceabilityNode(
     props: Readonly<NodeProps<DanceabilityData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<DanceabilityData>(
+    const { control, updateNodeField } = useNodeForm<DanceabilityData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('danceability'),
+        DanceabilityDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,23 @@ export function DanceabilityNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Danceability
-                    </TextComponent>
+                    <NodeTitle
+                        title="Danceability"
+                        tooltip="How suitable a track is for
+                            dancing based on a combination of musical elements
+                            including tempo, rhythm stability, beat strength, and
+                            overall regularity. A value of 0.0 is least
+                            danceable and 1.0 is most danceable."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_DANCEABILITY}
+                        max={MAX_DANCEABILITY}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

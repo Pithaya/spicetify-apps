@@ -10,11 +10,43 @@ export type Folder = {
 
 export type Playlist = {
     type: 'playlist';
+    addedAt: string;
     uri: string;
     name: string;
+    description: string;
+    images: {
+        label: 'standard' | 'small' | 'large' | 'xlarge';
+        url: string;
+    }[];
+    madeFor: unknown;
     owner: User;
-
-    // NOTE: There are more properties that we don't care about for now
+    totalLength: number;
+    unfilteredTotalLength: number;
+    totalLikes: unknown;
+    duration: unknown;
+    isLoaded: boolean;
+    isOwnedBySelf: boolean;
+    isPublished: boolean;
+    isRootlistable: boolean;
+    isSaved: boolean;
+    hasEpisodes: unknown;
+    hasSpotifyTracks: unknown;
+    hasSpotifyAudiobooks: boolean;
+    canAdd: boolean;
+    canRemove: boolean;
+    canPlay: unknown;
+    formatListData: {
+        type: string;
+        attributes: Record<string, unknown>;
+    };
+    canReportAnnotationAbuse: boolean;
+    hasDateAdded: boolean;
+    permissions: unknown;
+    collaborators: {
+        count: number;
+        items: unknown[];
+    };
+    appliedLenses: unknown[];
 };
 
 export type RootlistFolder = Folder & {
@@ -23,7 +55,14 @@ export type RootlistFolder = Folder & {
 };
 
 export type RootlistAPI = {
-    getContents: () => Promise<RootlistFolder>;
+    getContents: (params?: {
+        folderUri?: string;
+        sort?: 'name' | 'addedAt';
+        filter?: string;
+        offset?: number;
+        limit?: number;
+        flatten?: boolean;
+    }) => Promise<RootlistFolder>;
     createPlaylist: (
         name: string,
         opts: {

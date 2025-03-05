@@ -1,36 +1,29 @@
-import { NavBarLink } from '@shared/components/navbar/NavBarLink';
+import { getCategories } from '@shared/api/endpoints/browse/get-categories';
+import type { Category } from '@shared/api/models/category';
+import type { Page } from '@shared/api/models/page';
 import { IconNavLink } from '@shared/components/navbar/IconNavLink';
-import { waitFor, waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { NavBarLink } from '@shared/components/navbar/NavBarLink';
 import { waitForElement } from '@shared/utils/dom-utils';
+import { renderElement } from '@shared/utils/react-utils';
+import { waitForSpicetify } from '@shared/utils/spicetify-utils';
 import i18next from 'i18next';
 import { Crown } from 'lucide-react';
 import React from 'react';
-import { renderElement } from '@shared/utils/react-utils';
-import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
-import type { Categories, MaxInt } from '@spotify-web-api';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
-    await waitFor(() => Spicetify.CosmosAsync);
-    await waitFor(() => Spicetify.ReactDOM);
-
-    const sdk = getCosmosSdkClient();
 
     // Legacy id, works but navigation link is not shown as active when on page
     let genreId: string = 'made-for-x-hub';
 
-    let result: Categories | null = null;
-    const limit: MaxInt<50> = 10;
+    let result: Page<Category> | null = null;
+    const limit: number = 10;
     let offset = 0;
 
     do {
-        result = await sdk.browse.getCategories('en_US', limit, offset);
+        result = await getCategories({ limit, offset, locale: 'en_US' });
 
-        if (result === null) {
-            break;
-        }
-
-        const madeForYouCategory = result.categories.items.find(
+        const madeForYouCategory = result.items.find(
             (category) => category.name === 'Made For You',
         );
 
@@ -41,7 +34,7 @@ async function main(): Promise<void> {
 
         // Get the next page
         offset += limit;
-    } while (result?.categories.next);
+    } while (result.next);
 
     const locale: typeof Spicetify.Locale = Spicetify.Locale;
 

@@ -1,12 +1,11 @@
+import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getTranslation } from '@shared/utils/translations.utils';
+import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import React from 'react';
 import { navigateTo } from '../../../utils/history.utils';
-import { ArtistTrackList } from '../track-list/ArtistTrackList';
 import { Header, HeaderImage } from '../../shared/Header';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import type { History } from '@shared/platform/history';
+import { ArtistTrackList } from '../track-list/ArtistTrackList';
 
 type Props = {
     artist: Artist;
@@ -23,9 +22,10 @@ function ArtistHeader(props: Readonly<Props>): JSX.Element {
 }
 
 export function ArtistPage(): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
+    const state = history.location.state as { uri?: string };
 
-    const artistUri = (history.location.state as any).uri ?? null;
+    const artistUri = state.uri ?? null;
 
     if (artistUri === null) {
         history.replace(ARTISTS_ROUTE);
@@ -45,12 +45,8 @@ export function ArtistPage(): JSX.Element {
 
     return (
         <>
-            {artist !== null && (
-                <>
-                    <ArtistHeader artist={artist} />
-                    <ArtistTrackList tracks={artistTracks} artist={artist} />
-                </>
-            )}
+            <ArtistHeader artist={artist} />
+            <ArtistTrackList tracks={artistTracks} artist={artist} />
         </>
     );
 }

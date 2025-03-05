@@ -1,7 +1,7 @@
-import React from 'react';
-import styles from './MultiSelect.module.scss';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { ChevronDown } from 'lucide-react';
+import React from 'react';
+import styles from './MultiSelect.module.scss';
 type Item = {
     value: string;
     label: string;
@@ -58,12 +58,10 @@ export function MultiSelect(props: Readonly<Props>): JSX.Element {
                 />
             }
         >
-            <div
-                className={`main-dropDown-dropDown ${styles['dropdown']} nodrag`}
-            >
+            <div className={`main-dropDown-dropDown ${styles['dropdown']}`}>
                 <span>
                     {props.selectedValues.length > 0
-                        ? `${props.selectedValues.length} elements selected`
+                        ? `${props.selectedValues.length.toFixed()} elements selected`
                         : props.selectLabel}
                 </span>
                 <ChevronDown size={14} />

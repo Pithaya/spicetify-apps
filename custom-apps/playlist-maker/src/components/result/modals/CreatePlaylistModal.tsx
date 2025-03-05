@@ -1,24 +1,27 @@
-import React, { useCallback, useEffect } from 'react';
-import styles from './CreatePlaylistModal.module.scss';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import type { Folder } from '@shared/platform/rootlist';
+import { getRootlistFolders } from '@shared/utils/rootlist-utils';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import useAppStore from 'custom-apps/playlist-maker/src/stores/store';
+import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 import { InputError } from '../../inputs/InputError';
-import { TextInput } from '../../inputs/TextInput';
-import { stringValueSetter } from 'custom-apps/playlist-maker/src/utils/form-utils';
-import type { Folder, RootlistAPI } from '@shared/platform/rootlist';
-import { getRootlistFolders } from '@shared/utils/rootlist-utils';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import { type PlaylistAPI } from '@shared/platform/playlist';
+import { SelectController } from '../../inputs/SelectController';
+import { TextController } from '../../inputs/TextController';
+import styles from './CreatePlaylistModal.module.scss';
 
-type Form = {
-    playlistName: string | undefined;
-    parentFolder: string | undefined;
-};
+const FormSchema = z.object({
+    playlistName: z.string().nonempty({ message: 'Name cannot be empty' }),
+    parentFolder: z.string().optional(),
+});
+
+type Form = z.infer<typeof FormSchema>;
 
 const defaultValues: Form = {
-    playlistName: undefined,
+    playlistName: 'My playlist',
     parentFolder: undefined,
 };
 
@@ -36,22 +39,23 @@ export function CreatePlaylistModal(): JSX.Element {
     );
 
     const {
-        register,
         formState: { errors, isValid },
         getValues,
+        control,
     } = useForm<Form>({
         mode: 'onChange',
         defaultValues: {
             ...defaultValues,
             playlistName: workflowName,
         },
+        resolver: zodResolver(FormSchema),
     });
 
     const createPlaylist = useCallback(async () => {
         setIsCreating(true);
 
-        const rootlistAPI = getPlatformApiOrThrow<RootlistAPI>('RootlistAPI');
-        const playlistAPI = getPlatformApiOrThrow<PlaylistAPI>('PlaylistAPI');
+        const rootlistAPI = getPlatform().RootlistAPI;
+        const playlistAPI = getPlatform().PlaylistAPI;
 
         const { playlistName, parentFolder } = getValues();
 
@@ -104,12 +108,10 @@ export function CreatePlaylistModal(): JSX.Element {
                         Playlist name
                     </TextComponent>
 
-                    <TextInput
+                    <TextController
                         placeholder={'Playlist name'}
-                        {...register('playlistName', {
-                            setValueAs: stringValueSetter,
-                            required: true,
-                        })}
+                        control={control}
+                        name="playlistName"
                     />
                 </label>
                 <InputError error={errors.playlistName} />
@@ -119,20 +121,15 @@ export function CreatePlaylistModal(): JSX.Element {
                         Parent folder
                     </TextComponent>
 
-                    <select
-                        className="main-dropDown-dropDown"
-                        style={{ width: '100%' }}
-                        {...register('parentFolder', {
-                            setValueAs: stringValueSetter,
-                        })}
-                    >
-                        <option value="">Root</option>
-                        {folders.map((f) => (
-                            <option key={f.uri} value={f.uri}>
-                                {f.name}
-                            </option>
-                        ))}
-                    </select>
+                    <SelectController
+                        label="Root"
+                        name="parentFolder"
+                        control={control}
+                        items={folders.map((f) => ({
+                            label: f.name,
+                            value: f.uri,
+                        }))}
+                    />
                 </label>
 
                 <div className={styles['button-wrapper']}>

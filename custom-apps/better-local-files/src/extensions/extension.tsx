@@ -1,32 +1,29 @@
-import {
-    waitForSpicetify,
-    waitForPlatformApi,
-} from '@shared/utils/spicetify-utils';
+import { getPlatform, waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { addUpdateChecker } from '@shared/utils/version-utils';
-import { LocalTracksService } from '../services/local-tracks-service';
 import { version } from '../../package.json';
-import type { History } from '@shared/platform/history';
+import { LocalTracksService } from '../services/local-tracks-service';
 
 void (async () => {
+    await waitForSpicetify();
+
     // Necessary to share the same instance between the extension and the custom app
     window.localTracksService = new LocalTracksService();
 
-    await waitForSpicetify();
-    const history = await waitForPlatformApi<History>('History');
+    const history = getPlatform().History;
 
     const rebuildMenuItem = new Spicetify.Menu.Item(
         'Rebuild local album cache',
         false,
-        async () => {
-            await window.localTracksService.reset();
+        () => {
+            void window.localTracksService.reset();
         },
     );
 
     const clearCacheMenuItem = new Spicetify.Menu.Item(
         'Clear local album cache',
         false,
-        async () => {
-            await window.localTracksService.clearCache();
+        () => {
+            void window.localTracksService.clearCache();
         },
     );
 

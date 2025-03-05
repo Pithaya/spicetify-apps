@@ -1,17 +1,24 @@
 import React, { type PropsWithChildren } from 'react';
-import styles from './Node.module.scss';
 
 export type Props = {
-    isExecuting: boolean;
+    isExecuting: true | undefined;
+    isSelected: boolean;
+    classname?: string;
 };
 
 export function Node(props: Readonly<PropsWithChildren<Props>>): JSX.Element {
     return (
         <div
-            className={
-                styles['node'] +
-                (props.isExecuting ? ` ${styles['executing']}` : '')
-            }
+            className={Spicetify.classnames(
+                'bg-spice-main-elevated rounded-sm text-base',
+                props.isExecuting
+                    ? '!outline-spice-button rounded-md !outline-2 !outline-solid'
+                    : '',
+                !props.isExecuting && props.isSelected
+                    ? '!outline-spice-button-transparent rounded-md !outline-2 !outline-solid'
+                    : '',
+                props.classname,
+            )}
         >
             {props.children}
         </div>

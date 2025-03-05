@@ -1,6 +1,6 @@
 {
     "name": "made-for-you-shortcut",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
@@ -10,7 +10,7 @@
         "launch-watch": "spicetify watch -e",
         "apply": "spicetify config extensions made-for-you-shortcut.js && spicetify apply",
         "unapply": "spicetify config extensions made-for-you-shortcut.js- && spicetify apply",
-        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit & npx eslint src/**",
         "format": "npx prettier --write src/"
     },
     "license": "MIT",

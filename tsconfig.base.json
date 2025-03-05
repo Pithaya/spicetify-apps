@@ -11,9 +11,7 @@
         "lib": ["ES2023", "DOM"],
         "baseUrl": ".",
         "paths": {
-            "@shared/*": ["libs/shared/src/*"],
-            "@spotify-web-api-legacy/*": ["libs/spotify-web-api-legacy/src/*"],
-            "@spotify-web-api": ["libs/spotify-web-api-ts-sdk/src"]
+            "@shared/*": ["libs/shared/src/*"]
         }
     }
 }

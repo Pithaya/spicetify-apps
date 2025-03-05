@@ -1,10 +1,10 @@
-import i18next from 'i18next';
 import { waitForSpicetify } from '@shared/utils/spicetify-utils';
-import { MENU_ICON } from './models/constants';
-import { kuroshiroService } from './services/kuroshiro.service';
-import { contextMenuService } from './services/context-menu.service';
+import i18next from 'i18next';
+import { Languages } from 'lucide-react';
 import React from 'react';
 import { SettingsModal } from './components/settings-modal.component';
+import { contextMenuService } from './services/context-menu.service';
+import { kuroshiroService } from './services/kuroshiro.service';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
@@ -107,18 +107,21 @@ async function main(): Promise<void> {
         },
     });
 
-    i18next.services.formatter?.add('lowercase', (value, lng, options) => {
+    i18next.services.formatter?.add('lowercase', (value: string) => {
         return value.toLowerCase();
     });
 
     // Add settings menu
+    const MENU_ICON: string = Spicetify.ReactDOMServer.renderToString(
+        <Languages size={16} strokeWidth={1.5} />,
+    );
     new Spicetify.Menu.Item(
         i18next.t('settings.title'),
         false,
         () => {
             Spicetify.PopupModal.display({
                 title: i18next.t('settings.title'),
-                content: React.createElement(SettingsModal) as any,
+                content: <SettingsModal />,
                 isLarge: true,
             });
         },

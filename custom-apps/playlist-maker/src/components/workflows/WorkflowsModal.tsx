@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import styles from './WorkflowsModal.module.scss';
-import { getWorkflowsFromStorage } from '../../utils/storage-utils';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { Import, Trash } from 'lucide-react';
-import useAppStore, { type AppState } from '../../stores/store';
+import React, { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import useDialogStore, { type DialogState } from '../../stores/dialog-store';
+import useAppStore, { type AppState } from '../../stores/store';
+import { getWorkflowsFromStorage } from '../../utils/storage-utils';
 
 export function WorkflowsModal(): JSX.Element {
     const {
@@ -56,7 +55,10 @@ export function WorkflowsModal(): JSX.Element {
             )}
             {savedWorkflows.map((workflow) => {
                 return (
-                    <div key={workflow.id} className={styles['workflow']}>
+                    <div
+                        key={workflow.id}
+                        className="flex flex-row items-center justify-between"
+                    >
                         <TextComponent>{workflow.name}</TextComponent>
                         <div>
                             <Spicetify.ReactComponent.TooltipWrapper label="Load workflow">
@@ -86,7 +88,7 @@ export function WorkflowsModal(): JSX.Element {
                                     iconOnly={() => (
                                         <Trash
                                             size={20}
-                                            color="var(--spice-notification-error)"
+                                            className="text-spice-error"
                                         />
                                     )}
                                 />

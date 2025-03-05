@@ -1,20 +1,22 @@
+import type { Image } from './shared';
+
 export type ShowMetadata = {
     type: 'show';
     uri: string;
     name: string;
     description: string;
     htmlDescription: string;
-    coverArt: { url: string; width: number; height: number }[];
+    coverArt: Image[];
     trailer: {
         type: 'episode';
         uri: string;
         name: string;
-        coverArt: { url: string; width: number; height: number }[];
+        coverArt: Image[];
         audio: {
             items: unknown[];
         };
-        audioPreview: unknown | null;
-        sharingInfo: unknown | null;
+        audioPreview: unknown;
+        sharingInfo: unknown;
         duration: {
             milliseconds: number;
         };
@@ -39,7 +41,7 @@ export type ShowMetadata = {
             description: string;
             htmlDescription: string;
             episodeType: string;
-            coverArt: { url: string; width: number; height: number }[];
+            coverArt: Image[];
             playedState: {
                 playPositionMilliseconds: number;
                 playPosition: number;
@@ -49,10 +51,10 @@ export type ShowMetadata = {
             audio: {
                 items: unknown[];
             };
-            audioPreview: unknown | null;
-            sharingInfo: unknown | null;
+            audioPreview: unknown;
+            sharingInfo: unknown;
             segmentsCount: number;
-            podcast: unknown | null;
+            podcast: unknown;
             podcastSubscription: {
                 isPaywalled: boolean;
                 isUserSubscribed: boolean;
@@ -70,7 +72,7 @@ export type ShowMetadata = {
             duration: {
                 milliseconds: number;
             };
-            contentInformation: unknown | null;
+            contentInformation: unknown;
             transcripts: {
                 uri: string;
                 language: string;
@@ -79,7 +81,7 @@ export type ShowMetadata = {
             }[];
         };
     };
-    gatedContentAccessReason: unknown | null;
+    gatedContentAccessReason: unknown;
 };
 
 export type ShowAPI = {

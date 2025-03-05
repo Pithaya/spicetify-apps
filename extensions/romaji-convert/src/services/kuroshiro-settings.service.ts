@@ -23,7 +23,7 @@ export class KuroshiroSettingsService {
         return (
             (Spicetify.LocalStorage.get(
                 this.targetSyllabarySettingId,
-            ) as TargetSyllabary) ?? TargetSyllabary.Romaji
+            ) as TargetSyllabary | null) ?? TargetSyllabary.Romaji
         );
     }
 
@@ -35,7 +35,7 @@ export class KuroshiroSettingsService {
         return (
             (Spicetify.LocalStorage.get(
                 this.conversionModeSettingId,
-            ) as ConversionMode) ?? ConversionMode.Spaced
+            ) as ConversionMode | null) ?? ConversionMode.Spaced
         );
     }
 
@@ -47,7 +47,7 @@ export class KuroshiroSettingsService {
         return (
             (Spicetify.LocalStorage.get(
                 this.romajiSystemSettingId,
-            ) as RomajiSystem) ?? RomajiSystem.Passport
+            ) as RomajiSystem | null) ?? RomajiSystem.Passport
         );
     }
 

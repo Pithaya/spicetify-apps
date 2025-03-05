@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    InstrumentalnessDataSchema,
+    MAX_INSTRUMENTALNESS,
+    MIN_INSTRUMENTALNESS,
+    type InstrumentalnessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { InstrumentalnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/instrumentalness-processor';
-
-const defaultValues: LocalNodeData<InstrumentalnessData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function InstrumentalnessNode(
     props: Readonly<NodeProps<InstrumentalnessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<InstrumentalnessData>(
+    const { control, updateNodeField } = useNodeForm<InstrumentalnessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('instrumentalness'),
+        InstrumentalnessDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,21 @@ export function InstrumentalnessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Instrumentalness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Instrumentalness"
+                        tooltip="Predicts whether a track contains no vocals.
+                        Values above 0.5 are intended to represent instrumental tracks. 
+                        The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_INSTRUMENTALNESS}
+                        max={MAX_INSTRUMENTALNESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

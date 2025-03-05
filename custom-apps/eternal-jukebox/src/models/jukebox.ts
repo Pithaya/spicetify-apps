@@ -1,15 +1,14 @@
-import { Remixer } from '../helpers/remixer';
-import { JukeboxSongState } from './jukebox-song-state';
 import type { Observable } from 'rxjs';
 import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
-import type { JukeboxSettings } from './jukebox-settings.js';
 import { GraphGenerator } from '../helpers/graph-generator.js';
+import { Remixer } from '../helpers/remixer';
+import type { JukeboxSettings } from './jukebox-settings.js';
+import { JukeboxSongState } from './jukebox-song-state';
 
+import { getTrackAudioAnalysis } from '@shared/api/endpoints/tracks/get-audio-analysis';
+import type { AudioAnalysis } from '@shared/api/models/audio-analysis';
 import { Driver } from '../driver';
-import { getId } from '@shared/utils/uri-utils';
 import { SettingsService } from '../services/settings-service';
-import type { AudioAnalysis } from '@spotify-web-api';
-import { getCosmosSdkClient } from '@shared/utils/web-api-utils';
 
 export type StatsChangedEvent = {
     beatsPlayed: number;
@@ -143,7 +142,7 @@ export class Jukebox {
 
         Spicetify.showNotification('Fetching analysis for song...');
 
-        const uri = Spicetify.URI.fromString(currentTrack.uri);
+        const uri = currentTrack.uri;
 
         if (Spicetify.URI.isLocalTrack(uri)) {
             this.disableWithError('No analysis available for local tracks.');
@@ -155,18 +154,10 @@ export class Jukebox {
             return;
         }
 
-        const id = getId(uri);
-
-        if (id === null) {
-            this.disableWithError("Couldn't get track id.");
-            return;
-        }
-
-        const sdk = getCosmosSdkClient();
         let analysis: AudioAnalysis | null = null;
 
         try {
-            analysis = await sdk.tracks.audioAnalysis(id);
+            analysis = await getTrackAudioAnalysis({ uri });
         } catch {
             // Do nothing
         }

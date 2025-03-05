@@ -5,11 +5,11 @@
 }
 
 .fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
     label {
         display: block;
-    }
-
-    label:not(:last-of-type) {
-        margin-bottom: 14px;
     }
 }

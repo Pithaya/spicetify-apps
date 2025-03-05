@@ -22,11 +22,11 @@ export function buildQueryString<T>(parameters: QueryParameter<T>): string {
     }
 
     if (parameters.start !== undefined) {
-        parts.push(`start=${parameters.start}`);
+        parts.push(`start=${parameters.start.toFixed()}`);
     }
 
     if (parameters.length !== undefined) {
-        parts.push(`length=${parameters.length}`);
+        parts.push(`length=${parameters.length.toFixed()}`);
     }
 
     return parts.join('&');

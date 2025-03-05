@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    LivenessDataSchema,
+    MAX_LIVENESS,
+    MIN_LIVENESS,
+    type LivenessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { SliderController } from '../shared/SliderController';
-import type { LivenessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
-
-const defaultValues: LocalNodeData<LivenessData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function LivenessNode(
     props: Readonly<NodeProps<LivenessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<LivenessData>(
+    const { control, updateNodeField } = useNodeForm<LivenessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('liveness'),
+        LivenessDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,21 @@ export function LivenessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Liveness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Liveness"
+                        tooltip="Detects the presence of an audience in the recording. 
+                        Higher liveness values represent an increased probability that the track was performed live. 
+                        A value above 0.8 provides strong likelihood that the track is live."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_LIVENESS}
+                        max={MAX_LIVENESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>

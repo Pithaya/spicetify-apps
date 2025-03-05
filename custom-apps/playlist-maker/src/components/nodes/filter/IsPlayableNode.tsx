@@ -1,44 +1,46 @@
-import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
-import { Node } from '../shared/Node';
-import { NodeContent } from '../shared/NodeContent';
-import { type IsPlayableData } from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-
-const defaultValues: LocalNodeData<IsPlayableData> = {
-    isPlayable: true,
-};
+import {
+    IsPlayableDataSchema,
+    type IsPlayableData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { CheckboxController } from '../../inputs/CheckboxController';
+import { Node } from '../shared/Node';
+import { NodeCheckboxField } from '../shared/NodeCheckboxField';
+import { NodeContent } from '../shared/NodeContent';
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function IsPlayableNode(
     props: Readonly<NodeProps<IsPlayableData>>,
 ): JSX.Element {
-    const { register } = useNodeForm<IsPlayableData>(
+    const { control, updateNodeField, errors } = useNodeForm<IsPlayableData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('isPlayable'),
+        IsPlayableDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
-                <TextComponent paddingBottom="8px" weight="bold">
-                    Is playable
-                </TextComponent>
+                <NodeTitle title="Is playable" />
 
-                <label>
-                    <TextComponent elementType="small">
-                        Is playable ?
-                    </TextComponent>
-                    <input type="checkbox" {...register('isPlayable')} />
-                </label>
+                <NodeCheckboxField
+                    label="Is playable ?"
+                    error={errors.isPlayable}
+                >
+                    <CheckboxController
+                        control={control}
+                        name="isPlayable"
+                        onChange={(value) => {
+                            updateNodeField({ isPlayable: value });
+                        }}
+                    />
+                </NodeCheckboxField>
             </NodeContent>
             <Handle
                 type="target"

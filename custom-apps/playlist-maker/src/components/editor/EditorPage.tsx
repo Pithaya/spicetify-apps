@@ -1,24 +1,24 @@
 import React, { useCallback, type DragEvent } from 'react';
-import styles from './EditorPage.module.scss';
 import ReactFlow, {
-    Controls,
-    MiniMap,
     Background,
     BackgroundVariant,
+    Controls,
+    getOutgoers,
+    MiniMap,
     type Connection,
     type Node,
-    getOutgoers,
 } from 'reactflow';
-import { Sidenav } from '../sidebar/Sidebar';
-import { type CustomNodeType, nodeTypes } from '../../models/nodes/node-types';
-import { useAppStore, type AppState } from '../../stores/store';
 import { useShallow } from 'zustand/react/shallow';
-import { ConfirmNewDialog } from './dialogs/ConfirmNewDialog';
-import { CenterPanel } from './panels/CenterPanel';
-import { TopRightPanel } from './panels/TopRightPanel';
-import { TopLeftPanel } from './panels/TopLeftPanel';
-import { ConfirmLoadDialog } from './dialogs/ConfirmLoadDialog';
+import { nodeTypes, type CustomNodeType } from '../../models/nodes/node-types';
+import { useAppStore, type AppState } from '../../stores/store';
+import { Sidenav } from '../sidebar/Sidebar';
 import { ConfirmDeleteDialog } from './dialogs/ConfirmDeleteDialog';
+import { ConfirmLoadDialog } from './dialogs/ConfirmLoadDialog';
+import { ConfirmNewDialog } from './dialogs/ConfirmNewDialog';
+import styles from './EditorPage.module.scss';
+import { CenterPanel } from './panels/CenterPanel';
+import { TopLeftPanel } from './panels/TopLeftPanel';
+import { TopRightPanel } from './panels/TopRightPanel';
 
 type State = Pick<
     AppState,
@@ -133,13 +133,33 @@ export function EditorPage(): JSX.Element {
 
     return (
         <>
-            <div className={styles['container']}>
-                <div className={styles['grid-container']}>
-                    <div className={styles['padding']} />
-                    <div className={styles['sidenav']}>
+            <div className="app-container">
+                <div
+                    className={Spicetify.classnames(
+                        styles['grid-container'],
+                        'gap-panel h-full w-full',
+                    )}
+                >
+                    <div
+                        className={Spicetify.classnames(
+                            styles['padding'],
+                            'panel',
+                        )}
+                    />
+                    <div
+                        className={Spicetify.classnames(
+                            styles['sidenav'],
+                            'panel overflow-scroll !p-5',
+                        )}
+                    >
                         <Sidenav />
                     </div>
-                    <div className={styles['main']}>
+                    <div
+                        className={Spicetify.classnames(
+                            styles['main'],
+                            'panel',
+                        )}
+                    >
                         <ReactFlow
                             nodes={nodes}
                             edges={edges}
@@ -152,6 +172,7 @@ export function EditorPage(): JSX.Element {
                             deleteKeyCode={['Backspace']}
                             nodeTypes={nodeTypes}
                             isValidConnection={isValidConnection}
+                            selectNodesOnDrag={false}
                         >
                             <TopLeftPanel />
                             <CenterPanel />

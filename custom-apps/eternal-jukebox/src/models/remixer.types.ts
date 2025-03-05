@@ -1,4 +1,4 @@
-import type { Section, Segment } from '@spotify-web-api';
+import type { Section, Segment } from '@shared/api/models/audio-analysis';
 import type {
     ChildQuantum,
     hasOverlappingSegments,

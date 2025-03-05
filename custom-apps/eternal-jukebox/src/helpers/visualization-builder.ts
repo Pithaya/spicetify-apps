@@ -1,12 +1,12 @@
+import type { Segment } from '@shared/api/models/audio-analysis';
 import tinycolor from 'tinycolor2';
 import type { Beat } from '../models/graph/beat';
-import type { Segment } from '@spotify-web-api';
-import { Point } from '../models/visualization/point';
-import { getPointFromPercent } from '../utils/math-utils';
+import type { GraphState } from '../models/graph/graph-state';
 import type { BeatDrawData } from '../models/visualization/beat-draw-data';
 import type { EdgeDrawData } from '../models/visualization/edge-draw-data';
-import type { GraphState } from '../models/graph/graph-state';
 import type { GraphDrawData } from '../models/visualization/graph-draw-data';
+import { Point } from '../models/visualization/point';
+import { getPointFromPercent } from '../utils/math-utils';
 
 /**
  * SVG size.

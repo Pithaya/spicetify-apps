@@ -1,18 +1,18 @@
-import React from 'react';
+import { Menu } from '@shared/components/menus/Menu';
+import { MenuItemHeading } from '@shared/components/menus/MenuItemHeading';
+import { MenuItemLabel } from '@shared/components/menus/MenuItemLabel';
 import {
     displayIcons,
-    type HeaderKey,
     type DisplayType,
+    type HeaderKey,
+    type LibraryHeaders,
     type SelectedSortOption,
     type SortOption,
-    type LibraryHeaders,
 } from '@shared/components/track-list/models/sort-option';
-import { SPOTIFY_MENU_CLASSES } from 'custom-apps/better-local-files/src/constants/constants';
-import { ArrowDown, ArrowUp } from 'lucide-react';
-import { getTranslation } from '@shared/utils/translations.utils';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import { MenuItemHeading } from '../../menus/MenuItemHeading';
-import { MenuItemLabel } from '../../menus/MenuItemLabel';
+import { getTranslation } from '@shared/utils/translations.utils';
+import { ArrowDown, ArrowUp } from 'lucide-react';
+import React from 'react';
 
 export type Props = {
     sortOptions: SortOption<LibraryHeaders>[];
@@ -86,10 +86,10 @@ export function SortMenu(props: Readonly<Props>): JSX.Element {
     );
 
     const menu = (
-        <Spicetify.ReactComponent.Menu className={SPOTIFY_MENU_CLASSES}>
+        <Menu>
             {props.sortOptions.length > 0 && sort}
             {props.displayTypes.length > 0 && display}
-        </Spicetify.ReactComponent.Menu>
+        </Menu>
     );
 
     return (

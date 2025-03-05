@@ -6,24 +6,30 @@ export type PlaylistParameters = {
     withSync?: boolean;
 };
 
+export const PlaylistSortOptionFields = [
+    'TITLE',
+    'ADDED_AT',
+    'ADDED_BY',
+    'ALBUM',
+    'ARTIST',
+    'DURATION',
+    'SHOW_NAME',
+    'PUBLISH_DATE',
+] as const;
+
+export const PlaylistSortOptionOrders = ['DESC', 'ASC'] as const;
+
 export type PlaylistSortOption = {
-    field:
-        | 'TITLE'
-        | 'ADDED_AT'
-        | 'ADDED_BY'
-        | 'ALBUM'
-        | 'ARTIST'
-        | 'DURATION'
-        | 'SHOW_NAME'
-        | 'PUBLISH_DATE';
-    order: 'DESC' | 'ASC';
+    field: (typeof PlaylistSortOptionFields)[number];
+    order: (typeof PlaylistSortOptionOrders)[number];
 };
 
 export type QueryParameters = {
-    filter: string;
-    limit: number;
-    offset: number;
+    filter?: string;
+    limit?: number;
+    offset?: number;
     sort?: PlaylistSortOption;
+    isExtraColumnsEnabled?: boolean;
 };
 
 export type Playlist = {
@@ -75,7 +81,7 @@ export type Playlist = {
         isLoaded: boolean;
         isOwnedBySelf: boolean;
         isPublished: boolean;
-        madeFor: unknown | null;
+        madeFor: unknown;
         name: string;
         owner: {
             displayName: string;
@@ -105,15 +111,15 @@ export type PlaylistAPI = {
     add: (
         playlistUri: string,
         tracks: string[],
-        options: any | { before?: 'start'; after?: 'end' },
+        options: { before?: 'start'; after?: 'end' },
     ) => Promise<void>;
 
     applyModifications: (
         playlistUri: string,
         modification: {
-            operation: string | 'add';
+            operation: 'add';
             uris: string[];
-            after: 'end' | string;
+            after: 'end';
         },
     ) => Promise<void>;
 

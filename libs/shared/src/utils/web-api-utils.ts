@@ -1,25 +1,37 @@
-import type { AuthorizationAPI } from '@shared/platform/authorization';
-import { waitForPlatformApi } from './spicetify-utils';
-import { getId } from './uri-utils';
-import type {
-    Album,
-    Artist,
-    Episode,
-    MaxInt,
-    Page,
-    Playlist,
-    Show,
-    Track,
-} from '@spotify-web-api';
+import { getAlbum } from '@shared/api/endpoints/albums/get-album';
 import {
-    SpotifyApi,
+    getAlbums,
     MAX_GET_MULTIPLE_ALBUMS_IDS,
+} from '@shared/api/endpoints/albums/get-albums';
+import { getArtist } from '@shared/api/endpoints/artists/get-artist';
+import {
+    getArtists,
     MAX_GET_MULTIPLE_ARTISTS_IDS,
+} from '@shared/api/endpoints/artists/get-artists';
+import { getEpisode } from '@shared/api/endpoints/episodes/get-episode';
+import {
+    getEpisodes,
     MAX_GET_MULTIPLE_EPISODES_IDS,
+} from '@shared/api/endpoints/episodes/get-episodes';
+import { getPlaylist } from '@shared/api/endpoints/playlists/get-playlist';
+import { getShow } from '@shared/api/endpoints/shows/get-show';
+import {
+    getShows,
     MAX_GET_MULTIPLE_SHOWS_IDS,
+} from '@shared/api/endpoints/shows/get-shows';
+import { getTrack } from '@shared/api/endpoints/tracks/get-track';
+import {
+    getTracks,
     MAX_GET_MULTIPLE_TRACKS_IDS,
-    ConsoleLoggingErrorHandler,
-} from '@spotify-web-api';
+} from '@shared/api/endpoints/tracks/get-tracks';
+import type { Album } from '@shared/api/models/album';
+import type { Artist } from '@shared/api/models/artist';
+import type { Episode } from '@shared/api/models/episode';
+import type { Page } from '@shared/api/models/page';
+import type { Playlist } from '@shared/api/models/playlist';
+import type { Show } from '@shared/api/models/show';
+import type { Track } from '@shared/api/models/track';
+import { isNotEmpty } from './array-utils';
 
 /**
  * Get Spotify catalog information for multiple tracks, albums, artists, playlists, shows, or episodes identified by their Spotify URI.
@@ -28,7 +40,7 @@ import {
  * @returns The requested data.
  */
 export async function getApiData(
-    uriStrings: string[],
+    uris: string[],
 ): Promise<
     | (Track | null)[]
     | (Album | null)[]
@@ -37,50 +49,39 @@ export async function getApiData(
     | (Show | null)[]
     | (Episode | null)[]
 > {
-    if (uriStrings.length === 0) {
+    if (!isNotEmpty(uris)) {
         return [];
     }
-
-    const uris: Spicetify.URI[] = uriStrings.map((uri) =>
-        Spicetify.URI.fromString(uri),
-    );
-    const ids: (string | null)[] = uris.map((uri) => getId(uri));
-
-    if (ids.some((id) => id === null)) {
-        return [];
-    }
-
-    const sdk = getCosmosSdkClient();
 
     if (uris.every((uri) => Spicetify.URI.isTrack(uri))) {
         return await getDataForIds(
-            ids as string[],
+            uris,
             MAX_GET_MULTIPLE_TRACKS_IDS,
-            async (id) => await sdk.tracks.get(id),
-            async (ids) => await sdk.tracks.get(ids),
+            async (uri) => await getTrack({ uri }),
+            async (uris) => await getTracks({ uris }),
         );
     }
 
     if (uris.every((uri) => Spicetify.URI.isAlbum(uri))) {
         return await getDataForIds(
-            ids as string[],
+            uris,
             MAX_GET_MULTIPLE_ALBUMS_IDS,
-            async (id) => await sdk.albums.get(id),
-            async (ids) => await sdk.albums.get(ids),
+            async (uri) => await getAlbum({ uri }),
+            async (uris) => await getAlbums({ uris }),
         );
     }
 
     if (uris.every((uri) => Spicetify.URI.isArtist(uri))) {
         return await getDataForIds(
-            ids as string[],
+            uris,
             MAX_GET_MULTIPLE_ARTISTS_IDS,
-            async (id) => await sdk.artists.get(id),
-            async (ids) => await sdk.artists.get(ids),
+            async (uri) => await getArtist({ uri }),
+            async (uris) => await getArtists({ uris }),
         );
     }
 
     if (uris.every((uri) => Spicetify.URI.isPlaylistV1OrV2(uri))) {
-        if (ids.length > 1) {
+        if (uris.length > 1) {
             Spicetify.showNotification(
                 `Cannot get more than 1 playlist at once`,
                 true,
@@ -89,24 +90,24 @@ export async function getApiData(
             return [];
         }
 
-        return [await sdk.playlists.getPlaylist(ids[0]!)];
+        return [await getPlaylist({ uri: uris[0] })];
     }
 
     if (uris.every((uri) => Spicetify.URI.isShow(uri))) {
         return await getDataForIds(
-            ids as string[],
+            uris,
             MAX_GET_MULTIPLE_SHOWS_IDS,
-            async (id) => await sdk.shows.get(id),
-            async (ids) => await sdk.shows.get(ids),
+            async (uri) => await getShow({ uri }),
+            async (uris) => await getShows({ uris }),
         );
     }
 
     if (uris.every((uri) => Spicetify.URI.isEpisode(uri))) {
         return await getDataForIds(
-            ids as string[],
+            uris,
             MAX_GET_MULTIPLE_EPISODES_IDS,
-            async (id) => await sdk.episodes.get(id),
-            async (ids) => await sdk.episodes.get(ids),
+            async (uri) => await getEpisode({ uri }),
+            async (uris) => await getEpisodes({ uris }),
         );
     }
 
@@ -114,88 +115,23 @@ export async function getApiData(
 }
 
 async function getDataForIds<T>(
-    ids: string[],
-    maxIds: number,
+    uris: [string, ...string[]],
+    maxUris: number,
     getSingle: (id: string) => Promise<T | null>,
-    getMultiple: (ids: string[]) => Promise<T[]>,
+    getMultiple: (ids: [string, ...string[]]) => Promise<T[]>,
 ): Promise<(T | null)[]> {
-    if (ids.length > maxIds) {
+    if (uris.length > maxUris) {
         Spicetify.showNotification(
-            `Cannot get more than ${maxIds} tracks at once`,
+            `Cannot get more than ${maxUris.toFixed()} tracks at once`,
             true,
         );
 
         return [];
     }
 
-    return ids.length === 1
-        ? [await getSingle(ids[0])]
-        : await getMultiple(ids);
-}
-
-/**
- * Get a Spotify API client that uses the default fetch implementation.
- * @returns The client.
- */
-export function getSdkClient(): SpotifyApi {
-    return new SpotifyApi({
-        errorHandler: new ConsoleLoggingErrorHandler(),
-        authentication: {
-            getAccessToken: async () => {
-                const authorizationApi =
-                    await waitForPlatformApi<AuthorizationAPI>(
-                        'AuthorizationAPI',
-                    );
-
-                return authorizationApi.getState().token.accessToken;
-            },
-        },
-    });
-}
-
-type CosmosProxyErrorResponse = {
-    /**
-     * Response status
-     */
-    code: number;
-    /**
-     * Response status text
-     */
-    error: string;
-    message: 'Failed to fetch';
-    stack: undefined;
-};
-
-/**
- * Get a Spotify API client that uses the Cosmos proxy.
- * @returns The client.
- */
-export function getCosmosSdkClient(): SpotifyApi {
-    return new SpotifyApi({
-        errorHandler: new ConsoleLoggingErrorHandler(),
-        fetch: async (url, init) => {
-            // TODO: handle other methods
-            if (init.method !== 'GET') {
-                throw new Error('Only GET requests are supported');
-            }
-
-            return await Spicetify.CosmosAsync.get(url);
-        },
-        responseValidator: {
-            validateResponse: async (response: any) => {
-                if (response.message === 'Failed to fetch') {
-                    const { code, error } =
-                        response as CosmosProxyErrorResponse;
-                    throw new Error(`Failed to fetch: ${code} - ${error}`);
-                }
-            },
-        },
-        deserializer: {
-            deserialize: async (response: any) => {
-                return response;
-            },
-        },
-    });
+    return uris.length === 1
+        ? [await getSingle(uris[0])]
+        : await getMultiple(uris);
 }
 
 /**
@@ -206,19 +142,20 @@ export function getCosmosSdkClient(): SpotifyApi {
  * @returns A list of items.
  */
 export async function getAllPages<T>(
-    getPage: (offset: number, limit: MaxInt<50>) => Promise<Page<T> | null>,
+    getPage: (offset: number, limit: number) => Promise<Page<T> | null>,
     initialOffset: number,
+    maxLimit: number,
     maxItemsCount?: number,
 ): Promise<T[]> {
     const items: T[] = [];
     let currentPage: Page<T> | null = null;
     let offset = initialOffset;
-    // If the total to get is less than 50, we can get all in a single query
+    // If the total to get is less than the max limit, we can get all in a single query
     // else, get the maximum of items per page
-    let limit: MaxInt<50> =
-        maxItemsCount !== undefined && maxItemsCount <= 50
-            ? (maxItemsCount as MaxInt<50>)
-            : 50;
+    let limit: number =
+        maxItemsCount !== undefined && maxItemsCount <= maxLimit
+            ? maxItemsCount
+            : maxLimit;
 
     do {
         currentPage = await getPage(offset, limit);
@@ -234,8 +171,8 @@ export async function getAllPages<T>(
         items.push(...currentPage.items);
 
         offset += limit;
-        limit = Math.min(...[50, maxItemsCount - items.length]) as MaxInt<50>;
-    } while (currentPage?.next !== null && items.length < maxItemsCount);
+        limit = Math.min(...[maxLimit, maxItemsCount - items.length]);
+    } while (currentPage.next !== null && items.length < maxItemsCount);
 
     return items;
 }

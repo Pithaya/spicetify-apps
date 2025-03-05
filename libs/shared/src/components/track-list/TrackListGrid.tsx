@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import styles from './TrackListGrid.module.scss';
-import { TrackListRow } from './TrackListRow';
-import { TrackListHeader } from './TrackListHeader';
-import type { Props as TrackListHeaderProps } from './TrackListHeader';
+import type { DisplayType } from '@shared/components/track-list/models/sort-option';
 import { useCurrentPlayerTrackUri } from '@shared/hooks/use-current-uri';
 import { type PlayStatus, usePlayStatus } from '@shared/hooks/use-play-status';
 import { getTranslation } from '@shared/utils/translations.utils';
-import type { DisplayType } from '@shared/components/track-list/models/sort-option';
+import React, { useMemo, useState } from 'react';
 import type { ITrack } from './models/interfaces';
+import styles from './TrackListGrid.module.scss';
+import type { Props as TrackListHeaderProps } from './TrackListHeader';
+import { TrackListHeader } from './TrackListHeader';
+import { TrackListRow } from './TrackListRow';
 
 export type SubTracksList = {
     headerRow: JSX.Element;
@@ -55,7 +55,7 @@ export function TrackListGrid<T extends string>(
                 selectedTracks.size > 1
                     ? getTranslation(
                           ['tracklist.drag.multiple.label', 'other'],
-                          selectedTracks.size,
+                          selectedTracks.size.toFixed(),
                       )
                     : mapAsArray[0][1].name,
         });
@@ -100,11 +100,11 @@ export function TrackListGrid<T extends string>(
                 ></TrackListHeader>
 
                 <div
-                    className={`${
+                    className={
                         props.displayType === 'compact'
                             ? styles['display-list-compact']
                             : styles['display-list']
-                    }`}
+                    }
                 >
                     {props.tracks.map((track, index) => (
                         <TrackListRow

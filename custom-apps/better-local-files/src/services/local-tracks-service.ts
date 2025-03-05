@@ -1,14 +1,13 @@
-import { sort } from '../utils/sort.utils';
-import { Album } from '../models/album';
-import { Artist } from '../models/artist';
-import { Track } from '../models/track';
+import { getPlatform } from '@shared/utils/spicetify-utils';
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import pixelmatch from 'pixelmatch';
 import { BehaviorSubject, type Observable } from 'rxjs';
-import { StorageService } from './storage-service';
+import { Album } from '../models/album';
+import { Artist } from '../models/artist';
 import type { CachedAlbum } from '../models/cached-album';
-import { waitForPlatformApi } from '@shared/utils/spicetify-utils';
-import type { LocalFilesAPI } from '@shared/platform/local-files';
-import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
+import { Track } from '../models/track';
+import { sort } from '../utils/sort.utils';
+import { StorageService } from './storage-service';
 
 /**
  * A list of tracks with an associated cover.
@@ -166,9 +165,7 @@ export class LocalTracksService {
      * Process the local tracks to fill the tracks, albums and artists maps.
      */
     private async processLocalTracks(): Promise<void> {
-        const localFilesApi =
-            await waitForPlatformApi<LocalFilesAPI>('LocalFilesAPI');
-        const localTracks = await localFilesApi.getTracks();
+        const localTracks = await getPlatform().LocalFilesAPI.getTracks();
 
         for (const localTrack of localTracks) {
             // Add the album
@@ -183,11 +180,13 @@ export class LocalTracksService {
                     albumKey,
                     albumName,
                     getImageUrlFromAlbum(localTrack.album),
+                    localTrack.album.images.map((i) => ({
+                        url: i.url,
+                    })),
                 );
 
                 this.albums.set(albumKey, album);
             } else {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 album = this.albums.get(albumKey)!;
             }
 
@@ -270,6 +269,9 @@ export class LocalTracksService {
                     albumKey,
                     album.name,
                     getImageUrlFromAlbum(firstTrack.backingTrack.album),
+                    firstTrack.backingTrack.album.images.map((i) => ({
+                        url: i.url,
+                    })),
                 );
 
                 for (const artist of firstTrack.artists) {
@@ -486,8 +488,8 @@ export class LocalTracksService {
                 resolve(image);
             };
 
-            image.onerror = (e) => {
-                reject(e);
+            image.onerror = () => {
+                reject(new Error(`Couldn't load image "${imageUrl}"`));
             };
 
             image.src = imageUrl;

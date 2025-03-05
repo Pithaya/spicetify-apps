@@ -1,11 +1,17 @@
 import { type WorkflowTrack } from '../../track';
 import { TrackWrapper } from '../../track-wrapper';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { z } from 'zod';
 
-export type OrderByData = BaseNodeData & {
-    property: 'album' | 'artist' | 'name' | 'source' | 'duration';
-    order: 'asc' | 'desc';
-};
+export const OrderByDataSchema = z
+    .object({
+        property: z.enum(['album', 'artist', 'name', 'source', 'duration']),
+        order: z.enum(['asc', 'desc']),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type OrderByData = z.infer<typeof OrderByDataSchema>;
 
 const propertyGetter: Record<
     OrderByData['property'],

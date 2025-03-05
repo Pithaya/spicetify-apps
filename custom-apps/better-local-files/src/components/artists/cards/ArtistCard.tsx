@@ -1,12 +1,12 @@
+import { MultiTrackMenu } from '@shared/components/menus/MultiTrackMenu';
+import { PlayButton } from '@shared/components/ui/PlayButton';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
+import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
+import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
 import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
-import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { navigateTo } from '../../../utils/history.utils';
-import { PlayButton } from '@shared/components/ui/PlayButton';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import { MultiTrackMenu } from '../../shared/menus/MultiTrackMenu';
-import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     artist: Artist;
@@ -60,6 +60,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                     }
                 >
                     <div
+                        tabIndex={0}
                         className={`${styles['main-card-card']} main-card-card`}
                         onClick={() => {
                             navigateTo(ARTIST_ROUTE, props.artist.uri);
@@ -74,7 +75,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                                             draggable="false"
                                             loading="lazy"
                                             src={props.artist.image}
-                                            alt="artist image"
+                                            alt="artist avatar"
                                             className="main-image-image main-cardImage-image main-cardImage-circular main-image-loading main-image-loaded"
                                             onError={(e) =>
                                                 (e.currentTarget.outerHTML =

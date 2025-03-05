@@ -418,6 +418,15 @@ declare namespace Spicetify {
 		 */
 		function playUri(uri: string, context?: any, options?: any): Promise<void>;
 		/**
+		 * Unregister added event listener `songchange`.
+		 * @param type
+		 * @param callback
+		 */
+		function removeEventListener(
+            type: 'songchange',
+            callback: (event?: Event & { data: PlayerState }) => void,
+        ): void;
+		/**
 		 * Unregister added event listener `type`.
 		 * @param type
 		 * @param callback
@@ -1234,31 +1243,37 @@ declare namespace Spicetify {
 
 		// Single context menu item
 		class Item {
-			/**
-			 * List of valid icons to use.
-			 */
-			static readonly iconList: Icon[];
-			constructor(name: string, onClick: OnClickCallback, shouldAdd?: ShouldAddCallback, icon?: Icon, disabled?: boolean);
-			name: string;
-			icon: Icon | string;
-			disabled: boolean;
-			/**
-			 * A function returning boolean determines whether item should be prepended.
-			 */
-			shouldAdd: ShouldAddCallback;
-			/**
-			 * A function to call when item is clicked
-			 */
-			onClick: OnClickCallback;
-			/**
-			 * Item is only available in Context Menu when method "register" is called.
-			 */
-			register: () => void;
-			/**
-			 * Stop Item to be prepended into Context Menu.
-			 */
-			deregister: () => void;
-		}
+            /**
+             * List of valid icons to use.
+             */
+            static readonly iconList: Icon[];
+            constructor(
+                name: string,
+                onClick: OnClickCallback,
+                shouldAdd?: ShouldAddCallback,
+                icon?: Icon | string,
+                disabled?: boolean,
+            );
+            name: string;
+            icon: Icon | string;
+            disabled: boolean;
+            /**
+             * A function returning boolean determines whether item should be prepended.
+             */
+            shouldAdd: ShouldAddCallback;
+            /**
+             * A function to call when item is clicked
+             */
+            onClick: OnClickCallback;
+            /**
+             * Item is only available in Context Menu when method "register" is called.
+             */
+            register: () => void;
+            /**
+             * Stop Item to be prepended into Context Menu.
+             */
+            deregister: () => void;
+        }
 
 		/**
 		 * Create a sub menu to contain `Item`s.
@@ -1301,7 +1316,7 @@ declare namespace Spicetify {
 			 * You can specify a string for simple text display
 			 * or a HTML element for interactive config/setting menu
 			 */
-			content: string | Element;
+			content: string | Element | JSX.Element;
 			/**
 			 * Bigger window
 			 */
@@ -1313,11 +1328,11 @@ declare namespace Spicetify {
 	}
 
 	/** React instance to create components */
-	const React: any;
+	const React: typeof import('react');
 	/** React DOM instance to render and mount components */
-	const ReactDOM: any;
+	const ReactDOM: typeof import('react-dom') & typeof import('react-dom/client');
 	/** React DOM Server instance to render components to string */
-	const ReactDOMServer: any;
+	const ReactDOMServer: typeof import('react-dom/server');
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {
@@ -1774,7 +1789,18 @@ declare namespace Spicetify {
 		 * Props:
 		 * @see Spicetify.ReactComponent.TextComponentProps
 		 */
-		const TextComponent: any;
+		const TextComponent: React.ElementType & {
+            h1: React.ElementType;
+            h2: React.ElementType;
+            h3: React.ElementType;
+            h4: React.ElementType;
+            h5: React.ElementType;
+            h6: React.ElementType;
+            li: React.ElementType;
+            p: React.ElementType;
+            small: React.ElementType;
+            span: React.ElementType;
+        };
 		/**
 		 * Component to render Spotify-style confirm dialog
 		 *
@@ -2043,7 +2069,15 @@ declare namespace Spicetify {
 		/**
 		 * Collection of GraphQL definitions.
 		 */
-		const Definitions: Record<Query | string, any>;
+		const Definitions: Record<
+            Query | string,
+            {
+                name: string;
+                operation: 'query' | 'mutation';
+                sha256Hash: string;
+                value: null;
+            }
+        >;
 		/**
 		 * Sends a GraphQL query to Spotify.
 		 * @description A preinitialized version of `Spicetify.GraphQL.Handler` using current context.
@@ -2373,5 +2407,16 @@ declare namespace Spicetify {
 		 * @return Locale uppercase text
 		 */
 		function toLocaleUpperCase(text: string): string;
+	}
+	namespace Events {
+		type EventCallback = () => void | Promise<void>;
+		class Event {
+			callbacks: EventCallback[];
+			on: (callback: EventCallback) => void;
+			fire: () => void;
+		}
+
+		const platformLoaded: Event;
+		const webpackLoaded: Event;
 	}
 }

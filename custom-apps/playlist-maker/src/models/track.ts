@@ -1,5 +1,5 @@
+import type { AudioFeatures } from '@shared/api/models/audio-features';
 import type { BackingTrack } from '@shared/components/track-list/models/interfaces';
-import type { AudioFeatures } from '@spotify-web-api';
 
 export type AdditionalTrackData = {
     source: string;

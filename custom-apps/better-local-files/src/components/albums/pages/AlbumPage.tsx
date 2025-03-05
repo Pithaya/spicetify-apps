@@ -1,19 +1,18 @@
-import React from 'react';
-import { navigateTo } from '../../../utils/history.utils';
-import { AlbumTrackList } from '../track-list/AlbumTrackList';
-import { Header, HeaderImage } from '../../shared/Header';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import {
     getTranslatedDuration,
     getTranslation,
 } from '@shared/utils/translations.utils';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
 import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import type { History } from '@shared/platform/history';
+import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import React from 'react';
+import { navigateTo } from '../../../utils/history.utils';
+import { Header, HeaderImage } from '../../shared/Header';
+import { AlbumTrackList } from '../track-list/AlbumTrackList';
 
 type Props = {
     album: Album;
@@ -71,7 +70,7 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                                     ? 'one'
                                     : 'other',
                             ],
-                            props.album.getTracks().length,
+                            props.album.getTracks().length.toFixed(),
                         )}
                     </TextComponent>
                     <TextComponent
@@ -87,9 +86,10 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
 }
 
 export function AlbumPage(): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
+    const state = history.location.state as { uri?: string };
 
-    const albumUri = (history.location.state as any).uri ?? null;
+    const albumUri = state.uri ?? null;
 
     if (albumUri === null) {
         history.replace(ALBUMS_ROUTE);
@@ -107,15 +107,8 @@ export function AlbumPage(): JSX.Element {
 
     return (
         <>
-            {album !== null && (
-                <>
-                    <AlbumHeader album={album} />
-                    <AlbumTrackList
-                        albumName={album.name}
-                        discs={album.discs}
-                    />
-                </>
-            )}
+            <AlbumHeader album={album} />
+            <AlbumTrackList albumName={album.name} discs={album.discs} />
         </>
     );
 }

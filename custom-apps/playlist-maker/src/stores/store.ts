@@ -1,26 +1,25 @@
-import { create } from 'zustand';
 import {
+    addEdge,
+    applyEdgeChanges,
+    applyNodeChanges,
     type Connection,
     type Edge,
     type EdgeChange,
     type Node,
     type NodeChange,
-    addEdge,
-    type OnNodesChange,
-    type OnEdgesChange,
     type OnConnect,
-    applyNodeChanges,
-    applyEdgeChanges,
-    type XYPosition,
+    type OnEdgesChange,
+    type OnNodesChange,
     type ReactFlowInstance,
+    type XYPosition,
 } from 'reactflow';
+import { v4 as uuidv4 } from 'uuid';
+import { create } from 'zustand';
+import { type BaseNodeData } from '../models/nodes/node-processor';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { type WorkflowTrack } from '../models/track';
-import { v4 as uuidv4 } from 'uuid';
+import { getDefaultValueForNodeType } from '../utils/node-utils';
 import type { SavedWorkflow } from '../utils/storage-utils';
-
-let id = 0;
-const getId = (): string => (++id).toString();
 
 function isMove(change: NodeChange): boolean {
     return change.type === 'position' && change.position !== undefined;
@@ -32,7 +31,7 @@ function isRemove(change: NodeChange | EdgeChange): boolean {
 
 export type AppState = {
     reactFlowInstance: ReactFlowInstance | null;
-    nodes: Node[];
+    nodes: Node<BaseNodeData>[];
     edges: Edge[];
     result: WorkflowTrack[];
     workflowId: string;
@@ -100,12 +99,12 @@ export const useAppStore = create<AppState>((set, get) => ({
             hasPendingChanges: true,
         });
     },
-    addNode: (nodeType: CustomNodeType, position: XYPosition) => {
+    addNode: <T>(nodeType: CustomNodeType, position: XYPosition) => {
         const newNode = {
-            id: getId(),
+            id: uuidv4(),
             type: nodeType,
             position,
-            data: {},
+            data: getDefaultValueForNodeType(nodeType) as Partial<T>,
         };
 
         set({ nodes: get().nodes.concat(newNode), hasPendingChanges: true });
@@ -114,7 +113,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({
             nodes: get().nodes.map((node) => {
                 if (node.id === nodeId) {
-                    return { ...node, data: { ...node.data, ...data } };
+                    return { ...node, data: { ...(node.data as T), ...data } };
                 }
 
                 return node;
@@ -122,7 +121,9 @@ export const useAppStore = create<AppState>((set, get) => ({
             hasPendingChanges: true,
         });
         set({
-            anyExecuting: get().nodes.some((node) => node.data.isExecuting),
+            anyExecuting: get().nodes.some(
+                (node) => node.data.isExecuting === true,
+            ),
         });
     },
     setResult: (tracks: WorkflowTrack[]) => {
@@ -132,7 +133,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ workflowName, hasPendingChanges: true });
     },
     resetState: () => {
-        id = 0;
         set({
             nodes: [],
             edges: [],
@@ -146,15 +146,11 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ hasPendingChanges: false });
     },
     loadWorkflow: (workflow: SavedWorkflow) => {
-        id =
-            workflow.nodes.length > 0
-                ? Math.max(...workflow.nodes.map((node) => parseInt(node.id)))
-                : 0;
         const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
         get().reactFlowInstance?.setViewport({ x, y, zoom });
         set({
-            nodes: workflow.nodes || [],
-            edges: workflow.edges || [],
+            nodes: workflow.nodes,
+            edges: workflow.edges,
             hasPendingChanges: false,
             workflowId: workflow.id,
             workflowName: workflow.name,

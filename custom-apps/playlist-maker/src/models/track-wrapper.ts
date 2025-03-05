@@ -1,12 +1,13 @@
+import type { Track } from '@shared/api/models/track';
 import type {
     IAlbum,
     IArtist,
     ITrack,
+    SimpleTrack,
 } from '@shared/components/track-list/models/interfaces';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
 import type { AdditionalTrackData, WorkflowTrack } from './track';
-import type { Track } from '@spotify-web-api';
 
 export class TrackWrapper implements ITrack {
     public get uri(): string {
@@ -17,8 +18,12 @@ export class TrackWrapper implements ITrack {
         return this.backingTrack.name;
     }
 
-    public get addedAt(): Date {
+    public get addedAt(): Date | null {
         if (TrackWrapper.isInternalTrack(this.backingTrack)) {
+            if (this.backingTrack.addedAt === undefined) {
+                return null;
+            }
+
             if (this.backingTrack.addedAt instanceof Date) {
                 return this.backingTrack.addedAt;
             }
@@ -85,8 +90,10 @@ export class TrackWrapper implements ITrack {
 
     private static isInternalTrack(
         track: WorkflowTrack,
-    ): track is (LocalTrack | LibraryAPITrack) & AdditionalTrackData {
-        const key: keyof (LocalTrack | LibraryAPITrack) = 'duration';
+    ): track is (LocalTrack | LibraryAPITrack | SimpleTrack) &
+        AdditionalTrackData {
+        const key: keyof (LocalTrack | LibraryAPITrack | SimpleTrack) =
+            'duration';
         return key in track;
     }
 

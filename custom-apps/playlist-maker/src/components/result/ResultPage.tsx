@@ -1,26 +1,29 @@
-import React, { useMemo } from 'react';
-import styles from './ResultPage.module.scss';
-import useAppStore from '../../stores/store';
-import { useShallow } from 'zustand/react/shallow';
 import type {
     LibraryHeaders,
     TrackListHeaderOption,
 } from '@shared/components/track-list/models/sort-option';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TrackListGrid } from '@shared/components/track-list/TrackListGrid';
-import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
 import { TrackListRowAlbumLink } from '@shared/components/track-list/TrackListRowAlbumLink';
-import { TrackWrapper } from '../../models/track-wrapper';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { History } from '@shared/platform/history';
-import { getId } from '@shared/utils/uri-utils';
+import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListRowImageTitle';
+import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
+import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { getPlatform } from '@shared/utils/spicetify-utils';
+import {
+    getTranslatedDuration,
+    getTranslation,
+} from '@shared/utils/translations.utils';
+import { getId } from '@shared/utils/uri-utils';
 import { ArrowRightFromLine } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { TrackWrapper } from '../../models/track-wrapper';
+import useAppStore from '../../stores/store';
 import { CreatePlaylistModal } from './modals/CreatePlaylistModal';
+import styles from './ResultPage.module.scss';
 
 export function ResultPage(): JSX.Element {
-    const history = getPlatformApiOrThrow<History>('History');
+    const history = getPlatform().History;
 
     const { result } = useAppStore(
         useShallow((state) => ({
@@ -47,15 +50,14 @@ export function ResultPage(): JSX.Element {
         },
     ];
 
-    const playTracks = (trackUri?: string): void => {
+    const playTracks = async (trackUri?: string): Promise<void> => {
         const skip = trackUri
             ? {
                   uri: trackUri,
               }
             : undefined;
 
-        // TODO: Use playerAPI
-        (Spicetify.Player as any).origin.play(
+        await getPlatform().PlayerAPI.play(
             {
                 uri: '',
                 pages: [{ items: result }],
@@ -68,10 +70,17 @@ export function ResultPage(): JSX.Element {
     };
 
     return (
-        <div className={styles['container']}>
-            <div className={styles['grid-container']}>
-                <div className={styles['padding']} />
-                <div className={styles['main']}>
+        <div className="app-container">
+            <div
+                className={Spicetify.classnames(
+                    styles['grid-container'],
+                    'gap-panel h-full w-full',
+                )}
+            >
+                <div
+                    className={Spicetify.classnames(styles['padding'], 'panel')}
+                />
+                <div className={Spicetify.classnames(styles['main'], 'panel')}>
                     <div className="main-actionBar-ActionBar contentSpacing">
                         <div className="main-actionBar-ActionBarRow">
                             <div className="main-playButton-PlayButton">
@@ -79,7 +88,7 @@ export function ResultPage(): JSX.Element {
                                     disabled={tracks.length === 0}
                                     size="lg"
                                     onClick={() => {
-                                        playTracks();
+                                        void playTracks();
                                     }}
                                 />
                             </div>
@@ -96,15 +105,34 @@ export function ResultPage(): JSX.Element {
                                     onClick={() => {
                                         Spicetify.PopupModal.display({
                                             title: 'Create playlist',
-                                            content: React.createElement(
-                                                CreatePlaylistModal,
-                                            ) as any,
+                                            content: <CreatePlaylistModal />,
                                             isLarge: true,
                                         });
                                     }}
                                     className={styles['help-button']}
                                 ></Spicetify.ReactComponent.ButtonSecondary>
                             </Spicetify.ReactComponent.TooltipWrapper>
+                            {tracks.length > 0 && (
+                                <p>
+                                    {getTranslation(
+                                        [
+                                            'tracklist-header.songs-counter',
+                                            tracks.length === 1
+                                                ? 'one'
+                                                : 'other',
+                                        ],
+                                        tracks.length.toFixed(),
+                                    )}
+                                    <span className="main-entityHeader-divider"></span>
+                                    {getTranslatedDuration(
+                                        tracks.reduce(
+                                            (acc, track) =>
+                                                acc + track.duration,
+                                            0,
+                                        ),
+                                    )}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -114,7 +142,7 @@ export function ResultPage(): JSX.Element {
                         gridLabel={getTranslation(['local-files'])}
                         useTrackNumber={false}
                         onPlayTrack={(uri) => {
-                            playTracks(uri);
+                            void playTracks(uri);
                         }}
                         headers={headers}
                         getRowContent={(track) => {
@@ -159,10 +187,22 @@ export function ResultPage(): JSX.Element {
                         }}
                         displayType={'list'}
                         getRowMenu={(track) => (
-                            <Spicetify.ReactComponent.TrackMenu
-                                uri={track.uri}
-                                artists={track.artists}
-                                albumUri={track.album.uri}
+                            <RowMenu
+                                track={track}
+                                onArtistClick={(uri) => {
+                                    const historyApi = getPlatform().History;
+                                    const artistUri =
+                                        Spicetify.URI.fromString(uri);
+                                    const artistUrl = artistUri.toURLPath(true);
+                                    historyApi.push(artistUrl);
+                                }}
+                                onAlbumClick={(uri) => {
+                                    const historyApi = getPlatform().History;
+                                    const albumUri =
+                                        Spicetify.URI.fromString(uri);
+                                    const albumUrl = albumUri.toURLPath(true);
+                                    historyApi.push(albumUrl);
+                                }}
                             />
                         )}
                     />

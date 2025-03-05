@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+@theme inline {
+    --color-spice-highlight: var(--spice-highlight);
+    --color-spice-error: var(--spice-notification-error);
+    --color-spice-text: var(--spice-text);
+    --color-spice-subtext: var(--spice-subtext);
+    --color-spice-sidebar: var(--spice-sidebar);
+    --color-spice-main: var(--spice-main);
+    --color-spice-tab-active: var(--spice-tab-active);
+    --color-spice-highlight-elevated: var(--spice-highlight-elevated);
+    --color-spice-highlight-elevated-hover: hsl(
+        from rgb(var(--spice-rgb-highlight-elevated)) h s calc(l + 12)
+    );
+    --color-spice-main-elevated: var(--spice-main-elevated);
+    --color-spice-button: var(--spice-button);
+    --color-spice-button-transparent: rgb(from var(--spice-button) r g b / 0.5);
+}
+
+@utility gap-panel {
+    gap: var(--panel-gap);
+}
+
+@layer components {
+    .app-container {
+        @apply bg-spice-sidebar absolute top-0 right-0 bottom-0 left-0;
+    }
+
+    .panel {
+        @apply bg-spice-main rounded-lg;
+    }
+}
+
+@layer base {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}

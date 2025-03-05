@@ -1,6 +1,6 @@
 {
     "name": "better-local-files",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
@@ -10,7 +10,7 @@
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps better-local-files && spicetify apply",
         "unapply": "spicetify config custom_apps better-local-files- && spicetify apply",
-        "lint": "npx tsc --noemit & npx eslint --ext .tsx,.ts src/",
+        "lint": "npx tsc --noemit & npx eslint src/**",
         "format": "npx prettier --write src/"
     },
     "license": "MIT",

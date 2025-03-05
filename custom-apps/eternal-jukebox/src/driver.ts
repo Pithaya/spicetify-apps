@@ -1,3 +1,4 @@
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import type { Observable } from 'rxjs';
 import {
     distinctUntilChanged,
@@ -10,8 +11,6 @@ import type { Beat } from './models/graph/beat';
 import type { Edge } from './models/graph/edge';
 import { JukeboxSettings } from './models/jukebox-settings';
 import type { JukeboxSongState } from './models/jukebox-song-state';
-import { getPlatformApiOrThrow } from '@shared/utils/spicetify-utils';
-import type { PlayerAPI } from '@shared/platform/player';
 
 // Used to print debug messages.
 const DEBUG = false;
@@ -185,9 +184,11 @@ export class Driver {
         }
 
         this.logDebug(
-            `Got next beat: ${this.currentBeat?.index}, with time: ${this
-                .currentBeat?.start} - ${this.currentBeat
-                ?.end}, player time: ${Spicetify.Player.getProgress()}`,
+            `Got next beat: ${this.currentBeat?.index}, with time: ${
+                this.currentBeat?.start
+            } - ${
+                this.currentBeat?.end
+            }, player time: ${Spicetify.Player.getProgress()}`,
         );
 
         await this.playBeat(
@@ -264,9 +265,7 @@ export class Driver {
         if (DEBUG) {
             console.time('seek');
         }
-        await getPlatformApiOrThrow<PlayerAPI>('PlayerAPI').seekTo(
-            playerPositionAfterJump,
-        );
+        await getPlatform().PlayerAPI.seekTo(playerPositionAfterJump);
 
         if (DEBUG) {
             console.timeEnd('seek');

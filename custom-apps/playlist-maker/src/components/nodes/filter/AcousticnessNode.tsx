@@ -1,37 +1,32 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    AcousticnessDataSchema,
+    MAX_ACOUSTICNESS,
+    MIN_ACOUSTICNESS,
+    type AcousticnessData,
+} from 'custom-apps/playlist-maker/src/models/nodes/filter/acousticness-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
-import { Handle, type NodeProps, Position } from 'reactflow';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { Handle, Position, type NodeProps } from 'reactflow';
+import { SliderController } from '../../inputs/SliderController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
-import { type LocalNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
-import { type AcousticnessData } from 'custom-apps/playlist-maker/src/models/nodes/filter/acousticness-processor';
-import { SliderController } from '../shared/SliderController';
-
-const defaultValues: LocalNodeData<AcousticnessData> = {
-    range: {
-        min: 0,
-        max: 1,
-    },
-};
+import { FilterNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
 
 export function AcousticnessNode(
     props: Readonly<NodeProps<AcousticnessData>>,
 ): JSX.Element {
-    const { control } = useNodeForm<AcousticnessData>(
+    const { control, updateNodeField } = useNodeForm<AcousticnessData>(
         props.id,
         props.data,
-        defaultValues,
+        getDefaultValueForNodeType('acousticness'),
+        AcousticnessDataSchema,
     );
 
     return (
-        <Node isExecuting={props.data.isExecuting}>
-            <NodeHeader
-                label="Filter"
-                backgroundColor="violet"
-                textColor="black"
-            />
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <FilterNodeHeader />
             <NodeContent>
                 <div
                     style={{
@@ -40,19 +35,20 @@ export function AcousticnessNode(
                         paddingBottom: '8px',
                     }}
                 >
-                    <TextComponent
-                        elementType="p"
-                        weight="bold"
-                        paddingBottom="0"
-                    >
-                        Acousticness
-                    </TextComponent>
+                    <NodeTitle
+                        title="Acousticness"
+                        tooltip="A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 
+                        1.0 represents high confidence the track is acoustic."
+                    />
 
                     <SliderController
                         control={control}
-                        min={0}
-                        max={1}
+                        min={MIN_ACOUSTICNESS}
+                        max={MAX_ACOUSTICNESS}
                         step={0.01}
+                        onChange={(value) => {
+                            updateNodeField({ range: value });
+                        }}
                     />
                 </div>
             </NodeContent>
