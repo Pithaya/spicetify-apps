@@ -257,6 +257,17 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
+    searchAlbumSource: () => {
+        const data: AlbumData = {
+            uri: '',
+            limit: undefined,
+            offset: undefined,
+            onlyLiked: false,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
     likedSongsSource: () => {
         const data: LikedSongsData = {
             filter: undefined,
@@ -345,6 +356,8 @@ const nodeProcessorFactory: Record<
     topTracksSource: (node: Node<TopTracksData>, _incomers) =>
         new TopTracksSourceProcessor(node.id, [], node.data),
     libraryAlbumSource: (node: Node<AlbumData>, _incomers) =>
+        new AlbumSourceProcessor(node.id, [], node.data),
+    searchAlbumSource: (node: Node<AlbumData>, _incomers) =>
         new AlbumSourceProcessor(node.id, [], node.data),
     libraryArtistSource: (node: Node<ArtistData>, _incomers) =>
         new ArtistTracksSourceProcessor(node.id, [], node.data),

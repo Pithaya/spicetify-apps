@@ -156,7 +156,11 @@ export function Sidenav(): JSX.Element {
                             nodeType="searchPlaylistSource"
                             tooltip="Get tracks from a playlist."
                         />
-                        <PlaceholderSidenavItem label="Album" />
+                        <SidenavItem
+                            label="Album"
+                            nodeType="searchAlbumSource"
+                            tooltip="Get tracks from an album."
+                        />
                     </ul>
                 </SidenavCollapsible>
             </div>
