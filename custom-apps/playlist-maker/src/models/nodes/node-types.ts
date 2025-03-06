@@ -22,11 +22,13 @@ import { LikedSongsSourceNode } from '../../components/nodes/sources/LikedSongsS
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracksSourceNode';
 import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArtistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
+import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
 
 type SourceNodes =
     | 'likedSongsSource'
     | 'localTracksSource'
     | 'libraryPlaylistSource'
+    | 'searchPlaylistSource'
     | 'topTracksSource'
     | 'libraryAlbumSource'
     | 'libraryArtistSource'
@@ -57,6 +59,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     likedSongsSource: LikedSongsSourceNode,
     localTracksSource: LocalTracksSourceNode,
     libraryPlaylistSource: LibraryPlaylistSourceNode,
+    searchPlaylistSource: SearchPlaylistSourceNode,
     topTracksSource: TopTracksSourceNode,
     libraryAlbumSource: LibraryAlbumSourceNode,
     libraryArtistSource: LibraryArtistSourceNode,

@@ -92,7 +92,7 @@ import {
 import {
     type PlaylistData,
     PlaylistSourceProcessor,
-} from '../models/nodes/sources/my-playlists-source-processor';
+} from '../models/nodes/sources/playlist-tracks-source-processor';
 import {
     type TopTracksData,
     TopTracksSourceProcessor,
@@ -105,6 +105,19 @@ const nodeDefautValuesFactory: Record<
     () => Record<string, unknown>
 > = {
     libraryPlaylistSource: () => {
+        const data: PlaylistData = {
+            playlistUri: '',
+            offset: undefined,
+            filter: undefined,
+            limit: undefined,
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            isExecuting: undefined,
+            onlyMine: false,
+        };
+        return data;
+    },
+    searchPlaylistSource: () => {
         const data: PlaylistData = {
             playlistUri: '',
             offset: undefined,
@@ -326,6 +339,8 @@ const nodeProcessorFactory: Record<
     localTracksSource: (node: Node<LocalTracksData>, _incomers) =>
         new LocalTracksSourceProcessor(node.id, [], node.data),
     libraryPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
+        new PlaylistSourceProcessor(node.id, [], node.data),
+    searchPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
         new PlaylistSourceProcessor(node.id, [], node.data),
     topTracksSource: (node: Node<TopTracksData>, _incomers) =>
         new TopTracksSourceProcessor(node.id, [], node.data),

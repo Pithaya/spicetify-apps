@@ -1,5 +1,5 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
-import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
+import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
@@ -11,14 +11,12 @@ import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils
 import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import { CheckboxController } from '../../inputs/CheckboxController';
 import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
 import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
-import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
 import { NodeField } from '../shared/NodeField';
@@ -85,50 +83,49 @@ function PlaylistItemRenderer(
     );
 }
 
-export function LibraryPlaylistSourceNode(
+export function SearchPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,
 ): JSX.Element {
-    const { onlyMine: onlyMyPlaylists, playlistUri } = props.data;
+    const { playlistUri } = props.data;
 
     const { errors, control, updateNodeField } = useNodeForm<PlaylistData>(
         props.id,
         props.data,
-        getDefaultValueForNodeType('libraryPlaylistSource'),
+        getDefaultValueForNodeType('searchPlaylistSource'),
         PlaylistDataSchema,
     );
 
     const getPlaylists = useCallback(
         async (input: string): Promise<PlaylistItem[]> => {
-            const userAPI = getPlatform().UserAPI;
-            const user = await userAPI.getUser();
-
-            let playlists = await getRootlistPlaylists(input);
-
-            playlists = playlists.filter((p) => p.name !== '');
-
-            if (onlyMyPlaylists) {
-                playlists = playlists.filter((p) => p.owner.uri === user.uri);
+            if (!input.trim()) {
+                return [];
             }
 
-            playlists = playlists.toSorted((a, b) =>
-                a.name.localeCompare(b.name),
-            );
+            const search = await searchDesktop({
+                searchTerm: input,
+                offset: 0,
+                limit: 20,
+                includePreReleases: true,
+                includeArtistHasConcertsField: false,
+                includeAudiobooks: false,
+                includeLocalConcertsField: false,
+                numberOfTopResults: 5,
+            });
 
-            const items = playlists.map((p) => ({
-                id: p.uri,
-                name: p.name,
-                uri: p.uri,
-                image:
-                    p.images.length > 0
-                        ? (p.images.find((i) => i.label === 'small')?.url ??
-                          p.images[0].url)
-                        : null,
-                ownerName: p.owner.displayName,
-            }));
+            const items: PlaylistItem[] = search.searchV2.playlists.items.map(
+                (playlist) => ({
+                    id: playlist.data.uri,
+                    uri: playlist.data.uri,
+                    name: playlist.data.name,
+                    image:
+                        playlist.data.images.items[0]?.sources[0].url ?? null,
+                    ownerName: playlist.data.ownerV2.data.name,
+                }),
+            );
 
             return items;
         },
-        [onlyMyPlaylists],
+        [],
     );
 
     const getPlaylist = useCallback(
@@ -196,20 +193,10 @@ export function LibraryPlaylistSourceNode(
             <SourceNodeHeader />
 
             <NodeContent>
-                <NodeTitle title="Playlist" />
-
-                <NodeCheckboxField
-                    label="Search only my playlists"
-                    error={errors.onlyMine}
-                >
-                    <CheckboxController
-                        control={control}
-                        name="onlyMine"
-                        onChange={(value) => {
-                            updateNodeField({ onlyMine: value });
-                        }}
-                    />
-                </NodeCheckboxField>
+                <NodeTitle
+                    title="Playlist"
+                    tooltip="Search for a playlist using Spotify's search. You can use advanced search tags sush as 'genre:' or 'year:'."
+                />
 
                 <NodeComboField error={errors.playlistUri}>
                     <ComboBoxController

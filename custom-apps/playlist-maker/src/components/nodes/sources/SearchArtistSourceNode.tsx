@@ -193,7 +193,10 @@ export function SearchArtistSourceNode(
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Artist" />
+                <NodeTitle
+                    title="Artist"
+                    tooltip="Search for an artist using Spotify's search. You can use advanced search tags sush as 'genre:' or 'year:'."
+                />
 
                 <NodeComboField error={errors.uri}>
                     <ComboBoxController
