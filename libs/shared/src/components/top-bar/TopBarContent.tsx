@@ -11,9 +11,9 @@ export type Props = {
 };
 
 export function TopBarContent(props: Readonly<Props>): JSX.Element {
-    const resizeHost =
-        document.querySelector('.Root__main-view .os-resize-observer-host') ??
-        document.querySelector('.Root__main-view .os-size-observer');
+    const resizeHost = document.querySelector(
+      '.Root__main-view .os-resize-observer-host, .Root__main-view .os-size-observer, .Root__main-view .main-view-container__scroll-node'
+    );
     if (!resizeHost) {
         throw new Error('Could not find resize host');
     }
