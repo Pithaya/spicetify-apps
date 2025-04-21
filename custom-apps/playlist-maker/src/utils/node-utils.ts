@@ -94,6 +94,10 @@ import {
     PlaylistSourceProcessor,
 } from '../models/nodes/sources/playlist-tracks-source-processor';
 import {
+    type RadioData,
+    RadioSourceProcessor,
+} from '../models/nodes/sources/radio-source-processor';
+import {
     type TopTracksData,
     TopTracksSourceProcessor,
 } from '../models/nodes/sources/top-tracks-source-processor';
@@ -333,6 +337,42 @@ const nodeDefautValuesFactory: Record<
         };
         return data;
     },
+    radioAlbumSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    radioArtistSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    radioTrackSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -453,6 +493,12 @@ const nodeProcessorFactory: Record<
             incomers.map((node) => node.id),
             node.data,
         ),
+    radioAlbumSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
+    radioArtistSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
+    radioTrackSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
 };
 
 export async function executeWorkflow(

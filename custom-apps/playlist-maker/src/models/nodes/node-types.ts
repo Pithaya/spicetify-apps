@@ -20,6 +20,9 @@ import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryA
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylistSourceNode';
 import { LikedSongsSourceNode } from '../../components/nodes/sources/LikedSongsSourceNode';
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracksSourceNode';
+import { RadioAlbumSourceNode } from '../../components/nodes/sources/RadioAlbumSourceNode';
+import { RadioArtistSourceNode } from '../../components/nodes/sources/RadioArtistSourceNode';
+import { RadioTrackSourceNode } from '../../components/nodes/sources/RadioTrackSourceNode';
 import { SearchAlbumSourceNode } from '../../components/nodes/sources/SearchAlbumSourceNode';
 import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArtistSourceNode';
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
@@ -34,7 +37,10 @@ type SourceNodes =
     | 'libraryAlbumSource'
     | 'searchAlbumSource'
     | 'libraryArtistSource'
-    | 'searchArtistSource';
+    | 'searchArtistSource'
+    | 'radioAlbumSource'
+    | 'radioArtistSource'
+    | 'radioTrackSource';
 
 type FilterNodes =
     | 'isPlayable'
@@ -82,4 +88,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     valence: ValenceNode,
     tempo: TempoNode,
     mode: ModeNode,
+    radioAlbumSource: RadioAlbumSourceNode,
+    radioArtistSource: RadioArtistSourceNode,
+    radioTrackSource: RadioTrackSourceNode,
 };

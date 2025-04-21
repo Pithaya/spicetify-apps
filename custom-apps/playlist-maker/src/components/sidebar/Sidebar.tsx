@@ -163,6 +163,26 @@ export function Sidenav(): JSX.Element {
                         />
                     </ul>
                 </SidenavCollapsible>
+
+                <SidenavCollapsible label="Radio">
+                    <ul>
+                        <SidenavItem
+                            label="Track radio"
+                            nodeType="radioTrackSource"
+                            tooltip="Get a radio playlist for a track."
+                        />
+                        <SidenavItem
+                            label="Artist radio"
+                            nodeType="radioArtistSource"
+                            tooltip="Get a radio playlist for an artist."
+                        />
+                        <SidenavItem
+                            label="Album radio"
+                            nodeType="radioAlbumSource"
+                            tooltip="Get a radio playlist for an album."
+                        />
+                    </ul>
+                </SidenavCollapsible>
             </div>
 
             <div className="flex flex-col gap-2">
