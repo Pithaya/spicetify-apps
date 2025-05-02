@@ -36,7 +36,11 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
         // Only one disc
         tracks.push(...orderedTracks);
     } else {
-        for (const [discNumber, tracks] of props.discs.entries()) {
+        const sortedDiscEntries = Array.from(props.discs.entries()).sort(
+            ([discNumberA], [discNumberB]) => discNumberA - discNumberB,
+        );
+
+        for (const [discNumber, tracks] of sortedDiscEntries) {
             subTracks.push({
                 headerRow: <DiscDivider discNumber={discNumber} />,
                 tracks,
