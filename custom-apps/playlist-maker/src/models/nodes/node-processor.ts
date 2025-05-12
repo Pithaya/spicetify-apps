@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import useAppStore from '../../stores/store';
-import type { WorkflowTrack } from '../track';
+import type { WorkflowTrack } from '../workflow-track';
 
 export const BaseNodeDataSchema = z
     .object({

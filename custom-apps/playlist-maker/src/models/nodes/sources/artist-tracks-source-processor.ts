@@ -12,7 +12,7 @@ import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 const ArtistTrackTypeList = ['liked', 'top', 'discography', 'latest'] as const;

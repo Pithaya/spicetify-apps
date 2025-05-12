@@ -7,7 +7,7 @@ import {
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getArtistsGenresCache } from 'custom-apps/playlist-maker/src/utils/storage-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const LikedSongsDataSchema = z

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
 import { TrackWrapper } from '../../track-wrapper';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const OrderByDataSchema = z

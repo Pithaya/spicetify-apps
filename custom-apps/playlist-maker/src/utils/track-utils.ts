@@ -12,7 +12,7 @@ import type { AudioFeatures } from '@shared/api/models/audio-features';
 import { splitInChunks, uniqueBy } from '@shared/utils/array-utils';
 import { wait } from '@shared/utils/promise-utils';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import type { WorkflowTrack } from '../models/track';
+import type { WorkflowTrack } from '../models/workflow-track';
 import {
     createWithExpiry,
     getArtistsGenresCache,

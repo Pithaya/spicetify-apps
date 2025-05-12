@@ -1,4 +1,4 @@
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 export class DeduplicateProcessor extends NodeProcessor<BaseNodeData> {

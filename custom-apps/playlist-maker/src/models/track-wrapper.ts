@@ -7,7 +7,7 @@ import type {
 } from '@shared/components/track-list/models/interfaces';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
-import type { AdditionalTrackData, WorkflowTrack } from './track';
+import type { AdditionalTrackData, WorkflowTrack } from './workflow-track';
 
 export class TrackWrapper implements ITrack {
     public get uri(): string {
