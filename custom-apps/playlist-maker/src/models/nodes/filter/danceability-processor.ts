@@ -1,6 +1,6 @@
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const MIN_DANCEABILITY = 0;
@@ -31,8 +31,8 @@ export class DanceabilityProcessor extends NodeProcessor<DanceabilityData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.danceability > this.data.range.min &&
-                track.audioFeatures?.danceability < this.data.range.max,
+                track.audioFeatures.danceability > this.data.range.min &&
+                track.audioFeatures.danceability < this.data.range.max,
         );
 
         return filtered;

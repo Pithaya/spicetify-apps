@@ -8,7 +8,7 @@ export const ALBUMS_ROUTE = `${CUSTOM_APP_PATH}/albums`;
 export const ARTIST_ROUTE = `${CUSTOM_APP_PATH}/artist`;
 export const ARTISTS_ROUTE = `${CUSTOM_APP_PATH}/artists`;
 
-export const TRACKS_ROUTE = `${CUSTOM_APP_PATH}`;
+export const TRACKS_ROUTE = CUSTOM_APP_PATH;
 
 export const topBarItems: TopBarItem[] = [
     {

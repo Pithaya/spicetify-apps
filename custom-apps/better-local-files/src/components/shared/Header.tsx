@@ -1,7 +1,7 @@
-import styles from '../../css/app.module.scss';
-import React from 'react';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import React from 'react';
 import useFitText from 'use-fit-text';
+import styles from '../../css/app.module.scss';
 
 export type Props = {
     image: JSX.Element;
@@ -80,7 +80,7 @@ export function Header(props: Readonly<Props>): JSX.Element {
             </div>
 
             <div className="main-entityHeader-headerText">
-                {props.subtitle && (
+                {props.subtitle !== undefined && (
                     <TextComponent
                         variant="mesto"
                         className="main-entityHeader-pretitle"

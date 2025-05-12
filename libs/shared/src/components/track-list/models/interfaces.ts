@@ -15,12 +15,19 @@ export type SimpleTrack = {
     isPlayable: boolean;
 };
 
+/**
+ * The different types of tracks that can be made to match the ITrack interface.
+ * This includes tracks from local files, library API, the web API, and a simple type to map other track types.
+ */
 export type BackingTrack =
     | LocalTrack
     | LibraryAPITrack
     | WebAPITrack
     | SimpleTrack;
 
+/**
+ * Interface representing a track from one of the BackingTrack types.
+ */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ITrack {
     /**

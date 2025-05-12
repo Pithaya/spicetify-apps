@@ -146,8 +146,41 @@ export function Sidenav(): JSX.Element {
 
                 <SidenavCollapsible label="Search">
                     <ul>
-                        <PlaceholderSidenavItem label="Playlist" />
-                        <PlaceholderSidenavItem label="Album" />
+                        <SidenavItem
+                            label="Artist"
+                            nodeType="searchArtistSource"
+                            tooltip="Get tracks from an artist."
+                        />
+                        <SidenavItem
+                            label="Playlist"
+                            nodeType="searchPlaylistSource"
+                            tooltip="Get tracks from a playlist."
+                        />
+                        <SidenavItem
+                            label="Album"
+                            nodeType="searchAlbumSource"
+                            tooltip="Get tracks from an album."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Radio">
+                    <ul>
+                        <SidenavItem
+                            label="Track radio"
+                            nodeType="radioTrackSource"
+                            tooltip="Get a radio playlist for a track."
+                        />
+                        <SidenavItem
+                            label="Artist radio"
+                            nodeType="radioArtistSource"
+                            tooltip="Get a radio playlist for an artist."
+                        />
+                        <SidenavItem
+                            label="Album radio"
+                            nodeType="radioAlbumSource"
+                            tooltip="Get a radio playlist for an album."
+                        />
                     </ul>
                 </SidenavCollapsible>
             </div>

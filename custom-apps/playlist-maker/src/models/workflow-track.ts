@@ -6,4 +6,8 @@ export type AdditionalTrackData = {
     audioFeatures?: AudioFeatures;
 };
 
+/**
+ * A track that is used in the workflow.
+ * It contains the backing track and additional data.
+ */
 export type WorkflowTrack = BackingTrack & AdditionalTrackData;

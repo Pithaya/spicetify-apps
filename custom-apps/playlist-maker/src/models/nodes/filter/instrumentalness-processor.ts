@@ -1,6 +1,6 @@
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const MIN_INSTRUMENTALNESS = 0;
@@ -31,8 +31,8 @@ export class InstrumentalnessProcessor extends NodeProcessor<InstrumentalnessDat
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.instrumentalness > this.data.range.min &&
-                track.audioFeatures?.instrumentalness < this.data.range.max,
+                track.audioFeatures.instrumentalness > this.data.range.min &&
+                track.audioFeatures.instrumentalness < this.data.range.max,
         );
 
         return filtered;

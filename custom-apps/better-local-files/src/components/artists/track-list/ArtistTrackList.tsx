@@ -46,7 +46,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                playContext(
+                                void playContext(
                                     props.tracks.map((t) => t.backingTrack),
                                 );
                             }}
@@ -69,7 +69,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                 gridLabel={props.artist.name}
                 useTrackNumber={false}
                 onPlayTrack={(uri) => {
-                    playTrack(
+                    void playTrack(
                         uri,
                         props.tracks.map((t) => t.backingTrack),
                     );
@@ -81,7 +81,9 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                             key={track.uri}
                             track={track}
                             withArtists={false}
-                            onArtistClick={() => {}}
+                            onArtistClick={() => {
+                                // No action needed, we are already on the artist page
+                            }}
                         />,
                         <TrackListRowAlbumLink
                             key={track.uri}

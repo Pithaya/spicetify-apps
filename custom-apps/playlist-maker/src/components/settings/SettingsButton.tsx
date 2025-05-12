@@ -22,7 +22,7 @@ export function SettingsButton(): JSX.Element {
                     onClick={() => {
                         Spicetify.PopupModal.display({
                             title: 'Settings',
-                            content: React.createElement(SettingsModal) as any,
+                            content: React.createElement(SettingsModal),
                             isLarge: true,
                         });
                     }}

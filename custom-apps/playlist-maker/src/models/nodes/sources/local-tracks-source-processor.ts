@@ -4,7 +4,7 @@ import {
 } from '@shared/platform/local-files';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const LocalTracksDataSchema = z

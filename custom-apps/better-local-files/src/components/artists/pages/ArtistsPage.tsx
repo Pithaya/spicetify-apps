@@ -22,7 +22,9 @@ export function ArtistsPage(): JSX.Element {
     const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'title',
-            label: getTranslation(['collection.sort.alphabetical']),
+            label: getTranslation([
+                'web-player.artist.discography.sort-box.sort-name',
+            ]),
         },
     ];
 
@@ -81,7 +83,7 @@ export function ArtistsPage(): JSX.Element {
     }
 
     function playArtist(artist: Artist): void {
-        playContext(
+        void playContext(
             window.localTracksService
                 .getArtistTracks(artist.uri)
                 .map((t) => t.backingTrack),
@@ -108,7 +110,9 @@ export function ArtistsPage(): JSX.Element {
                         setSelectedSortOption={handleSortOptionChange}
                         displayTypes={['grid']}
                         selectedDisplayType="grid"
-                        setSelectedDisplayType={() => {}}
+                        setSelectedDisplayType={() => {
+                            // TODO: support other display types
+                        }}
                     />
                 </div>
             </div>

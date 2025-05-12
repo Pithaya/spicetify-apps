@@ -1,7 +1,7 @@
-import { type WorkflowTrack } from '../../track';
-import { TrackWrapper } from '../../track-wrapper';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 import { z } from 'zod';
+import { TrackWrapper } from '../../track-wrapper';
+import { type WorkflowTrack } from '../../workflow-track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const IsPlayableDataSchema = z
     .object({
@@ -21,6 +21,6 @@ export class IsPlayableProcessor extends NodeProcessor<IsPlayableData> {
                 new TrackWrapper(track).isPlayable === this.data.isPlayable,
         );
 
-        return filtered;
+        return Promise.resolve(filtered);
     }
 }

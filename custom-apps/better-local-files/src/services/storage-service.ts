@@ -21,7 +21,7 @@ export class StorageService {
             storedValue = stringified;
         }
 
-        return JSON.parse(storedValue);
+        return JSON.parse(storedValue) as boolean;
     }
 
     /**
@@ -43,7 +43,7 @@ export class StorageService {
             storedValue = stringified;
         }
 
-        return JSON.parse(storedValue);
+        return JSON.parse(storedValue) as CachedAlbum[];
     }
 
     /**

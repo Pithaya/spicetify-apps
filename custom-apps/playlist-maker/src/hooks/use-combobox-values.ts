@@ -4,7 +4,7 @@ import type { TComboboxItem } from '../components/inputs/ComboBox';
 
 type UseComboboxValuesReturn<T extends TComboboxItem> = {
     selectedItem: T | null;
-    onItemSelected: (item: T | null) => void;
+    onItemSelected: (item: T) => void;
     items: T[];
     inputValue: string;
     onInputChanged: (value: string) => void;
@@ -40,13 +40,13 @@ export function useComboboxValues<T extends TComboboxItem>(
     };
 
     // On item selection, update the input and form value
-    const onItemSelected = (item: T | null): void => {
+    const onItemSelected = (item: T): void => {
         updateNodeField(item);
 
         // Item and input will be updated in syncComboboxValues
         // but do it now to update interface faster
         setSelectedItem(item);
-        setInputValue(item ? itemToString(item) : '');
+        setInputValue(itemToString(item));
     };
 
     // On clear : reset the combobox values and update the form

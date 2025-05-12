@@ -92,7 +92,11 @@ import {
 import {
     type PlaylistData,
     PlaylistSourceProcessor,
-} from '../models/nodes/sources/my-playlists-source-processor';
+} from '../models/nodes/sources/playlist-tracks-source-processor';
+import {
+    type RadioData,
+    RadioSourceProcessor,
+} from '../models/nodes/sources/radio-source-processor';
 import {
     type TopTracksData,
     TopTracksSourceProcessor,
@@ -105,6 +109,19 @@ const nodeDefautValuesFactory: Record<
     () => Record<string, unknown>
 > = {
     libraryPlaylistSource: () => {
+        const data: PlaylistData = {
+            playlistUri: '',
+            offset: undefined,
+            filter: undefined,
+            limit: undefined,
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            isExecuting: undefined,
+            onlyMine: false,
+        };
+        return data;
+    },
+    searchPlaylistSource: () => {
         const data: PlaylistData = {
             playlistUri: '',
             offset: undefined,
@@ -244,6 +261,17 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
+    searchAlbumSource: () => {
+        const data: AlbumData = {
+            uri: '',
+            limit: undefined,
+            offset: undefined,
+            onlyLiked: false,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
     likedSongsSource: () => {
         const data: LikedSongsData = {
             filter: undefined,
@@ -301,6 +329,50 @@ const nodeDefautValuesFactory: Record<
         };
         return data;
     },
+    searchArtistSource: () => {
+        const data: ArtistData = {
+            uri: '',
+            isExecuting: undefined,
+            trackType: 'liked',
+        };
+        return data;
+    },
+    radioAlbumSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    radioArtistSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
+    radioTrackSource: () => {
+        const data: RadioData = {
+            uri: '',
+            sortField: 'NO_SORT',
+            sortOrder: 'ASC',
+            limit: undefined,
+            offset: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -319,16 +391,18 @@ const nodeProcessorFactory: Record<
         new LocalTracksSourceProcessor(node.id, [], node.data),
     libraryPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
         new PlaylistSourceProcessor(node.id, [], node.data),
+    searchPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
+        new PlaylistSourceProcessor(node.id, [], node.data),
     topTracksSource: (node: Node<TopTracksData>, _incomers) =>
         new TopTracksSourceProcessor(node.id, [], node.data),
     libraryAlbumSource: (node: Node<AlbumData>, _incomers) =>
         new AlbumSourceProcessor(node.id, [], node.data),
-    libraryArtistSource: (node: Node<ArtistData>, incomers) =>
-        new ArtistTracksSourceProcessor(
-            node.id,
-            incomers.map((node) => node.id),
-            node.data,
-        ),
+    searchAlbumSource: (node: Node<AlbumData>, _incomers) =>
+        new AlbumSourceProcessor(node.id, [], node.data),
+    libraryArtistSource: (node: Node<ArtistData>, _incomers) =>
+        new ArtistTracksSourceProcessor(node.id, [], node.data),
+    searchArtistSource: (node: Node<ArtistData>, _incomers) =>
+        new ArtistTracksSourceProcessor(node.id, [], node.data),
     deduplicate: (node: Node<BaseNodeData>, incomers) =>
         new DeduplicateProcessor(
             node.id,
@@ -419,6 +493,12 @@ const nodeProcessorFactory: Record<
             incomers.map((node) => node.id),
             node.data,
         ),
+    radioAlbumSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
+    radioArtistSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
+    radioTrackSource: (node: Node<RadioData>, _incomers) =>
+        new RadioSourceProcessor(node.id, [], node.data),
 };
 
 export async function executeWorkflow(

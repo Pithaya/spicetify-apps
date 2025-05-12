@@ -1,15 +1,25 @@
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 export class DeduplicateProcessor extends NodeProcessor<BaseNodeData> {
-    protected override async getResultsInternal(
+    protected override getResultsInternal(
         input: WorkflowTrack[],
     ): Promise<WorkflowTrack[]> {
-        const uris = input.map((track) => track.uri);
-        const filtered = input.filter(
-            (track, index) => !uris.includes(track.uri, index + 1),
-        );
+        const uniqueSongNames = new Set<string>();
+        const uniqueTracks: WorkflowTrack[] = [];
 
-        return filtered;
+        for (const track of input) {
+            const artists = track.artists.map((a) => a.name).join(',');
+            const songName = `${track.name.toLowerCase()}-${artists.toLowerCase()}`;
+
+            if (uniqueSongNames.has(songName)) {
+                continue;
+            }
+
+            uniqueTracks.push(track);
+            uniqueSongNames.add(songName);
+        }
+
+        return Promise.resolve(uniqueTracks);
     }
 }

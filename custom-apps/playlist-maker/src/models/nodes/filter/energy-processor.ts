@@ -1,6 +1,6 @@
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
 import { z } from 'zod';
-import { type WorkflowTrack } from '../../track';
+import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
 export const MIN_ENERGY = 0;
@@ -31,8 +31,8 @@ export class EnergyProcessor extends NodeProcessor<EnergyData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.energy > this.data.range.min &&
-                track.audioFeatures?.energy < this.data.range.max,
+                track.audioFeatures.energy > this.data.range.min &&
+                track.audioFeatures.energy < this.data.range.max,
         );
 
         return filtered;

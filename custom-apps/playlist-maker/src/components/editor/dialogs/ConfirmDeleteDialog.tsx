@@ -37,7 +37,7 @@ export function ConfirmDeleteDialog(): JSX.Element {
             onConfirm={() => {
                 setShowConfirmDeleteModal(false);
                 if (selectedWorkflow !== null) {
-                    removeWorkflowFromStorage(selectedWorkflow?.id);
+                    removeWorkflowFromStorage(selectedWorkflow.id);
                     setSavedWorkflows(getWorkflowsFromStorage());
                 }
             }}
@@ -48,7 +48,7 @@ export function ConfirmDeleteDialog(): JSX.Element {
                 setShowConfirmDeleteModal(false);
             }}
             titleText="Delete workflow"
-            descriptionText={`Are you sure you want to delete the workflow "${selectedWorkflow?.name}" ?`}
+            descriptionText={`Are you sure you want to delete the workflow "${selectedWorkflow?.name ?? ''}" ?`}
             confirmText="Confirm"
             cancelText="Cancel"
         />

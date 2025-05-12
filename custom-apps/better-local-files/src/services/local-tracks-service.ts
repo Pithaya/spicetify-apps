@@ -263,7 +263,9 @@ export class LocalTracksService {
                 }
 
                 const firstTrack = tracksWithCover.tracks[0];
-                const albumKey = this.getUri(`${album.name} ${index}`);
+                const albumKey = this.getUri(
+                    `${album.name} ${index.toFixed()}`,
+                );
 
                 const newAlbum = new Album(
                     albumKey,

@@ -210,7 +210,6 @@ export function LibraryArtistSourceNode(
                         itemToString={itemToString}
                         label="Artist"
                         placeholder="Search for an artist"
-                        required
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
@@ -236,7 +235,9 @@ export function LibraryArtistSourceNode(
                         control={control}
                         items={trackTypeItems}
                         onChange={(value) => {
-                            updateNodeField({ trackType: value as any });
+                            updateNodeField({
+                                trackType: value,
+                            });
                         }}
                     />
                 </NodeField>

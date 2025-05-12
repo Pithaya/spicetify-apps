@@ -148,7 +148,7 @@ export function CenterPanel(): JSX.Element {
                     onClick={() => {
                         Spicetify.PopupModal.display({
                             title: 'Saved workflows',
-                            content: React.createElement(WorkflowsModal) as any,
+                            content: React.createElement(WorkflowsModal),
                             isLarge: false,
                         });
                     }}
