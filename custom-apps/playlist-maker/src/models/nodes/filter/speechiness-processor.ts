@@ -31,8 +31,8 @@ export class SpeechinessProcessor extends NodeProcessor<SpeechinessData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.speechiness > this.data.range.min &&
-                track.audioFeatures?.speechiness < this.data.range.max,
+                track.audioFeatures.speechiness > this.data.range.min &&
+                track.audioFeatures.speechiness < this.data.range.max,
         );
 
         return filtered;

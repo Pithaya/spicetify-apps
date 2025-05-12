@@ -1,3 +1,4 @@
+import type { Item } from '@shared/components/inputs/Select/Select';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     OrderByDataSchema,
@@ -13,18 +14,18 @@ import { NodeField } from '../shared/NodeField';
 import { ProcessingNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const propertyValues: Record<OrderByData['property'], string> = {
-    album: 'Album',
-    artist: 'Artist',
-    name: 'Name',
-    source: 'Source',
-    duration: 'Duration',
-};
+const propertyItems: Item<OrderByData['property']>[] = [
+    { value: 'album', label: 'Album' },
+    { value: 'artist', label: 'Artist' },
+    { value: 'name', label: 'Name' },
+    { value: 'source', label: 'Source' },
+    { value: 'duration', label: 'Duration' },
+];
 
-const orderValues: Record<OrderByData['order'], string> = {
-    asc: 'Ascending',
-    desc: 'Descending',
-};
+const orderItems: Item<OrderByData['order']>[] = [
+    { value: 'asc', label: 'Ascending' },
+    { value: 'desc', label: 'Descending' },
+];
 
 export function SortProcessorNode(
     props: Readonly<NodeProps<OrderByData>>,
@@ -47,12 +48,7 @@ export function SortProcessorNode(
                         label="Property to sort on"
                         name="property"
                         control={control}
-                        items={Object.entries(propertyValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={propertyItems}
                     />
                 </NodeField>
                 <NodeField label="Order" error={errors.order}>
@@ -60,12 +56,7 @@ export function SortProcessorNode(
                         label="Sort order"
                         name="order"
                         control={control}
-                        items={Object.entries(orderValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={orderItems}
                     />
                 </NodeField>
             </NodeContent>

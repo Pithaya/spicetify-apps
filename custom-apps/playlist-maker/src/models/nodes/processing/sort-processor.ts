@@ -1,7 +1,7 @@
+import { z } from 'zod';
 import { type WorkflowTrack } from '../../track';
 import { TrackWrapper } from '../../track-wrapper';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
-import { z } from 'zod';
 
 export const OrderByDataSchema = z
     .object({
@@ -30,7 +30,7 @@ export class SortProcessor extends NodeProcessor<OrderByData> {
     ): Promise<WorkflowTrack[]> {
         const { property, order } = this.data;
 
-        return input.sort((a, b) => {
+        const result = input.toSorted((a, b) => {
             const aValue = this.getPropertyValue(a, property);
             const bValue = this.getPropertyValue(b, property);
 
@@ -44,6 +44,8 @@ export class SortProcessor extends NodeProcessor<OrderByData> {
 
             return 0;
         });
+
+        return Promise.resolve(result);
     }
 
     private getPropertyValue(

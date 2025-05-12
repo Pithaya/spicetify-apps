@@ -31,8 +31,8 @@ export class ValenceProcessor extends NodeProcessor<ValenceData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.valence > this.data.range.min &&
-                track.audioFeatures?.valence < this.data.range.max,
+                track.audioFeatures.valence > this.data.range.min &&
+                track.audioFeatures.valence < this.data.range.max,
         );
 
         return filtered;

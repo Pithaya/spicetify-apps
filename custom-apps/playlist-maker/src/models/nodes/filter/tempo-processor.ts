@@ -31,8 +31,8 @@ export class TempoProcessor extends NodeProcessor<TempoData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.tempo > this.data.range.min &&
-                track.audioFeatures?.tempo < this.data.range.max,
+                track.audioFeatures.tempo > this.data.range.min &&
+                track.audioFeatures.tempo < this.data.range.max,
         );
 
         return filtered;

@@ -31,8 +31,8 @@ export class AcousticnessProcessor extends NodeProcessor<AcousticnessData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.acousticness > this.data.range.min &&
-                track.audioFeatures?.acousticness < this.data.range.max,
+                track.audioFeatures.acousticness > this.data.range.min &&
+                track.audioFeatures.acousticness < this.data.range.max,
         );
 
         return filtered;

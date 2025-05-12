@@ -17,11 +17,11 @@ export function useNodeForm<TForm extends FieldValues>(
     nodeId: string,
     nodeData: TForm,
     defaultValues: DefaultValues<TForm>,
-    schema: z.Schema<any, any>,
+    schema: z.Schema<unknown>,
 ): {
     errors: FieldErrors<TForm>;
     getValues: UseFormGetValues<TForm>;
-    control: Control<TForm, any>;
+    control: Control<TForm, unknown>;
     setError: UseFormSetError<TForm>;
     updateNodeField: (field: Partial<TForm>) => void;
 } {

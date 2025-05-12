@@ -31,8 +31,8 @@ export class LivenessProcessor extends NodeProcessor<LivenessData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.liveness > this.data.range.min &&
-                track.audioFeatures?.liveness < this.data.range.max,
+                track.audioFeatures.liveness > this.data.range.min &&
+                track.audioFeatures.liveness < this.data.range.max,
         );
 
         return filtered;

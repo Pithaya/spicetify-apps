@@ -209,7 +209,6 @@ export function SearchArtistSourceNode(
                         itemToString={itemToString}
                         label="Artist"
                         placeholder="Search for an artist"
-                        required
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
@@ -236,7 +235,7 @@ export function SearchArtistSourceNode(
                         items={trackTypeItems}
                         onChange={(value) => {
                             updateNodeField({
-                                trackType: value!,
+                                trackType: value,
                             });
                         }}
                     />

@@ -1,3 +1,4 @@
+import type { Item } from '@shared/components/inputs/Select/Select';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
 import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
@@ -26,22 +27,22 @@ import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const propertyValues: Record<RadioData['sortField'], string> = {
-    ALBUM: 'Album',
-    ARTIST: 'Artist',
-    TITLE: 'Name',
-    DURATION: 'Duration',
-    ADDED_AT: 'Added at',
-    ADDED_BY: 'Added by',
-    PUBLISH_DATE: 'Publish date',
-    SHOW_NAME: 'Show name',
-    NO_SORT: 'No sort',
-};
+const propertyItems: Item<RadioData['sortField']>[] = [
+    { value: 'ALBUM', label: 'Album' },
+    { value: 'ARTIST', label: 'Artist' },
+    { value: 'TITLE', label: 'Name' },
+    { value: 'DURATION', label: 'Duration' },
+    { value: 'ADDED_AT', label: 'Added at' },
+    { value: 'ADDED_BY', label: 'Added by' },
+    { value: 'PUBLISH_DATE', label: 'Publish date' },
+    { value: 'SHOW_NAME', label: 'Show name' },
+    { value: 'NO_SORT', label: 'No sort' },
+];
 
-const orderValues: Record<RadioData['sortOrder'], string> = {
-    ASC: 'Ascending',
-    DESC: 'Descending',
-};
+const orderItems: Item<RadioData['sortOrder']>[] = [
+    { value: 'ASC', label: 'Ascending' },
+    { value: 'DESC', label: 'Descending' },
+];
 
 type AlbumItem = {
     id: string;
@@ -242,7 +243,6 @@ export function RadioAlbumSourceNode(
                         itemToString={itemToString}
                         label="Album"
                         placeholder="Search for an album"
-                        required
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
@@ -292,15 +292,10 @@ export function RadioAlbumSourceNode(
                         label="Property to sort on"
                         name="sortField"
                         control={control}
-                        items={Object.entries(propertyValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={propertyItems}
                         onChange={(value) => {
                             updateNodeField({
-                                sortField: value as RadioData['sortField'],
+                                sortField: value,
                             });
                         }}
                     />
@@ -310,15 +305,10 @@ export function RadioAlbumSourceNode(
                         label="Sort order"
                         name="sortOrder"
                         control={control}
-                        items={Object.entries(orderValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={orderItems}
                         onChange={(value) => {
                             updateNodeField({
-                                sortOrder: value as RadioData['sortOrder'],
+                                sortOrder: value,
                             });
                         }}
                     />

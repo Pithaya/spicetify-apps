@@ -31,8 +31,8 @@ export class DanceabilityProcessor extends NodeProcessor<DanceabilityData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.danceability > this.data.range.min &&
-                track.audioFeatures?.danceability < this.data.range.max,
+                track.audioFeatures.danceability > this.data.range.min &&
+                track.audioFeatures.danceability < this.data.range.max,
         );
 
         return filtered;

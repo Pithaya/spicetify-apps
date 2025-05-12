@@ -14,7 +14,7 @@ export type DialogState = {
     setSavedWorkflows: (workflows: SavedWorkflow[]) => void;
 };
 
-export const useDialogStore = create<DialogState>((set, get) => ({
+export const useDialogStore = create<DialogState>((set) => ({
     showConfirmNewModal: false,
     showConfirmLoadModal: false,
     showConfirmDeleteModal: false,

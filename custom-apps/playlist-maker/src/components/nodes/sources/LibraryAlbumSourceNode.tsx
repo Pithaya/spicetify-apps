@@ -197,7 +197,6 @@ export function LibraryAlbumSourceNode(
                         itemToString={itemToString}
                         label="Album"
                         placeholder="Search for an album"
-                        required
                         inputValue={inputValue}
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}

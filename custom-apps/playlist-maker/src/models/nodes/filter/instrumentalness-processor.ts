@@ -31,8 +31,8 @@ export class InstrumentalnessProcessor extends NodeProcessor<InstrumentalnessDat
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.instrumentalness > this.data.range.min &&
-                track.audioFeatures?.instrumentalness < this.data.range.max,
+                track.audioFeatures.instrumentalness > this.data.range.min &&
+                track.audioFeatures.instrumentalness < this.data.range.max,
         );
 
         return filtered;

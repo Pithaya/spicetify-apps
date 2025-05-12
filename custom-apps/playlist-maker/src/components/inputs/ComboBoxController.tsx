@@ -14,15 +14,12 @@ import {
 type Props<T extends FieldValues, TItem extends TComboboxItem> = {
     control: Control<T>;
     name: FieldPath<T>;
-    required?: boolean;
 } & ComboboxProps<TItem>;
 
 export function ComboBoxController<
     T extends FieldValues,
     TItem extends TComboboxItem,
 >(props: Readonly<Props<T, TItem>>): JSX.Element {
-    const { required = false } = props;
-
     return (
         <Controller
             name={props.name}
@@ -37,7 +34,7 @@ export function ComboBoxController<
                     selectedItem={props.selectedItem}
                     onItemSelected={(item) => {
                         props.onItemSelected(item);
-                        onChange(item?.id ?? (required ? '' : undefined));
+                        onChange(item.id);
                     }}
                     inputValue={props.inputValue}
                     onInputChanged={props.onInputChanged}

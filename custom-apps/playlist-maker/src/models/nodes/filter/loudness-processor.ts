@@ -31,8 +31,8 @@ export class LoudnessProcessor extends NodeProcessor<LoudnessData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.loudness > this.data.range.min &&
-                track.audioFeatures?.loudness < this.data.range.max,
+                track.audioFeatures.loudness > this.data.range.min &&
+                track.audioFeatures.loudness < this.data.range.max,
         );
 
         return filtered;

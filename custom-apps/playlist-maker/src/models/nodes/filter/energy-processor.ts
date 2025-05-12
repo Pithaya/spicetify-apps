@@ -31,8 +31,8 @@ export class EnergyProcessor extends NodeProcessor<EnergyData> {
         const filtered = input.filter(
             (track) =>
                 track.audioFeatures !== undefined &&
-                track.audioFeatures?.energy > this.data.range.min &&
-                track.audioFeatures?.energy < this.data.range.max,
+                track.audioFeatures.energy > this.data.range.min &&
+                track.audioFeatures.energy < this.data.range.max,
         );
 
         return filtered;

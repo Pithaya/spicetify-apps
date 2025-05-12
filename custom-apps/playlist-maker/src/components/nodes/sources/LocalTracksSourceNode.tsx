@@ -1,3 +1,4 @@
+import { type Item } from '@shared/components/inputs/Select/Select';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     LocalTracksDataSchema,
@@ -14,19 +15,43 @@ import { NodeField } from '../shared/NodeField';
 import { SourceNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-const propertyValues: Record<LocalTracksData['sortField'], string> = {
-    ALBUM: 'Album',
-    ARTIST: 'Artist',
-    TITLE: 'Name',
-    DURATION: 'Duration',
-    ADDED_AT: 'Added at',
-    NO_SORT: 'No sort',
-};
+const propertyItems: Item<LocalTracksData['sortField']>[] = [
+    {
+        label: 'Album',
+        value: 'ALBUM',
+    },
+    {
+        label: 'Artist',
+        value: 'ARTIST',
+    },
+    {
+        label: 'Name',
+        value: 'TITLE',
+    },
+    {
+        label: 'Duration',
+        value: 'DURATION',
+    },
+    {
+        label: 'Added at',
+        value: 'ADDED_AT',
+    },
+    {
+        label: 'No sort',
+        value: 'NO_SORT',
+    },
+];
 
-const orderValues: Record<LocalTracksData['sortOrder'], string> = {
-    ASC: 'Ascending',
-    DESC: 'Descending',
-};
+const orderItems: Item<LocalTracksData['sortOrder']>[] = [
+    {
+        label: 'Ascending',
+        value: 'ASC',
+    },
+    {
+        label: 'Descending',
+        value: 'DESC',
+    },
+];
 
 export function LocalTracksSourceNode(
     props: Readonly<NodeProps<LocalTracksData>>,
@@ -64,14 +89,11 @@ export function LocalTracksSourceNode(
                         label="Property to sort on"
                         name="sortField"
                         control={control}
-                        items={Object.entries(propertyValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={propertyItems}
                         onChange={(value) => {
-                            updateNodeField({ sortField: value as any });
+                            updateNodeField({
+                                sortField: value,
+                            });
                         }}
                     />
                 </NodeField>
@@ -80,14 +102,11 @@ export function LocalTracksSourceNode(
                         label="Sort order"
                         name="sortOrder"
                         control={control}
-                        items={Object.entries(orderValues).map(
-                            ([key, label]) => ({
-                                label,
-                                value: key,
-                            }),
-                        )}
+                        items={orderItems}
                         onChange={(value) => {
-                            updateNodeField({ sortOrder: value as any });
+                            updateNodeField({
+                                sortOrder: value,
+                            });
                         }}
                     />
                 </NodeField>

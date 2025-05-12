@@ -61,7 +61,7 @@ export function CreatePlaylistModal(): JSX.Element {
 
         try {
             const createdPlaylistUri = await rootlistAPI.createPlaylist(
-                playlistName ?? 'New playlist',
+                playlistName,
                 {
                     after:
                         parentFolder !== undefined && parentFolder !== ''
