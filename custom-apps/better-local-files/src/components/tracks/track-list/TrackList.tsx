@@ -228,14 +228,14 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                playContext(
+                                void playContext(
                                     orderedTracks.map((t) => t.backingTrack),
                                 );
                             }}
                         />
                     </div>
 
-                    <div className={`${styles['controls']}`}>
+                    <div className={styles['controls']}>
                         <SearchInput
                             search={search}
                             setSearch={setSearch}
@@ -262,7 +262,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                 gridLabel={getTranslation(['local-files'])}
                 useTrackNumber={false}
                 onPlayTrack={(uri) => {
-                    playTrack(
+                    void playTrack(
                         uri,
                         orderedTracks.map((t) => t.backingTrack),
                     );

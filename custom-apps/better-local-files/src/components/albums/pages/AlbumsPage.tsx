@@ -22,7 +22,7 @@ export function AlbumsPage(): JSX.Element {
     const sortOptions: SortOption<LibraryHeaders>[] = [
         {
             key: 'title',
-            label: getTranslation(['collection.sort.alphabetical']),
+            label: getTranslation(['sort.title']),
         },
     ];
 
@@ -85,7 +85,7 @@ export function AlbumsPage(): JSX.Element {
     }
 
     function playAlbum(album: Album): void {
-        playContext(album.getTracks().map((t) => t.backingTrack));
+        void playContext(album.getTracks().map((t) => t.backingTrack));
     }
 
     return (
@@ -108,7 +108,9 @@ export function AlbumsPage(): JSX.Element {
                         setSelectedSortOption={handleSortOptionChange}
                         displayTypes={['grid']}
                         selectedDisplayType="grid"
-                        setSelectedDisplayType={() => {}}
+                        setSelectedDisplayType={() => {
+                            // TODO: support other display types
+                        }}
                     />
                 </div>
             </div>

@@ -36,7 +36,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
         // Only one disc
         tracks.push(...orderedTracks);
     } else {
-        const sortedDiscEntries = Array.from(props.discs.entries()).sort(
+        const sortedDiscEntries = Array.from(props.discs.entries()).toSorted(
             ([discNumberA], [discNumberB]) => discNumberA - discNumberB,
         );
 
@@ -63,7 +63,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                playContext(
+                                void playContext(
                                     orderedTracks.map((t) => t.backingTrack),
                                 );
                             }}
@@ -86,7 +86,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                 gridLabel={props.albumName}
                 useTrackNumber={true}
                 onPlayTrack={(uri) => {
-                    playTrack(
+                    void playTrack(
                         uri,
                         orderedTracks.map((t) => t.backingTrack),
                     );
