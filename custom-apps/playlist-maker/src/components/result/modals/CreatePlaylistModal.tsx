@@ -20,11 +20,6 @@ const FormSchema = z.object({
 
 type Form = z.infer<typeof FormSchema>;
 
-const defaultValues: Form = {
-    playlistName: 'My playlist',
-    parentFolder: undefined,
-};
-
 export function CreatePlaylistModal(): JSX.Element {
     const [isCreating, setIsCreating] = React.useState(false);
     const [folders, setFolders] = React.useState<
@@ -45,7 +40,10 @@ export function CreatePlaylistModal(): JSX.Element {
     } = useForm<Form>({
         mode: 'onChange',
         defaultValues: {
-            ...defaultValues,
+            playlistName: '',
+            parentFolder: undefined,
+        },
+        values: {
             playlistName: workflowName,
         },
         resolver: zodResolver(FormSchema),
