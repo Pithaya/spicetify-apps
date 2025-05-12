@@ -30,7 +30,7 @@ const orderItems: Item<OrderByData['order']>[] = [
 export function SortProcessorNode(
     props: Readonly<NodeProps<OrderByData>>,
 ): JSX.Element {
-    const { errors, control } = useNodeForm<OrderByData>(
+    const { errors, control, updateNodeField } = useNodeForm<OrderByData>(
         props.id,
         props.data,
         getDefaultValueForNodeType('sort'),
@@ -49,6 +49,11 @@ export function SortProcessorNode(
                         name="property"
                         control={control}
                         items={propertyItems}
+                        onChange={(value) => {
+                            updateNodeField({
+                                property: value,
+                            });
+                        }}
                     />
                 </NodeField>
                 <NodeField label="Order" error={errors.order}>
@@ -57,6 +62,11 @@ export function SortProcessorNode(
                         name="order"
                         control={control}
                         items={orderItems}
+                        onChange={(value) => {
+                            updateNodeField({
+                                order: value,
+                            });
+                        }}
                     />
                 </NodeField>
             </NodeContent>
