@@ -86,7 +86,7 @@ export function ArtistsPage(): JSX.Element {
         void playContext(
             window.localTracksService
                 .getArtistTracks(artist.uri)
-                .map((t) => t.backingTrack),
+                .map((t) => t.localTrack),
         );
     }
 

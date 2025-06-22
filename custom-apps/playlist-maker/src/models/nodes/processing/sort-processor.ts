@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TrackWrapper } from '../../track-wrapper';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
@@ -15,7 +14,7 @@ export type OrderByData = z.infer<typeof OrderByDataSchema>;
 
 const propertyGetter: Record<
     OrderByData['property'],
-    (track: TrackWrapper) => string | number
+    (track: WorkflowTrack) => string | number
 > = {
     album: (track) => track.album.name,
     artist: (track) => track.artists.map((artist) => artist.name).join(', '),
@@ -52,6 +51,6 @@ export class SortProcessor extends NodeProcessor<OrderByData> {
         track: WorkflowTrack,
         property: OrderByData['property'],
     ): string | number {
-        return propertyGetter[property](new TrackWrapper(track));
+        return propertyGetter[property](track);
     }
 }

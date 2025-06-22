@@ -1,6 +1,6 @@
-import type { SimpleTrack } from '@shared/components/track-list/models/interfaces';
 import { GRAPHQL_MAX_LIMIT } from '@shared/graphQL/constants';
 import { getAlbum, type GetAlbumData } from '@shared/graphQL/queries/get-album';
+import { mapGraphQLTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -47,30 +47,15 @@ export class AlbumSourceProcessor extends NodeProcessor<AlbumData> {
             tracks = tracks.filter((track) => track.saved);
         }
 
-        const mappedTracks: SimpleTrack[] = tracks.map((track) => ({
-            uri: track.uri,
-            name: track.name,
-            artists: track.artists.items.map((artist) => ({
-                uri: artist.uri,
-                name: artist.profile.name,
-            })),
-            album: {
-                uri,
-                name: album.albumUnion.name,
-                images: album.albumUnion.coverArt.sources.map((image) => ({
-                    url: image.url,
-                })),
-            },
-            duration: {
-                milliseconds: track.duration.totalMilliseconds,
-            },
-            trackNumber: track.trackNumber,
-            isPlayable: track.playability.playable,
-        }));
+        const mappedTracks: WorkflowTrack[] = tracks.map((track) =>
+            mapGraphQLTrackToWorkflowTrack(track, album.albumUnion, {
+                source: 'Album',
+                albumData: {
+                    releaseDate: new Date(album.albumUnion.date.isoString),
+                },
+            }),
+        );
 
-        return mappedTracks.map((track) => ({
-            ...track,
-            source: 'Album',
-        }));
+        return mappedTracks;
     }
 }

@@ -85,7 +85,7 @@ export function AlbumsPage(): JSX.Element {
     }
 
     function playAlbum(album: Album): void {
-        void playContext(album.getTracks().map((t) => t.backingTrack));
+        void playContext(album.getTracks().map((t) => t.localTrack));
     }
 
     return (

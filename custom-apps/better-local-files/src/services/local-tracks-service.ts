@@ -270,8 +270,8 @@ export class LocalTracksService {
                 const newAlbum = new Album(
                     albumKey,
                     album.name,
-                    getImageUrlFromAlbum(firstTrack.backingTrack.album),
-                    firstTrack.backingTrack.album.images.map((i) => ({
+                    getImageUrlFromAlbum(firstTrack.localTrack.album),
+                    firstTrack.localTrack.album.images.map((i) => ({
                         url: i.url,
                     })),
                 );
@@ -286,12 +286,12 @@ export class LocalTracksService {
                 for (const track of tracksWithCover.tracks) {
                     track.album = newAlbum;
 
-                    if (!newAlbum.discs.has(track.backingTrack.discNumber)) {
-                        newAlbum.discs.set(track.backingTrack.discNumber, []);
+                    if (!newAlbum.discs.has(track.localTrack.discNumber)) {
+                        newAlbum.discs.set(track.localTrack.discNumber, []);
                     }
 
                     newAlbum.discs
-                        .get(track.backingTrack.discNumber)
+                        .get(track.localTrack.discNumber)
                         ?.push(track);
                 }
 
@@ -407,7 +407,7 @@ export class LocalTracksService {
             // For each artist(s), take the album cover of the first track
             for (const tracks of albumTrackMap.values()) {
                 const coverUrl = getImageUrlFromAlbum(
-                    tracks[0].backingTrack.album,
+                    tracks[0].localTrack.album,
                 );
 
                 let image: HTMLImageElement;

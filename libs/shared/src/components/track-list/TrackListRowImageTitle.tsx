@@ -1,7 +1,7 @@
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import React from 'react';
 import type { ITrack } from './models/interfaces';
 import { TrackListRowTitle } from './TrackListRowTitle';
-import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 
 type Props = {
     track: ITrack;

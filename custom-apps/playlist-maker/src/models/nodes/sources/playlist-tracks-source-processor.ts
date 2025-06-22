@@ -4,6 +4,7 @@ import {
     PlaylistSortOptionOrders,
 } from '@shared/platform/playlist';
 import { getPlatform } from '@shared/utils/spicetify-utils';
+import { mapLibraryAPITrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -61,9 +62,10 @@ export class PlaylistSourceProcessor extends NodeProcessor<PlaylistData> {
             },
         );
 
-        return playlist.contents.items.map((track) => ({
-            ...track,
-            source: playlist.metadata.name,
-        }));
+        return playlist.contents.items.map((track) =>
+            mapLibraryAPITrackToWorkflowTrack(track, {
+                source: playlist.metadata.name,
+            }),
+        );
     }
 }

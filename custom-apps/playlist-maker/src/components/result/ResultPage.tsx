@@ -15,9 +15,8 @@ import {
 } from '@shared/utils/translations.utils';
 import { getId } from '@shared/utils/uri-utils';
 import { ArrowRightFromLine } from 'lucide-react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { TrackWrapper } from '../../models/track-wrapper';
 import useAppStore from '../../stores/store';
 import { CreatePlaylistModal } from './modals/CreatePlaylistModal';
 import styles from './ResultPage.module.scss';
@@ -30,10 +29,6 @@ export function ResultPage(): JSX.Element {
             result: state.result,
         })),
     );
-
-    const tracks = useMemo(() => {
-        return result.map((track) => new TrackWrapper(track));
-    }, [result]);
 
     const headers: TrackListHeaderOption<LibraryHeaders | 'source'>[] = [
         {
@@ -85,7 +80,7 @@ export function ResultPage(): JSX.Element {
                         <div className="main-actionBar-ActionBarRow">
                             <div className="main-playButton-PlayButton">
                                 <PlayButton
-                                    disabled={tracks.length === 0}
+                                    disabled={result.length === 0}
                                     size="lg"
                                     onClick={() => {
                                         void playTracks();
@@ -96,7 +91,7 @@ export function ResultPage(): JSX.Element {
                                 label={'Create playlist from tracks'}
                             >
                                 <Spicetify.ReactComponent.ButtonSecondary
-                                    disabled={tracks.length === 0}
+                                    disabled={result.length === 0}
                                     aria-label="Create playlist from tracks"
                                     iconOnly={() => (
                                         <ArrowRightFromLine size={30} />
@@ -112,20 +107,20 @@ export function ResultPage(): JSX.Element {
                                     className={styles['help-button']}
                                 ></Spicetify.ReactComponent.ButtonSecondary>
                             </Spicetify.ReactComponent.TooltipWrapper>
-                            {tracks.length > 0 && (
+                            {result.length > 0 && (
                                 <p>
                                     {getTranslation(
                                         [
                                             'tracklist-header.songs-counter',
-                                            tracks.length === 1
+                                            result.length === 1
                                                 ? 'one'
                                                 : 'other',
                                         ],
-                                        tracks.length.toFixed(),
+                                        result.length.toFixed(),
                                     )}
                                     <span className="main-entityHeader-divider"></span>
                                     {getTranslatedDuration(
-                                        tracks.reduce(
+                                        result.reduce(
                                             (acc, track) =>
                                                 acc + track.duration,
                                             0,
@@ -137,7 +132,11 @@ export function ResultPage(): JSX.Element {
                     </div>
 
                     <TrackListGrid
-                        tracks={tracks}
+                        tracks={result.map((track) => ({
+                            ...track,
+                            addedAt: null,
+                            trackNumber: 0,
+                        }))}
                         subtracks={[]}
                         gridLabel={getTranslation(['local-files'])}
                         useTrackNumber={false}

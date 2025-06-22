@@ -56,6 +56,7 @@ export type LocalTrack = {
     isLocal: true;
     isPlayable: boolean;
     is19PlusOnly: boolean;
+    isBanned: boolean;
 };
 
 export const LocalTrackSortOptionFields = [

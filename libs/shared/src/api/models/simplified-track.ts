@@ -5,10 +5,12 @@ import type { SimplifiedArtist } from './simplified-artist';
 
 export type SimplifiedTrack = {
     artists: SimplifiedArtist[];
-    available_markets: string[];
+    /**
+     * Undefined when a market is provided in the request.
+     */
+    available_markets?: string[];
     disc_number: number;
     duration_ms: number;
-    episode: boolean;
     explicit: boolean;
     external_urls: ExternalUrls;
     href: string;
@@ -16,7 +18,6 @@ export type SimplifiedTrack = {
     is_local: boolean;
     name: string;
     preview_url: string | null;
-    track: boolean;
     track_number: number;
     type: 'track';
     uri: string;

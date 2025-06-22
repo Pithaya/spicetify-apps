@@ -64,7 +64,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                             size="lg"
                             onClick={() => {
                                 void playContext(
-                                    orderedTracks.map((t) => t.backingTrack),
+                                    orderedTracks.map((t) => t.localTrack),
                                 );
                             }}
                         />
@@ -88,7 +88,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                 onPlayTrack={(uri) => {
                     void playTrack(
                         uri,
-                        orderedTracks.map((t) => t.backingTrack),
+                        orderedTracks.map((t) => t.localTrack),
                     );
                 }}
                 headers={headers}

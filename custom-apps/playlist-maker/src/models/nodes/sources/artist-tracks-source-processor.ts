@@ -1,16 +1,17 @@
-import { type SimpleTrack } from '@shared/components/track-list/models/interfaces';
 import { GRAPHQL_MAX_LIMIT } from '@shared/graphQL/constants';
-import { getAlbumNameAndTracks } from '@shared/graphQL/queries/get-album-name-and-tracks';
+import { getAlbum, type GetAlbumData } from '@shared/graphQL/queries/get-album';
 import { queryAlbumTracks } from '@shared/graphQL/queries/query-album-tracks';
 import {
     queryArtistOverview,
-    type QueryArtistOverviewData,
     type Release,
-    type TopTrack,
 } from '@shared/graphQL/queries/query-artist-overview';
 import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
+import {
+    mapGraphQLTrackToWorkflowTrack,
+    mapLibraryAPITrackToWorkflowTrack,
+} from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -51,6 +52,11 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         }
     }
 
+    /**
+     * Get liked tracks for the artist from the library API.
+     * @param uri The artist URI.
+     * @returns The tracks.
+     */
     private async getLikedTracks(uri: string): Promise<WorkflowTrack[]> {
         const libraryApi = getPlatform().LibraryAPI;
 
@@ -62,12 +68,16 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
             })
         ).items;
 
-        return tracks.map((track) => ({
-            ...track,
-            source: 'Artist',
-        }));
+        return tracks.map((track) =>
+            mapLibraryAPITrackToWorkflowTrack(track, { source: 'Artist' }),
+        );
     }
 
+    /**
+     * Get tracks from the artist's top tracks and popular releases.
+     * @param uri The artist URI.
+     * @returns The tracks.
+     */
     private async getTopTracks(uri: string): Promise<WorkflowTrack[]> {
         const artistOverview = await queryArtistOverview({
             uri,
@@ -88,38 +98,63 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         // Get top tracks
         const topTracks =
             artistOverview.artistUnion.discography.topTracks.items;
-        const topTracksAlbums = new Map<string, string>();
+        const topTracksAlbums = new Map<string, GetAlbumData>();
         const mappedTopTracks = [];
 
-        // Top tracks should be from one of the artist's albums
-        for (const release of this.getAllReleasesFromOverview(artistOverview)) {
-            topTracksAlbums.set(release.uri, release.name);
-        }
+        // Get top tracks saved status
+        const libraryApi = getPlatform().LibraryAPI;
+        const saved: boolean[] = await libraryApi.contains(
+            ...topTracks.map((track) => track.track.uri),
+        );
 
-        for (const topTrack of topTracks) {
+        for (const [index, topTrack] of topTracks.entries()) {
+            // Get the album of the track to get the album name
             const albumUri = topTrack.track.albumOfTrack.uri;
-            let albumName = '';
 
             if (!topTracksAlbums.has(albumUri)) {
-                const album = await getAlbumNameAndTracks({
+                const album = await getAlbum({
                     uri: albumUri,
                     limit: 0,
                     offset: 0,
+                    locale: Spicetify.Locale.getLocale(),
                 });
 
-                topTracksAlbums.set(albumUri, album.albumUnion.name);
+                topTracksAlbums.set(albumUri, album);
             }
 
-            albumName = topTracksAlbums.get(albumUri)!;
+            const trackAlbum = topTracksAlbums.get(albumUri)!;
 
             mappedTopTracks.push(
-                this.getTrackFromTopTrack(topTrack, albumName),
+                mapGraphQLTrackToWorkflowTrack(
+                    {
+                        ...topTrack.track,
+                        saved: saved[index],
+                    },
+                    {
+                        uri: albumUri,
+                        name: trackAlbum.albumUnion.name,
+                        coverArt: topTrack.track.albumOfTrack.coverArt,
+                    },
+                    {
+                        source: 'Artist',
+                        albumData: {
+                            releaseDate: new Date(
+                                trackAlbum.albumUnion.date.isoString,
+                            ),
+                        },
+                    },
+                ),
             );
         }
 
         return [...mappedTopTracks, ...popularReleasesTracks];
     }
 
+    /**
+     * Get the tracks for the latest release of the artist.
+     * @param uri The artist URI.
+     * @returns The tracks.
+     */
     private async getLatestReleaseTracks(
         uri: string,
     ): Promise<WorkflowTrack[]> {
@@ -132,6 +167,12 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         return await this.getTracksFromRelease(latestRelease);
     }
 
+    /**
+     * Get all tracks from the artist's discography.
+     * This includes albums, compilations, and singles.
+     * @param uri The artist URI.
+     * @returns The tracks.
+     */
     private async getAllTracks(uri: string): Promise<WorkflowTrack[]> {
         const artistOverview = await queryArtistOverview({
             uri,
@@ -157,7 +198,7 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
 
         for (const compilation of compilations) {
             const tracks = await this.getTracksFromRelease(compilation);
-            // Need to filter out songs in the compilation where the artist is not the main artist
+            // Need to filter out songs in the compilation where the artist is not present
             compilationTracks.push(
                 ...tracks.filter((track) =>
                     track.artists.some((artist) => artist.uri === uri),
@@ -178,6 +219,11 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         return [...albumTracks, ...compilationTracks, ...singleTracks];
     }
 
+    /**
+     * Get the tracks from a release (album).
+     * @param release The release to get the tracks from.
+     * @returns The tracks.
+     */
     private async getTracksFromRelease(
         release: Release,
     ): Promise<WorkflowTrack[]> {
@@ -188,87 +234,17 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
             limit: GRAPHQL_MAX_LIMIT,
         });
 
-        const tracks: SimpleTrack[] = data.albumUnion.tracksV2.items.map(
-            (track) => ({
-                uri: track.track.uri,
-                name: track.track.name,
-                album: {
-                    uri: release.uri,
-                    name: release.name,
-                    images: release.coverArt.sources,
+        return data.albumUnion.tracksV2.items.map((item) =>
+            mapGraphQLTrackToWorkflowTrack(item.track, release, {
+                source: 'Artist',
+                albumData: {
+                    releaseDate: new Date(
+                        release.date.year,
+                        release.date.month,
+                        release.date.day,
+                    ),
                 },
-                artists: track.track.artists.items.map((artist) => ({
-                    uri: artist.uri,
-                    name: artist.profile.name,
-                })),
-                duration: {
-                    milliseconds: track.track.duration.totalMilliseconds,
-                },
-                isPlayable: track.track.playability.playable,
-                trackNumber: track.track.trackNumber,
-                addedAt: undefined,
             }),
         );
-
-        return tracks.map((track) => ({
-            ...track,
-            source: 'Artist',
-        }));
-    }
-
-    private getTrackFromTopTrack(
-        track: TopTrack,
-        albumName: string,
-    ): WorkflowTrack {
-        const mappedTrack: SimpleTrack = {
-            uri: track.track.uri,
-            name: track.track.name,
-            album: {
-                uri: track.track.albumOfTrack.uri,
-                name: albumName,
-                images: track.track.albumOfTrack.coverArt.sources.map(
-                    (source) => ({ url: source.url }),
-                ),
-            },
-            artists: track.track.artists.items.map((artist) => ({
-                uri: artist.uri,
-                name: artist.profile.name,
-            })),
-            duration: {
-                milliseconds: track.track.duration.totalMilliseconds,
-            },
-            isPlayable: track.track.playability.playable,
-            trackNumber: 0,
-            addedAt: undefined,
-        };
-
-        return {
-            ...mappedTrack,
-            source: 'Artist',
-        };
-    }
-
-    private getAllReleasesFromOverview(
-        overview: QueryArtistOverviewData,
-    ): Release[] {
-        const releases = [];
-
-        releases.push(
-            ...overview.artistUnion.discography.albums.items
-                .map((i) => i.releases.items)
-                .flat(),
-        );
-        releases.push(
-            ...overview.artistUnion.discography.compilations.items
-                .map((i) => i.releases.items)
-                .flat(),
-        );
-        releases.push(
-            ...overview.artistUnion.discography.singles.items
-                .map((i) => i.releases.items)
-                .flat(),
-        );
-
-        return releases;
     }
 }

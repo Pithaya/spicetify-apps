@@ -316,7 +316,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                                 </div>
                             </div>
 
-                            {props.children &&
+                            {props.children !== undefined &&
                                 Children.map(props.children, (child, index) => {
                                     return (
                                         <div
