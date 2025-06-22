@@ -4,7 +4,7 @@ import useAppStore, {
     type AppState,
 } from 'custom-apps/playlist-maker/src/stores/store';
 import { saveWorkflowToStorage } from 'custom-apps/playlist-maker/src/utils/storage-utils';
-import { BadgePlus, Network, Save } from 'lucide-react';
+import { CirclePlus, Network, Save } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Panel } from 'reactflow';
@@ -13,7 +13,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { InputError } from '../../inputs/InputError';
 import { TextController } from '../../inputs/TextController';
 import { WorkflowsModal } from '../../workflows/WorkflowsModal';
-import styles from './CenterPanel.module.scss';
 
 const FormSchema = z.object({
     workflowName: z.string().nonempty({ message: 'Name cannot be empty' }),
@@ -111,12 +110,9 @@ export function CenterPanel(): JSX.Element {
     }, [hasPendingChanges, resetState, setShowConfirmNewModal]);
 
     return (
-        <Panel
-            className={styles['panel'] + ' ' + styles['flex-row']}
-            position="top-center"
-        >
-            <div>
-                <div className={styles['flex-row']}>
+        <Panel className="flex items-center rounded-lg" position="top-center">
+            <div className="flex-col ps-1">
+                <div className="flex items-center">
                     <TextController
                         placeholder=""
                         control={control}
@@ -135,12 +131,10 @@ export function CenterPanel(): JSX.Element {
                         />
                     </Spicetify.ReactComponent.TooltipWrapper>
                 </div>
-                <div className={styles['title-input']}>
-                    <InputError error={errors.workflowName} />
-                </div>
+                <InputError error={errors.workflowName} />
             </div>
 
-            <div className={styles['divider-vertical']} />
+            <div className="mx-1 self-stretch border-l border-solid border-(--text-subdued)" />
 
             <Spicetify.ReactComponent.TooltipWrapper label="Manage workflows">
                 <Spicetify.ReactComponent.ButtonTertiary
@@ -156,6 +150,7 @@ export function CenterPanel(): JSX.Element {
                     iconOnly={() => <Network size={20} />}
                 />
             </Spicetify.ReactComponent.TooltipWrapper>
+
             <Spicetify.ReactComponent.TooltipWrapper label="Create new">
                 <Spicetify.ReactComponent.ButtonTertiary
                     aria-label="Create new"
@@ -163,7 +158,7 @@ export function CenterPanel(): JSX.Element {
                         resetWorkflow();
                     }}
                     buttonSize="sm"
-                    iconOnly={() => <BadgePlus size={20} />}
+                    iconOnly={() => <CirclePlus size={20} />}
                 />
             </Spicetify.ReactComponent.TooltipWrapper>
         </Panel>

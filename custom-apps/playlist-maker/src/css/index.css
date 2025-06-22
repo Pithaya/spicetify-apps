@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss' important;
 
 @theme inline {
     --color-spice-highlight: var(--spice-highlight);

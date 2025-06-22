@@ -1,4 +1,5 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { LucideChevronDown } from 'lucide-react';
 import React, {
     type DragEvent,
     type KeyboardEvent,
@@ -76,16 +77,17 @@ function SidenavCollapsible(
     props: Readonly<PropsWithChildren<{ label: string }>>,
 ): JSX.Element {
     return (
-        <details>
-            <summary>
+        <details className="group">
+            <summary className="flex cursor-pointer list-none items-center gap-1">
                 <TextComponent
                     elementType="h2"
                     weight="bold"
-                    fontSize="large"
+                    fontSize="medium"
                     className="inline"
                 >
                     {props.label}
                 </TextComponent>
+                <LucideChevronDown className="transition-transform group-open:rotate-180" />
             </summary>
             <div className="!mt-2">{props.children}</div>
         </details>
