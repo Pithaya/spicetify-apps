@@ -12,6 +12,10 @@ import {
     MIN_DANCEABILITY,
 } from '../models/nodes/filter/danceability-processor';
 import {
+    type DurationData,
+    DurationProcessor,
+} from '../models/nodes/filter/duration-processor';
+import {
     type EnergyData,
     EnergyProcessor,
     MAX_ENERGY,
@@ -386,6 +390,15 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
+    duration: () => {
+        const data: DurationData = {
+            minDuration: undefined,
+            maxDuration: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -514,6 +527,12 @@ const nodeProcessorFactory: Record<
         new RadioSourceProcessor(node.id, [], node.data),
     releaseDate: (node: Node<ReleaseDateData>, incomers) =>
         new ReleaseDateProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
+    duration: (node: Node<DurationData>, incomers) =>
+        new DurationProcessor(
             node.id,
             incomers.map((node) => node.id),
             node.data,

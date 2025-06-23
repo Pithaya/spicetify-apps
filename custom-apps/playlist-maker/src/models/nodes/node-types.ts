@@ -2,6 +2,7 @@ import { type ComponentType } from 'react';
 import { type NodeProps } from 'reactflow';
 import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode';
+import { DurationNode } from '../../components/nodes/filter/DurationNode';
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
 import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
@@ -55,7 +56,8 @@ type FilterNodes =
     | 'valence'
     | 'tempo'
     | 'mode'
-    | 'releaseDate';
+    | 'releaseDate'
+    | 'duration';
 
 type ProcessingNodes = 'deduplicate' | 'shuffle' | 'sort';
 
@@ -94,4 +96,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     radioArtistSource: RadioArtistSourceNode,
     radioTrackSource: RadioTrackSourceNode,
     releaseDate: ReleaseDateNode,
+    duration: DurationNode,
 };

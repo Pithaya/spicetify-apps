@@ -197,6 +197,11 @@ export function Sidenav(): JSX.Element {
                             nodeType="isPlayable"
                             tooltip="Filter tracks that are playable."
                         />
+                        <SidenavItem
+                            label="Duration"
+                            nodeType="duration"
+                            tooltip="Filter tracks by duration."
+                        />
                     </ul>
                 </SidenavCollapsible>
 

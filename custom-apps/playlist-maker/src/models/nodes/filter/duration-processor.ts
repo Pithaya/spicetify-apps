@@ -1,0 +1,43 @@
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../workflow-track';
+import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+
+export const DurationDataSchema = z
+    .object({
+        minDuration: z.number().int().optional(),
+        maxDuration: z.number().int().optional(),
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type DurationData = z.infer<typeof DurationDataSchema>;
+
+/**
+ * Filter node that filters tracks based on their duration.
+ */
+export class DurationProcessor extends NodeProcessor<DurationData> {
+    protected override getResultsInternal(
+        input: WorkflowTrack[],
+    ): Promise<WorkflowTrack[]> {
+        const { minDuration, maxDuration } = this.data;
+
+        // Minutes to milliseconds
+        const minDurationMs =
+            minDuration !== undefined ? minDuration * 60000 : undefined;
+        const maxDurationMs =
+            maxDuration !== undefined ? maxDuration * 60000 : undefined;
+
+        const filtered = input.filter((track) => {
+            const duration = track.duration;
+
+            return (
+                (minDurationMs !== undefined
+                    ? duration >= minDurationMs
+                    : true) &&
+                (maxDurationMs !== undefined ? duration <= maxDurationMs : true)
+            );
+        });
+
+        return Promise.resolve(filtered);
+    }
+}
