@@ -29,7 +29,7 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
         </div>
     );
 
-    const imageUrl = getImageUrlFromAlbum(props.track.backingTrack.album);
+    const imageUrl = getImageUrlFromAlbum(props.track.album);
 
     return (
         <>

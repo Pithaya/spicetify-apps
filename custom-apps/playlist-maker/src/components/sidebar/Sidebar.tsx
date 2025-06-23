@@ -200,6 +200,16 @@ export function Sidenav(): JSX.Element {
                     </ul>
                 </SidenavCollapsible>
 
+                <SidenavCollapsible label="Album property">
+                    <ul>
+                        <SidenavItem
+                            label="Release date"
+                            nodeType="releaseDate"
+                            tooltip="Filter tracks by album release date."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
                 <SidenavCollapsible label="Audio features">
                     <ul>
                         <SidenavItem

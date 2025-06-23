@@ -8,6 +8,7 @@ import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
 import { LoudnessNode } from '../../components/nodes/filter/LoudnessNode';
 import { ModeNode } from '../../components/nodes/filter/ModeNode';
+import { ReleaseDateNode } from '../../components/nodes/filter/ReleaseDateNode';
 import { SpeechinessNode } from '../../components/nodes/filter/SpeechinessNode';
 import { TempoNode } from '../../components/nodes/filter/TempoNode';
 import { ValenceNode } from '../../components/nodes/filter/ValenceNode';
@@ -53,7 +54,8 @@ type FilterNodes =
     | 'speechiness'
     | 'valence'
     | 'tempo'
-    | 'mode';
+    | 'mode'
+    | 'releaseDate';
 
 type ProcessingNodes = 'deduplicate' | 'shuffle' | 'sort';
 
@@ -91,4 +93,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     radioAlbumSource: RadioAlbumSourceNode,
     radioArtistSource: RadioArtistSourceNode,
     radioTrackSource: RadioTrackSourceNode,
+    releaseDate: ReleaseDateNode,
 };

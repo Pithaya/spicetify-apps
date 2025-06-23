@@ -44,6 +44,10 @@ import {
     ModeProcessor,
 } from '../models/nodes/filter/mode-processor';
 import {
+    type ReleaseDateData,
+    ReleaseDateProcessor,
+} from '../models/nodes/filter/release-date-processor';
+import {
     MAX_SPEECHINESS,
     MIN_SPEECHINESS,
     type SpeechinessData,
@@ -373,6 +377,15 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
+    releaseDate: () => {
+        const data: ReleaseDateData = {
+            minDate: undefined,
+            maxDate: undefined,
+            isExecuting: undefined,
+        };
+
+        return data;
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -499,6 +512,12 @@ const nodeProcessorFactory: Record<
         new RadioSourceProcessor(node.id, [], node.data),
     radioTrackSource: (node: Node<RadioData>, _incomers) =>
         new RadioSourceProcessor(node.id, [], node.data),
+    releaseDate: (node: Node<ReleaseDateData>, incomers) =>
+        new ReleaseDateProcessor(
+            node.id,
+            incomers.map((node) => node.id),
+            node.data,
+        ),
 };
 
 export async function executeWorkflow(
