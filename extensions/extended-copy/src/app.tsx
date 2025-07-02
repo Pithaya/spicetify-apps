@@ -15,30 +15,6 @@ import React from 'react';
 let locale: typeof Spicetify.Locale;
 let clipboardApi: ClipboardAPI;
 
-async function getNames(uris: string[]): Promise<string[]> {
-    const data = await getApiData(uris);
-
-    const names: string[] = [];
-    const invalidUris: string[] = [];
-
-    for (const [index, item] of data.entries()) {
-        if (item === null) {
-            invalidUris.push(uris[index]);
-        } else {
-            names.push(item.name);
-        }
-    }
-
-    if (invalidUris.length > 0) {
-        Spicetify.showNotification(
-            `Couldn't get data for URIs: ${invalidUris.join(', ')}`,
-            true,
-        );
-    }
-
-    return names;
-}
-
 async function getData(
     uris: string[],
 ): Promise<(Track | Album | Artist | Playlist | Show | Episode)[]> {
@@ -70,25 +46,6 @@ async function copy(text: string | object): Promise<void> {
     await clipboardApi.copy(text);
 }
 
-async function copyNames(uris: string[]): Promise<void> {
-    const names: string[] = await getNames(uris);
-    await copy(names.join(locale.getSeparator()));
-}
-
-async function copyIds(uris: string[]): Promise<void> {
-    const ids = uris.map((uri) => getId(Spicetify.URI.fromString(uri)));
-    await copy(ids.join(locale.getSeparator()));
-}
-
-async function copyUris(uris: string[]): Promise<void> {
-    await copy(uris.join(locale.getSeparator()));
-}
-
-async function copyData(uris: string[]): Promise<void> {
-    const results = await getData(uris);
-    await copy(results);
-}
-
 async function main(): Promise<void> {
     await waitForSpicetify();
 
@@ -111,6 +68,7 @@ async function main(): Promise<void> {
                     copyEpisode: 'Copy episode',
                     name: 'Name',
                     data: 'Data',
+                    artist: 'Artist',
                     noElements: 'No element selected.',
                     copied: 'Copied to clipboard',
                 },
@@ -126,6 +84,7 @@ async function main(): Promise<void> {
                     copyEpisode: "Copier l'épisode",
                     name: 'Nom',
                     data: 'Données',
+                    artist: 'Artiste',
                     noElements: 'Aucun élément sélectionné.',
                     copied: 'Copié dans le presse-papier',
                 },
@@ -135,32 +94,46 @@ async function main(): Promise<void> {
 
     const copyNameItem = new Spicetify.ContextMenu.Item(
         i18next.t('name'),
-        (uris) => {
-            void copyNames(uris);
+        async (uris) => {
+            const data = await getData(uris);
+            const names = data.map((item) => item.name);
+            await copy(names.join(locale.getSeparator()));
+        },
+        () => true,
+    );
+
+    const copyArtistItem = new Spicetify.ContextMenu.Item(
+        i18next.t('artist'),
+        async (uris) => {
+            const results = await getData(uris);
+            const artistNames = results.map((item) => item.artists.map((artist) => artist.name).join(locale.getSeparator()));
+            await copy(artistNames.join(locale.getSeparator()));
         },
         () => true,
     );
 
     const copyIdItem = new Spicetify.ContextMenu.Item(
         'ID',
-        (uris) => {
-            void copyIds(uris);
+        async (uris) => {
+            const ids = uris.map((uri) => getId(Spicetify.URI.fromString(uri)));
+            await copy(ids.join(locale.getSeparator()));
         },
         () => true,
     );
 
     const copyUriItem = new Spicetify.ContextMenu.Item(
         'URI',
-        (uris) => {
-            void copyUris(uris);
+        async (uris) => {
+            await copy(uris.join(locale.getSeparator()));
         },
         () => true,
     );
 
     const copyDataItem = new Spicetify.ContextMenu.Item(
         i18next.t('data'),
-        (uris) => {
-            void copyData(uris);
+        async (uris) => {
+                const data = await getData(uris);
+                await copy(data);
         },
         () => true,
     );
@@ -172,10 +145,11 @@ async function main(): Promise<void> {
     const createSubmenu = (
         labelKey: string,
         shouldAdd: Spicetify.ContextMenu.ShouldAddCallback,
+        subItems: Spicetify.ContextMenu.Item[],
     ): void => {
         new Spicetify.ContextMenu.SubMenu(
             i18next.t(labelKey),
-            [copyNameItem, copyIdItem, copyUriItem, copyDataItem],
+            subItems,
             shouldAdd,
             false,
             icon,
@@ -185,31 +159,38 @@ async function main(): Promise<void> {
     createSubmenu(
         'copyTrack',
         (uris) => uris.length === 1 && Spicetify.URI.isTrack(uris[0]),
+        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyTracks',
         (uris) =>
             uris.length > 1 && uris.every((uri) => Spicetify.URI.isTrack(uri)),
+        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyAlbum',
         (uris) => uris.length === 1 && Spicetify.URI.isAlbum(uris[0]),
+        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyArtist',
         (uris) => uris.length === 1 && Spicetify.URI.isArtist(uris[0]),
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyPlaylist',
         (uris) => uris.length === 1 && Spicetify.URI.isPlaylistV1OrV2(uris[0]),
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyShow',
         (uris) => uris.length === 1 && Spicetify.URI.isShow(uris[0]),
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem]
     );
     createSubmenu(
         'copyEpisode',
         (uris) => uris.length === 1 && Spicetify.URI.isEpisode(uris[0]),
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem]
     );
 }
 
