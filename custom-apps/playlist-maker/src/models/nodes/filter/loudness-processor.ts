@@ -20,8 +20,10 @@ export type LoudnessData = z.infer<typeof LoudnessDataSchema>;
 
 export class LoudnessProcessor extends NodeProcessor<LoudnessData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const tracksWithoutAudioFeatures = input.filter(
             (track) => track.audioFeatures === undefined,
         );

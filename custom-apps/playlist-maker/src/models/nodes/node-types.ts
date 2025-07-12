@@ -14,6 +14,9 @@ import { SpeechinessNode } from '../../components/nodes/filter/SpeechinessNode';
 import { TempoNode } from '../../components/nodes/filter/TempoNode';
 import { ValenceNode } from '../../components/nodes/filter/ValenceNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
+import { DifferenceNode } from '../../components/nodes/processing/DifferenceNode';
+import { IntersectionNode } from '../../components/nodes/processing/IntersectionNode';
+import { RelativeComplementNode } from '../../components/nodes/processing/RelativeComplementNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { ResultNode } from '../../components/nodes/result/ResultNode';
@@ -59,7 +62,13 @@ type FilterNodes =
     | 'releaseDate'
     | 'duration';
 
-type ProcessingNodes = 'deduplicate' | 'shuffle' | 'sort';
+type ProcessingNodes =
+    | 'deduplicate'
+    | 'shuffle'
+    | 'sort'
+    | 'intersection'
+    | 'difference'
+    | 'relativeComplement';
 
 export type CustomNodeType =
     | SourceNodes
@@ -97,4 +106,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     radioTrackSource: RadioTrackSourceNode,
     releaseDate: ReleaseDateNode,
     duration: DurationNode,
+    intersection: IntersectionNode,
+    difference: DifferenceNode,
+    relativeComplement: RelativeComplementNode,
 };

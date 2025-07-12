@@ -18,9 +18,15 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
     private readonly updateNodeData = useAppStore.getState().updateNodeData;
     private resultCache: WorkflowTrack[] | null = null;
 
+    /**
+     * Creates a new NodeProcessor.
+     * @param currentNodeId - The ID of the current node.
+     * @param sourceNodeIds - Map of source node IDs mapped to a specific handle. For nodes with a single handle, the default handle is "source".
+     * @param data - The data associated with the node.
+     */
     constructor(
         protected readonly currentNodeId: string,
-        protected readonly sourceNodeIds: string[],
+        protected readonly sourceNodeIds: Record<string, string[]>,
         protected readonly data: Readonly<T>,
     ) {}
 
@@ -36,9 +42,7 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
 
         this.setExecuting(true);
 
-        if (this.resultCache === null) {
-            this.resultCache = await this.getResultsInternal(input);
-        }
+        this.resultCache ??= await this.getResultsInternal(input);
 
         this.setExecuting(undefined);
 
@@ -46,22 +50,30 @@ export abstract class NodeProcessor<T extends BaseNodeData> {
     }
 
     protected abstract getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]>;
 
     private async getInputs(
         processors: Record<string, NodeProcessor<BaseNodeData>>,
-    ): Promise<WorkflowTrack[]> {
-        const inputs: WorkflowTrack[] = [];
+    ): Promise<Record<string, WorkflowTrack[]>> {
+        const inputs: Record<string, WorkflowTrack[]> = {};
 
-        for (const sourceNodeId of this.sourceNodeIds) {
-            const processor = processors[sourceNodeId];
+        for (const [handle, nodeIds] of Object.entries(this.sourceNodeIds)) {
+            inputs[handle] = [];
 
-            if (!processor) {
-                throw new Error(`Processor for node ${sourceNodeId} not found`);
+            for (const sourceNodeId of nodeIds) {
+                const processor = processors[sourceNodeId];
+
+                if (processor === undefined) {
+                    throw new Error(
+                        `Processor for node ${sourceNodeId} not found`,
+                    );
+                }
+
+                inputs[handle].push(
+                    ...(await processor.getResults(processors)),
+                );
             }
-
-            inputs.push(...(await processor.getResults(processors)));
         }
 
         return inputs;

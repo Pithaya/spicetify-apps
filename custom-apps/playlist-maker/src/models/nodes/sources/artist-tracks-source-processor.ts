@@ -128,7 +128,7 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
                 mapGraphQLTrackToWorkflowTrack(
                     {
                         ...topTrack.track,
-                        saved: saved[index],
+                        saved: saved[index] ?? false,
                     },
                     {
                         uri: albumUri,

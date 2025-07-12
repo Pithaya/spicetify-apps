@@ -75,6 +75,9 @@ import {
 } from '../models/nodes/node-processor';
 import { type CustomNodeType } from '../models/nodes/node-types';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
+import { DifferenceProcessor } from '../models/nodes/processing/difference-processor';
+import { IntersectionProcessor } from '../models/nodes/processing/intersection-processor';
+import { RelativeComplementProcessor } from '../models/nodes/processing/relative-complement-processor';
 import { ShuffleProcessor } from '../models/nodes/processing/shuffle-processor';
 import {
     type OrderByData,
@@ -399,6 +402,15 @@ const nodeDefautValuesFactory: Record<
 
         return data;
     },
+    intersection: () => {
+        return { isExecuting: undefined };
+    },
+    difference: () => {
+        return { isExecuting: undefined };
+    },
+    relativeComplement: () => {
+        return { isExecuting: undefined };
+    },
 };
 
 export const getDefaultValueForNodeType = (
@@ -407,134 +419,209 @@ export const getDefaultValueForNodeType = (
     return nodeDefautValuesFactory[type]();
 };
 
+const getIncomingNodeIdsForHandle = (
+    node: Node,
+    handle: string,
+    incomers: Node[],
+    edges: Edge[],
+) => {
+    const incomingEdges = edges.filter(
+        (edge) => edge.target === node.id && edge.targetHandle === handle,
+    );
+
+    const incomersForHandle = incomers.filter((n) =>
+        incomingEdges.some((edge) => edge.source === n.id),
+    );
+
+    return incomersForHandle.map((n) => n.id);
+};
+
 const nodeProcessorFactory: Record<
     CustomNodeType,
-    (node: Node, incomers: Node[]) => NodeProcessor<BaseNodeData>
+    (node: Node, incomers: Node[], edges: Edge[]) => NodeProcessor<BaseNodeData>
 > = {
     likedSongsSource: (node: Node<LikedSongsData>, _incomers) =>
-        new LikedSongsSourceProcessor(node.id, [], node.data),
+        new LikedSongsSourceProcessor(node.id, { source: [] }, node.data),
     localTracksSource: (node: Node<LocalTracksData>, _incomers) =>
-        new LocalTracksSourceProcessor(node.id, [], node.data),
+        new LocalTracksSourceProcessor(node.id, { source: [] }, node.data),
     libraryPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
-        new PlaylistSourceProcessor(node.id, [], node.data),
+        new PlaylistSourceProcessor(node.id, { source: [] }, node.data),
     searchPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
-        new PlaylistSourceProcessor(node.id, [], node.data),
+        new PlaylistSourceProcessor(node.id, { source: [] }, node.data),
     topTracksSource: (node: Node<TopTracksData>, _incomers) =>
-        new TopTracksSourceProcessor(node.id, [], node.data),
+        new TopTracksSourceProcessor(node.id, { source: [] }, node.data),
     libraryAlbumSource: (node: Node<AlbumData>, _incomers) =>
-        new AlbumSourceProcessor(node.id, [], node.data),
+        new AlbumSourceProcessor(node.id, { source: [] }, node.data),
     searchAlbumSource: (node: Node<AlbumData>, _incomers) =>
-        new AlbumSourceProcessor(node.id, [], node.data),
+        new AlbumSourceProcessor(node.id, { source: [] }, node.data),
     libraryArtistSource: (node: Node<ArtistData>, _incomers) =>
-        new ArtistTracksSourceProcessor(node.id, [], node.data),
+        new ArtistTracksSourceProcessor(node.id, { source: [] }, node.data),
     searchArtistSource: (node: Node<ArtistData>, _incomers) =>
-        new ArtistTracksSourceProcessor(node.id, [], node.data),
+        new ArtistTracksSourceProcessor(node.id, { source: [] }, node.data),
     deduplicate: (node: Node<BaseNodeData>, incomers) =>
         new DeduplicateProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     isPlayable: (node: Node<IsPlayableData>, incomers) =>
         new IsPlayableProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     acousticness: (node: Node<AcousticnessData>, incomers) =>
         new AcousticnessProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     shuffle: (node: Node<BaseNodeData>, incomers) =>
         new ShuffleProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     result: (node: Node<BaseNodeData>, incomers) =>
         new ResultNodeProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     sort: (node: Node<OrderByData>, incomers) =>
         new SortProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     danceability: (node: Node<DanceabilityData>, incomers) =>
         new DanceabilityProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     energy: (node: Node<EnergyData>, incomers) =>
         new EnergyProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     instrumentalness: (node: Node<InstrumentalnessData>, incomers) =>
         new InstrumentalnessProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     liveness: (node: Node<LivenessData>, incomers) =>
         new LivenessProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     loudness: (node: Node<LoudnessData>, incomers) =>
         new LoudnessProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     speechiness: (node: Node<SpeechinessData>, incomers) =>
         new SpeechinessProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     valence: (node: Node<ValenceData>, incomers) =>
         new ValenceProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     tempo: (node: Node<TempoData>, incomers) =>
         new TempoProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     mode: (node: Node<ModeData>, incomers) =>
         new ModeProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     radioAlbumSource: (node: Node<RadioData>, _incomers) =>
-        new RadioSourceProcessor(node.id, [], node.data),
+        new RadioSourceProcessor(node.id, { source: [] }, node.data),
     radioArtistSource: (node: Node<RadioData>, _incomers) =>
-        new RadioSourceProcessor(node.id, [], node.data),
+        new RadioSourceProcessor(node.id, { source: [] }, node.data),
     radioTrackSource: (node: Node<RadioData>, _incomers) =>
-        new RadioSourceProcessor(node.id, [], node.data),
+        new RadioSourceProcessor(node.id, { source: [] }, node.data),
     releaseDate: (node: Node<ReleaseDateData>, incomers) =>
         new ReleaseDateProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     duration: (node: Node<DurationData>, incomers) =>
         new DurationProcessor(
             node.id,
-            incomers.map((node) => node.id),
+            { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
+    intersection: (node: Node<BaseNodeData>, incomers, edges) => {
+        return new IntersectionProcessor(
+            node.id,
+            {
+                'first-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'first-set',
+                    incomers,
+                    edges,
+                ),
+                'second-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'second-set',
+                    incomers,
+                    edges,
+                ),
+            },
+            node.data,
+        );
+    },
+    difference: (node: Node<BaseNodeData>, incomers, edges) =>
+        new DifferenceProcessor(
+            node.id,
+            {
+                'first-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'first-set',
+                    incomers,
+                    edges,
+                ),
+                'second-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'second-set',
+                    incomers,
+                    edges,
+                ),
+            },
+            node.data,
+        ),
+    relativeComplement: (node: Node<BaseNodeData>, incomers, edges) =>
+        new RelativeComplementProcessor(
+            node.id,
+            {
+                'first-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'first-set',
+                    incomers,
+                    edges,
+                ),
+                'second-set': getIncomingNodeIdsForHandle(
+                    node,
+                    'second-set',
+                    incomers,
+                    edges,
+                ),
+            },
             node.data,
         ),
 };
@@ -584,6 +671,7 @@ export async function executeWorkflow(
     const resultProcessor = nodeProcessorFactory.result(
         resultNode,
         nodesToVisit,
+        edges,
     );
     const allProcessors: Record<string, NodeProcessor<BaseNodeData>> = {
         [resultNode.id]: resultProcessor,
@@ -607,6 +695,7 @@ export async function executeWorkflow(
         allProcessors[currentNode.id] = nodeProcessorFactory[nodeType](
             currentNode,
             incomers,
+            edges,
         );
 
         nodesToVisit.push(...incomers);

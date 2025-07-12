@@ -3,8 +3,10 @@ import { type BaseNodeData, NodeProcessor } from '../node-processor';
 
 export class DeduplicateProcessor extends NodeProcessor<BaseNodeData> {
     protected override getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const uniqueSongNames = new Set<string>();
         const uniqueTracks: WorkflowTrack[] = [];
 

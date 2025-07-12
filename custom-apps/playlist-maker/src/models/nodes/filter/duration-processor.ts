@@ -17,8 +17,10 @@ export type DurationData = z.infer<typeof DurationDataSchema>;
  */
 export class DurationProcessor extends NodeProcessor<DurationData> {
     protected override getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const { minDuration, maxDuration } = this.data;
 
         // Minutes to milliseconds

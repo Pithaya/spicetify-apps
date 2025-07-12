@@ -13,8 +13,10 @@ export type IsPlayableData = z.infer<typeof IsPlayableDataSchema>;
 
 export class IsPlayableProcessor extends NodeProcessor<IsPlayableData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const filtered = input.filter(
             (track) => track.isPlayable === this.data.isPlayable,
         );

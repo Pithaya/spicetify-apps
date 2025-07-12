@@ -20,8 +20,10 @@ export type LivenessData = z.infer<typeof LivenessDataSchema>;
 
 export class LivenessProcessor extends NodeProcessor<LivenessData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const tracksWithoutAudioFeatures = input.filter(
             (track) => track.audioFeatures === undefined,
         );

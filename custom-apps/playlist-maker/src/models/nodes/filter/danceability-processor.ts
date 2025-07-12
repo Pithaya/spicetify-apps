@@ -20,8 +20,10 @@ export type DanceabilityData = z.infer<typeof DanceabilityDataSchema>;
 
 export class DanceabilityProcessor extends NodeProcessor<DanceabilityData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const tracksWithoutAudioFeatures = input.filter(
             (track) => track.audioFeatures === undefined,
         );

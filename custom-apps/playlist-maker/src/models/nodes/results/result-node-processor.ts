@@ -6,8 +6,8 @@ import { type BaseNodeData, NodeProcessor } from '../node-processor';
  */
 export class ResultNodeProcessor extends NodeProcessor<BaseNodeData> {
     protected override getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
-        return Promise.resolve(input);
+        return Promise.resolve(inputByHandle['source'] ?? []);
     }
 }

@@ -34,8 +34,10 @@ export class ReleaseDateProcessor extends NodeProcessor<ReleaseDateData> {
     private static readonly albumMap = new Map<string, GetAlbumData>();
 
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const { minDate, maxDate } = this.data;
 
         const tracksWithoutAlbumData = input.filter(

@@ -290,6 +290,21 @@ export function Sidenav(): JSX.Element {
                         nodeType="sort"
                         tooltip="Sort the tracks."
                     />
+                    <SidenavItem
+                        label="Intersection"
+                        nodeType="intersection"
+                        tooltip="Keep only the tracks that are in both inputs."
+                    />
+                    <SidenavItem
+                        label="Difference"
+                        nodeType="difference"
+                        tooltip="Keep only the tracks that are not in both inputs."
+                    />
+                    <SidenavItem
+                        label="Relative complement"
+                        nodeType="relativeComplement"
+                        tooltip="Keep only the tracks that are in the first input and not in the second."
+                    />
                 </ul>
             </div>
 
