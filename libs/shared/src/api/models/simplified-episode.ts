@@ -21,7 +21,7 @@ export type SimplifiedEpisode = {
     release_date: string;
     release_date_precision: string;
     resume_point: ResumePoint;
-    type: string;
+    type: 'episode';
     uri: string;
     restrictions: Restrictions;
 };
