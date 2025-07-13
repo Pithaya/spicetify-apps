@@ -21,7 +21,7 @@ export function Select<T extends string>(
 ): JSX.Element {
     return (
         <select
-            className="main-dropDown-dropDown"
+            className="main-dropDown-dropDown bg-spice-tab-active"
             name={props.name}
             disabled={props.disabled}
             value={props.selectedValue}
