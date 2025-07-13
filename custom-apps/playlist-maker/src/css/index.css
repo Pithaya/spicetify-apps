@@ -37,4 +37,8 @@
         -webkit-appearance: none;
         margin: 0;
     }
+
+    main:has(#playlist-maker) {
+        position: initial !important;
+    }
 }

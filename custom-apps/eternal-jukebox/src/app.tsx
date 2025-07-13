@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import styles from 'css/app.module.scss';
-import { Home } from './components/Home';
-import type { JukeboxSongState } from './models/jukebox-song-state';
-import { SettingsButton } from './components/settings/SettingsButton';
-import { version } from '../package.json';
-import whatsNew from 'spcr-whats-new';
-import { CHANGE_NOTES } from './change-notes';
 import { useSubscription } from 'observable-hooks';
+import React, { useEffect, useState } from 'react';
+import whatsNew from 'spcr-whats-new';
+import { version } from '../package.json';
+import { CHANGE_NOTES } from './change-notes';
+import { Home } from './components/Home';
+import { SettingsButton } from './components/settings/SettingsButton';
+import type { JukeboxSongState } from './models/jukebox-song-state';
+
+import './css/index.css';
 
 function App(): JSX.Element {
     const [songState, setSongState] = useState<JukeboxSongState | null>(null);
@@ -33,37 +35,37 @@ function App(): JSX.Element {
         void init();
     }, []);
 
+    let appContent = <></>;
+
     if (window.jukebox.isEnabled) {
         if (songState !== null) {
-            return (
-                <div className={styles['full-size-container']}>
-                    <Home />
-                </div>
-            );
+            appContent = <Home />;
         } else {
-            return (
-                <div className={styles['empty-container']}>
-                    <div className={styles['elements-container']}>
-                        <SettingsButton />
-                        <div>
-                            <h1>Loading...</h1>
-                        </div>
+            appContent = (
+                <div className={styles['elements-container']}>
+                    <SettingsButton />
+                    <div>
+                        <h1>Loading...</h1>
                     </div>
                 </div>
             );
         }
     } else {
-        return (
-            <div className={styles['empty-container']}>
-                <div className={styles['elements-container']}>
-                    <SettingsButton />
-                    <div>
-                        <h1>Jukebox not enabled.</h1>
-                    </div>
+        appContent = (
+            <div className={styles['elements-container']}>
+                <SettingsButton />
+                <div>
+                    <h1>Jukebox not enabled.</h1>
                 </div>
             </div>
         );
     }
+
+    return (
+        <div id="eternal-jukebox" className={styles['full-size-container']}>
+            {appContent}
+        </div>
+    );
 }
 
 export default App;
