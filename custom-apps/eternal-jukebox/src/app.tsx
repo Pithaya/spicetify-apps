@@ -35,7 +35,7 @@ function App(): JSX.Element {
         void init();
     }, []);
 
-    let appContent = <></>;
+    let appContent;
 
     if (window.jukebox.isEnabled) {
         if (songState !== null) {

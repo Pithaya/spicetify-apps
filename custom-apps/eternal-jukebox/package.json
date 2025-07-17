@@ -1,6 +1,6 @@
 {
     "name": "eternal-jukebox",
-    "version": "1.0.0-beta.5",
+    "version": "1.0.0-beta.6",
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
