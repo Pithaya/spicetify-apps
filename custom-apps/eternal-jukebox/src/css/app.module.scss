@@ -13,30 +13,21 @@
     padding-top: 64px;
 }
 
-.empty-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding-top: 64px;
+.elements-container {
+    height: 100%;
+    position: relative;
 
-    .elements-container {
+    button {
+        position: absolute;
+        top: 0;
+        right: 2rem;
+    }
+
+    div {
         height: 100%;
-        position: relative;
-
-        button {
-            position: absolute;
-            top: 0;
-            right: 2rem;
-        }
-
-        div {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 }

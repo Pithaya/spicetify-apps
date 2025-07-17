@@ -1,4 +1,5 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { LucideChevronDown } from 'lucide-react';
 import React, {
     type DragEvent,
     type KeyboardEvent,
@@ -76,16 +77,17 @@ function SidenavCollapsible(
     props: Readonly<PropsWithChildren<{ label: string }>>,
 ): JSX.Element {
     return (
-        <details>
-            <summary>
+        <details className="group">
+            <summary className="flex cursor-pointer list-none items-center gap-1">
                 <TextComponent
                     elementType="h2"
                     weight="bold"
-                    fontSize="large"
+                    fontSize="medium"
                     className="inline"
                 >
                     {props.label}
                 </TextComponent>
+                <LucideChevronDown className="transition-transform group-open:rotate-180" />
             </summary>
             <div className="!mt-2">{props.children}</div>
         </details>
@@ -195,6 +197,21 @@ export function Sidenav(): JSX.Element {
                             nodeType="isPlayable"
                             tooltip="Filter tracks that are playable."
                         />
+                        <SidenavItem
+                            label="Duration"
+                            nodeType="duration"
+                            tooltip="Filter tracks by duration."
+                        />
+                    </ul>
+                </SidenavCollapsible>
+
+                <SidenavCollapsible label="Album property">
+                    <ul>
+                        <SidenavItem
+                            label="Release date"
+                            nodeType="releaseDate"
+                            tooltip="Filter tracks by album release date."
+                        />
                     </ul>
                 </SidenavCollapsible>
 
@@ -272,6 +289,21 @@ export function Sidenav(): JSX.Element {
                         label="Sort"
                         nodeType="sort"
                         tooltip="Sort the tracks."
+                    />
+                    <SidenavItem
+                        label="Intersection"
+                        nodeType="intersection"
+                        tooltip="Keep only the tracks that are in both inputs."
+                    />
+                    <SidenavItem
+                        label="Difference"
+                        nodeType="difference"
+                        tooltip="Keep only the tracks that are not in both inputs."
+                    />
+                    <SidenavItem
+                        label="Relative complement"
+                        nodeType="relativeComplement"
+                        tooltip="Keep only the tracks that are in the first input and not in the second."
                     />
                 </ul>
             </div>

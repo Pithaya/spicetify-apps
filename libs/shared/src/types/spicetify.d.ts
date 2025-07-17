@@ -1238,7 +1238,7 @@ declare namespace Spicetify {
 	 * Create custom menu item and prepend to right click context menu
 	 */
 	namespace ContextMenu {
-		type OnClickCallback = (uris: string[], uids?: string[], contextUri?: string) => void;
+		type OnClickCallback = (uris: string[], uids?: string[], contextUri?: string) => void | Promise<void>;
 		type ShouldAddCallback = (uris: string[], uids?: string[], contextUri?: string) => boolean;
 
 		// Single context menu item

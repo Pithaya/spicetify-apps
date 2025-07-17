@@ -1,34 +1,9 @@
-import type { Track as WebAPITrack } from '@shared/api/models/track';
-import type { LibraryAPITrack } from '@shared/platform/library';
-import type { LocalTrack } from '@shared/platform/local-files';
-
-export type SimpleTrack = {
-    uri: string;
-    name: string;
-    addedAt?: Date;
-    duration: {
-        milliseconds: number;
-    };
-    trackNumber: number;
-    artists: IArtist[];
-    album: IAlbum;
-    isPlayable: boolean;
-};
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 
 /**
- * The different types of tracks that can be made to match the ITrack interface.
- * This includes tracks from local files, library API, the web API, and a simple type to map other track types.
+ * Interface for a track to be used in the track list.
+ * Includes the minimum required properties to display a track in the list.
  */
-export type BackingTrack =
-    | LocalTrack
-    | LibraryAPITrack
-    | WebAPITrack
-    | SimpleTrack;
-
-/**
- * Interface representing a track from one of the BackingTrack types.
- */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ITrack {
     /**
      * Track URI.
@@ -67,11 +42,6 @@ export interface ITrack {
     album: IAlbum;
 
     /**
-     * Internal track.
-     */
-    backingTrack: BackingTrack;
-
-    /**
      * Source of the track.
      */
     source?: string;
@@ -82,7 +52,6 @@ export interface ITrack {
     isPlayable: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IArtist {
     /**
      * Artist URI.
@@ -95,7 +64,6 @@ export interface IArtist {
     name: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IAlbum {
     /**
      * Album URI.
@@ -110,7 +78,12 @@ export interface IAlbum {
     /**
      * Album images.
      */
-    images: {
-        url: string;
-    }[];
+    images: IAlbumImage[];
+}
+
+export interface IAlbumImage {
+    /**
+     * Image URL.
+     */
+    url: string;
 }

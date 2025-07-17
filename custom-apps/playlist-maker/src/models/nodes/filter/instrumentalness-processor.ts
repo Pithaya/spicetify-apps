@@ -20,8 +20,10 @@ export type InstrumentalnessData = z.infer<typeof InstrumentalnessDataSchema>;
 
 export class InstrumentalnessProcessor extends NodeProcessor<InstrumentalnessData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const tracksWithoutAudioFeatures = input.filter(
             (track) => track.audioFeatures === undefined,
         );

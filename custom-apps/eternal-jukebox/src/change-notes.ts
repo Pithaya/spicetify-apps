@@ -1,4 +1,1 @@
-export const CHANGE_NOTES = [
-    'Fixed issues with max playtime',
-    'Fixed the playbar button style',
-];
+export const CHANGE_NOTES = ['Fixed height on comfy theme'];

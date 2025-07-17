@@ -1,6 +1,6 @@
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import React from 'react';
 import type { ITrack } from './models/interfaces';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 type Props = {
     track: ITrack;

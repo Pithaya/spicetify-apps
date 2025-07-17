@@ -2,16 +2,21 @@ import { type ComponentType } from 'react';
 import { type NodeProps } from 'reactflow';
 import { AcousticnessNode } from '../../components/nodes/filter/AcousticnessNode';
 import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode';
+import { DurationNode } from '../../components/nodes/filter/DurationNode';
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
 import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
 import { LoudnessNode } from '../../components/nodes/filter/LoudnessNode';
 import { ModeNode } from '../../components/nodes/filter/ModeNode';
+import { ReleaseDateNode } from '../../components/nodes/filter/ReleaseDateNode';
 import { SpeechinessNode } from '../../components/nodes/filter/SpeechinessNode';
 import { TempoNode } from '../../components/nodes/filter/TempoNode';
 import { ValenceNode } from '../../components/nodes/filter/ValenceNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
+import { DifferenceNode } from '../../components/nodes/processing/DifferenceNode';
+import { IntersectionNode } from '../../components/nodes/processing/IntersectionNode';
+import { RelativeComplementNode } from '../../components/nodes/processing/RelativeComplementNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { ResultNode } from '../../components/nodes/result/ResultNode';
@@ -53,9 +58,17 @@ type FilterNodes =
     | 'speechiness'
     | 'valence'
     | 'tempo'
-    | 'mode';
+    | 'mode'
+    | 'releaseDate'
+    | 'duration';
 
-type ProcessingNodes = 'deduplicate' | 'shuffle' | 'sort';
+type ProcessingNodes =
+    | 'deduplicate'
+    | 'shuffle'
+    | 'sort'
+    | 'intersection'
+    | 'difference'
+    | 'relativeComplement';
 
 export type CustomNodeType =
     | SourceNodes
@@ -91,4 +104,9 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     radioAlbumSource: RadioAlbumSourceNode,
     radioArtistSource: RadioArtistSourceNode,
     radioTrackSource: RadioTrackSourceNode,
+    releaseDate: ReleaseDateNode,
+    duration: DurationNode,
+    intersection: IntersectionNode,
+    difference: DifferenceNode,
+    relativeComplement: RelativeComplementNode,
 };

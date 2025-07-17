@@ -245,7 +245,6 @@ export function LibraryArtistSourceNode(
             <Handle
                 type="source"
                 position={Position.Right}
-                id="result"
                 style={{ top: '40px' }}
             />
         </Node>

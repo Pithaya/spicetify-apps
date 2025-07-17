@@ -6,7 +6,10 @@ import type { Restrictions } from './restrictions';
 
 export type AlbumBase = {
     album_type: 'album' | 'single' | 'compilation';
-    available_markets: string[];
+    /**
+     * Undefined when a market is provided in the request.
+     */
+    available_markets?: string[];
     copyrights: Copyright[];
     external_ids: ExternalIds;
     external_urls: ExternalUrls;
@@ -23,4 +26,5 @@ export type AlbumBase = {
     total_tracks: number;
     type: 'album';
     uri: string;
+    is_playable: boolean;
 };

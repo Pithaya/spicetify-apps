@@ -1,10 +1,11 @@
+import type { ITrack } from '@shared/components/track-list/models/interfaces';
 import type { LocalTrack } from '@shared/platform/local-files';
 import type { Album } from './album';
 import type { Artist } from './artist';
-import type { ITrack } from '@shared/components/track-list/models/interfaces';
 
 /**
  * A processed local track.
+ * Wrapper around a LocalTrack that implements the ITrack interface for display in the track list.
  */
 export class Track implements ITrack {
     /**
@@ -14,23 +15,14 @@ export class Track implements ITrack {
         return this.localTrack.addedAt;
     }
 
-    /**
-     * Track URI.
-     */
     public get uri(): string {
         return this.localTrack.uri;
     }
 
-    /**
-     * Track name.
-     */
     public get name(): string {
         return this.localTrack.name;
     }
 
-    /**
-     * Duration of the track in milliseconds.
-     */
     public get duration(): number {
         return this.localTrack.duration.milliseconds;
     }
@@ -49,10 +41,6 @@ export class Track implements ITrack {
         return this.localTrack.trackNumber;
     }
 
-    public get backingTrack(): LocalTrack {
-        return this.localTrack;
-    }
-
     public get isPlayable(): boolean {
         return this.localTrack.isPlayable;
     }
@@ -68,7 +56,7 @@ export class Track implements ITrack {
      * @param artists The list of artists for this track.
      */
     constructor(
-        private readonly localTrack: LocalTrack,
+        public readonly localTrack: LocalTrack,
         public album: Album,
         public readonly artists: Artist[],
     ) {}

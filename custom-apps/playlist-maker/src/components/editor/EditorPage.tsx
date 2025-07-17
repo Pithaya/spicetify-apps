@@ -133,7 +133,7 @@ export function EditorPage(): JSX.Element {
 
     return (
         <>
-            <div className="app-container">
+            <div id="playlist-maker" className="app-container">
                 <div
                     className={Spicetify.classnames(
                         styles['grid-container'],

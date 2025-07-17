@@ -55,7 +55,6 @@ export function ResultNode(
             <Handle
                 type="target"
                 position={Position.Left}
-                id="input"
                 style={{ top: '42px' }}
             />
         </Node>

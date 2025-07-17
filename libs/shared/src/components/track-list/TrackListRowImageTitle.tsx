@@ -1,7 +1,7 @@
+import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import React from 'react';
 import type { ITrack } from './models/interfaces';
 import { TrackListRowTitle } from './TrackListRowTitle';
-import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 
 type Props = {
     track: ITrack;
@@ -29,7 +29,7 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
         </div>
     );
 
-    const imageUrl = getImageUrlFromAlbum(props.track.backingTrack.album);
+    const imageUrl = getImageUrlFromAlbum(props.track.album);
 
     return (
         <>

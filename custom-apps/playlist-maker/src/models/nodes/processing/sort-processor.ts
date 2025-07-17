@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TrackWrapper } from '../../track-wrapper';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
 
@@ -15,7 +14,7 @@ export type OrderByData = z.infer<typeof OrderByDataSchema>;
 
 const propertyGetter: Record<
     OrderByData['property'],
-    (track: TrackWrapper) => string | number
+    (track: WorkflowTrack) => string | number
 > = {
     album: (track) => track.album.name,
     artist: (track) => track.artists.map((artist) => artist.name).join(', '),
@@ -26,8 +25,10 @@ const propertyGetter: Record<
 
 export class SortProcessor extends NodeProcessor<OrderByData> {
     protected override async getResultsInternal(
-        input: WorkflowTrack[],
+        inputByHandle: Record<string, WorkflowTrack[]>,
     ): Promise<WorkflowTrack[]> {
+        const input = inputByHandle['source'] ?? [];
+
         const { property, order } = this.data;
 
         const result = input.toSorted((a, b) => {
@@ -48,10 +49,11 @@ export class SortProcessor extends NodeProcessor<OrderByData> {
         return Promise.resolve(result);
     }
 
+    // eslint-disable-next-line sonarjs/function-return-type
     private getPropertyValue(
         track: WorkflowTrack,
         property: OrderByData['property'],
     ): string | number {
-        return propertyGetter[property](new TrackWrapper(track));
+        return propertyGetter[property](track);
     }
 }

@@ -4,6 +4,7 @@ import {
 } from '@shared/api/endpoints/current-user/get-top-tracks';
 import { type Track as ApiTrack } from '@shared/api/models/track';
 import { getAllPages } from '@shared/utils/web-api-utils';
+import { mapWebAPITrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
@@ -38,10 +39,8 @@ export class TopTracksSourceProcessor extends NodeProcessor<TopTracksData> {
             maxItemsToTake,
         );
 
-        return items.map((track) => ({
-            ...track,
-            is_playable: track.is_playable ?? true,
-            source: 'Top tracks',
-        }));
+        return items.map((track) =>
+            mapWebAPITrackToWorkflowTrack(track, { source: 'Top tracks' }),
+        );
     }
 }

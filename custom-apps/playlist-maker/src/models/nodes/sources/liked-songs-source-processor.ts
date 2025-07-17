@@ -5,6 +5,7 @@ import {
     LibraryAPITrackSortOptionOrders,
 } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
+import { mapLibraryAPITrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { getArtistsGenresCache } from 'custom-apps/playlist-maker/src/utils/storage-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
@@ -65,10 +66,9 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
             );
         }
 
-        return tracks.map((track) => ({
-            ...track,
-            source: 'Liked songs',
-        }));
+        return tracks.map((track) =>
+            mapLibraryAPITrackToWorkflowTrack(track, { source: 'Liked songs' }),
+        );
     }
 
     private filterTracksByGenres(

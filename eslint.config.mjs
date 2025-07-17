@@ -88,6 +88,7 @@ export default [
             ],
             '@typescript-eslint/no-unnecessary-type-parameters': 'off',
             'sonarjs/void-use': 'off',
+            '@typescript-eslint/no-unnecessary-condition': 'warn',
         },
     },
 ];

@@ -122,6 +122,8 @@ export type LibraryAPITrack = {
     is19PlusOnly: boolean;
     addedAt: string;
     hasAssociatedVideo: boolean;
+    hasAssociatedAudio: boolean;
+    isBanned: boolean;
 };
 
 export type GetContentsLikedSongsItem = {
