@@ -1,10 +1,10 @@
-import React from 'react';
-import styles from './SearchInput.module.scss';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { Search } from 'lucide-react';
-import { getTranslation } from '@shared/utils/translations.utils';
-import { useObservableRef, useSubscription } from 'observable-hooks';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
+import { getTranslation } from '@shared/utils/translations.utils';
+import { Search } from 'lucide-react';
+import { useObservableRef, useSubscription } from 'observable-hooks';
+import React from 'react';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import styles from './SearchInput.module.scss';
 
 export type Props = {
     search: string;
@@ -13,6 +13,7 @@ export type Props = {
 };
 
 export function SearchInput(props: Readonly<Props>): JSX.Element {
+    // TODO: useDebouncedCallback
     const [search, search$] = useObservableRef(props.search);
     useSubscription(
         search$.pipe(debounceTime(400), distinctUntilChanged()),

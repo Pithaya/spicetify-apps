@@ -9,39 +9,18 @@
     height: 100%;
 }
 
-.title {
+.area-title {
     grid-area: title;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
 }
 
-.button {
+.area-button {
     grid-area: button;
-
-    display: flex;
-    align-items: start;
-    justify-content: end;
-    padding-right: 2rem;
 }
 
-.content {
+.area-content {
     grid-area: content;
 }
 
-.stats {
+.area-stats {
     grid-area: stats;
-
-    display: flex;
-    justify-content: space-around;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    span {
-        flex-grow: 1;
-        flex-basis: 0;
-        text-align: center;
-    }
 }

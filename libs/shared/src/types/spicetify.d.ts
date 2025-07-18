@@ -335,7 +335,7 @@ declare namespace Spicetify {
 		/**
 		 * An object contains all information about current track and player.
 		 */
-		const data: PlayerState;
+		const data: PlayerState | null;
 		/**
 		 * Decrease a small amount of volume.
 		 */

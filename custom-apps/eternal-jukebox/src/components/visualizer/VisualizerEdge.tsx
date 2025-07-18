@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styles from '../../css/app.module.scss';
 import type { EdgeDrawData } from '../../models/visualization/edge-draw-data';
 
 type Props = {
@@ -10,17 +9,23 @@ export function VisualizerEdge(props: Readonly<Props>): JSX.Element {
     const [isHovered, setIsHovered] = useState(false);
 
     function onMouseOver(node: Node): void {
-        const svg = document.getElementById('#jukebox-graph');
+        // Move the hovered edge to the front of the SVG
+        const svg = document.getElementById('jukebox-graph');
         svg?.firstChild?.appendChild(node);
 
         setIsHovered(true);
     }
 
+    function onMouseOut(): void {
+        setIsHovered(false);
+    }
+
     return (
         <path
-            className={`${styles['edge-path']} ${
-                props.drawData.edge.isPlaying ? 'is-active' : ''
-            }`}
+            className={Spicetify.classnames(
+                '[stroke-opacity:0.7]',
+                'hover:[stroke-opacity:1]',
+            )}
             fill="none"
             stroke={
                 props.drawData.edge.isPlaying || isHovered
@@ -32,12 +37,10 @@ export function VisualizerEdge(props: Readonly<Props>): JSX.Element {
             onMouseOver={(event) => {
                 onMouseOver(event.target as Node);
             }}
-            onMouseOut={() => {
-                setIsHovered(false);
-            }}
+            onMouseOut={onMouseOut}
         >
             <title>
-                {`${props.drawData.edge.source.index} - ${props.drawData.edge.destination.index}`}
+                {`${props.drawData.edge.source.index.toFixed()} - ${props.drawData.edge.destination.index.toFixed()}`}
             </title>
         </path>
     );
