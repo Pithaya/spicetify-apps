@@ -4,14 +4,16 @@
     "private": true,
     "scripts": {
         "init": "npm run build && npm run apply",
-        "build": "spicetify-creator",
-        "build-local": "spicetify-creator --out=dist --minify",
+        "build": "npm run generate-css && spicetify-creator",
+        "build-local": "npm run generate-css && spicetify-creator --out=dist --minify",
         "watch": "spicetify-creator --watch",
         "launch-watch": "spicetify watch -a",
         "apply": "spicetify config custom_apps eternal-jukebox && spicetify apply",
         "unapply": "spicetify config custom_apps eternal-jukebox- && spicetify apply",
         "lint": "npx tsc --noemit & npx eslint src/**",
-        "format": "npx prettier --write src/"
+        "format": "npx prettier --write src/",
+        "generate-css": "npx @tailwindcss/cli -i ./src/css/index.css -o ./src/css/tailwind.css --minify",
+        "test": "vitest"
     },
     "devDependencies": {
         "@types/tinycolor2": "^1.4.6",

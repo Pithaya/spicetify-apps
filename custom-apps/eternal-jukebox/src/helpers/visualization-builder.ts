@@ -12,8 +12,12 @@ import { getPointFromPercent } from '../utils/math-utils';
  * SVG size.
  * SVG size = (inner circle radius + maximum tile height) * 2.
  */
-export const svgSize = 100;
-export const halfSize = svgSize / 2;
+const svgSize = 100;
+const halfSize = svgSize / 2;
+
+const viewBox = `0 0 ${svgSize.toFixed()} ${svgSize.toFixed()}`;
+
+const centerTransform = `scale(-1,1) translate(${(-svgSize).toFixed()}, 0) rotate(-90,${halfSize.toFixed()},${halfSize.toFixed()})`;
 
 /**
  * Inner circle radius.
@@ -43,7 +47,7 @@ const maxTileHeight =
 
 export function initSvgDrawData(graphState: GraphState): GraphDrawData {
     if (graphState.beats.length === 0) {
-        return { beats: [], edges: [] };
+        return { beats: [], edges: [], viewBox, centerTransform };
     }
 
     const [cmin, cmax] = normalizeColor(graphState);
@@ -66,7 +70,12 @@ export function initSvgDrawData(graphState: GraphState): GraphDrawData {
     );
     const edgesDrawData = getEdgesDrawData(beatsDrawData, halfSize);
 
-    return { beats: beatsDrawData, edges: edgesDrawData };
+    return {
+        beats: beatsDrawData,
+        edges: edgesDrawData,
+        viewBox,
+        centerTransform,
+    };
 }
 
 function getBeatsDrawData(
@@ -116,9 +125,9 @@ function getBeatsDrawData(
         const color = getBeatColor(graphState, beat, cmin, cmax);
 
         const drawCommand = `M ${outerArcStart.toString()} 
-        A ${outerCircleRadius},${outerCircleRadius} 0 0 0 ${outerArcEnd.toString()}
+        A ${outerCircleRadius.toString()},${outerCircleRadius.toString()} 0 0 0 ${outerArcEnd.toString()}
         L ${innerArcEnd.toString()}
-        A ${innerCircleRadius},${innerCircleRadius} 0 0 1 ${innerArcStart.toString()}`;
+        A ${innerCircleRadius.toString()},${innerCircleRadius.toString()} 0 0 1 ${innerArcStart.toString()}`;
 
         const drawData: BeatDrawData = {
             beat,
@@ -175,7 +184,7 @@ function getEdgesDrawData(
                 strokeWidth: Math.min(startWidth, endWidth),
                 drawCommand: `
                         M ${edgeStart.toString()}
-                        Q ${halfSize},${halfSize} ${edgeEnd.toString()}`,
+                        Q ${halfSize.toFixed()},${halfSize.toFixed()} ${edgeEnd.toString()}`,
                 color: drawData.color,
                 activeColor: drawData.activeColor,
             };

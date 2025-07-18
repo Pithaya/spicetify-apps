@@ -8,12 +8,14 @@ import { Home } from './components/Home';
 import { SettingsButton } from './components/settings/SettingsButton';
 import type { JukeboxSongState } from './models/jukebox-song-state';
 
-import './css/index.css';
+import './css/tailwind.css';
 
 function App(): JSX.Element {
     const [songState, setSongState] = useState<JukeboxSongState | null>(null);
+    const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
     useSubscription(window.jukebox.songState$, setSongState);
+    useSubscription(window.jukebox.isEnabled$, setIsEnabled);
 
     async function init(): Promise<void> {
         await whatsNew('eternal-jukebox', version, {
@@ -37,7 +39,7 @@ function App(): JSX.Element {
 
     let appContent;
 
-    if (window.jukebox.isEnabled) {
+    if (isEnabled) {
         if (songState !== null) {
             appContent = <Home />;
         } else {

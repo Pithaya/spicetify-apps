@@ -9,10 +9,10 @@ type Props = {
 export function PlaybarButton(props: Readonly<Props>): JSX.Element {
     const [isActive, setIsActive] = useState(false);
 
-    useSubscription(window.jukebox.stateChanged$, setIsActive);
+    useSubscription(window.jukebox.isEnabled$, setIsActive);
 
     async function toggleJukebox(): Promise<void> {
-        await window.jukebox.setEnabled(!window.jukebox.isEnabled);
+        await window.jukebox.toggle();
     }
 
     const label = isActive ? 'Disable jukebox' : 'Enable jukebox';

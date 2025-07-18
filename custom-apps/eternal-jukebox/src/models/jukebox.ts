@@ -20,25 +20,22 @@ export type StatsChangedEvent = {
  * Global class to control the jukebox.
  */
 export class Jukebox {
-    /**
-     * The jukebox state for the current track.
-     */
-    private _songState: JukeboxSongState | null = null;
+    // #region Properties
 
     private readonly songStateSubject: BehaviorSubject<JukeboxSongState | null> =
         new BehaviorSubject<JukeboxSongState | null>(null);
 
-    public songState$: Observable<JukeboxSongState | null> =
+    /**
+     * The jukebox state for the current track.
+     */
+    public readonly songState$: Observable<JukeboxSongState | null> =
         this.songStateSubject.asObservable();
 
-    public get songState(): JukeboxSongState | null {
-        return this._songState;
-    }
+    private readonly isEnabledSubject: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
 
-    public set songState(value: JukeboxSongState | null) {
-        this._songState = value;
-        this.songStateSubject.next(value);
-    }
+    public isEnabled$: Observable<boolean> =
+        this.isEnabledSubject.asObservable();
 
     /**
      * Jukebox settings.
@@ -50,32 +47,18 @@ export class Jukebox {
      */
     private driver: Driver | null = null;
 
-    public get isEnabled(): boolean {
-        return this.stateChangedSubject.value;
-    }
+    // #endregion
 
-    public async setEnabled(value: boolean): Promise<void> {
-        if (value) {
-            await this.enable();
-        } else {
-            this.disable();
-        }
-    }
+    // #region Subscriptions
 
     private songChangedSubscription: Subscription = new Subscription();
     private driverProcessSubscription: Subscription = new Subscription();
 
-    private readonly statsChangedSubject: Subject<StatsChangedEvent> =
+    private readonly statsSubject: Subject<StatsChangedEvent> =
         new Subject<StatsChangedEvent>();
 
     public statsChanged$: Observable<StatsChangedEvent> =
-        this.statsChangedSubject.asObservable();
-
-    private readonly stateChangedSubject: BehaviorSubject<boolean> =
-        new BehaviorSubject<boolean>(false);
-
-    public stateChanged$: Observable<boolean> =
-        this.stateChangedSubject.asObservable();
+        this.statsSubject.asObservable();
 
     public constructor() {
         this.settings = SettingsService.settings;
@@ -84,23 +67,33 @@ export class Jukebox {
     public async reloadSettings(): Promise<void> {
         this.settings = SettingsService.settings;
 
-        if (this.isEnabled) {
-            this.stop();
-            await this.start();
+        if (this.isEnabledSubject.value) {
+            await this.restart();
         }
+    }
+
+    public async toggle(): Promise<void> {
+        if (this.isEnabledSubject.value) {
+            this.disable();
+        } else {
+            await this.enable();
+        }
+    }
+
+    public async restart(): Promise<void> {
+        this.stop();
+        await this.start();
     }
 
     /**
      * Starts the Jukebox.
      */
     public async enable(): Promise<void> {
-        this.stateChangedSubject.next(true);
+        this.isEnabledSubject.next(true);
 
-        // FIXME: Don't use a subscription here
         const source = fromEvent(Spicetify.Player, 'songchange');
         const subscription = source.subscribe(() => {
-            this.stop();
-            void this.start();
+            void this.restart();
         });
 
         this.songChangedSubscription.add(subscription);
@@ -116,7 +109,7 @@ export class Jukebox {
         this.songChangedSubscription.unsubscribe();
         this.songChangedSubscription = new Subscription();
 
-        this.stateChangedSubject.next(false);
+        this.isEnabledSubject.next(false);
     }
 
     /**
@@ -127,16 +120,17 @@ export class Jukebox {
         this.driver = null;
         this.driverProcessSubscription.unsubscribe();
         this.driverProcessSubscription = new Subscription();
-        this.songState = null;
+        this.songStateSubject.next(null);
     }
 
     /**
      * Initialize and start the jukebox for the current track.
      */
     private async start(): Promise<void> {
-        const currentTrack = Spicetify.Player.data.item;
+        const currentTrack = Spicetify.Player.data?.item;
 
         if (currentTrack === undefined) {
+            this.disableWithError('No track is currently playing.');
             return;
         }
 
@@ -178,26 +172,32 @@ export class Jukebox {
 
         const graph = branchGenerator.generateGraph();
 
-        this.songState = new JukeboxSongState(
+        const songState = new JukeboxSongState(
             currentTrack,
             remixedAnalysis,
             graph,
         );
 
-        this.driver = new Driver(this.songState, this.settings);
+        this.songStateSubject.next(songState);
+
+        this.driver = new Driver(songState, this.settings);
+
         this.driverProcessSubscription.add(
             this.driver.onProgress$.subscribe(() => {
-                this.statsChangedSubject.next({
-                    beatsPlayed: this.songState?.beatsPlayed ?? 0,
+                const songState = this.songStateSubject.value;
+
+                this.statsSubject.next({
+                    beatsPlayed: songState?.beatsPlayed ?? 0,
                     currentRandomBranchChance:
-                        this.songState?.currentRandomBranchChance ?? 0,
+                        songState?.currentRandomBranchChance ?? 0,
                     listenTime:
-                        this.songState !== null
-                            ? new Date().getTime() - this.songState.startTime
+                        songState !== null
+                            ? new Date().getTime() - songState.startTime
                             : 0,
                 });
             }),
         );
+
         this.driver.start();
     }
 

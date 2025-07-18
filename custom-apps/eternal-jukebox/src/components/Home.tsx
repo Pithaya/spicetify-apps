@@ -1,9 +1,9 @@
-import styles from './Home.module.scss';
 import React, { useEffect, useState } from 'react';
-import { JukeboxVisualizer } from './visualizer/JukeboxVisualizer';
-import { millisToMinutesAndSeconds } from '../utils/time-utils';
 import { type GraphState } from '../models/graph/graph-state';
+import { millisToMinutesAndSeconds } from '../utils/time-utils';
+import styles from './Home.module.scss';
 import { SettingsButton } from './settings/SettingsButton';
+import { JukeboxVisualizer } from './visualizer/JukeboxVisualizer';
 
 type TrackState = {
     trackName: string;
@@ -72,28 +72,42 @@ export function Home(): JSX.Element {
 
     return (
         <div className={styles.container}>
-            <div className={styles['title']}>
+            <div
+                className={Spicetify.classnames(
+                    styles['area-title'],
+                    'flex flex-col items-center justify-start',
+                )}
+            >
                 <h1>{trackState.trackName}</h1>
                 <p>by</p>
                 <h2>{trackState.artistName}</h2>
             </div>
 
-            <div className={styles['button']}>
+            <div
+                className={Spicetify.classnames(
+                    styles['area-button'],
+                    'flex items-start justify-end pe-8',
+                )}
+            >
                 <SettingsButton />
             </div>
 
-            <div className={styles['content']}>
+            <div className={Spicetify.classnames(styles['area-content'])}>
                 <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
             </div>
 
-            <div className={styles.stats}>
-                <span>{`Total Beats: ${statsState.beatsPlayed}`}</span>
+            <div
+                className={Spicetify.classnames(
+                    styles['area-stats'],
+                    'flex justify-around py-4',
+                )}
+            >
+                <span>Total Beats: {statsState.beatsPlayed.toFixed()}</span>
                 <span>
-                    {`Current branch change: ${Math.round(
-                        statsState.currentRandomBranchChance,
-                    )}%`}
+                    Current branch change:{' '}
+                    {statsState.currentRandomBranchChance.toFixed(2)}%
                 </span>
-                <span>{`Listen Time: ${statsState.listenTime}`}</span>
+                <span>Listen Time: {statsState.listenTime}</span>
             </div>
         </div>
     );
