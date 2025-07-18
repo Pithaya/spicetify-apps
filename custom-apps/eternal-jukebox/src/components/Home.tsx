@@ -72,42 +72,42 @@ export function Home(): JSX.Element {
 
     return (
         <div className={styles.container}>
-            <div
-                className={Spicetify.classnames(
-                    styles['area-title'],
-                    'flex flex-col items-center justify-start',
-                )}
-            >
-                <h1>{trackState.trackName}</h1>
-                <p>by</p>
-                <h2>{trackState.artistName}</h2>
-            </div>
-
-            <div
-                className={Spicetify.classnames(
-                    styles['area-button'],
-                    'flex items-start justify-end pe-8',
-                )}
-            >
+            <div className="flex justify-end pe-4 xl:hidden">
                 <SettingsButton />
             </div>
 
-            <div className={Spicetify.classnames(styles['area-content'])}>
+            <div
+                className={Spicetify.classnames(
+                    styles['area-content'],
+                    'min-h-0',
+                )}
+            >
                 <JukeboxVisualizer state={graphState}></JukeboxVisualizer>
             </div>
 
             <div
                 className={Spicetify.classnames(
-                    styles['area-stats'],
-                    'flex justify-around py-4',
+                    styles['area-side'],
+                    'me-4 mb-4 flex flex-col items-end justify-between',
                 )}
             >
-                <span>Total Beats: {statsState.beatsPlayed.toFixed()}</span>
-                <span>
-                    Current branch change:{' '}
-                    {statsState.currentRandomBranchChance.toFixed(2)}%
-                </span>
-                <span>Listen Time: {statsState.listenTime}</span>
+                <div className="hidden xl:block">
+                    <SettingsButton />
+                </div>
+                <div className="flex min-w-96 flex-col gap-1 rounded-lg bg-(--spice-sidebar) p-4">
+                    <p className="mb-4 flex items-center gap-1">
+                        <h1 className="text-lg font-bold">
+                            {trackState.trackName}
+                        </h1>
+                        <span>by {trackState.artistName}</span>
+                    </p>
+                    <span>Total Beats: {statsState.beatsPlayed.toFixed()}</span>
+                    <span>
+                        Current branch change:{' '}
+                        {statsState.currentRandomBranchChance.toFixed(2)}%
+                    </span>
+                    <span>Listen Time: {statsState.listenTime}</span>
+                </div>
             </div>
         </div>
     );
