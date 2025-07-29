@@ -27,6 +27,7 @@ export class Jukebox {
 
     /**
      * The jukebox state for the current track.
+     * This is generated once for the song and used by the driver.
      */
     public readonly songState$: Observable<JukeboxSongState | null> =
         this.songStateSubject.asObservable();
@@ -91,8 +92,8 @@ export class Jukebox {
     public async enable(): Promise<void> {
         this.isEnabledSubject.next(true);
 
-        const source = fromEvent(Spicetify.Player, 'songchange');
-        const subscription = source.subscribe(() => {
+        const songChange$ = fromEvent(Spicetify.Player, 'songchange');
+        const subscription = songChange$.subscribe(() => {
             void this.restart();
         });
 
