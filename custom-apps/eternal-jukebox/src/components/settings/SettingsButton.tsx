@@ -1,6 +1,5 @@
 import { Settings } from 'lucide-react';
 import React, { type CSSProperties } from 'react';
-import styles from './SettingsButton.module.scss';
 import { SettingsModal } from './SettingsModal';
 
 export function SettingsButton(): JSX.Element {
@@ -24,10 +23,8 @@ export function SettingsButton(): JSX.Element {
 
     return (
         <button
-            className={styles['settings-button']}
-            onClick={() => {
-                onClick();
-            }}
+            className="flex cursor-pointer items-center justify-center border-none bg-(--spice-sidebar) text-(--spice-subtext) transition-colors hover:bg-(--spice-button-disabled)"
+            onClick={onClick}
             style={style}
         >
             <Settings stroke="currentColor" size={iconSize}></Settings>

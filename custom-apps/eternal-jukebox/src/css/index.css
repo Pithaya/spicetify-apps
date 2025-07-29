@@ -3,3 +3,7 @@
 main:has(#eternal-jukebox) {
     position: initial;
 }
+
+@theme {
+    --container-8xl: 96rem;
+}
