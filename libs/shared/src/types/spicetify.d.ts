@@ -427,13 +427,22 @@ declare namespace Spicetify {
             callback: (event?: Event & { data: PlayerState }) => void,
         ): void;
 		/**
-		 * Unregister added event listener `songchange`.
+		 * Unregister added event listener `onplaypause`.
 		 * @param type
 		 * @param callback
 		 */
 		function removeEventListener(
             type: 'onplaypause',
             callback: (event?: Event & { data: PlayerState }) => void,
+        ): void;
+		   /**
+         * Unregister added event listener `onprogress`.
+         * @param type
+         * @param callback
+         */
+        function removeEventListener(
+            type: 'onprogress',
+            callback: (event?: Event & { data: number }) => void,
         ): void;
 		/**
 		 * Unregister added event listener `type`.

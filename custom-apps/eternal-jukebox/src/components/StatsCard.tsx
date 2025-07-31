@@ -1,69 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { type DriverState } from '../models/driver-state';
 import { millisToMinutesAndSeconds } from '../utils/time-utils';
 
-type TrackState = {
+export type Props = {
     trackName: string;
-    artistName: string;
+    driverState: DriverState;
 };
 
-type StatsState = {
-    beatsPlayed: number;
-    currentRandomBranchChance: number;
-    listenTime: string;
-};
-
-export function StatsCard(): JSX.Element {
-    const [trackState, setTrackState] = useState<TrackState>({
-        trackName: '',
-        artistName: '',
-    });
-
-    const [statsState, setStatsState] = useState<StatsState>({
-        beatsPlayed: 0,
-        listenTime: '0',
-        currentRandomBranchChance: 0,
-    });
-
-    useEffect(() => {
-        const subscription = window.jukebox.songState$.subscribe(
-            (songState) => {
-                setTrackState({
-                    trackName: songState?.track?.metadata?.title ?? '',
-                    artistName: songState?.track?.metadata?.artist_name ?? '',
-                });
-            },
-        );
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
-
-    useEffect(() => {
-        const subscription = window.jukebox.statsChanged$.subscribe((stats) => {
-            setStatsState({
-                beatsPlayed: stats.beatsPlayed,
-                currentRandomBranchChance:
-                    stats.currentRandomBranchChance * 100,
-                listenTime: millisToMinutesAndSeconds(stats.listenTime),
-            });
-        });
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
-
+export function StatsCard(props: Readonly<Props>): JSX.Element {
     return (
         <div className="flex min-w-96 flex-col gap-1 rounded-lg bg-(--spice-sidebar) p-4">
-            <h1 className="text-lg font-bold">{trackState.trackName}</h1>
+            <h1 className="text-lg font-bold">{props.trackName}</h1>
 
-            <span>Total beats: {statsState.beatsPlayed.toFixed()}</span>
+            <span>Total beats: {props.driverState.beatsPlayed.toFixed()}</span>
             <span>
                 Current branch change:{' '}
-                {statsState.currentRandomBranchChance.toFixed(2)}%
+                {(props.driverState.currentRandomBranchChance * 100).toFixed(2)}
+                %
             </span>
-            <span>Listen time: {statsState.listenTime}</span>
+            <span>
+                Listen time:{' '}
+                {millisToMinutesAndSeconds(props.driverState.listenTime)}
+            </span>
         </div>
     );
 }

@@ -10,11 +10,6 @@ export class Beat {
     public readonly index: number;
 
     /**
-     * Is this beat playing.
-     */
-    public isPlaying: boolean = false;
-
-    /**
      * The next beat in the song.
      */
     public next: Beat | null = null;
@@ -40,11 +35,6 @@ export class Beat {
     public duration: number;
 
     /**
-     * Number of time this beat has been played.
-     */
-    public playCount: number = 0;
-
-    /**
      * The end point (in milliseconds) of the beat.
      */
     public get end(): number {
@@ -58,7 +48,7 @@ export class Beat {
     }
 
     public toString(): string {
-        return `[${this.index}]: ${this.start} - ${this.end} (${this.duration})`;
+        return `[${this.index.toFixed()}]: ${this.start.toString()} - ${this.end.toString()} (${this.duration.toString()})`;
     }
 
     public isInBeat(time: number): boolean {

@@ -1,21 +1,23 @@
 import React from 'react';
 import { initSvgDrawData } from '../../helpers/visualization-builder';
-import type { GraphState } from '../../models/graph/graph-state';
+import { type DriverState } from '../../models/driver-state';
+import { type JukeboxSongState } from '../../models/jukebox-song-state';
 import { VisualizerEdge } from './VisualizerEdge';
 import { VisualizerSlice } from './VisualizerSlice';
 
 type Props = {
-    state: GraphState;
+    songState: JukeboxSongState;
+    driverState: DriverState;
 };
 
 // Reference: https://dev.to/mustapha/how-to-create-an-interactive-svg-donut-chart-using-angular-19eo
 
 export function JukeboxVisualizer(props: Readonly<Props>): JSX.Element {
-    if (props.state.beats.length === 0) {
-        return <div>Loading...</div>;
-    }
+    console.time('initSvgDrawData');
 
-    const drawData = initSvgDrawData(props.state);
+    const drawData = initSvgDrawData(props.songState, props.driverState);
+
+    console.timeEnd('initSvgDrawData');
 
     return (
         <svg
@@ -28,12 +30,19 @@ export function JukeboxVisualizer(props: Readonly<Props>): JSX.Element {
                     <VisualizerSlice
                         key={currentData.beat.index}
                         drawData={currentData}
+                        isPlaying={props.driverState.playingBeats.has(
+                            currentData.beat.index,
+                        )}
                     />
                 ))}
                 {drawData.edges.map((currentData) => (
                     <VisualizerEdge
-                        key={`${currentData.edge.source.index.toFixed()}-${currentData.edge.destination.index.toFixed()}`}
+                        key={currentData.edge.id}
                         drawData={currentData}
+                        isPlaying={
+                            props.driverState.playingBranch ===
+                            currentData.edge.id
+                        }
                     />
                 ))}
             </g>

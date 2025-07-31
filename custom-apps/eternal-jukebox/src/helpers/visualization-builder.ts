@@ -1,7 +1,12 @@
 import type { Segment } from '@shared/api/models/audio-analysis';
 import tinycolor from 'tinycolor2';
+import type { DriverState } from '../models/driver-state';
 import type { Beat } from '../models/graph/beat';
-import type { GraphState } from '../models/graph/graph-state';
+import type { JukeboxSongState } from '../models/jukebox-song-state';
+import type {
+    RemixedSegment,
+    RemixedTimeInterval,
+} from '../models/remixer.types';
 import type { BeatDrawData } from '../models/visualization/beat-draw-data';
 import type { EdgeDrawData } from '../models/visualization/edge-draw-data';
 import type { GraphDrawData } from '../models/visualization/graph-draw-data';
@@ -45,24 +50,36 @@ const isPlayingAdditionalTileHeight = 1;
 const maxTileHeight =
     halfSize - (innerCircleRadius + isPlayingAdditionalTileHeight);
 
-export function initSvgDrawData(graphState: GraphState): GraphDrawData {
-    if (graphState.beats.length === 0) {
+export function initSvgDrawData(
+    songState: JukeboxSongState,
+    driverState: DriverState,
+): GraphDrawData {
+    const beats = songState.graph.beats;
+    const segments = songState.analysis.segments;
+    const remixedBeats = songState.analysis.beats;
+    const playingBeats = driverState.playingBeats;
+    const playedBeats = driverState.playedBeats;
+
+    if (beats.length === 0) {
         return { beats: [], edges: [], viewBox, centerTransform };
     }
 
-    const [cmin, cmax] = normalizeColor(graphState);
+    const [cmin, cmax] = normalizeColor(segments);
 
     // Prevent an empty first slice if the first beat doesn't start at 0
-    const offset = graphState.beats[0].start;
+    const offset = beats[0].start;
 
     // Use the run time from the last beat
     const totalDuration =
-        graphState.beats[graphState.beats.length - 1].start +
-        graphState.beats[graphState.beats.length - 1].duration -
+        beats[beats.length - 1].start +
+        beats[beats.length - 1].duration -
         offset;
 
     const beatsDrawData = getBeatsDrawData(
-        graphState,
+        beats,
+        remixedBeats,
+        playingBeats,
+        playedBeats,
         offset,
         totalDuration,
         cmin,
@@ -79,20 +96,26 @@ export function initSvgDrawData(graphState: GraphState): GraphDrawData {
 }
 
 function getBeatsDrawData(
-    graphState: GraphState,
+    beats: Beat[],
+    remixedBeats: RemixedTimeInterval[],
+    playingBeats: Set<number>,
+    playedBeats: Map<number, number>,
     offset: number,
     totalDuration: number,
     cmin: number[],
     cmax: number[],
 ): BeatDrawData[] {
-    return graphState.beats.map((beat) => {
+    return beats.map((beat) => {
         const percentFromStart = ((beat.start - offset) * 100) / totalDuration;
         const percentOfSong = (beat.duration * 100) / totalDuration;
 
+        const isPlaying = playingBeats.has(beat.index);
+        const playCount = playedBeats.get(beat.index) ?? 0;
+
         const currentTileHeight = Math.min(
             minTileHeight +
-                tileHeightIncrementPerBeat * beat.playCount +
-                (beat.isPlaying ? isPlayingAdditionalTileHeight : 0),
+                tileHeightIncrementPerBeat * playCount +
+                (isPlaying ? isPlayingAdditionalTileHeight : 0),
             maxTileHeight,
         );
 
@@ -122,7 +145,7 @@ function getBeatsDrawData(
             svgSize,
         );
 
-        const color = getBeatColor(graphState, beat, cmin, cmax);
+        const color = getBeatColor(remixedBeats, beat, cmin, cmax);
 
         const drawCommand = `M ${outerArcStart.toString()} 
         A ${outerCircleRadius.toString()},${outerCircleRadius.toString()} 0 0 0 ${outerArcEnd.toString()}
@@ -196,11 +219,11 @@ function getEdgesDrawData(
     return result;
 }
 
-function normalizeColor(graphState: GraphState): number[][] {
+function normalizeColor(segments: RemixedSegment[]): number[][] {
     const cmin = [100, 100, 100];
     const cmax = [-100, -100, -100];
 
-    for (const segment of graphState.segments) {
+    for (const segment of segments) {
         for (let j = 0; j < 3; j++) {
             const timbre = segment.timbre[j + 1];
 
@@ -223,13 +246,12 @@ function normalizeColor(graphState: GraphState): number[][] {
  * @returns The color.
  */
 function getBeatColor(
-    graphState: GraphState,
+    remixedBeats: RemixedTimeInterval[],
     beat: Beat,
     cmin: number[],
     cmax: number[],
 ): string {
-    const segment =
-        graphState.remixedBeats[beat.index].firstOverlappingSegment ?? null;
+    const segment = remixedBeats[beat.index].firstOverlappingSegment ?? null;
 
     if (segment !== null) {
         return getSegmentColor(segment, cmin, cmax);

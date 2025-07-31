@@ -1,19 +1,22 @@
-import type { Observable } from 'rxjs';
-import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
-import { GraphGenerator } from '../helpers/graph-generator.js';
-import { Remixer } from '../helpers/remixer';
-import type { JukeboxSettings } from './jukebox-settings.js';
-import { JukeboxSongState } from './jukebox-song-state';
-
 import { getTrackAudioAnalysis } from '@shared/api/endpoints/tracks/get-audio-analysis';
 import type { AudioAnalysis } from '@shared/api/models/audio-analysis';
+import type { Observable } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Driver } from '../driver';
+import { GraphGenerator } from '../helpers/graph-generator.js';
+import { Remixer } from '../helpers/remixer';
 import { SettingsService } from '../services/settings-service';
+import { type DriverState } from './driver-state.js';
+import type { JukeboxSettings } from './jukebox-settings.js';
+import { type JukeboxSongState } from './jukebox-song-state';
 
-export type StatsChangedEvent = {
-    beatsPlayed: number;
-    currentRandomBranchChance: number;
-    listenTime: number;
+const emptyDriverState: DriverState = {
+    beatsPlayed: 0,
+    currentRandomBranchChance: 0,
+    listenTime: 0,
+    playedBeats: new Map<number, number>(),
+    playingBeats: new Set<number>(),
+    playingBranch: undefined,
 };
 
 /**
@@ -52,14 +55,13 @@ export class Jukebox {
 
     // #region Subscriptions
 
-    private songChangedSubscription: Subscription = new Subscription();
     private driverProcessSubscription: Subscription = new Subscription();
 
-    private readonly statsSubject: Subject<StatsChangedEvent> =
-        new Subject<StatsChangedEvent>();
+    private readonly driverStateSubject: BehaviorSubject<DriverState> =
+        new BehaviorSubject<DriverState>(emptyDriverState);
 
-    public statsChanged$: Observable<StatsChangedEvent> =
-        this.statsSubject.asObservable();
+    public driverState$: Observable<DriverState> =
+        this.driverStateSubject.asObservable();
 
     public constructor() {
         this.settings = SettingsService.settings;
@@ -92,23 +94,26 @@ export class Jukebox {
     public async enable(): Promise<void> {
         this.isEnabledSubject.next(true);
 
-        const songChange$ = fromEvent(Spicetify.Player, 'songchange');
-        const subscription = songChange$.subscribe(() => {
-            void this.restart();
-        });
-
-        this.songChangedSubscription.add(subscription);
+        Spicetify.Player.addEventListener('songchange', this.onSongChange);
 
         await this.start();
     }
+
+    private readonly onSongChange = (
+        _event?: Event & {
+            data: Spicetify.PlayerState;
+        },
+    ) => {
+        void this.restart();
+    };
 
     /**
      * Disable the Jukebox.
      */
     public disable(): void {
         this.stop();
-        this.songChangedSubscription.unsubscribe();
-        this.songChangedSubscription = new Subscription();
+
+        Spicetify.Player.removeEventListener('songchange', this.onSongChange);
 
         this.isEnabledSubject.next(false);
     }
@@ -122,6 +127,7 @@ export class Jukebox {
         this.driverProcessSubscription.unsubscribe();
         this.driverProcessSubscription = new Subscription();
         this.songStateSubject.next(null);
+        this.driverStateSubject.next(emptyDriverState);
     }
 
     /**
@@ -173,29 +179,20 @@ export class Jukebox {
 
         const graph = branchGenerator.generateGraph();
 
-        const songState = new JukeboxSongState(
-            currentTrack,
-            remixedAnalysis,
+        const songState: JukeboxSongState = {
+            track: currentTrack,
+            analysis: remixedAnalysis,
             graph,
-        );
+        };
 
         this.songStateSubject.next(songState);
 
         this.driver = new Driver(songState, this.settings);
 
         this.driverProcessSubscription.add(
-            this.driver.onProgress$.subscribe(() => {
-                const songState = this.songStateSubject.value;
-
-                this.statsSubject.next({
-                    beatsPlayed: songState?.beatsPlayed ?? 0,
-                    currentRandomBranchChance:
-                        songState?.currentRandomBranchChance ?? 0,
-                    listenTime:
-                        songState !== null
-                            ? new Date().getTime() - songState.startTime
-                            : 0,
-                });
+            this.driver.onProgress$.subscribe((driverState) => {
+                console.log('driver state', driverState);
+                this.driverStateSubject.next(driverState);
             }),
         );
 
