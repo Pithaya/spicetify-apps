@@ -5,7 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { Driver } from '../driver';
 import { GraphGenerator } from '../helpers/graph-generator.js';
 import { Remixer } from '../helpers/remixer';
-import { SettingsService } from '../services/settings-service';
+import { getSettingsFromStorage } from '../utils/setting-utils';
 import { type DriverState } from './driver-state.js';
 import type { JukeboxSettings } from './jukebox-settings.js';
 import { type JukeboxSongState } from './jukebox-song-state';
@@ -64,11 +64,11 @@ export class Jukebox {
         this.driverStateSubject.asObservable();
 
     public constructor() {
-        this.settings = SettingsService.settings;
+        this.settings = getSettingsFromStorage();
     }
 
     public async reloadSettings(): Promise<void> {
-        this.settings = SettingsService.settings;
+        this.settings = getSettingsFromStorage();
 
         if (this.isEnabledSubject.value) {
             await this.restart();

@@ -4,8 +4,9 @@ import { Subject } from 'rxjs';
 import { type DriverState } from './models/driver-state';
 import type { Beat } from './models/graph/beat';
 import type { Edge } from './models/graph/edge';
-import { JukeboxSettings } from './models/jukebox-settings';
+import { type JukeboxSettings } from './models/jukebox-settings';
 import type { JukeboxSongState } from './models/jukebox-song-state';
+import { MIN_BEATS_BEFORE_BRANCHING } from './utils/setting-utils';
 
 // Used to print debug messages.
 const DEBUG = true;
@@ -422,9 +423,7 @@ export class Driver {
         }
 
         // Don't branch too fast
-        if (
-            this.beatsSinceLastBranch <= JukeboxSettings.minBeatsBeforeBranching
-        ) {
+        if (this.beatsSinceLastBranch <= MIN_BEATS_BEFORE_BRANCHING) {
             return false;
         }
 
