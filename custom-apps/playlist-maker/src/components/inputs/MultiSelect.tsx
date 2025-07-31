@@ -308,7 +308,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                     )}
                 </ul>
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex max-h-48 flex-wrap gap-1 overflow-y-scroll">
                 {selectedItems.map((selectedItemForRender, index) => (
                     <span
                         className="hover:bg-spice-tab-active bg-spice-highlight-elevated flex max-w-72 items-center gap-2 rounded-full !px-2.5"
