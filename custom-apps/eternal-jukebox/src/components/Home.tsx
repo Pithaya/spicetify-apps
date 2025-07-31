@@ -1,6 +1,5 @@
 import { useObservableEagerState } from 'observable-hooks';
-import React, { useEffect, useState } from 'react';
-import { type GraphState } from '../models/graph/graph-state';
+import React from 'react';
 import { SettingsButton } from './settings/SettingsButton';
 import { StatsCard } from './StatsCard';
 import { JukeboxVisualizer } from './visualizer/JukeboxVisualizer';
@@ -8,28 +7,7 @@ import { JukeboxVisualizer } from './visualizer/JukeboxVisualizer';
 export function Home(): JSX.Element {
     const isEnabled = useObservableEagerState(window.jukebox.isEnabled$);
     const songState = useObservableEagerState(window.jukebox.songState$);
-
-    const [graphState, setGraphState] = useState<GraphState>({
-        beats: [],
-        remixedBeats: [],
-        segments: [],
-    });
-
-    useEffect(() => {
-        const subscription = window.jukebox.songState$.subscribe(
-            (songState) => {
-                setGraphState({
-                    beats: songState?.graph.beats ?? [],
-                    segments: songState?.analysis.segments ?? [],
-                    remixedBeats: songState?.analysis.beats ?? [],
-                });
-            },
-        );
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
+    const driverState = useObservableEagerState(window.jukebox.driverState$);
 
     return (
         <div className="@container h-full w-full">
@@ -52,10 +30,16 @@ export function Home(): JSX.Element {
             {isEnabled && songState !== null && (
                 <div className="@8xl:flex-row flex h-full w-full flex-col">
                     <div className="min-h-0 grow">
-                        <JukeboxVisualizer state={graphState} />
+                        <JukeboxVisualizer
+                            songState={songState}
+                            driverState={driverState}
+                        />
                     </div>
                     <div className="mx-4 mb-4 shrink-0 self-end">
-                        <StatsCard />
+                        <StatsCard
+                            trackName={songState.track.metadata?.title ?? '-'}
+                            driverState={driverState}
+                        />
                     </div>
                 </div>
             )}

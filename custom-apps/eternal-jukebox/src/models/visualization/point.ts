@@ -5,7 +5,7 @@ export class Point {
     ) {}
 
     public toString(): string {
-        return `${this.x},${this.y}`;
+        return `${this.x.toString()},${this.y.toString()}`;
     }
 
     public static getMiddlePoint(point1: Point, point2: Point): Point {

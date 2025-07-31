@@ -5,7 +5,7 @@ import type { Beat } from './beat';
  */
 export class Edge {
     public get id(): string {
-        return `${this.source.index}-${this.destination.index}`;
+        return `${this.source.index.toFixed()}-${this.destination.index.toFixed()}`;
     }
 
     /**
@@ -24,11 +24,6 @@ export class Edge {
     public readonly distance: number;
 
     /**
-     * Is the current edge playing.
-     */
-    public isPlaying: boolean;
-
-    /**
      * Is the current edge deleted.
      */
     public deleted: boolean;
@@ -38,7 +33,6 @@ export class Edge {
         this.destination = destination;
         this.distance = distance;
 
-        this.isPlaying = false;
         this.deleted = false;
     }
 }

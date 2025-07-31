@@ -298,196 +298,205 @@ declare namespace Spicetify {
 		hifiStatus: number;
 	};
 	namespace Player {
-		/**
-		 * Register a listener `type` on Spicetify.Player.
-		 *
-		 * On default, `Spicetify.Player` always dispatch:
-		 *  - `songchange` type when player changes track.
-		 *  - `onplaypause` type when player plays or pauses.
-		 *  - `onprogress` type when track progress changes.
-		 *  - `appchange` type when user changes page.
-		 */
-		function addEventListener(type: string, callback: (event?: Event) => void): void;
-		function addEventListener(type: "songchange", callback: (event?: Event & { data: PlayerState }) => void): void;
-		function addEventListener(type: "onplaypause", callback: (event?: Event & { data: PlayerState }) => void): void;
-		function addEventListener(type: "onprogress", callback: (event?: Event & { data: number }) => void): void;
-		function addEventListener(
-			type: "appchange",
-			callback: (
-				event?: Event & {
-					data: {
-						/**
-						 * App href path
-						 */
-						path: string;
-						/**
-						 * App container
-						 */
-						container: HTMLElement;
-					};
-				}
-			) => void
-		): void;
-		/**
-		 * Skip to previous track.
-		 */
-		function back(): void;
-		/**
-		 * An object contains all information about current track and player.
-		 */
-		const data: PlayerState | null;
-		/**
-		 * Decrease a small amount of volume.
-		 */
-		function decreaseVolume(): void;
-		/**
-		 * Dispatches an event at `Spicetify.Player`.
-		 *
-		 * On default, `Spicetify.Player` always dispatch
-		 *  - `songchange` type when player changes track.
-		 *  - `onplaypause` type when player plays or pauses.
-		 *  - `onprogress` type when track progress changes.
-		 *  - `appchange` type when user changes page.
-		 */
-		function dispatchEvent(event: Event): void;
-		const eventListeners: {
-			[key: string]: Array<(event?: Event) => void>;
-		};
-		/**
-		 * Convert milisecond to `mm:ss` format
-		 * @param milisecond
-		 */
-		function formatTime(milisecond: number): string;
-		/**
-		 * Return song total duration in milisecond.
-		 */
-		function getDuration(): number;
-		/**
-		 * Return mute state
-		 */
-		function getMute(): boolean;
-		/**
-		 * Return elapsed duration in milisecond.
-		 */
-		function getProgress(): number;
-		/**
-		 * Return elapsed duration in percentage (0 to 1).
-		 */
-		function getProgressPercent(): number;
-		/**
-		 * Return current Repeat state (No repeat = 0/Repeat all = 1/Repeat one = 2).
-		 */
-		function getRepeat(): number;
-		/**
-		 * Return current shuffle state.
-		 */
-		function getShuffle(): boolean;
-		/**
-		 * Return track heart state.
-		 */
-		function getHeart(): boolean;
-		/**
-		 * Return current volume level (0 to 1).
-		 */
-		function getVolume(): number;
-		/**
-		 * Increase a small amount of volume.
-		 */
-		function increaseVolume(): void;
-		/**
-		 * Return a boolean whether player is playing.
-		 */
-		function isPlaying(): boolean;
-		/**
-		 * Skip to next track.
-		 */
-		function next(): void;
-		/**
-		 * Pause track.
-		 */
-		function pause(): void;
-		/**
-		 * Resume track.
-		 */
-		function play(): void;
-		/**
-		 * Play a track, playlist, album, etc. immediately
-		 * @param uri Spotify URI
-		 * @param context
-		 * @param options
-		 */
-		function playUri(uri: string, context?: any, options?: any): Promise<void>;
-		/**
-		 * Unregister added event listener `songchange`.
-		 * @param type
-		 * @param callback
-		 */
-		function removeEventListener(
+        /**
+         * Register a listener `type` on Spicetify.Player.
+         *
+         * On default, `Spicetify.Player` always dispatch:
+         *  - `songchange` type when player changes track.
+         *  - `onplaypause` type when player plays or pauses.
+         *  - `onprogress` type when track progress changes.
+         *  - `appchange` type when user changes page.
+         */
+        function addEventListener(type: string, callback: (event?: Event) => void): void;
+        function addEventListener(type: "songchange", callback: (event?: Event & { data: PlayerState }) => void): void;
+        function addEventListener(type: "onplaypause", callback: (event?: Event & { data: PlayerState }) => void): void;
+        function addEventListener(type: "onprogress", callback: (event?: Event & { data: number }) => void): void;
+        function addEventListener(
+            type: "appchange",
+            callback: (
+                event?: Event & {
+                    data: {
+                        /**
+                         * App href path
+                         */
+                        path: string;
+                        /**
+                         * App container
+                         */
+                        container: HTMLElement;
+                    };
+                }
+            ) => void
+        ): void;
+        /**
+         * Skip to previous track.
+         */
+        function back(): void;
+        /**
+         * An object contains all information about current track and player.
+         */
+        const data: PlayerState | null;
+        /**
+         * Decrease a small amount of volume.
+         */
+        function decreaseVolume(): void;
+        /**
+         * Dispatches an event at `Spicetify.Player`.
+         *
+         * On default, `Spicetify.Player` always dispatch
+         *  - `songchange` type when player changes track.
+         *  - `onplaypause` type when player plays or pauses.
+         *  - `onprogress` type when track progress changes.
+         *  - `appchange` type when user changes page.
+         */
+        function dispatchEvent(event: Event): void;
+        const eventListeners: {
+            [key: string]: Array<(event?: Event) => void>;
+        };
+        /**
+         * Convert milisecond to `mm:ss` format
+         * @param milisecond
+         */
+        function formatTime(milisecond: number): string;
+        /**
+         * Return song total duration in milisecond.
+         */
+        function getDuration(): number;
+        /**
+         * Return mute state
+         */
+        function getMute(): boolean;
+        /**
+         * Return elapsed duration in milisecond.
+         */
+        function getProgress(): number;
+        /**
+         * Return elapsed duration in percentage (0 to 1).
+         */
+        function getProgressPercent(): number;
+        /**
+         * Return current Repeat state (No repeat = 0/Repeat all = 1/Repeat one = 2).
+         */
+        function getRepeat(): number;
+        /**
+         * Return current shuffle state.
+         */
+        function getShuffle(): boolean;
+        /**
+         * Return track heart state.
+         */
+        function getHeart(): boolean;
+        /**
+         * Return current volume level (0 to 1).
+         */
+        function getVolume(): number;
+        /**
+         * Increase a small amount of volume.
+         */
+        function increaseVolume(): void;
+        /**
+         * Return a boolean whether player is playing.
+         */
+        function isPlaying(): boolean;
+        /**
+         * Skip to next track.
+         */
+        function next(): void;
+        /**
+         * Pause track.
+         */
+        function pause(): void;
+        /**
+         * Resume track.
+         */
+        function play(): void;
+        /**
+         * Play a track, playlist, album, etc. immediately
+         * @param uri Spotify URI
+         * @param context
+         * @param options
+         */
+        function playUri(uri: string, context?: any, options?: any): Promise<void>;
+        /**
+         * Unregister added event listener `songchange`.
+         * @param type
+         * @param callback
+         */
+        function removeEventListener(
             type: 'songchange',
             callback: (event?: Event & { data: PlayerState }) => void,
         ): void;
-		/**
-		 * Unregister added event listener `type`.
-		 * @param type
-		 * @param callback
-		 */
-		function removeEventListener(type: string, callback: (event?: Event) => void): void;
-		/**
-		 * Seek track to position.
-		 * @param position can be in percentage (0 to 1) or in milisecond.
-		 */
-		function seek(position: number): void;
-		/**
-		 * Turn mute on/off
-		 * @param state
-		 */
-		function setMute(state: boolean): void;
-		/**
-		 * Change Repeat mode
-		 * @param mode `0` No repeat. `1` Repeat all. `2` Repeat one track.
-		 */
-		function setRepeat(mode: number): void;
-		/**
-		 * Turn shuffle on/off.
-		 * @param state
-		 */
-		function setShuffle(state: boolean): void;
-		/**
-		 * Set volume level
-		 * @param level 0 to 1
-		 */
-		function setVolume(level: number): void;
-		/**
-		 * Seek to previous `amount` of milisecond
-		 * @param amount in milisecond. Default: 15000.
-		 */
-		function skipBack(amount?: number): void;
-		/**
-		 * Seek to next  `amount` of milisecond
-		 * @param amount in milisecond. Default: 15000.
-		 */
-		function skipForward(amount?: number): void;
-		/**
-		 * Toggle Heart (Favourite) track state.
-		 */
-		function toggleHeart(): void;
-		/**
-		 * Toggle Mute/No mute.
-		 */
-		function toggleMute(): void;
-		/**
-		 * Toggle Play/Pause.
-		 */
-		function togglePlay(): void;
-		/**
-		 * Toggle No repeat/Repeat all/Repeat one.
-		 */
-		function toggleRepeat(): void;
-		/**
-		 * Toggle Shuffle/No shuffle.
-		 */
-		function toggleShuffle(): void;
-	}
+        /**
+         * Unregister added event listener `onprogress`.
+         * @param type
+         * @param callback
+         */
+        function removeEventListener(
+            type: 'onprogress',
+            callback: (event?: Event & { data: number }) => void,
+        ): void;
+        /**
+         * Unregister added event listener `type`.
+         * @param type
+         * @param callback
+         */
+        function removeEventListener(type: string, callback: (event?: Event) => void): void;
+        /**
+         * Seek track to position.
+         * @param position can be in percentage (0 to 1) or in milisecond.
+         */
+        function seek(position: number): void;
+        /**
+         * Turn mute on/off
+         * @param state
+         */
+        function setMute(state: boolean): void;
+        /**
+         * Change Repeat mode
+         * @param mode `0` No repeat. `1` Repeat all. `2` Repeat one track.
+         */
+        function setRepeat(mode: number): void;
+        /**
+         * Turn shuffle on/off.
+         * @param state
+         */
+        function setShuffle(state: boolean): void;
+        /**
+         * Set volume level
+         * @param level 0 to 1
+         */
+        function setVolume(level: number): void;
+        /**
+         * Seek to previous `amount` of milisecond
+         * @param amount in milisecond. Default: 15000.
+         */
+        function skipBack(amount?: number): void;
+        /**
+         * Seek to next  `amount` of milisecond
+         * @param amount in milisecond. Default: 15000.
+         */
+        function skipForward(amount?: number): void;
+        /**
+         * Toggle Heart (Favourite) track state.
+         */
+        function toggleHeart(): void;
+        /**
+         * Toggle Mute/No mute.
+         */
+        function toggleMute(): void;
+        /**
+         * Toggle Play/Pause.
+         */
+        function togglePlay(): void;
+        /**
+         * Toggle No repeat/Repeat all/Repeat one.
+         */
+        function toggleRepeat(): void;
+        /**
+         * Toggle Shuffle/No shuffle.
+         */
+        function toggleShuffle(): void;
+    }
 	/**
 	 * Adds a track or array of tracks to prioritized queue.
 	 */

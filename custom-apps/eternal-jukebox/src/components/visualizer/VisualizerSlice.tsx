@@ -4,17 +4,16 @@ import type { BeatDrawData } from '../../models/visualization/beat-draw-data';
 
 type Props = {
     drawData: BeatDrawData;
+    isPlaying: boolean;
 };
 
 export function VisualizerSlice(props: Readonly<Props>): JSX.Element {
     const [isHovered, setIsHovered] = useState(false);
 
-    // TODO: Set the jukebox's "nextBeat" on click instead of seeking
-
     return (
         <path
             fill={
-                props.drawData.beat.isPlaying || isHovered
+                props.isPlaying || isHovered
                     ? props.drawData.activeColor
                     : props.drawData.color
             }
