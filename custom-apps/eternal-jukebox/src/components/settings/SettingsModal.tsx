@@ -1,16 +1,20 @@
-import styles from './SettingsModal.module.scss';
-import React, { useEffect, useState } from 'react';
-import type { JukeboxStoredSettings } from '../../models/jukebox-settings';
-import { JukeboxSettings } from '../../models/jukebox-settings';
-import { SettingsService } from '../../services/settings-service';
 import { MultiRangeSlider } from '@shared/components/inputs/MultiRangeSlider/MultiRangeSlider';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { CheckboxContainer } from '@shared/components/settings/CheckboxContainer/CheckboxContainer';
 import { SliderContainer } from '@shared/components/settings/SliderContainer/SliderContainer';
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import React, { useEffect, useState } from 'react';
+import { type JukeboxSettings } from '../../models/jukebox-settings';
+import {
+    DEFAULT_SETTINGS,
+    getSettingsFromStorage,
+    RANGE_MAX_BRANCH_DISTANCE,
+    RANGE_MIN_BRANCH_DISTANCE,
+    saveSettingsToStorage,
+} from '../../utils/setting-utils';
 
 export function SettingsModal(): JSX.Element {
-    const [settings, setSettings] = useState<JukeboxStoredSettings>(
-        SettingsService.storedSettings,
+    const [settings, setSettings] = useState<JukeboxSettings>(
+        getSettingsFromStorage(),
     );
 
     useEffect(() => {
@@ -18,11 +22,11 @@ export function SettingsModal(): JSX.Element {
             let isPopupRemoved = false;
 
             for (const record of records) {
-                record.removedNodes.forEach((x) => {
-                    if (x.nodeName === 'GENERIC-MODAL') {
+                for (const removedNode of record.removedNodes) {
+                    if (removedNode.nodeName === 'GENERIC-MODAL') {
                         isPopupRemoved = true;
                     }
-                });
+                }
             }
 
             if (isPopupRemoved) {
@@ -37,12 +41,12 @@ export function SettingsModal(): JSX.Element {
     }, []);
 
     useEffect(() => {
-        SettingsService.storedSettings = settings;
+        saveSettingsToStorage(settings);
     }, [settings]);
 
     function updateSettingsField(
-        field: keyof JukeboxStoredSettings,
-        value: any,
+        field: keyof JukeboxSettings,
+        value: string | number | boolean,
     ): void {
         if (typeof value !== typeof settings[field]) {
             throw new Error('Value type does not match field type');
@@ -56,22 +60,20 @@ export function SettingsModal(): JSX.Element {
     }
 
     function reset(): void {
-        setSettings(new JukeboxSettings().toPartial());
+        setSettings({ ...DEFAULT_SETTINGS });
     }
 
     return (
-        <div className={styles['settings-modal']}>
+        <div className="flex max-h-[calc(100dvh-250px)] flex-col items-stretch gap-5">
             <SliderContainer
-                label={
-                    'Branch Similarity Threshold: ' + settings.maxBranchDistance
-                }
+                label={`Branch Similarity Threshold: ${settings.maxBranchDistance.toString()}`}
                 subLabel="The maximum similarity distance allowed between two beats in order to create a branch."
                 slider={
                     <input
                         id="jukebox.settings.maxBranchDistance"
                         type={'range'}
-                        min={JukeboxSettings.rangeMinBranchDistance}
-                        max={JukeboxSettings.rangeMaxBranchDistance}
+                        min={RANGE_MIN_BRANCH_DISTANCE}
+                        max={RANGE_MAX_BRANCH_DISTANCE}
                         value={settings.maxBranchDistance}
                         step={1}
                         onChange={(e) => {
@@ -101,8 +103,8 @@ export function SettingsModal(): JSX.Element {
             <SliderContainer
                 label={`Branch Probability Range: ${Math.round(
                     settings.minRandomBranchChance * 100,
-                )}% to 
-                ${Math.round(settings.maxRandomBranchChance * 100)}%`}
+                ).toString()}% to 
+                ${Math.round(settings.maxRandomBranchChance * 100).toString()}%`}
                 subLabel="The minimum and maximum chance for a branch to be selected each beat."
                 slider={
                     <MultiRangeSlider
@@ -129,12 +131,12 @@ export function SettingsModal(): JSX.Element {
             <SliderContainer
                 label={`Branch Probability Ramp-up Speed: ${Math.round(
                     settings.randomBranchChanceDelta * 100,
-                )}%`}
+                ).toString()}%`}
                 subLabel="Controls how fast the chance to select a branch will increase."
                 slider={
                     <input
                         id="jukebox.settings.randomBranchChanceDelta"
-                        type={'range'}
+                        type="range"
                         min={0}
                         max={100}
                         value={settings.randomBranchChanceDelta * 100}
@@ -211,9 +213,8 @@ export function SettingsModal(): JSX.Element {
                     activate again. Set this to 0 for no limit.
                 </TextComponent>
                 <input
-                    type={'number'}
-                    className="x-settings-input"
-                    style={{ marginTop: '1rem' }}
+                    type="number"
+                    className="mt-4 w-full rounded-sm bg-(--spice-tab-active) p-1 px-2.5"
                     id="jukebox.settings.maxJukeboxPlayTime"
                     value={settings.maxJukeboxPlayTime / 1000}
                     onChange={(e) => {
@@ -225,9 +226,9 @@ export function SettingsModal(): JSX.Element {
                 />
             </div>
 
-            <div className={styles['reset-button-container']}>
+            <div className="flex items-center justify-center py-5">
                 <Spicetify.ReactComponent.ButtonPrimary
-                    buttonSize={'sm'}
+                    buttonSize="sm"
                     onClick={reset}
                 >
                     Reset

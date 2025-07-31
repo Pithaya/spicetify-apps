@@ -2,8 +2,9 @@ import type { Segment } from '@shared/api/models/audio-analysis';
 import { Beat } from '../models/graph/beat';
 import { Edge } from '../models/graph/edge';
 import { SongGraph } from '../models/graph/song-graph';
-import { JukeboxSettings } from '../models/jukebox-settings';
+import { type JukeboxSettings } from '../models/jukebox-settings';
 import type { RemixedTimeInterval } from '../models/remixer.types';
+import { RANGE_MAX_BRANCH_DISTANCE } from '../utils/setting-utils';
 
 /**
  * Graph generator for a song.
@@ -90,7 +91,7 @@ export class GraphGenerator {
 
         for (
             threshold = 10;
-            threshold < JukeboxSettings.rangeMaxBranchDistance;
+            threshold < RANGE_MAX_BRANCH_DISTANCE;
             threshold += 5
         ) {
             branchCount = this.collectNearestNeighbors(threshold);
@@ -128,7 +129,7 @@ export class GraphGenerator {
         currentBeat: RemixedTimeInterval,
     ): void {
         const maxNeighbors = this.maxBranches;
-        const maxBranchDistance = JukeboxSettings.rangeMaxBranchDistance;
+        const maxBranchDistance = RANGE_MAX_BRANCH_DISTANCE;
 
         const edges: Edge[] = [];
 
@@ -154,9 +155,7 @@ export class GraphGenerator {
                     // Some segments can overlap many beats,
                     // we don't want this self segue, so give them a
                     // high distance
-                    if (segment.index === otherSegment.index) {
-                        distance = 100;
-                    } else {
+                    if (segment.index !== otherSegment.index) {
                         distance = this.getSegmentsDistance(
                             segment,
                             otherSegment,
