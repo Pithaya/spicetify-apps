@@ -1,60 +1,47 @@
 import type { Track } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
+import type { PlaylistTrack } from '@shared/platform/playlist';
 import type { AdditionalData, WorkflowTrack } from '../models/workflow-track';
 
-export const mapLocalTrackToWorkflowTrack = (
-    localTrack: LocalTrack,
+/**
+ * Map a track from an internal platform API to a WorkflowTrack.
+ * @param track A track from local files, the library, or a playlist.
+ * @param additionalData Additional data to add to the result.
+ * @returns The track mapped to a WorkflowTrack.
+ */
+export const mapInternalTrackToWorkflowTrack = (
+    track: LocalTrack | LibraryAPITrack | PlaylistTrack,
     additionalData: AdditionalData,
 ): WorkflowTrack => {
     const mapped: WorkflowTrack = {
-        uri: localTrack.uri,
-        name: localTrack.name,
-        duration: localTrack.duration.milliseconds,
-        artists: localTrack.artists.map((artist) => ({
+        uri: track.uri,
+        name: track.name,
+        duration: track.duration.milliseconds,
+        artists: track.artists.map((artist) => ({
             uri: artist.uri,
             name: artist.name,
         })),
         album: {
-            uri: localTrack.album.uri,
-            name: localTrack.album.name,
-            images: localTrack.album.images.map((image) => ({
+            uri: track.album.uri,
+            name: track.album.name,
+            images: track.album.images.map((image) => ({
                 url: image.url,
             })),
         },
-        isPlayable: localTrack.isPlayable,
+        isPlayable: track.isPlayable,
         ...additionalData,
     };
 
     return mapped;
 };
 
-export const mapLibraryAPITrackToWorkflowTrack = (
-    apiTrack: LibraryAPITrack,
-    additionalData: AdditionalData,
-): WorkflowTrack => {
-    const mapped: WorkflowTrack = {
-        uri: apiTrack.uri,
-        name: apiTrack.name,
-        duration: apiTrack.duration.milliseconds,
-        artists: apiTrack.artists.map((artist) => ({
-            uri: artist.uri,
-            name: artist.name,
-        })),
-        album: {
-            uri: apiTrack.album.uri,
-            name: apiTrack.album.name,
-            images: apiTrack.album.images.map((image) => ({
-                url: image.url,
-            })),
-        },
-        isPlayable: apiTrack.isPlayable,
-        ...additionalData,
-    };
-
-    return mapped;
-};
-
+/**
+ * Map a track from the Web API to a WorkflowTrack.
+ * @param webApiTrack The track to map.
+ * @param additionalData Additional data to add to the result.
+ * @returns The track mapped to a WorkflowTrack.
+ */
 export const mapWebAPITrackToWorkflowTrack = (
     webApiTrack: Track,
     additionalData: AdditionalData,
@@ -106,6 +93,13 @@ export type GraphQLAlbum = {
     };
 };
 
+/**
+ * Map a track from the GraphQL API to a WorkflowTrack.
+ * @param track The track to map.
+ * @param album The album of the track.
+ * @param additionalData Additional data to add to the result.
+ * @returns The track mapped to a WorkflowTrack.
+ */
 export const mapGraphQLTrackToWorkflowTrack = (
     track: GraphQLTrack,
     album: GraphQLAlbum,

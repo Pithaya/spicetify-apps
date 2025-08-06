@@ -11,7 +11,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { InputError } from '../../inputs/InputError';
 import { SelectController } from '../../inputs/SelectController';
 import { TextController } from '../../inputs/TextController';
-import styles from './CreatePlaylistModal.module.scss';
 
 const FormSchema = z.object({
     playlistName: z.string().nonempty({ message: 'Name cannot be empty' }),
@@ -75,7 +74,7 @@ export function CreatePlaylistModal(): JSX.Element {
             );
         } catch (e) {
             console.error('Error creating playlist', e);
-            Spicetify.showNotification('Error creating playlist', false);
+            Spicetify.showNotification('Error creating playlist', true);
             setIsCreating(false);
             return;
         }
@@ -100,8 +99,8 @@ export function CreatePlaylistModal(): JSX.Element {
                 Save {result.length} tracks to a new playlist
             </TextComponent>
 
-            <fieldset className={styles['fieldset']} disabled={isCreating}>
-                <label>
+            <fieldset className="flex flex-col gap-2" disabled={isCreating}>
+                <label className="block">
                     <TextComponent elementType="small" paddingBottom="4px">
                         Playlist name
                     </TextComponent>
@@ -114,7 +113,7 @@ export function CreatePlaylistModal(): JSX.Element {
                 </label>
                 <InputError error={errors.playlistName} />
 
-                <label>
+                <label className="block">
                     <TextComponent elementType="small" paddingBottom="4px">
                         Parent folder
                     </TextComponent>
@@ -130,7 +129,7 @@ export function CreatePlaylistModal(): JSX.Element {
                     />
                 </label>
 
-                <div className={styles['button-wrapper']}>
+                <div className="mt-5 flex justify-center">
                     <Spicetify.ReactComponent.ButtonPrimary
                         disabled={!isValid}
                         buttonSize="sm"

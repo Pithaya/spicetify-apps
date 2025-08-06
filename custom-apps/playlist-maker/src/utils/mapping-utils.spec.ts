@@ -1,19 +1,19 @@
 import type { Track } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import { type LocalTrack } from '@shared/platform/local-files';
+import type { PlaylistTrack } from '@shared/platform/playlist';
 import { describe, expect, it } from 'vitest';
 import { type WorkflowTrack } from '../models/workflow-track';
 import {
     type GraphQLAlbum,
     type GraphQLTrack,
     mapGraphQLTrackToWorkflowTrack,
-    mapLibraryAPITrackToWorkflowTrack,
-    mapLocalTrackToWorkflowTrack,
+    mapInternalTrackToWorkflowTrack,
     mapWebAPITrackToWorkflowTrack,
 } from './mapping-utils';
 
-describe('mapLocalTrackToWorkflowTrack', () => {
-    it('should map correctly', () => {
+describe('mapInternalTrackToWorkflowTrack', () => {
+    it('should map a LocalTrack correctly', () => {
         const track: LocalTrack = {
             type: 'track',
             uid: '1',
@@ -50,7 +50,7 @@ describe('mapLocalTrackToWorkflowTrack', () => {
             isBanned: false,
         };
 
-        const mapped = mapLocalTrackToWorkflowTrack(track, {
+        const mapped = mapInternalTrackToWorkflowTrack(track, {
             source: 'Source',
         });
 
@@ -77,10 +77,8 @@ describe('mapLocalTrackToWorkflowTrack', () => {
             source: 'Source',
         });
     });
-});
 
-describe('mapLibraryAPITrackToWorkflowTrack', () => {
-    it('should map correctly', () => {
+    it('should map a LibraryAPITrack correctly', () => {
         const track: LibraryAPITrack = {
             type: 'track',
             uri: 'spotify:track:xxx',
@@ -135,7 +133,116 @@ describe('mapLibraryAPITrackToWorkflowTrack', () => {
             isBanned: false,
         };
 
-        const mapped = mapLibraryAPITrackToWorkflowTrack(track, {
+        const mapped = mapInternalTrackToWorkflowTrack(track, {
+            source: 'Source',
+        });
+
+        expect(mapped).toStrictEqual<WorkflowTrack>({
+            uri: 'spotify:track:xxx',
+            name: 'Track name',
+            duration: 232000,
+            artists: [
+                {
+                    uri: 'spotify:artist:xxx',
+                    name: 'Artist name',
+                },
+            ],
+            album: {
+                uri: 'spotify:album:xxx',
+                name: 'Album name',
+                images: [
+                    {
+                        url: 'spotify:image:standard',
+                    },
+                    {
+                        url: 'spotify:image:small',
+                    },
+                    {
+                        url: 'spotify:image:large',
+                    },
+                    {
+                        url: 'spotify:image:xlarge',
+                    },
+                ],
+            },
+            isPlayable: true,
+            source: 'Source',
+        });
+    });
+
+    it('should map a PlaylistTrack correctly', () => {
+        const track: PlaylistTrack = {
+            type: 'track',
+            uri: 'spotify:track:xxx',
+            uid: '37663662613339356634636637656234',
+            name: 'Track name',
+            duration: {
+                milliseconds: 232000,
+            },
+            album: {
+                type: 'album',
+                uri: 'spotify:album:xxx',
+                name: 'Album name',
+                artists: [
+                    {
+                        type: 'artist',
+                        uri: 'spotify:artist:xxx',
+                        name: 'Artist name',
+                    },
+                ],
+                images: [
+                    {
+                        url: 'spotify:image:standard',
+                        label: 'standard',
+                    },
+                    {
+                        url: 'spotify:image:small',
+                        label: 'small',
+                    },
+                    {
+                        url: 'spotify:image:large',
+                        label: 'large',
+                    },
+                    {
+                        url: 'spotify:image:xlarge',
+                        label: 'xlarge',
+                    },
+                ],
+            },
+            artists: [
+                {
+                    type: 'artist',
+                    uri: 'spotify:artist:xxx',
+                    name: 'Artist name',
+                },
+            ],
+            discNumber: 1,
+            trackNumber: 2,
+            isExplicit: false,
+            isPlayable: true,
+            isLocal: false,
+            is19PlusOnly: false,
+            addedAt: '2025-05-12T21:12:53.000Z',
+            hasAssociatedVideo: false,
+            hasAssociatedAudio: false,
+            isBanned: false,
+            addedBy: {
+                uri: 'spotify:user:xxx',
+                displayName: 'User',
+                username: 'user',
+                images: [],
+                type: 'user',
+            },
+            associatedAudioUri: undefined,
+            bpm: undefined,
+            formatListAttributes: {},
+            isMixable: false,
+            key: undefined,
+            mediaType: undefined,
+            playIndex: null,
+        };
+
+        const mapped = mapInternalTrackToWorkflowTrack(track, {
             source: 'Source',
         });
 

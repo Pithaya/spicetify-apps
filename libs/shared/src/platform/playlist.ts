@@ -1,5 +1,3 @@
-import type { LibraryAPITrack } from './library';
-
 export type PlaylistParameters = {
     decorateFormatListData?: boolean;
     hydrateCollaboratorsWithMembers?: boolean;
@@ -32,9 +30,63 @@ export type QueryParameters = {
     isExtraColumnsEnabled?: boolean;
 };
 
+export type PlaylistTrack = {
+    type: 'track';
+    uid: string;
+    uri: string;
+    name: string;
+    addedAt: string;
+    addedBy: {
+        type: 'user';
+        displayName: string;
+        images: {
+            url: string;
+            label: string;
+        }[];
+        uri: string;
+        username: string;
+    };
+    album: {
+        type: 'album';
+        uri: string;
+        name: string;
+        images: {
+            url: string;
+            label: string;
+        }[];
+        artists: {
+            type: 'artist';
+            name: string;
+            uri: string;
+        }[];
+    };
+    artists: {
+        type: 'artist';
+        name: string;
+        uri: string;
+    }[];
+    associatedAudioUri: undefined;
+    bpm: undefined;
+    discNumber: number;
+    duration: { milliseconds: number };
+    formatListAttributes: object;
+    hasAssociatedAudio: boolean;
+    hasAssociatedVideo: boolean;
+    is19PlusOnly: boolean;
+    isBanned: boolean;
+    isExplicit: boolean;
+    isLocal: boolean;
+    isMixable: boolean;
+    isPlayable: boolean;
+    key: undefined;
+    mediaType: undefined;
+    playIndex: null;
+    trackNumber: number;
+};
+
 export type Playlist = {
     contents: {
-        items: LibraryAPITrack[];
+        items: PlaylistTrack[];
         limit: number;
         offset: number;
         totalLength: number;
@@ -114,15 +166,6 @@ export type PlaylistAPI = {
         options: { before?: 'start'; after?: 'end' },
     ) => Promise<void>;
 
-    applyModifications: (
-        playlistUri: string,
-        modification: {
-            operation: 'add';
-            uris: string[];
-            after: 'end';
-        },
-    ) => Promise<void>;
-
     getMetadata: (
         playlistUri: string,
         playlistParameters: PlaylistParameters,
@@ -138,4 +181,9 @@ export type PlaylistAPI = {
         playlistParameters: PlaylistParameters,
         queryParameters: QueryParameters,
     ) => Promise<Playlist>;
+
+    remove: (
+        playlistUri: string,
+        tracks: { uri: string; uid: string }[],
+    ) => Promise<void>;
 };
