@@ -5,11 +5,11 @@ import {
     LibraryAPITrackSortOptionOrders,
 } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { mapLibraryAPITrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { getArtistsGenresCache } from 'custom-apps/playlist-maker/src/utils/storage-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 
 export const LikedSongsDataSchema = z
     .object({
@@ -67,7 +67,7 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
         }
 
         return tracks.map((track) =>
-            mapLibraryAPITrackToWorkflowTrack(track, { source: 'Liked songs' }),
+            mapInternalTrackToWorkflowTrack(track, { source: 'Liked songs' }),
         );
     }
 

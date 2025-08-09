@@ -3,10 +3,10 @@ import {
     LocalTrackSortOptionOrders,
 } from '@shared/platform/local-files';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { mapLocalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 
 export const LocalTracksDataSchema = z
     .object({
@@ -39,7 +39,7 @@ export class LocalTracksSourceProcessor extends NodeProcessor<LocalTracksData> {
         );
 
         return tracks.map((track) =>
-            mapLocalTrackToWorkflowTrack(track, { source: 'Local tracks' }),
+            mapInternalTrackToWorkflowTrack(track, { source: 'Local tracks' }),
         );
     }
 }

@@ -5,10 +5,10 @@ import {
 } from '@shared/platform/playlist';
 import { getRadioPlaylist } from '@shared/spclient/get-radio-playlist';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { mapLibraryAPITrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
 import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 
 export const RadioDataSchema = z
     .object({
@@ -73,7 +73,7 @@ export class RadioSourceProcessor extends NodeProcessor<RadioData> {
         );
 
         return playlist.contents.items.map((track) =>
-            mapLibraryAPITrackToWorkflowTrack(track, {
+            mapInternalTrackToWorkflowTrack(track, {
                 source: playlist.metadata.name,
             }),
         );
