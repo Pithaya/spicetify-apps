@@ -1,7 +1,7 @@
+import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import React from 'react';
 import styles from './TabBar.module.scss';
 import type { TopBarItem } from './top-bar-item';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 
 export type Props = {
     item: TopBarItem;
@@ -21,9 +21,13 @@ export function TabBarItem(props: Readonly<Props>): JSX.Element {
                 className={props.active ? styles['active'] : ''}
                 draggable="false"
             >
-                <TextComponent variant="mestoBold">
-                    {props.item.label}
-                </TextComponent>
+                {props.item.render ? (
+                    props.item.render(props.item)
+                ) : (
+                    <TextComponent variant="mestoBold">
+                        {props.item.label}
+                    </TextComponent>
+                )}
             </button>
         </li>
     );
