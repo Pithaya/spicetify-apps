@@ -10,7 +10,7 @@ import type { LibraryAPITrack } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import {
     mapGraphQLTrackToWorkflowTrack,
-    mapLibraryAPITrackToWorkflowTrack,
+    mapInternalTrackToWorkflowTrack,
 } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
@@ -69,7 +69,7 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         ).items;
 
         return tracks.map((track) =>
-            mapLibraryAPITrackToWorkflowTrack(track, { source: 'Artist' }),
+            mapInternalTrackToWorkflowTrack(track, { source: 'Artist' }),
         );
     }
 
