@@ -1,8 +1,8 @@
 // Adapted from the marketplace: spicetify/spicetify-marketplace/src/components/TabBar.tsx
 
-import React, { useState, useEffect } from 'react';
-import type { TopBarItem } from './top-bar-item';
+import React, { useEffect, useState } from 'react';
 import { TabBar } from './TabBar';
+import type { TopBarItem } from './top-bar-item';
 
 export type Props = {
     items: TopBarItem[];
@@ -12,7 +12,7 @@ export type Props = {
 
 export function TopBarContent(props: Readonly<Props>): JSX.Element {
     const resizeHost = document.querySelector(
-      '.Root__main-view .os-resize-observer-host, .Root__main-view .os-size-observer, .Root__main-view .main-view-container__scroll-node'
+        '.Root__main-view .os-resize-observer-host, .Root__main-view .os-size-observer, .Root__main-view .main-view-container__scroll-node',
     );
     if (!resizeHost) {
         throw new Error('Could not find resize host');

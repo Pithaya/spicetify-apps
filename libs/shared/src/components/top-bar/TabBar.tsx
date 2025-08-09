@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import type { TopBarItem } from './top-bar-item';
+import React, { useEffect, useState } from 'react';
+import styles from './TabBar.module.scss';
 import { TabBarItem } from './TabBarItem';
 import { TabBarMore } from './TabBarMore';
-import styles from './TabBar.module.scss';
+import type { TopBarItem } from './top-bar-item';
 
 export type Props = {
     items: TopBarItem[];
