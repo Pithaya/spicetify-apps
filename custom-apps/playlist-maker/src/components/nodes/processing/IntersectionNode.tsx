@@ -1,4 +1,4 @@
-import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/base-node-processor';
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { Node } from '../shared/Node';

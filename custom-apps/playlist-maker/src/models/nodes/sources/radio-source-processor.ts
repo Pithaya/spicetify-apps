@@ -5,10 +5,11 @@ import {
 } from '@shared/platform/playlist';
 import { getRadioPlaylist } from '@shared/spclient/get-radio-playlist';
 import { getPlatform } from '@shared/utils/spicetify-utils';
+import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
-import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
+import { BaseNodeDataSchema } from '../base-node-processor';
+import { NodeProcessor } from '../node-processor';
 
 export const RadioDataSchema = z
     .object({

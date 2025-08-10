@@ -1,4 +1,4 @@
-import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/node-processor';
+import { type BaseNodeData } from 'custom-apps/playlist-maker/src/models/nodes/base-node-processor';
 import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { Node } from '../shared/Node';
@@ -6,7 +6,7 @@ import { NodeContent } from '../shared/NodeContent';
 import { ResultNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
-export function ResultNode(
+export function AddToResultNode(
     props: Readonly<NodeProps<BaseNodeData>>,
 ): JSX.Element {
     return (
