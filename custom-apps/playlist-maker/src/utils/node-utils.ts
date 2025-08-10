@@ -1,13 +1,16 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
+import { type BaseNodeData } from '../models/nodes/base-node-processor';
+import { type NodeProcessor } from '../models/nodes/node-processor';
 import {
-    type BaseNodeData,
-    type NodeProcessor,
-} from '../models/nodes/node-processor';
-import { type CustomNodeType, ResultNodes } from '../models/nodes/node-types';
+    type CustomNodeType,
+    ResultNodes,
+    type ResultNodeType,
+} from '../models/nodes/node-types';
 import useAppStore from '../stores/store';
 import {
     nodeDefautValuesFactory,
     nodeProcessorFactory,
+    resultNodeProcessorFactory,
 } from './node-factories';
 
 export const getDefaultValueForNodeType = (
@@ -27,6 +30,7 @@ export async function executeWorkflow(
     const validationCallbacks =
         useAppStore.getState().nodeFormValidationCallbacks;
 
+    // Get the result node
     const resultNodes = nodes.filter((node) =>
         (ResultNodes as readonly string[]).includes(node.type ?? ''),
     );
@@ -61,13 +65,16 @@ export async function executeWorkflow(
 
     // Build the graph starting from the result node
     const nodesToVisit: Node[] = getIncomers(resultNode, nodes, edges);
-    const resultProcessor = nodeProcessorFactory.result(
+
+    const resultNodeType = resultNode.type as ResultNodeType;
+    const resultProcessor = resultNodeProcessorFactory[resultNodeType](
         resultNode,
         nodesToVisit,
         edges,
     );
+
     const allProcessors: Record<string, NodeProcessor<BaseNodeData>> = {
-        [resultNode.id]: resultProcessor,
+        //[resultNode.id]: resultProcessor,
     };
     const visitedNodes: Set<string> = new Set<string>([resultNode.id]);
 
@@ -82,8 +89,8 @@ export async function executeWorkflow(
         visitedNodes.add(currentNode.id);
 
         const incomers = getIncomers(currentNode, nodes, edges);
-        const nodeType: CustomNodeType | undefined =
-            currentNode.type as CustomNodeType;
+        const nodeType: Exclude<CustomNodeType, ResultNodeType> | undefined =
+            currentNode.type as Exclude<CustomNodeType, ResultNodeType>;
 
         allProcessors[currentNode.id] = nodeProcessorFactory[nodeType](
             currentNode,
@@ -99,13 +106,7 @@ export async function executeWorkflow(
 
         setResult(finalResult);
 
-        // TODO : switch on result node type to do action
-
-        Spicetify.showNotification(
-            'Workflow executed successfully',
-            false,
-            1000,
-        );
+        await resultProcessor.executeResultAction(finalResult);
     } catch (e) {
         console.error('Error while executing workflow:', e);
         Spicetify.showNotification('Error while executing workflow', true);

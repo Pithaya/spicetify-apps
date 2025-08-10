@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { NodeProcessor } from '../node-processor';
+import { BaseNodeDataSchema } from '../base-node-processor';
 
 export const OrderByDataSchema = z
     .object({

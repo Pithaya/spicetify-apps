@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { BaseNodeDataSchema } from '../base-node-processor';
+import { ResultNodeProcessor } from '../result-node-processor';
 
 export const AddToPlaylistDataSchema = z
     .object({
@@ -18,10 +19,15 @@ export const AddToPlaylistDataSchema = z
 
 export type AddToPlaylistData = z.infer<typeof AddToPlaylistDataSchema>;
 
-export class AddToPlaylistProcessor extends NodeProcessor<AddToPlaylistData> {
-    protected override getResultsInternal(
-        inputByHandle: Record<string, WorkflowTrack[]>,
-    ): Promise<WorkflowTrack[]> {
-        return Promise.resolve(inputByHandle['source'] ?? []);
+export class AddToPlaylistProcessor extends ResultNodeProcessor<AddToPlaylistData> {
+    protected override executeResultActionInternal(
+        tracks: WorkflowTrack[],
+    ): void {
+        // TODO: implement this
+        Spicetify.showNotification(
+            `${tracks.length.toFixed()} tracks added to the result tab`,
+            false,
+            1000,
+        );
     }
 }

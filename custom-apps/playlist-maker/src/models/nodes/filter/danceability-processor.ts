@@ -1,7 +1,8 @@
 import { setAudioFeatures } from 'custom-apps/playlist-maker/src/utils/track-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../workflow-track';
-import { BaseNodeDataSchema, NodeProcessor } from '../node-processor';
+import { NodeProcessor } from '../node-processor';
+import { BaseNodeDataSchema } from '../base-node-processor';
 
 export const MIN_DANCEABILITY = 0;
 export const MAX_DANCEABILITY = 1;

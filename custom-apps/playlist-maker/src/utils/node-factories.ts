@@ -1,4 +1,5 @@
 import type { Edge, Node } from 'reactflow';
+import { type BaseNodeData } from '../models/nodes/base-node-processor';
 import {
     AcousticnessProcessor,
     MAX_ACOUSTICNESS,
@@ -69,11 +70,11 @@ import {
     ValenceProcessor,
     type ValenceData,
 } from '../models/nodes/filter/valence-processor';
+import { type NodeProcessor } from '../models/nodes/node-processor';
 import {
-    type BaseNodeData,
-    type NodeProcessor,
-} from '../models/nodes/node-processor';
-import { type CustomNodeType } from '../models/nodes/node-types';
+    type CustomNodeType,
+    type ResultNodeType,
+} from '../models/nodes/node-types';
 import { DeduplicateProcessor } from '../models/nodes/processing/deduplicate-processor';
 import { DifferenceProcessor } from '../models/nodes/processing/difference-processor';
 import { IntersectionProcessor } from '../models/nodes/processing/intersection-processor';
@@ -83,11 +84,12 @@ import {
     SortProcessor,
     type OrderByData,
 } from '../models/nodes/processing/sort-processor';
+import { type ResultNodeProcessor } from '../models/nodes/result-node-processor';
 import {
     AddToPlaylistProcessor,
     type AddToPlaylistData,
 } from '../models/nodes/results/add-to-playlist-processor';
-import { ResultNodeProcessor } from '../models/nodes/results/result-node-processor';
+import { AddToResultProcessor } from '../models/nodes/results/add-to-result-processor';
 import {
     AlbumSourceProcessor,
     type AlbumData,
@@ -443,7 +445,7 @@ const getIncomingNodeIdsForHandle = (
 };
 
 export const nodeProcessorFactory: Record<
-    CustomNodeType,
+    Exclude<CustomNodeType, ResultNodeType>,
     (node: Node, incomers: Node[], edges: Edge[]) => NodeProcessor<BaseNodeData>
 > = {
     likedSongsSource: (node: Node<LikedSongsData>, _incomers) =>
@@ -484,12 +486,6 @@ export const nodeProcessorFactory: Record<
         ),
     shuffle: (node: Node<BaseNodeData>, incomers) =>
         new ShuffleProcessor(
-            node.id,
-            { source: incomers.map((node) => node.id) },
-            node.data,
-        ),
-    result: (node: Node<BaseNodeData>, incomers) =>
-        new ResultNodeProcessor(
             node.id,
             { source: incomers.map((node) => node.id) },
             node.data,
@@ -628,6 +624,22 @@ export const nodeProcessorFactory: Record<
                     edges,
                 ),
             },
+            node.data,
+        ),
+};
+
+export const resultNodeProcessorFactory: Record<
+    ResultNodeType,
+    (
+        node: Node,
+        incomers: Node[],
+        edges: Edge[],
+    ) => ResultNodeProcessor<BaseNodeData>
+> = {
+    result: (node: Node<BaseNodeData>, incomers, _edges) =>
+        new AddToResultProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
     addToPlaylist: (node: Node<AddToPlaylistData>, incomers, _edges) =>

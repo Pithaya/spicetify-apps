@@ -20,7 +20,7 @@ import { RelativeComplementNode } from '../../components/nodes/processing/Relati
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { AddToPlaylistNode } from '../../components/nodes/result/AddToPlaylistNode';
-import { ResultNode } from '../../components/nodes/result/ResultNode';
+import { AddToResultNode } from '../../components/nodes/result/AddToResultNode';
 import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
 import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryArtistSourceNode';
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylistSourceNode';
@@ -34,7 +34,7 @@ import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArt
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 
-type SourceNodeTypes =
+type SourceNodeType =
     | 'likedSongsSource'
     | 'localTracksSource'
     | 'libraryPlaylistSource'
@@ -48,7 +48,7 @@ type SourceNodeTypes =
     | 'radioArtistSource'
     | 'radioTrackSource';
 
-type FilterNodeTypes =
+type FilterNodeType =
     | 'isPlayable'
     | 'acousticness'
     | 'danceability'
@@ -63,7 +63,7 @@ type FilterNodeTypes =
     | 'releaseDate'
     | 'duration';
 
-type ProcessingNodeTypes =
+type ProcessingNodeType =
     | 'deduplicate'
     | 'shuffle'
     | 'sort'
@@ -71,15 +71,16 @@ type ProcessingNodeTypes =
     | 'difference'
     | 'relativeComplement';
 
+// Note: keeping 'result' for 'addToResult' for backward compatibility of saved workflows
 export const ResultNodes = ['result', 'addToPlaylist'] as const;
 
-type ResultNodeTypes = (typeof ResultNodes)[number];
+export type ResultNodeType = (typeof ResultNodes)[number];
 
 export type CustomNodeType =
-    | SourceNodeTypes
-    | FilterNodeTypes
-    | ProcessingNodeTypes
-    | ResultNodeTypes;
+    | SourceNodeType
+    | FilterNodeType
+    | ProcessingNodeType
+    | ResultNodeType;
 
 export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     likedSongsSource: LikedSongsSourceNode,
@@ -93,7 +94,7 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     searchArtistSource: SearchArtistSourceNode,
     deduplicate: DeduplicateNode,
     isPlayable: IsPlayableNode,
-    result: ResultNode,
+    result: AddToResultNode,
     shuffle: ShuffleNode,
     sort: SortProcessorNode,
     acousticness: AcousticnessNode,

@@ -1,5 +1,6 @@
 import { type WorkflowTrack } from '../../workflow-track';
-import { type BaseNodeData, NodeProcessor } from '../node-processor';
+import { type BaseNodeData } from '../base-node-processor';
+import { NodeProcessor } from '../node-processor';
 
 export class DifferenceProcessor extends NodeProcessor<BaseNodeData> {
     protected override getResultsInternal(
