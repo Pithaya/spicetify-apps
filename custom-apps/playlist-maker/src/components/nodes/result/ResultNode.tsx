@@ -3,7 +3,7 @@ import React from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
-import { NodeHeader } from '../shared/NodeHeader';
+import { ResultNodeHeader } from '../shared/NodeHeader';
 import { NodeTitle } from '../shared/NodeTitle';
 
 export function ResultNode(
@@ -11,11 +11,8 @@ export function ResultNode(
 ): JSX.Element {
     return (
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
-            <NodeHeader
-                label="Result"
-                backgroundColor="orange"
-                textColor="black"
-            />
+            <ResultNodeHeader />
+
             <NodeContent>
                 <NodeTitle
                     title="Add to result tab"

@@ -313,9 +313,14 @@ export function Sidenav(): JSX.Element {
 
                 <ul>
                     <SidenavItem
-                        label="Result"
+                        label="Add to result tab"
                         nodeType="result"
-                        tooltip="The workflow result."
+                        tooltip="Output the result in the result tab."
+                    />
+                    <SidenavItem
+                        label="Add to playlist"
+                        nodeType="addToPlaylist"
+                        tooltip="Output the result to an existing playlist."
                     />
                 </ul>
             </div>

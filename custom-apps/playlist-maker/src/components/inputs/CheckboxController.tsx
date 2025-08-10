@@ -17,8 +17,8 @@ export function CheckboxController<T extends FieldValues>(
 ): JSX.Element {
     return (
         <Controller
-            control={props.control}
             name={props.name}
+            control={props.control}
             render={({
                 field: { onChange, onBlur, value, name, ref },
                 formState: { disabled },
@@ -26,18 +26,19 @@ export function CheckboxController<T extends FieldValues>(
                 <input
                     type="checkbox"
                     onChange={(e) => {
-                        const value = e.target.checked;
+                        const checked = e.target.checked;
 
                         // Update value in form for validation
                         // and in parent to update the state
-                        onChange(value);
-                        props.onChange(value);
+                        onChange(checked);
+                        props.onChange(checked);
                     }}
                     onBlur={onBlur}
-                    value={value}
+                    checked={value}
                     name={name}
                     disabled={disabled}
                     ref={ref}
+                    value={name}
                 />
             )}
         />

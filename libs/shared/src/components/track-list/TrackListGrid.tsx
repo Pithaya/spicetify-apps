@@ -1,6 +1,6 @@
 import type { DisplayType } from '@shared/components/track-list/models/sort-option';
 import { useCurrentPlayerTrackUri } from '@shared/hooks/use-current-uri';
-import { type PlayStatus, usePlayStatus } from '@shared/hooks/use-play-status';
+import { PlayStatus, usePlayStatus } from '@shared/hooks/use-play-status';
 import { getTranslation } from '@shared/utils/translations.utils';
 import React, { useMemo, useState } from 'react';
 import type { ITrack } from './models/interfaces';
@@ -119,7 +119,7 @@ export function TrackListGrid<T extends string>(
                             active={activeTrackUri === track.uri}
                             playing={
                                 activeTrackUri === track.uri &&
-                                playStatus === 'play'
+                                playStatus === PlayStatus.Playing
                             }
                             onClick={(e) => {
                                 handleClick(e, track);
@@ -152,7 +152,7 @@ export function TrackListGrid<T extends string>(
                                         active={activeTrackUri === track.uri}
                                         playing={
                                             activeTrackUri === track.uri &&
-                                            playStatus === 'play'
+                                            playStatus === PlayStatus.Playing
                                         }
                                         onClick={(e) => {
                                             handleClick(e, track);

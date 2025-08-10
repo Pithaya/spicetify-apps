@@ -335,7 +335,7 @@ declare namespace Spicetify {
 		/**
 		 * An object contains all information about current track and player.
 		 */
-		const data: PlayerState;
+		const data: PlayerState | undefined;
 		/**
 		 * Decrease a small amount of volume.
 		 */
@@ -424,6 +424,15 @@ declare namespace Spicetify {
 		 */
 		function removeEventListener(
             type: 'songchange',
+            callback: (event?: Event & { data: PlayerState }) => void,
+        ): void;
+		/**
+		 * Unregister added event listener `songchange`.
+		 * @param type
+		 * @param callback
+		 */
+		function removeEventListener(
+            type: 'onplaypause',
             callback: (event?: Event & { data: PlayerState }) => void,
         ): void;
 		/**

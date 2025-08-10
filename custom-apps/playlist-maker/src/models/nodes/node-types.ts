@@ -19,6 +19,7 @@ import { IntersectionNode } from '../../components/nodes/processing/Intersection
 import { RelativeComplementNode } from '../../components/nodes/processing/RelativeComplementNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
+import { AddToPlaylistNode } from '../../components/nodes/result/AddToPlaylistNode';
 import { ResultNode } from '../../components/nodes/result/ResultNode';
 import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
 import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryArtistSourceNode';
@@ -33,7 +34,7 @@ import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArt
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 
-type SourceNodes =
+type SourceNodeTypes =
     | 'likedSongsSource'
     | 'localTracksSource'
     | 'libraryPlaylistSource'
@@ -47,7 +48,7 @@ type SourceNodes =
     | 'radioArtistSource'
     | 'radioTrackSource';
 
-type FilterNodes =
+type FilterNodeTypes =
     | 'isPlayable'
     | 'acousticness'
     | 'danceability'
@@ -62,7 +63,7 @@ type FilterNodes =
     | 'releaseDate'
     | 'duration';
 
-type ProcessingNodes =
+type ProcessingNodeTypes =
     | 'deduplicate'
     | 'shuffle'
     | 'sort'
@@ -70,11 +71,15 @@ type ProcessingNodes =
     | 'difference'
     | 'relativeComplement';
 
+export const ResultNodes = ['result', 'addToPlaylist'] as const;
+
+type ResultNodeTypes = (typeof ResultNodes)[number];
+
 export type CustomNodeType =
-    | SourceNodes
-    | FilterNodes
-    | ProcessingNodes
-    | 'result';
+    | SourceNodeTypes
+    | FilterNodeTypes
+    | ProcessingNodeTypes
+    | ResultNodeTypes;
 
 export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     likedSongsSource: LikedSongsSourceNode,
@@ -109,4 +114,5 @@ export const nodeTypes: Record<CustomNodeType, ComponentType<NodeProps>> = {
     intersection: IntersectionNode,
     difference: DifferenceNode,
     relativeComplement: RelativeComplementNode,
+    addToPlaylist: AddToPlaylistNode,
 };

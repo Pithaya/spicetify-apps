@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-export function useCurrentPlayerTrackUri(): string {
+export function useCurrentPlayerTrackUri(): string | undefined {
     const [playingTrackUri, setPlayingTrackUri] = useState(
-        Spicetify.Player.data.item.uri,
+        Spicetify.Player.data?.item.uri,
     );
 
     useEffect(() => {
