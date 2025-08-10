@@ -48,3 +48,9 @@ export function FilterNodeHeader(): JSX.Element {
         <NodeHeader label="Filter" backgroundColor="violet" textColor="black" />
     );
 }
+
+export function ResultNodeHeader(): JSX.Element {
+    return (
+        <NodeHeader label="Result" backgroundColor="orange" textColor="black" />
+    );
+}
