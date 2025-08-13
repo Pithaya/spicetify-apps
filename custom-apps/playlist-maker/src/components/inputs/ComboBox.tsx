@@ -29,12 +29,19 @@ export type Props<T extends TComboboxItem> = {
     disabled?: boolean;
     // Used to force open the combobox for debug purposes
     forceOpen?: boolean;
+    loading: boolean;
 };
 
 export function Combobox<T extends TComboboxItem>(
     props: Readonly<Props<T>>,
 ): JSX.Element {
-    const { selectedItem, items, inputValue, forceOpen = false } = props;
+    const {
+        selectedItem,
+        items,
+        inputValue,
+        forceOpen = false,
+        loading,
+    } = props;
 
     const {
         isOpen,
@@ -127,6 +134,13 @@ export function Combobox<T extends TComboboxItem>(
                 }`}
                 {...getMenuProps()}
             >
+                {(isOpen || forceOpen) && loading && (
+                    <div className="flex items-center justify-center !p-2">
+                        <TextComponent elementType="span" fontSize="small">
+                            Loading...
+                        </TextComponent>
+                    </div>
+                )}
                 {(isOpen || forceOpen) &&
                     items.length > 0 &&
                     items.map((item, index) => (
@@ -148,7 +162,7 @@ export function Combobox<T extends TComboboxItem>(
                             })}
                         </li>
                     ))}
-                {(isOpen || forceOpen) && items.length === 0 && (
+                {(isOpen || forceOpen) && !loading && items.length === 0 && (
                     <div className="flex items-center justify-center !p-2">
                         <TextComponent elementType="span" fontSize="small">
                             No results

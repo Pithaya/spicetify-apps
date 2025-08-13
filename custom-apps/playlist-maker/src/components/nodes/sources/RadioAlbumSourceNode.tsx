@@ -1,5 +1,4 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
 import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import {
@@ -210,6 +209,7 @@ export function RadioAlbumSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<AlbumItem>(
         getAlbum,
         getAlbums,
@@ -247,15 +247,9 @@ export function RadioAlbumSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected: {props.data.uri === '' ? '-' : props.data.uri}
-                </TextComponent>
 
                 <NodeField
                     label="Offset"

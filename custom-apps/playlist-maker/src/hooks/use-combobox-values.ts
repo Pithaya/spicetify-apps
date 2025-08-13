@@ -11,6 +11,7 @@ type UseComboboxValuesReturn<T extends TComboboxItem> = {
     resetSelection: () => void;
     syncInputWithSelectedItem: () => void;
     onSelectedIdChanged: (selectedId: string) => Promise<void>;
+    fetchLoading: boolean;
 };
 
 export function useComboboxValues<T extends TComboboxItem>(
@@ -22,14 +23,20 @@ export function useComboboxValues<T extends TComboboxItem>(
     const [selectedItem, setSelectedItem] = useState<T | null>(null);
     const [inputValue, setInputValue] = useState<string>('');
     const [items, setItems] = useState<T[]>([]);
+    const [fetchLoading, setFetchLoading] = useState<boolean>(false);
 
     const debouncedInputCallback = useDebouncedCallback((value: string) => {
+        setFetchLoading(true);
+
         fetchItems(value)
             .then((items) => {
                 setItems(items);
             })
             .catch((error: unknown) => {
                 console.error('Failed to fetch items', error);
+            })
+            .finally(() => {
+                setFetchLoading(false);
             });
     }, 200);
 
@@ -107,5 +114,6 @@ export function useComboboxValues<T extends TComboboxItem>(
         resetSelection,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     };
 }

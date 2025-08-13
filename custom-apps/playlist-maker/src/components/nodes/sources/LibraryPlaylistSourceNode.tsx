@@ -179,6 +179,7 @@ export function LibraryPlaylistSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<PlaylistItem>(
         getPlaylist,
         getPlaylists,
@@ -197,7 +198,7 @@ export function LibraryPlaylistSourceNode(
             <SourceNodeHeader />
 
             <NodeContent>
-                <NodeTitle title="Playlist" />
+                <NodeTitle title="Saved playlist" />
 
                 <NodeCheckboxField
                     label="Search only my playlists"
@@ -227,6 +228,7 @@ export function LibraryPlaylistSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
                 <TextComponent
