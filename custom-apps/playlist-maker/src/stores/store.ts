@@ -15,9 +15,9 @@ import {
 } from 'reactflow';
 import { v4 as uuidv4 } from 'uuid';
 import { create } from 'zustand';
-import { type BaseNodeData } from '../models/nodes/base-node-processor';
-import { type CustomNodeType } from '../models/nodes/node-types';
-import { type WorkflowTrack } from '../models/workflow-track';
+import type { BaseNodeData } from '../models/processors/base-node-processor';
+import { type CustomNodeType } from '../types/node-types';
+import { type WorkflowTrack } from '../types/workflow-track';
 import { getDefaultValueForNodeType } from '../utils/node-utils';
 import type { SavedWorkflow } from '../utils/storage-utils';
 

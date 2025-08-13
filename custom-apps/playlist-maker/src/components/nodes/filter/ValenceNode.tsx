@@ -4,7 +4,7 @@ import {
     MIN_VALENCE,
     ValenceDataSchema,
     type ValenceData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/valence-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/valence-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

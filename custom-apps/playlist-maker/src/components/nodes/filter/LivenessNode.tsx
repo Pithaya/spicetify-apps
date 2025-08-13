@@ -4,7 +4,7 @@ import {
     MAX_LIVENESS,
     MIN_LIVENESS,
     type LivenessData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/liveness-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/liveness-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

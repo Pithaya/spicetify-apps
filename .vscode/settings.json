@@ -20,5 +20,6 @@
     "tailwindCSS.includeLanguages": {
         "javascript": "javascript",
         "html": "HTML"
-    }
+    },
+    "typescript.preferences.preferTypeOnlyAutoImports": true
 }

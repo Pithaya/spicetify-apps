@@ -4,7 +4,7 @@ import {
     MAX_ENERGY,
     MIN_ENERGY,
     type EnergyData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/energy-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/energy-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

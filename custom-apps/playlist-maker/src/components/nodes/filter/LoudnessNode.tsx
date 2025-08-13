@@ -4,7 +4,7 @@ import {
     MAX_LOUDNESS,
     MIN_LOUDNESS,
     type LoudnessData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/loudness-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/loudness-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

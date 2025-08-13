@@ -1,22 +1,50 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
-import { type BaseNodeData } from '../models/nodes/base-node-processor';
-import { type NodeProcessor } from '../models/nodes/node-processor';
+import { nodeProcessorFactory } from '../models/mappings/node-processor-factory';
+import { resultNodeProcessorFactory } from '../models/mappings/result-node-processor-factory';
+import type { BaseNodeData } from '../models/processors/base-node-processor';
+import type { NodeProcessor } from '../models/processors/node-processor';
+import useAppStore from '../stores/store';
 import {
     type CustomNodeType,
     ResultNodes,
     type ResultNodeType,
-} from '../models/nodes/node-types';
-import useAppStore from '../stores/store';
-import {
-    nodeDefautValuesFactory,
-    nodeProcessorFactory,
-    resultNodeProcessorFactory,
-} from './node-factories';
+} from '../types/node-types';
+import { nodeDefaultValuesFactory } from '../models/mappings/node-default-values-mapping';
 
+/**
+ * Get the default form values for the specified node type.
+ * @param type The node type.
+ * @returns The default form values.
+ */
 export const getDefaultValueForNodeType = (
     type: CustomNodeType,
 ): BaseNodeData => {
-    return nodeDefautValuesFactory[type]();
+    return nodeDefaultValuesFactory[type]();
+};
+
+/**
+ * Returns incoming nodes for a specific handle.
+ * @param node The current node.
+ * @param handle The edge handle.
+ * @param incomers All incoming nodes for this node.
+ * @param edges The edges in the graph.
+ * @returns The IDs of the incoming nodes for the specified handle.
+ */
+export const getIncomingNodeIdsForHandle = (
+    node: Node,
+    handle: string,
+    incomers: Node[],
+    edges: Edge[],
+) => {
+    const incomingEdges = edges.filter(
+        (edge) => edge.target === node.id && edge.targetHandle === handle,
+    );
+
+    const incomersForHandle = incomers.filter((n) =>
+        incomingEdges.some((edge) => edge.source === n.id),
+    );
+
+    return incomersForHandle.map((n) => n.id);
 };
 
 export async function executeWorkflow(

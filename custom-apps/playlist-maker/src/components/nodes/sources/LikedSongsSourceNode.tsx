@@ -5,7 +5,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import {
     LikedSongsDataSchema,
     type LikedSongsData,
-} from 'custom-apps/playlist-maker/src/models/nodes/sources/liked-songs-source-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/sources/liked-songs-source-processor';
 import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import { setLibraryGenresToCache } from 'custom-apps/playlist-maker/src/utils/track-utils';

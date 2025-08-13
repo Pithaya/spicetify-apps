@@ -9,8 +9,9 @@ import ReactFlow, {
     type Node,
 } from 'reactflow';
 import { useShallow } from 'zustand/react/shallow';
-import { nodeTypes, type CustomNodeType } from '../../models/nodes/node-types';
+import { nodeTypeToComponentMapping } from '../../models/mappings/node-type-to-component-mapping';
 import { useAppStore, type AppState } from '../../stores/store';
+import { type CustomNodeType } from '../../types/node-types';
 import { Sidenav } from '../sidebar/Sidebar';
 import { ConfirmDeleteDialog } from './dialogs/ConfirmDeleteDialog';
 import { ConfirmLoadDialog } from './dialogs/ConfirmLoadDialog';
@@ -170,7 +171,7 @@ export function EditorPage(): JSX.Element {
                             onDrop={onDrop}
                             onDragOver={onDragOver}
                             deleteKeyCode={['Backspace']}
-                            nodeTypes={nodeTypes}
+                            nodeTypes={nodeTypeToComponentMapping}
                             isValidConnection={isValidConnection}
                             selectNodesOnDrag={false}
                         >

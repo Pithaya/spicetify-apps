@@ -8,7 +8,7 @@ import {
     type ArtistData,
     ArtistDataSchema,
     type ArtistTrackType,
-} from 'custom-apps/playlist-maker/src/models/nodes/sources/artist-tracks-source-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/sources/artist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';

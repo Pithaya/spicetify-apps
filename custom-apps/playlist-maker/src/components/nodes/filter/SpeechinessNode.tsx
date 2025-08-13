@@ -4,7 +4,7 @@ import {
     MIN_SPEECHINESS,
     SpeechinessDataSchema,
     type SpeechinessData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/speechiness-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/speechiness-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

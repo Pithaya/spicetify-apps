@@ -3,7 +3,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import {
     TopTracksDataSchema,
     type TopTracksData,
-} from 'custom-apps/playlist-maker/src/models/nodes/sources/top-tracks-source-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/sources/top-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

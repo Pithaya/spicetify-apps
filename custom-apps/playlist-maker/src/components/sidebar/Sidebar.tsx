@@ -5,33 +5,14 @@ import React, {
     type KeyboardEvent,
     type PropsWithChildren,
 } from 'react';
-import { type CustomNodeType } from '../../models/nodes/node-types';
 import { useAppStore } from '../../stores/store';
+import { type CustomNodeType } from '../../types/node-types';
 
 type SidenavItemProps = {
     nodeType: CustomNodeType;
     label: string;
     tooltip: string;
 };
-
-function PlaceholderSidenavItem(
-    props: Readonly<{ label: string }>,
-): JSX.Element {
-    return (
-        <li>
-            <Spicetify.ReactComponent.TooltipWrapper
-                label="Coming soon"
-                showDelay={100}
-            >
-                <li className="w-full cursor-not-allowed border-none bg-transparent !py-1 text-start opacity-50">
-                    <TextComponent elementType="span" fontSize="medium">
-                        {props.label}
-                    </TextComponent>
-                </li>
-            </Spicetify.ReactComponent.TooltipWrapper>
-        </li>
-    );
-}
 
 function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
     const addNode = useAppStore((state) => state.addNode);
