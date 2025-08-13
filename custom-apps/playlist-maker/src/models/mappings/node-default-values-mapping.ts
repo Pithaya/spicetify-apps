@@ -5,6 +5,7 @@ import { DEFAULT_DANCEABILITY_DATA } from '../processors/filter/danceability-pro
 import { DEFAULT_DURATION_DATA } from '../processors/filter/duration-processor';
 import { DEFAULT_ENERGY_DATA } from '../processors/filter/energy-processor';
 import { DEFAULT_INSTRUMENTALNESS_DATA } from '../processors/filter/instrumentalness-processor';
+import { DEFAULT_IS_EXPLICIT_DATA } from '../processors/filter/is-explicit-processor';
 import { DEFAULT_IS_PLAYABLE_DATA } from '../processors/filter/is-playable-processor';
 import { DEFAULT_LIVENESS_DATA } from '../processors/filter/liveness-processor';
 import { DEFAULT_LOUDNESS_DATA } from '../processors/filter/loudness-processor';
@@ -63,4 +64,5 @@ export const nodeDefaultValuesFactory: Record<
     relativeComplement: () => ({ ...DEFAULT_BASE_NODE_DATA }),
     addToPlaylist: () => ({ ...DEFAULT_ADD_TO_PLAYLIST_DATA }),
     subset: () => ({ ...DEFAULT_SUBSET_DATA }),
+    isExplicit: () => ({ ...DEFAULT_IS_EXPLICIT_DATA }),
 };

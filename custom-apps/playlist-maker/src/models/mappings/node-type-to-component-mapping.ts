@@ -5,6 +5,7 @@ import { DanceabilityNode } from '../../components/nodes/filter/DanceabilityNode
 import { DurationNode } from '../../components/nodes/filter/DurationNode';
 import { EnergyNode } from '../../components/nodes/filter/EnergyNode';
 import { InstrumentalnessNode } from '../../components/nodes/filter/InstrumentalnessNode';
+import { IsExplicitNode } from '../../components/nodes/filter/IsExplicitNode';
 import { IsPlayableNode } from '../../components/nodes/filter/IsPlayableNode';
 import { LivenessNode } from '../../components/nodes/filter/LivenessNode';
 import { LoudnessNode } from '../../components/nodes/filter/LoudnessNode';
@@ -19,6 +20,7 @@ import { IntersectionNode } from '../../components/nodes/processing/Intersection
 import { RelativeComplementNode } from '../../components/nodes/processing/RelativeComplementNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
+import { SubsetNode } from '../../components/nodes/processing/SubsetNode';
 import { AddToPlaylistNode } from '../../components/nodes/result/AddToPlaylistNode';
 import { AddToResultNode } from '../../components/nodes/result/AddToResultNode';
 import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
@@ -34,7 +36,6 @@ import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArt
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 import { type CustomNodeType } from '../../types/node-types';
-import { SubsetNode } from '../../components/nodes/processing/SubsetNode';
 
 /**
  * Mapping used to instantiate node components based on their type.
@@ -77,4 +78,5 @@ export const nodeTypeToComponentMapping: Record<
     relativeComplement: RelativeComplementNode,
     addToPlaylist: AddToPlaylistNode,
     subset: SubsetNode,
+    isExplicit: IsExplicitNode,
 };
