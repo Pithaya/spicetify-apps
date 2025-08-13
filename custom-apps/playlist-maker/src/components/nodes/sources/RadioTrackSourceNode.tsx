@@ -111,25 +111,24 @@ export function RadioTrackSourceNode(
                 numberOfTopResults: 5,
             });
 
-            const items: TrackItem[] = search.searchV2.tracksV2.items.map(
-                (track) => {
+            const items: TrackItem[] = search.searchV2.tracksV2.items
+                .map((trackItem) => trackItem.item.data)
+                .filter((item) => item.__typename === 'Track')
+                .map((track) => {
                     return {
-                        id: track.item.data.uri,
-                        uri: track.item.data.uri,
-                        name: track.item.data.name,
+                        id: track.uri,
+                        uri: track.uri,
+                        name: track.name,
                         image:
-                            track.item.data.albumOfTrack.coverArt.sources
-                                .length > 0
-                                ? track.item.data.albumOfTrack.coverArt
-                                      .sources[0].url
+                            track.albumOfTrack.coverArt.sources.length > 0
+                                ? track.albumOfTrack.coverArt.sources[0].url
                                 : null,
-                        artists: track.item.data.artists.items
+                        artists: track.artists.items
                             .map((artist) => artist.profile.name)
                             .join(', '),
-                        album: track.item.data.albumOfTrack.name,
+                        album: track.albumOfTrack.name,
                     };
-                },
-            );
+                });
 
             return items;
         },
