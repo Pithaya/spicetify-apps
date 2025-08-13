@@ -1,4 +1,5 @@
 import { type Edge, getIncomers, type Node } from 'reactflow';
+import { nodeDefaultValuesFactory } from '../models/mappings/node-default-values-mapping';
 import { nodeProcessorFactory } from '../models/mappings/node-processor-factory';
 import { resultNodeProcessorFactory } from '../models/mappings/result-node-processor-factory';
 import type { BaseNodeData } from '../models/processors/base-node-processor';
@@ -9,7 +10,6 @@ import {
     ResultNodes,
     type ResultNodeType,
 } from '../types/node-types';
-import { nodeDefaultValuesFactory } from '../models/mappings/node-default-values-mapping';
 
 /**
  * Get the default form values for the specified node type.
@@ -51,12 +51,11 @@ export async function executeWorkflow(
     nodes: Node[],
     edges: Edge[],
 ): Promise<void> {
-    // TODO : reset result on workflow start
-
-    const setResult = useAppStore.getState().setResult;
-    const updateNodeData = useAppStore.getState().updateNodeData;
-    const validationCallbacks =
-        useAppStore.getState().nodeFormValidationCallbacks;
+    const {
+        setResult,
+        updateNodeData,
+        nodeFormValidationCallbacks: validationCallbacks,
+    } = useAppStore.getState();
 
     // Get the result node
     const resultNodes = nodes.filter((node) =>
@@ -91,6 +90,9 @@ export async function executeWorkflow(
         return;
     }
 
+    // All is valid to start the workflow: reset the result
+    setResult([]);
+
     // Build the graph starting from the result node
     const nodesToVisit: Node[] = getIncomers(resultNode, nodes, edges);
 
@@ -101,9 +103,7 @@ export async function executeWorkflow(
         edges,
     );
 
-    const allProcessors: Record<string, NodeProcessor<BaseNodeData>> = {
-        //[resultNode.id]: resultProcessor,
-    };
+    const allProcessors: Record<string, NodeProcessor<BaseNodeData>> = {};
     const visitedNodes: Set<string> = new Set<string>([resultNode.id]);
 
     while (nodesToVisit.length > 0) {
