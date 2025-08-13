@@ -1,3 +1,4 @@
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../../types/workflow-track';
 import { BaseNodeDataSchema } from '../base-node-processor';
@@ -27,14 +28,65 @@ export const DEFAULT_ADD_TO_PLAYLIST_DATA: AddToPlaylistData = {
 };
 
 export class AddToPlaylistProcessor extends ResultNodeProcessor<AddToPlaylistData> {
-    protected override executeResultActionInternal(
+    protected override async executeResultActionInternal(
         tracks: WorkflowTrack[],
-    ): void {
-        // TODO: implement this
-        Spicetify.showNotification(
-            `${tracks.length.toFixed()} tracks added to the result tab`,
-            false,
-            1000,
-        );
+    ): Promise<void> {
+        const { playlistUri, operation, addDuplicateTracks } = this.data;
+
+        const playlistApi = getPlatform().PlaylistAPI;
+
+        try {
+            if (operation == 'replace') {
+                // First delete all tracks from playlist
+                const playlistTracks =
+                    await playlistApi.getContents(playlistUri);
+
+                await playlistApi.remove(
+                    playlistUri,
+                    playlistTracks.items.map((t) => ({
+                        uri: t.uri,
+                        uid: t.uid,
+                    })),
+                );
+            }
+
+            let tracksToAdd = tracks.map((t) => t.uri);
+
+            if (!addDuplicateTracks) {
+                // Note: only when operation is add
+                const playlistTracks =
+                    await playlistApi.getContents(playlistUri);
+
+                tracksToAdd = tracksToAdd.filter(
+                    (t) => !playlistTracks.items.some((pt) => pt.uri === t),
+                );
+            }
+
+            if (tracksToAdd.length === 0) {
+                Spicetify.showNotification(
+                    `No tracks to add to the playlist`,
+                    false,
+                    4000,
+                );
+
+                return;
+            }
+
+            await playlistApi.add(playlistUri, tracksToAdd, { after: 'end' });
+
+            Spicetify.showNotification(
+                `${tracksToAdd.length.toFixed()} tracks added to the playlist`,
+                false,
+                4000,
+            );
+        } catch (e) {
+            console.error(e);
+
+            Spicetify.showNotification(
+                `Couldn't add tracks to the playlist`,
+                true,
+                1000,
+            );
+        }
     }
 }
