@@ -23,10 +23,13 @@ export type AdditionalData = {
     albumData?: AdditionalAlbumData;
 };
 
+type TrackData = Omit<ITrack, 'trackNumber' | 'addedAt'> & {
+    isExplicit: boolean;
+};
+
 /**
  * A track that is used in the workflow.
  * Contains data from the track and optionally additional data fetched from other sources.
  * The trackNumber and addedAt properties are omitted as they will not be used in the workflow or result grid.
  */
-export type WorkflowTrack = Omit<ITrack, 'trackNumber' | 'addedAt'> &
-    AdditionalData;
+export type WorkflowTrack = TrackData & AdditionalData;

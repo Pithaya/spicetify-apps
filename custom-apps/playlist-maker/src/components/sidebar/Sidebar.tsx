@@ -179,6 +179,11 @@ export function Sidenav(): JSX.Element {
                             tooltip="Filter tracks that are playable."
                         />
                         <SidenavItem
+                            label="Is explicit"
+                            nodeType="isExplicit"
+                            tooltip="Filter tracks that are explicit."
+                        />
+                        <SidenavItem
                             label="Duration"
                             nodeType="duration"
                             tooltip="Filter tracks by duration."

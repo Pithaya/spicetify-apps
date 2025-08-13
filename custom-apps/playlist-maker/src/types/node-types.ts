@@ -25,7 +25,8 @@ type FilterNodeType =
     | 'tempo'
     | 'mode'
     | 'releaseDate'
-    | 'duration';
+    | 'duration'
+    | 'isExplicit';
 
 type ProcessingNodeType =
     | 'deduplicate'

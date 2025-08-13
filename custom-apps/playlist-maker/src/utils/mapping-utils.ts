@@ -30,6 +30,7 @@ export const mapInternalTrackToWorkflowTrack = (
             })),
         },
         isPlayable: track.isPlayable,
+        isExplicit: track.isExplicit,
         ...additionalData,
     };
 
@@ -62,6 +63,7 @@ export const mapWebAPITrackToWorkflowTrack = (
             })),
         },
         isPlayable: webApiTrack.is_playable ?? false,
+        isExplicit: webApiTrack.explicit,
         ...additionalData,
     };
 
@@ -83,6 +85,9 @@ export type GraphQLTrack = {
     };
     saved: boolean;
     uri: string;
+    contentRating: {
+        label: string; // 'NONE' | 'EXPLICIT' | ?
+    };
 };
 
 export type GraphQLAlbum = {
@@ -121,6 +126,7 @@ export const mapGraphQLTrackToWorkflowTrack = (
             })),
         },
         isPlayable: track.playability.playable,
+        isExplicit: track.contentRating.label === 'EXPLICIT',
         ...additionalData,
     };
 

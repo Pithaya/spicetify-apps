@@ -23,6 +23,10 @@ import {
     InstrumentalnessProcessor,
 } from '../processors/filter/instrumentalness-processor';
 import {
+    type IsExplicitData,
+    IsExplicitProcessor,
+} from '../processors/filter/is-explicit-processor';
+import {
     type IsPlayableData,
     IsPlayableProcessor,
 } from '../processors/filter/is-playable-processor';
@@ -65,6 +69,10 @@ import {
     SortProcessor,
 } from '../processors/processing/sort-processor';
 import {
+    type SubsetData,
+    SubsetProcessor,
+} from '../processors/processing/subset-processor';
+import {
     type AlbumData,
     AlbumSourceProcessor,
 } from '../processors/sources/album-source-processor';
@@ -92,10 +100,6 @@ import {
     type TopTracksData,
     TopTracksSourceProcessor,
 } from '../processors/sources/top-tracks-source-processor';
-import {
-    type SubsetData,
-    SubsetProcessor,
-} from '../processors/processing/subset-processor';
 
 /**
  * Constructs a processor for the specified node type.
@@ -284,6 +288,12 @@ export const nodeProcessorFactory: Record<
         ),
     subset: (node: Node<SubsetData>, incomers) =>
         new SubsetProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
+    isExplicit: (node: Node<IsExplicitData>, incomers) =>
+        new IsExplicitProcessor(
             node.id,
             { source: incomers.map((node) => node.id) },
             node.data,
