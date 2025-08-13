@@ -2,7 +2,7 @@ import type { Track } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
 import type { PlaylistTrack } from '@shared/platform/playlist';
-import type { AdditionalData, WorkflowTrack } from '../models/workflow-track';
+import type { AdditionalData, WorkflowTrack } from '../types/workflow-track';
 
 /**
  * Map a track from an internal platform API to a WorkflowTrack.

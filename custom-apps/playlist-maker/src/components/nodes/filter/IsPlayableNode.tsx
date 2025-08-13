@@ -2,7 +2,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import {
     IsPlayableDataSchema,
     type IsPlayableData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/is-playable-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/is-playable-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

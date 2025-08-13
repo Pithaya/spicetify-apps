@@ -2,7 +2,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import {
     DurationDataSchema,
     type DurationData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/duration-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/duration-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

@@ -3,7 +3,7 @@ import type { LibraryAPITrack } from '@shared/platform/library';
 import { type LocalTrack } from '@shared/platform/local-files';
 import type { PlaylistTrack } from '@shared/platform/playlist';
 import { describe, expect, it } from 'vitest';
-import { type WorkflowTrack } from '../models/workflow-track';
+import { type WorkflowTrack } from '../types/workflow-track';
 import {
     type GraphQLAlbum,
     type GraphQLTrack,

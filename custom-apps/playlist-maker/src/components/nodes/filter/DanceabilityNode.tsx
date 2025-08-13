@@ -4,7 +4,7 @@ import {
     MAX_DANCEABILITY,
     MIN_DANCEABILITY,
     type DanceabilityData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/danceability-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/danceability-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';

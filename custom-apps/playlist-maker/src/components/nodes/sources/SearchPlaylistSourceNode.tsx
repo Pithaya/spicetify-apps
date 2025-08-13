@@ -7,7 +7,7 @@ import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form'
 import {
     PlaylistDataSchema,
     type PlaylistData,
-} from 'custom-apps/playlist-maker/src/models/nodes/sources/playlist-tracks-source-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/sources/playlist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';

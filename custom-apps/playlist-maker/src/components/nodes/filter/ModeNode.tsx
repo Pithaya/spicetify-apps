@@ -4,7 +4,7 @@ import {
     ModeDataSchema,
     type Mode,
     type ModeData,
-} from 'custom-apps/playlist-maker/src/models/nodes/filter/mode-processor';
+} from 'custom-apps/playlist-maker/src/models/processors/filter/mode-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
