@@ -33,7 +33,8 @@ type ProcessingNodeType =
     | 'sort'
     | 'intersection'
     | 'difference'
-    | 'relativeComplement';
+    | 'relativeComplement'
+    | 'subset';
 
 // Note: keeping 'result' for 'addToResult' for backward compatibility of saved workflows
 export const ResultNodes = ['result', 'addToPlaylist'] as const;

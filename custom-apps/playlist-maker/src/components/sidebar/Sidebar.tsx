@@ -286,6 +286,11 @@ export function Sidenav(): JSX.Element {
                         nodeType="relativeComplement"
                         tooltip="Keep only the tracks that are in the first input and not in the second."
                     />
+                    <SidenavItem
+                        label="Subset"
+                        nodeType="subset"
+                        tooltip="Keep only the specified number of tracks."
+                    />
                 </ul>
             </div>
 

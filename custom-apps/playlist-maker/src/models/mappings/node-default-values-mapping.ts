@@ -14,6 +14,7 @@ import { DEFAULT_SPEECHINESS_DATA } from '../processors/filter/speechiness-proce
 import { DEFAULT_TEMPO_DATA } from '../processors/filter/tempo-processor';
 import { DEFAULT_VALENCE_DATA } from '../processors/filter/valence-processor';
 import { DEFAULT_ORDER_BY_DATA } from '../processors/processing/sort-processor';
+import { DEFAULT_SUBSET_DATA } from '../processors/processing/subset-processor';
 import { DEFAULT_ADD_TO_PLAYLIST_DATA } from '../processors/results/add-to-playlist-processor';
 import { DEFAULT_ALBUM_DATA } from '../processors/sources/album-source-processor';
 import { DEFAULT_ARTIST_DATA } from '../processors/sources/artist-tracks-source-processor';
@@ -61,4 +62,5 @@ export const nodeDefaultValuesFactory: Record<
     difference: () => ({ ...DEFAULT_BASE_NODE_DATA }),
     relativeComplement: () => ({ ...DEFAULT_BASE_NODE_DATA }),
     addToPlaylist: () => ({ ...DEFAULT_ADD_TO_PLAYLIST_DATA }),
+    subset: () => ({ ...DEFAULT_SUBSET_DATA }),
 };

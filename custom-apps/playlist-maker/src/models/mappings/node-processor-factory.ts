@@ -92,6 +92,10 @@ import {
     type TopTracksData,
     TopTracksSourceProcessor,
 } from '../processors/sources/top-tracks-source-processor';
+import {
+    type SubsetData,
+    SubsetProcessor,
+} from '../processors/processing/subset-processor';
 
 /**
  * Constructs a processor for the specified node type.
@@ -276,6 +280,12 @@ export const nodeProcessorFactory: Record<
                     edges,
                 ),
             },
+            node.data,
+        ),
+    subset: (node: Node<SubsetData>, incomers) =>
+        new SubsetProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
             node.data,
         ),
 };
