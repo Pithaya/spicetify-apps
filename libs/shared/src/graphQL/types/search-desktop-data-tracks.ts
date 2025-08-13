@@ -10,7 +10,11 @@ type TrackItem = {
 
 export type TrackResponseWrapper = {
     __typename: 'TrackResponseWrapper';
-    data: Track;
+    data: Track | TrackNotFound;
+};
+
+type TrackNotFound = {
+    __typename: 'NotFound';
 };
 
 type Track = {
