@@ -1,5 +1,4 @@
 import { type Item } from '@shared/components/inputs/Select/Select';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { queryArtistOverview } from '@shared/graphQL/queries/query-artist-overview';
 import {
     type GetContentsArtistItem,
@@ -180,6 +179,7 @@ export function LibraryArtistSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<ArtistItem>(
         getArtist,
         getArtists,
@@ -197,7 +197,7 @@ export function LibraryArtistSourceNode(
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Artist" />
+                <NodeTitle title="Saved artist" />
 
                 <NodeComboField error={errors.uri}>
                     <ComboBoxController
@@ -214,15 +214,9 @@ export function LibraryArtistSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected: {props.data.uri === '' ? '-' : props.data.uri}
-                </TextComponent>
 
                 <NodeField
                     label="Type of tracks"

@@ -158,6 +158,7 @@ export function AddToPlaylistNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<PlaylistItem>(
         getPlaylist,
         getPlaylists,
@@ -202,6 +203,7 @@ export function AddToPlaylistNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
 

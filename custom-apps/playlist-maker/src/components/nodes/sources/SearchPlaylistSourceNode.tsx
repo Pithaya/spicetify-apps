@@ -176,6 +176,7 @@ export function SearchPlaylistSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<PlaylistItem>(
         getPlaylist,
         getPlaylists,
@@ -214,6 +215,7 @@ export function SearchPlaylistSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
                 <TextComponent

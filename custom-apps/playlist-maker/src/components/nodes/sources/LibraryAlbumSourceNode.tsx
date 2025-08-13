@@ -1,4 +1,3 @@
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
 import {
     type GetContentsAlbumItem,
@@ -167,6 +166,7 @@ export function LibraryAlbumSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<AlbumItem>(
         getAlbum,
         getAlbums,
@@ -184,7 +184,7 @@ export function LibraryAlbumSourceNode(
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Album" />
+                <NodeTitle title="Saved album" />
 
                 <NodeComboField error={errors.uri}>
                     <ComboBoxController
@@ -201,15 +201,9 @@ export function LibraryAlbumSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected: {props.data.uri === '' ? '-' : props.data.uri}
-                </TextComponent>
 
                 <NodeField
                     label="Offset"

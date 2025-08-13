@@ -67,7 +67,7 @@ export function LocalTracksSourceNode(
         <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
             <SourceNodeHeader />
             <NodeContent>
-                <NodeTitle title="Local tracks" />
+                <NodeTitle title="Local files" />
 
                 <NodeField
                     tooltip="Search filter to apply"

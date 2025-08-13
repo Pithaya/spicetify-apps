@@ -41,6 +41,7 @@ export function ComboBoxController<
                     onClear={props.onClear}
                     onBlur={props.onBlur}
                     disabled={disabled}
+                    loading={props.loading}
                 />
             )}
         />

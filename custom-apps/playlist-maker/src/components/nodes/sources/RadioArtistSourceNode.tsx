@@ -1,5 +1,4 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { queryArtistOverview } from '@shared/graphQL/queries/query-artist-overview';
 import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
@@ -174,6 +173,7 @@ export function RadioArtistSourceNode(
         selectedItem,
         syncInputWithSelectedItem,
         onSelectedIdChanged,
+        fetchLoading,
     } = useComboboxValues<ArtistItem>(
         getArtist,
         getArtists,
@@ -211,15 +211,9 @@ export function RadioArtistSourceNode(
                         onInputChanged={onInputChanged}
                         onClear={resetSelection}
                         onBlur={syncInputWithSelectedItem}
+                        loading={fetchLoading}
                     />
                 </NodeComboField>
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected: {props.data.uri === '' ? '-' : props.data.uri}
-                </TextComponent>
 
                 <NodeField
                     label="Offset"
