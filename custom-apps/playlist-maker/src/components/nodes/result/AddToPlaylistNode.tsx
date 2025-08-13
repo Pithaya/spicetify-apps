@@ -172,7 +172,9 @@ export function AddToPlaylistNode(
     }, [playlistUri, onSelectedIdChanged]);
 
     useEffect(() => {
-        updateNodeField({ addDuplicateTracks: false });
+        if (operation === 'replace') {
+            updateNodeField({ addDuplicateTracks: false });
+        }
     }, [operation, updateNodeField]);
 
     return (
