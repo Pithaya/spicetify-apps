@@ -166,6 +166,16 @@ export function Sidenav(): JSX.Element {
                         />
                     </ul>
                 </SidenavCollapsible>
+
+                <SidenavCollapsible label="Playlist">
+                    <ul>
+                        <SidenavItem
+                            label="Recommended tracks"
+                            nodeType="recommendedPlaylistTracksSource"
+                            tooltip="Get recommended tracks for a playlist."
+                        />
+                    </ul>
+                </SidenavCollapsible>
             </div>
 
             <div className="flex flex-col gap-2">

@@ -1,5 +1,4 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
@@ -218,16 +217,6 @@ export function SearchPlaylistSourceNode(
                         loading={fetchLoading}
                     />
                 </NodeComboField>
-                <TextComponent
-                    elementType="p"
-                    fontSize="small"
-                    semanticColor="textSubdued"
-                >
-                    Selected:{' '}
-                    {props.data.playlistUri === ''
-                        ? '-'
-                        : props.data.playlistUri}
-                </TextComponent>
 
                 <NodeField
                     tooltip="Search filter to apply"

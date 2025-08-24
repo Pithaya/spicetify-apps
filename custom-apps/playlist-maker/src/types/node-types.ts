@@ -10,7 +10,8 @@ type SourceNodeType =
     | 'searchArtistSource'
     | 'radioAlbumSource'
     | 'radioArtistSource'
-    | 'radioTrackSource';
+    | 'radioTrackSource'
+    | 'recommendedPlaylistTracksSource';
 
 type FilterNodeType =
     | 'isPlayable'
