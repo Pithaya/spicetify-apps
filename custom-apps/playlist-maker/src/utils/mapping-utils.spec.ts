@@ -1,7 +1,10 @@
 import type { Track } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import { type LocalTrack } from '@shared/platform/local-files';
-import type { PlaylistTrack } from '@shared/platform/playlist';
+import type {
+    PlaylistTrack,
+    RecommendedTrack,
+} from '@shared/platform/playlist';
 import { describe, expect, it } from 'vitest';
 import { type WorkflowTrack } from '../types/workflow-track';
 import {
@@ -9,6 +12,7 @@ import {
     type GraphQLTrack,
     mapGraphQLTrackToWorkflowTrack,
     mapInternalTrackToWorkflowTrack,
+    mapRecommendedPlaylistTrackToWorkflowTrack,
     mapWebAPITrackToWorkflowTrack,
 } from './mapping-utils';
 
@@ -74,6 +78,7 @@ describe('mapInternalTrackToWorkflowTrack', () => {
                 ],
             },
             isPlayable: true,
+            isExplicit: false,
             source: 'Source',
         });
     });
@@ -166,6 +171,7 @@ describe('mapInternalTrackToWorkflowTrack', () => {
                 ],
             },
             isPlayable: true,
+            isExplicit: false,
             source: 'Source',
         });
     });
@@ -275,6 +281,7 @@ describe('mapInternalTrackToWorkflowTrack', () => {
                 ],
             },
             isPlayable: true,
+            isExplicit: false,
             source: 'Source',
         });
     });
@@ -388,6 +395,7 @@ describe('mapWebAPITrackToWorkflowTrack', () => {
                 ],
             },
             isPlayable: true,
+            isExplicit: false,
             source: 'Source',
         });
     });
@@ -414,6 +422,9 @@ describe('mapGraphQLTrackToWorkflowTrack', () => {
                 playable: true,
             },
             saved: false,
+            contentRating: {
+                label: 'EXPLICIT',
+            },
         };
 
         const album: GraphQLAlbum = {
@@ -458,6 +469,69 @@ describe('mapGraphQLTrackToWorkflowTrack', () => {
                 ],
             },
             isPlayable: true,
+            isExplicit: true,
+            source: 'Source',
+        });
+    });
+});
+
+describe('mapRecommendedPlaylistTrackToWorkflowTrack', () => {
+    it('should map correctly', () => {
+        const track: RecommendedTrack = {
+            id: 'id',
+            originalId: 'spotify:track:xxx',
+            uri: 'spotify:track:xxx',
+            name: 'Track name',
+            artists: [
+                {
+                    id: 'Artist id',
+                    name: 'Artist name',
+                    uri: 'spotify:artist:xxx',
+                },
+            ],
+            album: {
+                id: 'Album id',
+                name: 'Album name',
+                largeImageUrl: 'https://i.scdn.co/image/large',
+                imageUrl: 'https://i.scdn.co/image/medium',
+                uri: 'spotify:album:xxx',
+            },
+            duration: 232000,
+            explicit: true,
+            popularity: 60,
+            score: 88,
+            contentRating: [],
+            isMOGEFRestricted: false,
+        };
+
+        const mapped = mapRecommendedPlaylistTrackToWorkflowTrack(track, {
+            source: 'Source',
+        });
+
+        expect(mapped).toStrictEqual<WorkflowTrack>({
+            uri: 'spotify:track:xxx',
+            name: 'Track name',
+            duration: 232000,
+            artists: [
+                {
+                    uri: 'spotify:artist:xxx',
+                    name: 'Artist name',
+                },
+            ],
+            album: {
+                uri: 'spotify:album:xxx',
+                name: 'Album name',
+                images: [
+                    {
+                        url: 'https://i.scdn.co/image/medium',
+                    },
+                    {
+                        url: 'https://i.scdn.co/image/large',
+                    },
+                ],
+            },
+            isPlayable: true,
+            isExplicit: true,
             source: 'Source',
         });
     });

@@ -1,7 +1,10 @@
 import type { Track } from '@shared/api/models/track';
 import type { LibraryAPITrack } from '@shared/platform/library';
 import type { LocalTrack } from '@shared/platform/local-files';
-import type { PlaylistTrack } from '@shared/platform/playlist';
+import type {
+    PlaylistTrack,
+    RecommendedTrack,
+} from '@shared/platform/playlist';
 import type { AdditionalData, WorkflowTrack } from '../types/workflow-track';
 
 /**
@@ -31,6 +34,39 @@ export const mapInternalTrackToWorkflowTrack = (
         },
         isPlayable: track.isPlayable,
         isExplicit: track.isExplicit,
+        ...additionalData,
+    };
+
+    return mapped;
+};
+
+/**
+ * Map a recommended playlist track to a WorkflowTrack.
+ * @param track A track from PlaylistAPI.getRecommendedTracks.
+ * @param additionalData Additional data to add to the result.
+ * @returns The track mapped to a WorkflowTrack.
+ */
+export const mapRecommendedPlaylistTrackToWorkflowTrack = (
+    track: RecommendedTrack,
+    additionalData: AdditionalData,
+): WorkflowTrack => {
+    const mapped: WorkflowTrack = {
+        uri: track.uri,
+        name: track.name,
+        duration: track.duration,
+        artists: track.artists.map((artist) => ({
+            uri: artist.uri,
+            name: artist.name,
+        })),
+        album: {
+            uri: track.album.uri,
+            name: track.album.name,
+            images: [track.album.imageUrl, track.album.largeImageUrl].map(
+                (url) => ({ url }),
+            ),
+        },
+        isPlayable: true,
+        isExplicit: track.explicit,
         ...additionalData,
     };
 

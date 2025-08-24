@@ -36,6 +36,7 @@ import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArt
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 import { type CustomNodeType } from '../../types/node-types';
+import { RecommendedPlaylistTracksSourceNode } from '../../components/nodes/sources/RecommendedPlaylistTracksSourceNode';
 
 /**
  * Mapping used to instantiate node components based on their type.
@@ -79,4 +80,5 @@ export const nodeTypeToComponentMapping: Record<
     addToPlaylist: AddToPlaylistNode,
     subset: SubsetNode,
     isExplicit: IsExplicitNode,
+    recommendedPlaylistTracksSource: RecommendedPlaylistTracksSourceNode,
 };

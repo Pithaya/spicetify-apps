@@ -97,6 +97,10 @@ import {
     RadioSourceProcessor,
 } from '../processors/sources/radio-source-processor';
 import {
+    type RecommendedPlaylistTracksData,
+    RecommendedPlaylistTracksSourceProcessor,
+} from '../processors/sources/recommended-playlist-tracks-source-processor';
+import {
     type TopTracksData,
     TopTracksSourceProcessor,
 } from '../processors/sources/top-tracks-source-processor';
@@ -294,6 +298,15 @@ export const nodeProcessorFactory: Record<
         ),
     isExplicit: (node: Node<IsExplicitData>, incomers) =>
         new IsExplicitProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
+    recommendedPlaylistTracksSource: (
+        node: Node<RecommendedPlaylistTracksData>,
+        incomers,
+    ) =>
+        new RecommendedPlaylistTracksSourceProcessor(
             node.id,
             { source: incomers.map((node) => node.id) },
             node.data,

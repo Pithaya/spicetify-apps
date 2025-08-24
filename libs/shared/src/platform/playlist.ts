@@ -159,6 +159,31 @@ export type Playlist = {
     };
 };
 
+export type RecommendedTrack = {
+    id: string;
+    originalId: string;
+    name: string;
+    artists: {
+        id: string;
+        name: string;
+        uri: string;
+    }[];
+    album: {
+        id: string;
+        name: string;
+        largeImageUrl: string;
+        imageUrl: string;
+        uri: string;
+    };
+    duration: number;
+    explicit: boolean;
+    popularity: number;
+    score: number;
+    contentRating: string[];
+    uri: string;
+    isMOGEFRestricted: boolean;
+};
+
 export type PlaylistAPI = {
     add: (
         playlistUri: string,
@@ -186,4 +211,10 @@ export type PlaylistAPI = {
         playlistUri: string,
         tracks: { uri: string; uid: string }[],
     ) => Promise<void>;
+
+    getRecommendedTracks(
+        playlistUri: string,
+        trackSkipIDs: string[], // IDs of tracks, used when refreshing
+        numResults: number, // 20
+    ): Promise<RecommendedTrack[]>;
 };
