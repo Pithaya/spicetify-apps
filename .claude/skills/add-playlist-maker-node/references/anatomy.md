@@ -13,15 +13,25 @@ A Filter or Processing node lives in **6 files** (create 2, edit 4) plus the sid
 | 5 | `custom-apps/playlist-maker/src/models/mappings/node-processor-factory.ts` | Import `type <Pascal>Data` + `<Pascal>Processor`; add factory entry. |
 | 6 | `custom-apps/playlist-maker/src/models/mappings/node-type-to-component-mapping.ts` | Import `<Pascal>Node`; add `<camel>: <Pascal>Node` entry. |
 | 7 | `custom-apps/playlist-maker/src/components/sidebar/Sidebar.tsx` | Insert a `<SidenavItem>` in the correct section. |
-| 8 *(opt)* | `custom-apps/playlist-maker/src/models/processors/<category>/<kebab>-processor.spec.ts` | **Create.** Vitest test. |
+| 8 | `custom-apps/playlist-maker/src/models/processors/<category>/<kebab>-processor.spec.ts` | **Create.** Vitest spec. Every existing processor has one — this is required, not optional. See `testing.md`. |
+
+## Test infrastructure (already in place)
+
+- `custom-apps/playlist-maker/vitest.config.ts` — registers aliases + setup file.
+- `custom-apps/playlist-maker/vitest.setup.ts` — global `vi.mock` for the Zustand store and `setAudioFeatures` (no-op stub).
+- `custom-apps/playlist-maker/src/models/processors/test-helpers.ts` — exports `createTrack`, `createAudioFeatures`, `runProcessor`.
+
+Every sibling `<name>-processor.ts` has a matching `<name>-processor.spec.ts` using these helpers. Mirror the closest one when writing a spec for a new node. Never inline a mock that is already in `vitest.setup.ts`.
 
 ## Existing patterns to mirror
 
-- **Range 0-1 filter** — `custom-apps/playlist-maker/src/models/processors/filter/energy-processor.ts` + `components/nodes/filter/EnergyNode.tsx`.
-- **Numeric range filter** — `models/processors/filter/tempo-processor.ts` + `components/nodes/filter/TempoNode.tsx`.
-- **Boolean filter** — `models/processors/filter/is-explicit-processor.ts` + `components/nodes/filter/IsExplicitNode.tsx`.
-- **No-params processing** — `models/processors/processing/shuffle-processor.ts` + `components/nodes/processing/ShuffleNode.tsx`. These use `BaseNodeData` directly and skip `useNodeForm`.
-- **Two-set processing** — `models/processors/processing/intersection-processor.ts` + `components/nodes/processing/IntersectionNode.tsx`. Factory uses `getIncomingNodeIdsForHandle` with `'first-set'` and `'second-set'`.
+- **Range 0-1 filter** — `processors/filter/energy-processor.ts` + `.spec.ts` + `components/nodes/filter/EnergyNode.tsx`.
+- **Numeric range filter** — `processors/filter/tempo-processor.ts` + `.spec.ts` + `components/nodes/filter/TempoNode.tsx`.
+- **Boolean filter** — `processors/filter/is-explicit-processor.ts` + `.spec.ts` + `components/nodes/filter/IsExplicitNode.tsx`.
+- **Platform-dependent filter** — `processors/filter/is-saved-processor.ts` + `.spec.ts` (per-spec `vi.mock` of `@shared/utils/spicetify-utils`).
+- **GraphQL-dependent filter** — `processors/filter/release-date-processor.ts` + `.spec.ts` (per-spec `vi.mock` of `@shared/graphQL/queries/get-album` + `Spicetify.Locale` stub).
+- **No-params processing** — `processors/processing/shuffle-processor.ts` + `.spec.ts` + `components/nodes/processing/ShuffleNode.tsx`. Uses `BaseNodeData` directly and skips `useNodeForm`.
+- **Two-set processing** — `processors/processing/intersection-processor.ts` + `.spec.ts` + `components/nodes/processing/IntersectionNode.tsx`. Factory uses `getIncomingNodeIdsForHandle` with `'first-set'` and `'second-set'`.
 
 ## Execution flow (for reference)
 

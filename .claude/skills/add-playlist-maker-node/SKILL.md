@@ -122,7 +122,22 @@ Fill placeholders:
 
 Path: same directory as the processor, suffix `.spec.ts`.
 
-Template: `templates/processor.spec.ts.template`. Fill placeholders matching Step A. Include one `it()` for schema validation and one `it()` for the happy path of `getResultsInternal`.
+Template: `templates/processor.spec.ts.template`. Fill placeholders matching Step A.
+
+**Before writing the spec**, read `references/testing.md` in full — it describes the shared infrastructure (`vitest.setup.ts`, `test-helpers.ts`), the three classes of processors (pure / audio-feature / platform-dependent), the correct mocking pattern for each, and lint-safe idioms. Do not inline mocks for the store or `setAudioFeatures`: those are handled globally by `vitest.setup.ts`.
+
+Common placeholders:
+- `{{EXTRA_IMPORTS}}` — leave empty for pure processors; `import { createAudioFeatures } from '../test-helpers';\n` for audio-feature filters; any `vi.mock(...)` block inlined above the other imports for platform-dependent processors.
+- `{{HANDLE_KEYS}}` — `source: []` for single-source nodes, `'first-set': [], 'second-set': []` for two-set processing.
+- `{{ARRANGE}}` / `{{INPUT_BLOCK}}` — the `createTrack(...)` setup and the inputs handed to `runProcessor`. Reference the existing sibling specs for the right shape.
+
+After generation, run in order (see `references/testing.md` §Verification):
+
+```
+npx prettier --write src/models/processors/<category>/<kebab>-processor.spec.ts
+npx eslint   src/models/processors/<category>/<kebab>-processor.spec.ts
+npx vitest run <kebab>-processor
+```
 
 ### Step D — Patch `node-types.ts`
 
@@ -229,3 +244,4 @@ For the exact content to plug into each placeholder, load on demand:
 
 - `references/anatomy.md` — recap of the 6 touchpoints and their line-number anchors.
 - `references/field-types.md` — per-preset Zod snippet, default values, controller import, and JSX block.
+- `references/testing.md` — processor testing conventions, shared infrastructure, mocking patterns per processor class, and verification checklist. **Always load before writing Step C.**
