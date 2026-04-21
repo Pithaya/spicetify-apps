@@ -27,7 +27,7 @@
         "prettier": "^3.4.2",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "spicetify-creator": "^1.0.17",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.36.0"
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.0"
     }
 }
