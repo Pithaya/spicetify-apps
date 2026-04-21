@@ -27,6 +27,9 @@ export type Artists = {
     artists: Artist[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getArtists(params: Params): Promise<Artist[]> {
     ParamsSchema.parse(params);
 

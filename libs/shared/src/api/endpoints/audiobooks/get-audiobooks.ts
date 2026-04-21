@@ -21,6 +21,9 @@ export type Audiobooks = {
     audiobooks: (Audiobook | null)[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getAudiobooks(
     params: Params,
 ): Promise<(Audiobook | null)[]> {

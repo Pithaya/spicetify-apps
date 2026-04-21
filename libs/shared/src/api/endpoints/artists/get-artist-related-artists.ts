@@ -21,6 +21,9 @@ export type RelatedArtists = {
     artists: Artist[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getArtistRelatedArtists(
     params: Params,
 ): Promise<Artist[]> {

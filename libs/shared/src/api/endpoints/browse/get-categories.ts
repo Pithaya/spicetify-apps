@@ -25,6 +25,9 @@ export type Categories = {
     categories: Page<Category>;
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getCategories(params: Params): Promise<Page<Category>> {
     ParamsSchema.parse(params);
 

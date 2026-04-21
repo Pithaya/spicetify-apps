@@ -20,6 +20,9 @@ export type Chapters = {
     chapters: (Chapter | null)[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getChapters(params: Params): Promise<(Chapter | null)[]> {
     ParamsSchema.parse(params);
 

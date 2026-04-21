@@ -26,6 +26,9 @@ const getSpAudioData = async (
         | undefined;
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getTrackAudioAnalysis(
     params: Params,
 ): Promise<AudioAnalysis> {

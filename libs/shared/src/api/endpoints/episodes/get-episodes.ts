@@ -27,6 +27,9 @@ export type Episodes = {
     episodes: Episode[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getEpisodes(params: Params): Promise<Episode[]> {
     ParamsSchema.parse(params);
 

@@ -27,6 +27,9 @@ const ParamsSchema = z
 
 export type Params = z.infer<typeof ParamsSchema>;
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getAlbumTracks(
     params: Params,
 ): Promise<Page<SimplifiedTrack>> {

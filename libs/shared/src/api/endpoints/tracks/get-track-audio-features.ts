@@ -28,6 +28,9 @@ const getSpAudioFeatures = async (
     )) as AudioFeatures | null | undefined;
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getTrackAudioFeatures(
     params: Params,
 ): Promise<AudioFeatures> {

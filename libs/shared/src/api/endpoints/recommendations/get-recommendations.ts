@@ -105,6 +105,9 @@ export type RecommendationsResponse = {
     tracks: Track[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getRecommendations(
     params: Params,
 ): Promise<RecommendationsResponse> {
