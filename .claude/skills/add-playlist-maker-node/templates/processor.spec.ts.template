@@ -1,0 +1,51 @@
+import { describe, expect, it } from 'vitest';
+import { type WorkflowTrack } from '../../../types/workflow-track';
+import {
+    DEFAULT_{{UPPER_SNAKE}}_DATA,
+    {{PASCAL}}DataSchema,
+    {{PASCAL}}Processor,
+} from './{{KEBAB}}-processor';
+
+/**
+ * Cast helper: WorkflowTrack has many fields (it extends ITrack). Tests only
+ * populate the properties the processor reads. Fill in whatever your logic
+ * touches — the cast silences the rest.
+ */
+function track(partial: Partial<WorkflowTrack>): WorkflowTrack {
+    return partial as WorkflowTrack;
+}
+
+describe('{{PASCAL}}DataSchema', () => {
+    it('accepts the default data', () => {
+        const result = {{PASCAL}}DataSchema.safeParse(DEFAULT_{{UPPER_SNAKE}}_DATA);
+        expect(result.success).toBe(true);
+    });
+
+    // TODO: add at least one rejection case that targets the new field(s).
+});
+
+describe('{{PASCAL}}Processor.getResultsInternal', () => {
+    it('processes the input tracks', async () => {
+        const processor = new {{PASCAL}}Processor(
+            'test-node',
+            { {{HANDLE_KEYS}} },
+            DEFAULT_{{UPPER_SNAKE}}_DATA,
+        );
+
+        const input: Record<string, WorkflowTrack[]> = {
+{{TEST_INPUT}}
+        };
+
+        // Call the protected method directly.
+        const output: WorkflowTrack[] = await (
+            processor as unknown as {
+                getResultsInternal: (
+                    i: Record<string, WorkflowTrack[]>,
+                ) => Promise<WorkflowTrack[]>;
+            }
+        ).getResultsInternal(input);
+
+        // TODO: assert against the expected output for your logic.
+        expect(Array.isArray(output)).toBe(true);
+    });
+});
