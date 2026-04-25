@@ -21,6 +21,11 @@ const ParamsSchema = z
 
 export type Params = z.infer<typeof ParamsSchema>;
 
+/**
+ * Search suggestions when typing in the search bar.
+ * @param params The query params.
+ * @returns The data for search suggestions.
+ */
 export async function searchSuggestions(
     params: Params,
 ): Promise<SearchSuggestionsData> {
