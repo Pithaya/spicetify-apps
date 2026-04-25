@@ -1,20 +1,27 @@
+import type { CoverArt } from './cover-art';
+import type { VisualIdentity } from './visual-identity';
+
 export type AudiobookResponseWrapper = {
-    __typename: string;
+    __typename: 'AudiobookResponseWrapper';
     data: Audiobook;
 };
 
 type Audiobook = {
     __typename: 'Audiobook';
     accessInfo: AccessInfo;
-    authors: Author[];
+    authorsV2: Author[];
     coverArt: CoverArt;
+    description: string;
+    audiobookDuration: {
+        totalMilliseconds: number;
+    };
     isPreRelease: boolean;
-    mediaType: string;
+    mediaType: 'AUDIO';
     name: string;
-    preReleaseEndDateTime: IsoString;
     publishDate: IsoString;
     topics: Topics;
-    uri: string;
+    uri: `spotify:show:${string}`;
+    visualIdentity: VisualIdentity;
 };
 
 type AccessInfo = {
@@ -33,37 +40,14 @@ type Signifier = {
 
 type Author = {
     name: string;
-};
-
-type CoverArt = {
-    extractedColors: ExtractedColors;
-    sources: Source[];
-};
-
-type ExtractedColors = {
-    colorDark: Color;
-};
-
-type Color = {
-    hex: string;
-    isFallback: boolean;
-};
-
-type Source = {
-    height: number;
-    url: string;
-    width: number;
+    uri: `spotify:author:${string}` | null;
 };
 
 type IsoString = {
     isoString: string;
+    precision: 'MINUTE';
 };
 
 type Topics = {
     items: unknown[];
-};
-
-export type Audiobooks = {
-    items: AudiobookResponseWrapper[];
-    totalCount: number;
 };

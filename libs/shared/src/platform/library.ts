@@ -18,6 +18,9 @@ export type LibraryAPI = {
     getTracks: (params?: {
         offset?: number;
         limit?: number;
+        /**
+         * Can be either a search string or a tag filter, for example "tags contains rock".
+         */
         filters?: string[];
         uri?: string;
         sort?: LibraryAPITrackSortOption;
@@ -43,6 +46,8 @@ export type LibraryAPI = {
         includePreReleases?: boolean;
         includeYourEpisodes?: boolean;
     }) => Promise<GetContentsResponse>;
+
+    getTracksFilterTags: () => Promise<LibraryFilterTag[]>;
 };
 
 export type LibraryAPIEventType = 'operation_complete';
@@ -301,4 +306,17 @@ export type GetContentsResponse = {
     tagPlaylist: unknown;
     totalLength: number;
     unfilteredLength: number;
+};
+
+export type LibraryFilterTag = {
+    /**
+     * Localized name of the filter.
+     * @example "Rock", "Pop", "Upbeat".
+     */
+    name: string;
+    /**
+     * Filter for this tag, in the format "tags contains {tag_name}".
+     * @example "tags contains jazz".
+     */
+    filter: string;
 };

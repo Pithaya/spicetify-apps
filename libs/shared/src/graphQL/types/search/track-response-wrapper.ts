@@ -1,12 +1,5 @@
-export type TracksV2 = {
-    items: TrackItem[];
-    totalCount: number;
-};
-
-type TrackItem = {
-    item: TrackResponseWrapper;
-    matchedFields: unknown[];
-};
+import type { CoverArt } from './cover-art';
+import type { VisualIdentity } from './visual-identity';
 
 export type TrackResponseWrapper = {
     __typename: 'TrackResponseWrapper';
@@ -21,40 +14,25 @@ type Track = {
     __typename: 'Track';
     albumOfTrack: AlbumOfTrack;
     artists: Artists;
-    associationsV2: AssociationsV2;
+    associationsV3: AssociationsV3;
     contentRating: ContentRating;
     duration: Duration;
     id: string;
+    trackMediaType: string;
     name: string;
     playability: Playability;
-    uri: string;
+    uri: `spotify:track:${string}`;
+    visualIdentity: {
+        sixteenByNineCoverImage: CoverImage | null;
+    };
 };
 
 type AlbumOfTrack = {
     coverArt: CoverArt;
     id: string;
     name: string;
-    uri: string;
-};
-
-type CoverArt = {
-    extractedColors: ExtractedColors;
-    sources: Source[];
-};
-
-type ExtractedColors = {
-    colorDark: ColorDark;
-};
-
-type ColorDark = {
-    hex: string;
-    isFallback: boolean;
-};
-
-type Source = {
-    height: number;
-    url: string;
-    width: number;
+    uri: `spotify:album:${string}`;
+    visualIdentity: VisualIdentity;
 };
 
 type Artists = {
@@ -63,15 +41,20 @@ type Artists = {
 
 type ArtistItem = {
     profile: Profile;
-    uri: string;
+    uri: `spotify:artist:${string}`;
 };
 
 type Profile = {
     name: string;
 };
 
-type AssociationsV2 = {
-    totalCount: number;
+type AssociationsV3 = {
+    audioAssociations: {
+        totalCount: number;
+    };
+    videoAssociations: {
+        totalCount: number;
+    };
 };
 
 type ContentRating = {
@@ -85,4 +68,19 @@ type Duration = {
 type Playability = {
     playable: boolean;
     reason: string;
+};
+
+type CoverImage = {
+    image: {
+        data: ImageV2;
+    };
+};
+
+type ImageV2 = {
+    __typename: 'ImageV2';
+    sources: {
+        maxHeight: number;
+        maxWidth: number;
+        url: string;
+    }[];
 };

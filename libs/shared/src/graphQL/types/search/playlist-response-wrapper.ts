@@ -1,3 +1,6 @@
+import type { CoverArt } from './cover-art';
+import type { VisualIdentity } from './visual-identity';
+
 export type PlaylistResponseWrapper = {
     __typename: 'PlaylistResponseWrapper';
     data: Playlist;
@@ -11,7 +14,8 @@ type Playlist = {
     images: Images;
     name: string;
     ownerV2: UserResponseWrapper;
-    uri: string;
+    uri: `spotify:playlist:${string}`;
+    visualIdentity: VisualIdentity;
 };
 
 type Attribute = {
@@ -20,27 +24,7 @@ type Attribute = {
 };
 
 type Images = {
-    items: ImageItem[];
-};
-
-type ImageItem = {
-    extractedColors: ExtractedColors;
-    sources: ImageSource[];
-};
-
-type ExtractedColors = {
-    colorDark: Color;
-};
-
-type Color = {
-    hex: string;
-    isFallback: boolean;
-};
-
-type ImageSource = {
-    height: number | null;
-    url: string;
-    width: number | null;
+    items: CoverArt[];
 };
 
 type UserResponseWrapper = {
@@ -52,7 +36,7 @@ type User = {
     __typename: 'User';
     avatar: Avatar;
     name: string;
-    uri: string;
+    uri: `spotify:user:${string}`;
     username: string;
 };
 
@@ -64,9 +48,4 @@ type AvatarSource = {
     height: number;
     url: string;
     width: number;
-};
-
-export type Playlists = {
-    items: PlaylistResponseWrapper[];
-    totalCount: number;
 };

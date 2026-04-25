@@ -1,5 +1,5 @@
-import { type GraphQLResponse } from '../models/graphql-response';
-import { type QueryDefinition } from '../models/query-definition';
+import { type GraphQLResponse } from '../types/shared/graphql-response';
+import { type QueryDefinition } from '../types/shared/query-definition';
 
 function throwWithErrorMessage(
     errors: NonNullable<GraphQLResponse<unknown>['errors']>,
@@ -9,7 +9,7 @@ function throwWithErrorMessage(
 
 export async function sendGraphQLQuery<T>(
     definition: QueryDefinition,
-    variables?: Record<string, string | number | boolean>,
+    variables?: Record<string, string | string[] | number | boolean>,
 ): Promise<T> {
     const { data, errors } = (await Spicetify.GraphQL.Request(
         definition,

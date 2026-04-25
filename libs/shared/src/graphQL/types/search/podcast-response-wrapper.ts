@@ -1,3 +1,6 @@
+import type { CoverArt } from './cover-art';
+import type { VisualIdentity } from './visual-identity';
+
 export type PodcastResponseWrapper = {
     __typename: 'PodcastResponseWrapper';
     data: Podcast;
@@ -6,31 +9,12 @@ export type PodcastResponseWrapper = {
 type Podcast = {
     __typename: 'Podcast';
     coverArt: CoverArt;
-    mediaType: string;
+    mediaType: 'AUDIO';
     name: string;
     publisher: Publisher;
     topics: Topics;
-    uri: string;
-};
-
-type CoverArt = {
-    extractedColors: ExtractedColors;
-    sources: Source[];
-};
-
-type ExtractedColors = {
-    colorDark: ColorDark;
-};
-
-type ColorDark = {
-    hex: string;
-    isFallback: boolean;
-};
-
-type Source = {
-    height: number;
-    url: string;
-    width: number;
+    uri: `spotify:show:${string}`;
+    visualIdentity: VisualIdentity;
 };
 
 type Publisher = {
@@ -44,7 +28,7 @@ type Topics = {
 type Topic = {
     __typename: 'PodcastTopic';
     title: string;
-    uri: string;
+    uri: `spotify:genre:${string}`;
 };
 
 export type Podcasts = {

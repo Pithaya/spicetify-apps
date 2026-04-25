@@ -1,3 +1,6 @@
+import type { CoverArt } from './cover-art';
+import type { VisualIdentity } from './visual-identity';
+
 export type EpisodeResponseWrapper = {
     __typename: 'EpisodeResponseWrapper';
     data: Episode;
@@ -9,38 +12,21 @@ type Episode = {
     coverArt: CoverArt;
     description: string;
     duration: Duration;
-    mediaTypes: string[];
+    gatedEntityRelations: unknown[];
+    mediaTypes: ('AUDIO' | 'VIDEO')[];
     name: string;
     playability: Playability;
     playedState: PlayedState;
     podcastV2: PodcastResponseWrapper;
     releaseDate: ReleaseDate;
     restrictions: Restrictions;
-    uri: string;
+    uri: `spotify:episode:${string}`;
+    videoPreviewThumbnail: VideoThumbnailImage;
+    visualIdentity: VisualIdentity;
 };
 
 type ContentRating = {
     label: string;
-};
-
-type CoverArt = {
-    extractedColors: ExtractedColors;
-    sources: Source[];
-};
-
-type ExtractedColors = {
-    colorDark: Color;
-};
-
-type Color = {
-    hex: string;
-    isFallback: boolean;
-};
-
-type Source = {
-    height: number;
-    url: string;
-    width: number;
 };
 
 type Duration = {
@@ -67,7 +53,7 @@ type Podcast = {
     mediaType: string;
     name: string;
     publisher: Publisher;
-    uri: string;
+    uri: `spotify:show:${string}`;
 };
 
 type Publisher = {
@@ -83,7 +69,15 @@ type Restrictions = {
     paywallContent: boolean;
 };
 
-export type Episodes = {
-    items: EpisodeResponseWrapper[];
-    totalCount: number;
+type VideoThumbnailImage = {
+    imagePreview: {
+        data: {
+            __typename: 'ImageV2';
+            sources: {
+                maxHeight: number;
+                maxWidth: number;
+                url: string;
+            }[];
+        };
+    };
 };
