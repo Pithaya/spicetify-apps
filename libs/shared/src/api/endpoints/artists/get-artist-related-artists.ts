@@ -27,9 +27,9 @@ export type RelatedArtists = {
 export async function getArtistRelatedArtists(
     params: Params,
 ): Promise<Artist[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const id = getId(Spicetify.URI.fromString(params.uri));
+    const id = getId(Spicetify.URI.fromString(parsedParams.uri));
 
     const sender = getWebApiRequestSender();
 

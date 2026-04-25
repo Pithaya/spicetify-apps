@@ -31,7 +31,7 @@ export type Episodes = {
  * @deprecated The Spotify Web API can no longer be used with the app's session token.
  */
 export async function getEpisodes(params: Params): Promise<Episode[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -39,7 +39,7 @@ export async function getEpisodes(params: Params): Promise<Episode[]> {
         .withPath(`/episodes`)
         .withEndpointIdentifier('/episodes')
         .withQueryParameters({
-            ids: params.uris
+            ids: parsedParams.uris
                 .map((uri) => getId(Spicetify.URI.fromString(uri)))
                 .join(','),
         })

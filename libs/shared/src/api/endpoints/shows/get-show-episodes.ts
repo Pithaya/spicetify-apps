@@ -33,9 +33,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getShowEpisodes(
     params: Params,
 ): Promise<Page<SimplifiedEpisode>> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const id = getId(Spicetify.URI.fromString(params.uri));
+    const id = getId(Spicetify.URI.fromString(parsedParams.uri));
 
     const sender = getWebApiRequestSender();
 
@@ -43,8 +43,8 @@ export async function getShowEpisodes(
         .withPath(`/shows/${id}/episodes`)
         .withEndpointIdentifier('/shows/{id}/episodes')
         .withQueryParameters({
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
         })
         .send<Page<SimplifiedEpisode>>();
 

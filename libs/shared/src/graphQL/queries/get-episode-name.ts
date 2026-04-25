@@ -33,9 +33,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getEpisodeName(
     params: Params,
 ): Promise<GetEpisodeNameData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { getEpisodeName } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(getEpisodeName, params);
+    return await sendGraphQLQuery(getEpisodeName, parsedParams);
 }

@@ -37,9 +37,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function queryArtistMinimal(
     params: Params,
 ): Promise<QueryArtistMinimalData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { queryArtistMinimal } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(queryArtistMinimal, params);
+    return await sendGraphQLQuery(queryArtistMinimal, parsedParams);
 }

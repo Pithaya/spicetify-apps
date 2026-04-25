@@ -29,9 +29,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function searchSuggestions(
     params: Params,
 ): Promise<SearchSuggestionsData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { searchSuggestions } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(searchSuggestions, params);
+    return await sendGraphQLQuery(searchSuggestions, parsedParams);
 }

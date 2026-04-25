@@ -41,9 +41,9 @@ const getSpAudioFeatures = async (
 export async function getTracksAudioFeatures(
     params: Params,
 ): Promise<AudioFeatures[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const ids = params.uris
+    const ids = parsedParams.uris
         .map((uri) => getId(Spicetify.URI.fromString(uri)))
         .join(',');
 
@@ -59,7 +59,7 @@ export async function getTracksAudioFeatures(
         .withPath(`/audio-features`)
         .withEndpointIdentifier('/audio-features')
         .withQueryParameters({
-            ids: params.uris
+            ids: parsedParams.uris
                 .map((uri) => getId(Spicetify.URI.fromString(uri)))
                 .join(','),
         })

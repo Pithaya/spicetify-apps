@@ -164,9 +164,9 @@ export type Params = z.infer<typeof ParamsSchema>;
  * @returns The data for the album.
  */
 export async function getAlbum(params: Params): Promise<GetAlbumData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { getAlbum } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(getAlbum, params);
+    return await sendGraphQLQuery(getAlbum, parsedParams);
 }

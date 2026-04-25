@@ -29,7 +29,7 @@ export type Categories = {
  * @deprecated The Spotify Web API can no longer be used with the app's session token.
  */
 export async function getCategories(params: Params): Promise<Page<Category>> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -37,9 +37,9 @@ export async function getCategories(params: Params): Promise<Page<Category>> {
         .withPath(`/browse/categories`)
         .withEndpointIdentifier('/browse/categories')
         .withQueryParameters({
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
-            locale: params.locale ?? Spicetify.Locale.getLocale(),
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
+            locale: parsedParams.locale ?? Spicetify.Locale.getLocale(),
         })
         .send<Categories>();
 

@@ -28,9 +28,9 @@ export type Params = z.infer<typeof ParamsSchema>;
  * @returns The name of the track.
  */
 export async function getTrackName(params: Params): Promise<GetTrackNameData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { getTrackName } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(getTrackName, params);
+    return await sendGraphQLQuery(getTrackName, parsedParams);
 }

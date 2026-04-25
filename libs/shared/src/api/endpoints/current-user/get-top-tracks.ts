@@ -29,7 +29,7 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getCurrentUserTopTracks(
     params: Params,
 ): Promise<Page<Track>> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -37,9 +37,9 @@ export async function getCurrentUserTopTracks(
         .withPath(`/me/top/tracks`)
         .withEndpointIdentifier('/me/top/tracks')
         .withQueryParameters({
-            time_range: params.timeRange,
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
+            time_range: parsedParams.timeRange,
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
         })
         .send<Page<Track>>();
 

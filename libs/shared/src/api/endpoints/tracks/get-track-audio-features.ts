@@ -34,15 +34,15 @@ const getSpAudioFeatures = async (
 export async function getTrackAudioFeatures(
     params: Params,
 ): Promise<AudioFeatures> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const spicetifyAudioFeatures = await getSpAudioFeatures(params.uri);
+    const spicetifyAudioFeatures = await getSpAudioFeatures(parsedParams.uri);
 
     if (spicetifyAudioFeatures) {
         return spicetifyAudioFeatures;
     }
 
-    const id = getId(Spicetify.URI.fromString(params.uri));
+    const id = getId(Spicetify.URI.fromString(parsedParams.uri));
 
     const sender = getWebApiRequestSender();
 

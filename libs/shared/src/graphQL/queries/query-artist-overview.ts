@@ -445,9 +445,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function queryArtistOverview(
     params: Params,
 ): Promise<QueryArtistOverviewData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(queryArtistOverview, params);
+    return await sendGraphQLQuery(queryArtistOverview, parsedParams);
 }

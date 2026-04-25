@@ -21,9 +21,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getAudiobookChapters(
     params: Params,
 ): Promise<Page<SimplifiedChapter>> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const id = getId(Spicetify.URI.fromString(params.uri));
+    const id = getId(Spicetify.URI.fromString(parsedParams.uri));
 
     const sender = getWebApiRequestSender();
 
@@ -31,8 +31,8 @@ export async function getAudiobookChapters(
         .withPath(`/audiobooks/${id}/chapters`)
         .withEndpointIdentifier('/audiobooks/{id}/chapters')
         .withQueryParameters({
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
         })
         .send<Page<SimplifiedChapter>>();
 

@@ -49,9 +49,9 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function queryNpvEpisode(
     params: Params,
 ): Promise<QueryNpvEpisodeData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const { queryNpvEpisode } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(queryNpvEpisode, params);
+    return await sendGraphQLQuery(queryNpvEpisode, parsedParams);
 }

@@ -29,7 +29,7 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getCurrentUserTopArtists(
     params: Params,
 ): Promise<Page<Artist>> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -37,9 +37,9 @@ export async function getCurrentUserTopArtists(
         .withPath(`/me/top/artists`)
         .withEndpointIdentifier('/me/top/artists')
         .withQueryParameters({
-            time_range: params.timeRange,
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
+            time_range: parsedParams.timeRange,
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
         })
         .send<Page<Artist>>();
 
