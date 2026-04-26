@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { NotFound } from '../types/shared/not-found';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
-export type GetEpisodeNameData = {
-    episodeUnionV2:
+export type GetPodcastOrBookNameData = {
+    podcastUnionV2:
         | {
-              __typename: 'Episode';
+              __typename: 'Podcast' | 'Audiobook';
               name: string;
           }
         | NotFound;
@@ -13,14 +13,11 @@ export type GetEpisodeNameData = {
 
 const ParamsSchema = z
     .object({
-        /**
-         * The URI of the episode.
-         */
         uri: z
             .string()
             .nonempty()
-            .refine((value) => Spicetify.URI.isEpisode(value), {
-                message: 'Invalid episode URI',
+            .refine((value) => Spicetify.URI.isShow(value), {
+                message: 'Invalid show URI',
             }),
     })
     .strict()
@@ -29,16 +26,16 @@ const ParamsSchema = z
 export type Params = z.input<typeof ParamsSchema>;
 
 /**
- * Get the name of an episode.
+ * Get the name of a podcast or book.
  * @param params The query params.
- * @returns The name of the episode.
+ * @returns The name of the podcast or book.
  */
-export async function getEpisodeName(
+export async function getPodcastOrBookName(
     params: Params,
-): Promise<GetEpisodeNameData> {
+): Promise<GetPodcastOrBookNameData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getEpisodeName } = Spicetify.GraphQL.Definitions;
+    const { getPodcastOrBookName } = Spicetify.GraphQL.Definitions;
 
-    return await sendGraphQLQuery(getEpisodeName, parsedParams);
+    return await sendGraphQLQuery(getPodcastOrBookName, parsedParams);
 }

@@ -1,13 +1,10 @@
+import type { NotFound } from '../shared/not-found';
 import type { CoverArt } from './cover-art';
 import type { VisualIdentity } from './visual-identity';
 
 export type TrackResponseWrapper = {
     __typename: 'TrackResponseWrapper';
-    data: Track | TrackNotFound;
-};
-
-type TrackNotFound = {
-    __typename: 'NotFound';
+    data: Track | NotFound;
 };
 
 type Track = {

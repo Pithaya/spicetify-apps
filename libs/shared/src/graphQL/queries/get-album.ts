@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
+import type { NotFound } from '../types/shared/not-found';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 type Copyright = {
@@ -116,8 +117,8 @@ type TracksV2 = {
     totalCount: number;
 };
 
-type AlbumUnion = {
-    __typename: 'Album' | 'NotFound';
+export type Album = {
+    __typename: 'Album';
     copyright: Copyright;
     courtesyLine: unknown;
     date: Date;
@@ -128,7 +129,7 @@ type AlbumUnion = {
     sharingInfo: SharingInfo;
     tracksV2: TracksV2;
     type: 'ALBUM';
-    uri: string;
+    uri: `spotify:album:${string}`;
     watchFeedEntrypoint: unknown;
     artists: Artists;
     coverArt: CoverArt;
@@ -138,7 +139,7 @@ type AlbumUnion = {
 };
 
 export type GetAlbumData = {
-    albumUnion: AlbumUnion;
+    albumUnion: Album | NotFound;
 };
 
 const ParamsSchema = z
@@ -151,12 +152,12 @@ const ParamsSchema = z
             }),
         offset: z.number().nonnegative().int(),
         limit: z.number().nonnegative().int().max(GRAPHQL_MAX_LIMIT),
-        locale: z.string().nonempty(),
+        locale: z.string().optional().default(Spicetify.Locale.getLocale()),
     })
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get data for an album.

@@ -1,16 +1,19 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
+import type { NotFound } from '../types/shared/not-found';
 import { sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type QueryArtistMinimalData = {
-    artistUnion: {
-        __typename: 'Artist';
-        id: string;
-        uri: string;
-        profile: {
-            name: string;
-        };
-    };
+    artistUnion:
+        | {
+              __typename: 'Artist';
+              id: string;
+              uri: string;
+              profile: {
+                  name: string;
+              };
+          }
+        | NotFound;
 };
 
 const ParamsSchema = z
@@ -27,7 +30,7 @@ const ParamsSchema = z
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get minimal informations about an artist.

@@ -37,7 +37,7 @@ const ParamsSchema = z
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Search all for a query.

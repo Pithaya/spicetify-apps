@@ -1283,7 +1283,7 @@ declare namespace Spicetify {
 	 * Create custom menu item and prepend to right click context menu
 	 */
 	namespace ContextMenu {
-		type OnClickCallback = (uris: string[], uids?: string[], contextUri?: string) => void;
+		type OnClickCallback = (uris: string[], uids?: string[], contextUri?: string) => void | Promise<void>;
 		type ShouldAddCallback = (uris: string[], uids?: string[], contextUri?: string) => boolean;
 
 		// Single context menu item
@@ -1319,24 +1319,30 @@ declare namespace Spicetify {
 		 * `Item`s in `subItems` array shouldn't be registered.
 		 */
 		class SubMenu {
-			constructor(name: string, subItems: Iterable<Item>, shouldAdd?: ShouldAddCallback, disabled?: boolean);
-			name: string;
-			disabled: boolean;
-			/**
-			 * A function returning boolean determines whether item should be prepended.
-			 */
-			shouldAdd: ShouldAddCallback;
-			addItem: (item: Item) => void;
-			removeItem: (item: Item) => void;
-			/**
-			 * SubMenu is only available in Context Menu when method "register" is called.
-			 */
-			register: () => void;
-			/**
-			 * Stop SubMenu to be prepended into Context Menu.
-			 */
-			deregister: () => void;
-		}
+            constructor(
+                name: string,
+                subItems: Iterable<Item>,
+                shouldAdd?: ShouldAddCallback,
+                disabled?: boolean,
+                icon?: Icon | string,
+            );
+            name: string;
+            disabled: boolean;
+            /**
+             * A function returning boolean determines whether item should be prepended.
+             */
+            shouldAdd: ShouldAddCallback;
+            addItem: (item: Item) => void;
+            removeItem: (item: Item) => void;
+            /**
+             * SubMenu is only available in Context Menu when method "register" is called.
+             */
+            register: () => void;
+            /**
+             * Stop SubMenu to be prepended into Context Menu.
+             */
+            deregister: () => void;
+        }
 	}
 
 	/**
@@ -1362,13 +1368,14 @@ declare namespace Spicetify {
 	}
 
 	/** React instance to create components */
-	const React: any;
+	const React: typeof import('react');;
 	/** React DOM instance to render and mount components */
-	const ReactDOM: any;
+	const ReactDOM: typeof import('react-dom') &
+        typeof import('react-dom/client');
 	/** React DOM Server instance to render components to string */
-	const ReactDOMServer: any;
+	const ReactDOMServer: typeof import('react-dom/server');
 	/** React JSX runtime instance to transform JSX elements */
-	const ReactJSX: any;
+	const ReactJSX: typeof import('react/jsx-runtime');
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {

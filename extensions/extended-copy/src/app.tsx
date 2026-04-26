@@ -1,35 +1,22 @@
-import type { Album } from '@shared/api/models/album';
-import type { Artist } from '@shared/api/models/artist';
-import type { Episode } from '@shared/api/models/episode';
-import type { Playlist } from '@shared/api/models/playlist';
-import type { Show } from '@shared/api/models/show';
-import type { Track } from '@shared/api/models/track';
-import type { ClipboardAPI } from '@shared/platform/clipboard';
 import { getPlatform, waitForSpicetify } from '@shared/utils/spicetify-utils';
 import { getId } from '@shared/utils/uri-utils';
-import { getApiData } from '@shared/utils/web-api-utils';
 import i18next from 'i18next';
 import { Clipboard } from 'lucide-react';
 import React from 'react';
-
-let locale: typeof Spicetify.Locale;
-let clipboardApi: ClipboardAPI;
-
-type DataItem = Track | Album | Artist | Playlist | Show | Episode;
-type DataItemWithArtists = Track | Album;
-
-const hasArtists = (item: DataItem): item is DataItemWithArtists => {
-    return item.type === 'track' || item.type === 'album';
-};
+import {
+    getDataForUris,
+    getNameForUris,
+    type DataItem,
+} from './utils/graph-ql-utils';
 
 async function getData(uris: string[]): Promise<DataItem[]> {
-    const data = await getApiData(uris);
+    const data = await getDataForUris(uris);
 
     const items: DataItem[] = [];
     const invalidUris: string[] = [];
 
     for (const [index, item] of data.entries()) {
-        if (item === null) {
+        if (item.__typename === 'NotFound') {
             invalidUris.push(uris[index]);
         } else {
             items.push(item);
@@ -48,17 +35,14 @@ async function getData(uris: string[]): Promise<DataItem[]> {
 
 async function copy(text: string | object): Promise<void> {
     Spicetify.showNotification(i18next.t('copied'));
-    await clipboardApi.copy(text);
+    await getPlatform().ClipboardAPI.copy(text);
 }
 
 async function main(): Promise<void> {
     await waitForSpicetify();
 
-    clipboardApi = getPlatform().ClipboardAPI;
-    locale = Spicetify.Locale;
-
     await i18next.init({
-        lng: locale.getLocale(),
+        lng: Spicetify.Locale.getLocale(),
         fallbackLng: 'en',
         debug: false,
         resources: {
@@ -100,25 +84,8 @@ async function main(): Promise<void> {
     const copyNameItem = new Spicetify.ContextMenu.Item(
         i18next.t('name'),
         async (uris) => {
-            const data = await getData(uris);
-            const names = data.map((item) => item.name);
-            await copy(names.join(locale.getSeparator()));
-        },
-        () => true,
-    );
-
-    const copyArtistItem = new Spicetify.ContextMenu.Item(
-        i18next.t('artist'),
-        async (uris) => {
-            const results = await getData(uris);
-            const artistNames = results
-                .filter(hasArtists)
-                .map((item) =>
-                    item.artists
-                        .map((artist) => artist.name)
-                        .join(locale.getSeparator()),
-                );
-            await copy(artistNames.join(locale.getSeparator()));
+            const names = await getNameForUris(uris);
+            await copy(names.join(Spicetify.Locale.getSeparator()));
         },
         () => true,
     );
@@ -127,7 +94,7 @@ async function main(): Promise<void> {
         'ID',
         async (uris) => {
             const ids = uris.map((uri) => getId(Spicetify.URI.fromString(uri)));
-            await copy(ids.join(locale.getSeparator()));
+            await copy(ids.join(Spicetify.Locale.getSeparator()));
         },
         () => true,
     );
@@ -135,7 +102,7 @@ async function main(): Promise<void> {
     const copyUriItem = new Spicetify.ContextMenu.Item(
         'URI',
         async (uris) => {
-            await copy(uris.join(locale.getSeparator()));
+            await copy(uris.join(Spicetify.Locale.getSeparator()));
         },
         () => true,
     );
@@ -170,18 +137,18 @@ async function main(): Promise<void> {
     createSubmenu(
         'copyTrack',
         (uris) => uris.length === 1 && Spicetify.URI.isTrack(uris[0]),
-        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem],
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem],
     );
     createSubmenu(
         'copyTracks',
         (uris) =>
             uris.length > 1 && uris.every((uri) => Spicetify.URI.isTrack(uri)),
-        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem],
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem],
     );
     createSubmenu(
         'copyAlbum',
         (uris) => uris.length === 1 && Spicetify.URI.isAlbum(uris[0]),
-        [copyNameItem, copyArtistItem, copyIdItem, copyUriItem, copyDataItem],
+        [copyNameItem, copyIdItem, copyUriItem, copyDataItem],
     );
     createSubmenu(
         'copyArtist',
