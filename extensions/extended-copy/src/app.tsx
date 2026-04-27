@@ -33,6 +33,30 @@ async function getData(uris: string[]): Promise<DataItem[]> {
     return items;
 }
 
+async function getName(uris: string[]): Promise<string[]> {
+    const names = await getNameForUris(uris);
+
+    const validNames: string[] = [];
+    const invalidUris: string[] = [];
+
+    for (const [index, name] of names.entries()) {
+        if (name === null) {
+            invalidUris.push(uris[index]);
+        } else {
+            validNames.push(name);
+        }
+    }
+
+    if (invalidUris.length > 0) {
+        Spicetify.showNotification(
+            `Couldn't get data for URIs: ${invalidUris.join(', ')}`,
+            true,
+        );
+    }
+
+    return validNames;
+}
+
 async function copy(text: string | object): Promise<void> {
     Spicetify.showNotification(i18next.t('copied'));
     await getPlatform().ClipboardAPI.copy(text);
@@ -84,7 +108,7 @@ async function main(): Promise<void> {
     const copyNameItem = new Spicetify.ContextMenu.Item(
         i18next.t('name'),
         async (uris) => {
-            const names = await getNameForUris(uris);
+            const names = await getName(uris);
             await copy(names.join(Spicetify.Locale.getSeparator()));
         },
         () => true,
