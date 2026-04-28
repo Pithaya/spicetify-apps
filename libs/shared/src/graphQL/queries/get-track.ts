@@ -133,8 +133,14 @@ export type Track = {
     uri: `spotify:track:${string}`;
     visualIdentity: VisualIdentity;
     albumOfTrack: AlbumOfTrack;
-    firstArtist: { items: Artist[]; totalCount: number };
-    otherArtists: { items: unknown[] };
+    firstArtist: {
+        items: Artist[];
+        /**
+         * Count of first artist + other artists.
+         */
+        totalCount: number;
+    };
+    otherArtists: { items: Artist[] };
 };
 
 export type GetTrackData = {
