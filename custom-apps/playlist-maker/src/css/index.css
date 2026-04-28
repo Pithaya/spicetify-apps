@@ -1,4 +1,7 @@
-@import 'tailwindcss' important;
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme) important;
+@import 'tailwindcss/utilities.css' layer(utilities) important;
+
 @source "../../../../libs/shared/src/components";
 
 @theme inline {
