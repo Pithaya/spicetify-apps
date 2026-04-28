@@ -1,8 +1,10 @@
-import { getTrack as getApiTrack } from '@shared/api/endpoints/tracks/get-track';
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    type TrackItem,
+    useTrackComboboxFetchers,
+} from 'custom-apps/playlist-maker/src/hooks/use-track-combobox-fetchers';
 import {
     type RadioData,
     RadioDataSchema,
@@ -39,29 +41,19 @@ const orderItems: Item<RadioData['sortOrder']>[] = [
     { value: 'DESC', label: 'Descending' },
 ];
 
-type TrackItem = {
-    id: string;
-    uri: string;
-    name: string;
-    image: string | null;
-    album: string;
-    artists: string;
-};
-
 function TrackItemRenderer(
     props: Readonly<ItemRendererProps<TrackItem>>,
 ): JSX.Element {
     return (
         <div className="flex max-h-[80px] items-stretch gap-2">
             <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
-                {props.item.image && (
+                {props.item.image ? (
                     <img
                         src={props.item.image}
                         className="rounded-md object-contain"
                         alt="album"
                     />
-                )}
-                {props.item.image === null && (
+                ) : (
                     <Music size={60} strokeWidth={1} />
                 )}
             </div>
@@ -94,83 +86,12 @@ export function RadioTrackSourceNode(
         RadioDataSchema,
     );
 
-    const getTracks = useCallback(
-        async (input: string): Promise<TrackItem[]> => {
-            if (!input.trim()) {
-                return [];
-            }
+    const onTrackNotFound = useCallback(() => {
+        updateNodeField({ uri: '' });
+    }, [updateNodeField]);
 
-            const search = await searchDesktop({
-                searchTerm: input,
-                offset: 0,
-                limit: 10,
-                includePreReleases: true,
-                includeArtistHasConcertsField: false,
-                includeAudiobooks: false,
-                includeLocalConcertsField: false,
-                numberOfTopResults: 5,
-            });
-
-            const items: TrackItem[] = search.searchV2.tracksV2.items
-                .map((trackItem) => trackItem.item.data)
-                .filter((item) => item.__typename === 'Track')
-                .map((track) => {
-                    return {
-                        id: track.uri,
-                        uri: track.uri,
-                        name: track.name,
-                        image:
-                            track.albumOfTrack.coverArt.sources.length > 0
-                                ? track.albumOfTrack.coverArt.sources[0].url
-                                : null,
-                        artists: track.artists.items
-                            .map((artist) => artist.profile.name)
-                            .join(', '),
-                        album: track.albumOfTrack.name,
-                    };
-                });
-
-            return items;
-        },
-        [],
-    );
-
-    const getTrack = useCallback(
-        async (trackUri: string): Promise<TrackItem | null> => {
-            try {
-                const track = await getApiTrack({
-                    uri: trackUri,
-                });
-
-                const trackItem: TrackItem = {
-                    id: track.uri,
-                    name: track.name,
-                    uri: track.uri,
-                    image:
-                        track.album.images.length > 0
-                            ? track.album.images[0].url
-                            : null,
-                    artists: track.artists
-                        .map((artist) => artist.name)
-                        .join(', '),
-                    album: track.album.name,
-                };
-
-                return trackItem;
-            } catch (e) {
-                console.error('Failed to fetch track', e);
-                updateNodeField({ uri: '' });
-
-                return null;
-            }
-        },
-        [updateNodeField],
-    );
-
-    const itemToString = useCallback(
-        (item: TrackItem): string => item.name,
-        [],
-    );
+    const { getTrack, getTracks, itemToString } =
+        useTrackComboboxFetchers(onTrackNotFound);
 
     const {
         inputValue,
