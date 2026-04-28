@@ -10,7 +10,7 @@ export type Props = {
 export function NodeHeader(props: Readonly<Props>): JSX.Element {
     return (
         <div
-            className="rounded-t-sm border-t !px-2 !py-0.5"
+            className="tw:rounded-t-sm tw:border-t tw:px-2 tw:py-0.5"
             style={{
                 backgroundColor: props.backgroundColor,
                 color: props.textColor,

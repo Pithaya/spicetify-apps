@@ -17,7 +17,7 @@ export function NodeCheckboxField(props: Readonly<Props>): JSX.Element {
             small={true}
             centerFields={true}
         >
-            <div className="flex justify-end">{props.children}</div>
+            <div className="tw:flex tw:justify-end">{props.children}</div>
         </NodeField>
     );
 }

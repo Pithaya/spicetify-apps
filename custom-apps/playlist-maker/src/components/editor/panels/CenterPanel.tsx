@@ -111,9 +111,12 @@ export function CenterPanel(): JSX.Element {
     }, [hasPendingChanges, resetState, setShowConfirmNewModal]);
 
     return (
-        <Panel className="flex items-center rounded-lg" position="top-center">
-            <div className="flex-col ps-1">
-                <div className="flex items-center">
+        <Panel
+            className="tw:flex tw:items-center tw:rounded-lg"
+            position="top-center"
+        >
+            <div className="tw:flex-col tw:ps-1">
+                <div className="tw:flex tw:items-center">
                     <TextController
                         placeholder=""
                         control={control}
@@ -135,7 +138,7 @@ export function CenterPanel(): JSX.Element {
                 <InputError error={errors.workflowName} />
             </div>
 
-            <div className="mx-1 self-stretch border-l border-solid border-(--text-subdued)" />
+            <div className="tw:mx-1 tw:self-stretch tw:border-l tw:border-solid tw:border-(--text-subdued)" />
 
             <Spicetify.ReactComponent.TooltipWrapper label="Manage workflows">
                 <Spicetify.ReactComponent.ButtonTertiary

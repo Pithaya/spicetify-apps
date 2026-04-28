@@ -1,6 +1,6 @@
 @layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme) important;
-@import 'tailwindcss/utilities.css' layer(utilities) important;
+@import 'tailwindcss/theme.css' layer(theme) prefix(tw) important;
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) important;
 
 @source "../../../../libs/shared/src/components";
 
@@ -27,11 +27,11 @@
 
 @layer components {
     .app-container {
-        @apply bg-spice-sidebar absolute top-0 right-0 bottom-0 left-0;
+        @apply tw:bg-spice-sidebar tw:absolute tw:top-0 tw:right-0 tw:bottom-0 tw:left-0;
     }
 
     .panel {
-        @apply bg-spice-main rounded-lg;
+        @apply tw:bg-spice-main tw:rounded-lg;
     }
 }
 

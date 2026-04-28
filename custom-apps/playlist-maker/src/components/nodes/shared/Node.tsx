@@ -10,12 +10,12 @@ export function Node(props: Readonly<PropsWithChildren<Props>>): JSX.Element {
     return (
         <div
             className={Spicetify.classnames(
-                'bg-spice-main-elevated rounded-sm text-base',
+                'tw:bg-spice-main-elevated tw:rounded-sm tw:text-base',
                 props.isExecuting
-                    ? '!outline-spice-button rounded-md !outline-2 !outline-solid'
+                    ? 'tw:outline-spice-button tw:rounded-md tw:outline-2 tw:outline-solid'
                     : '',
                 !props.isExecuting && props.isSelected
-                    ? '!outline-spice-button-transparent rounded-md !outline-2 !outline-solid'
+                    ? 'tw:outline-spice-button-transparent tw:rounded-md tw:outline-2 tw:outline-solid'
                     : '',
                 props.classname,
             )}

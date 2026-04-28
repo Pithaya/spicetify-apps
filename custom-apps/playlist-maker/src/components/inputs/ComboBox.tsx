@@ -64,18 +64,18 @@ export function Combobox<T extends TComboboxItem>(
     });
 
     return (
-        <div className="relative">
-            <div className="flex flex-col gap-1">
+        <div className="tw:relative">
+            <div className="tw:flex tw:flex-col tw:gap-1">
                 <label
                     htmlFor="combobox-search"
-                    className="w-fit"
+                    className="tw:w-fit"
                     {...getLabelProps()}
                 >
                     <TextComponent elementType="small">
                         {props.label}
                     </TextComponent>
                 </label>
-                <div className="bg-spice-tab-active flex gap-0.5 rounded-sm !pe-1">
+                <div className="tw:bg-spice-tab-active tw:flex tw:gap-0.5 tw:rounded-sm tw:pe-1">
                     <input
                         {...getInputProps({
                             onChange: (
@@ -95,7 +95,7 @@ export function Combobox<T extends TComboboxItem>(
                             },
                         })}
                         placeholder={props.placeholder}
-                        className="w-full truncate !p-1.5"
+                        className="tw:w-full tw:truncate tw:p-1.5"
                         id="combobox-search"
                         onBlur={() => {
                             props.onBlur();
@@ -115,7 +115,7 @@ export function Combobox<T extends TComboboxItem>(
                     )}
                     <button
                         aria-label="toggle menu"
-                        className="!px-2"
+                        className="tw:px-2"
                         type="button"
                         {...getToggleButtonProps()}
                         disabled={props.disabled}
@@ -129,13 +129,13 @@ export function Combobox<T extends TComboboxItem>(
                 </div>
             </div>
             <ul
-                className={`bg-spice-highlight-elevated absolute z-10 !mt-1 max-h-80 w-full overflow-scroll rounded-sm !p-0 ${
-                    !isOpen && !forceOpen ? 'hidden' : ''
+                className={`tw:bg-spice-highlight-elevated tw:absolute tw:z-10 tw:mt-1 tw:max-h-80 tw:w-full tw:overflow-scroll tw:rounded-sm tw:p-0 ${
+                    !isOpen && !forceOpen ? 'tw:hidden' : ''
                 }`}
                 {...getMenuProps()}
             >
                 {(isOpen || forceOpen) && loading && (
-                    <div className="flex items-center justify-center !p-2">
+                    <div className="tw:flex tw:items-center tw:justify-center tw:p-2">
                         <TextComponent elementType="span" fontSize="small">
                             Loading...
                         </TextComponent>
@@ -147,9 +147,9 @@ export function Combobox<T extends TComboboxItem>(
                         <li
                             className={Spicetify.classnames(
                                 highlightedIndex === index
-                                    ? 'bg-spice-highlight-elevated-hover'
+                                    ? 'tw:bg-spice-highlight-elevated-hover'
                                     : '',
-                                'flex flex-col',
+                                'tw:flex tw:flex-col',
                             )}
                             key={item.id}
                             {...getItemProps({ item, index })}
@@ -163,7 +163,7 @@ export function Combobox<T extends TComboboxItem>(
                         </li>
                     ))}
                 {(isOpen || forceOpen) && !loading && items.length === 0 && (
-                    <div className="flex items-center justify-center !p-2">
+                    <div className="tw:flex tw:items-center tw:justify-center tw:p-2">
                         <TextComponent elementType="span" fontSize="small">
                             No results
                         </TextComponent>

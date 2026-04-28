@@ -69,7 +69,7 @@ export function ResultPage(): JSX.Element {
             <div
                 className={Spicetify.classnames(
                     styles['grid-container'],
-                    'gap-panel h-full w-full',
+                    'tw:gap-panel tw:h-full tw:w-full',
                 )}
             >
                 <div
@@ -118,7 +118,7 @@ export function ResultPage(): JSX.Element {
                                         ],
                                         result.length.toFixed(),
                                     )}
-                                    <span className="mx-1">•</span>
+                                    <span className="tw:mx-1">•</span>
                                     {getTranslatedDuration(
                                         result.reduce(
                                             (acc, track) =>

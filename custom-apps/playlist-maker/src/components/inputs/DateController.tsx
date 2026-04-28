@@ -38,10 +38,10 @@ export function DateController<T extends FieldValues>(
             }) => (
                 <input
                     className={Spicetify.classnames(
-                        'bg-spice-tab-active w-full rounded-sm !p-1 !px-2.5',
+                        'tw:bg-spice-tab-active tw:w-full tw:rounded-sm tw:p-1 tw:px-2.5',
                         invalid
-                            ? 'border-spice-error border-1 border-solid'
-                            : 'border-0 border-none',
+                            ? 'tw:border-spice-error tw:border-1 tw:border-solid'
+                            : 'tw:border-0 tw:border-none',
                     )}
                     type="date"
                     placeholder={props.placeholder}

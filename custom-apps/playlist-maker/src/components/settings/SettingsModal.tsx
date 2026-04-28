@@ -37,7 +37,7 @@ export function SettingsModal(): JSX.Element {
 
     return (
         <>
-            <div className="mb-4 flex flex-row items-center justify-between gap-2">
+            <div className="tw:mb-4 tw:flex tw:flex-row tw:items-center tw:justify-between tw:gap-2">
                 <div>
                     <TextComponent elementType="h1">
                         Artist genres cache
@@ -65,25 +65,25 @@ export function SettingsModal(): JSX.Element {
             <input
                 type="text"
                 placeholder="Search artist"
-                className="mb-4 w-full rounded border border-solid border-(--essential-subdued) px-2 py-1 focus:border-(--essential-base)"
+                className="tw:mb-4 tw:w-full tw:rounded tw:border tw:border-solid tw:border-(--essential-subdued) tw:px-2 tw:py-1 tw:focus:border-(--essential-base)"
                 value={search}
                 onChange={(e) => {
                     onSearchChanged(e.target.value);
                 }}
             />
-            <div className="max-h-80 w-full overflow-scroll">
+            <div className="tw:max-h-80 tw:w-full tw:overflow-scroll">
                 <table
                     id="artist-genres-table"
-                    className="w-full overflow-x-clip border border-solid border-(--essential-subdued)"
+                    className="tw:w-full tw:overflow-x-clip tw:border tw:border-solid tw:border-(--essential-subdued)"
                 >
                     <thead>
-                        <th className="border border-solid border-(--essential-subdued)">
+                        <th className="tw:border tw:border-solid tw:border-(--essential-subdued)">
                             Artist
                         </th>
-                        <th className="border border-solid border-(--essential-subdued)">
+                        <th className="tw:border tw:border-solid tw:border-(--essential-subdued)">
                             Genres
                         </th>
-                        <th className="w-28 border border-solid border-(--essential-subdued)">
+                        <th className="tw:w-28 tw:border tw:border-solid tw:border-(--essential-subdued)">
                             Expires
                         </th>
                     </thead>
@@ -92,16 +92,16 @@ export function SettingsModal(): JSX.Element {
                             artistGenres.map((artist) => (
                                 <tr
                                     key={artist.artistUri}
-                                    className="border-y text-sm"
+                                    className="tw:border-y tw:text-sm"
                                     data-testid={`artist-${artist.artistUri}`}
                                 >
-                                    <td className="p-2 align-middle">
+                                    <td className="tw:p-2 tw:align-middle">
                                         {artist.artistName}
                                     </td>
-                                    <td className="border-x p-2 align-middle">
+                                    <td className="tw:border-x tw:p-2 tw:align-middle">
                                         {artist.genres.join(', ')}
                                     </td>
-                                    <td className="p-2 align-middle">
+                                    <td className="tw:p-2 tw:align-middle">
                                         {Spicetify.Locale.formatDate(
                                             artist.expiry,
                                         )}
@@ -110,7 +110,10 @@ export function SettingsModal(): JSX.Element {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={3} className="py-4 text-center">
+                                <td
+                                    colSpan={3}
+                                    className="tw:py-4 tw:text-center"
+                                >
                                     <TextComponent
                                         elementType="p"
                                         fontSize="small"

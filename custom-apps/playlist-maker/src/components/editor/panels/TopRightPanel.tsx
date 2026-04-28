@@ -31,7 +31,7 @@ export function TopRightPanel(): JSX.Element {
                 buttonSize="sm"
                 disabled={anyExecuting}
             >
-                <div className="flex items-center gap-2">
+                <div className="tw:flex tw:items-center tw:gap-2">
                     <CirclePlay size={20} />
                     <span>Execute</span>
                 </div>

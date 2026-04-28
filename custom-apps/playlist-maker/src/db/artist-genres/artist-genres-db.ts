@@ -11,6 +11,8 @@ import { Dexie, type EntityTable } from 'dexie';
 import { deleteLegacyArtistGenres } from '../../utils/storage-utils';
 import type { ArtistGenres } from './artist-genres';
 
+// TODO: delete this file + delete db in extensions file
+
 const dbName = 'playlist-maker:artist-genres';
 const dbVersion = 1;
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;

@@ -138,7 +138,7 @@ export function EditorPage(): JSX.Element {
                 <div
                     className={Spicetify.classnames(
                         styles['grid-container'],
-                        'gap-panel h-full w-full',
+                        'tw:gap-panel tw:h-full tw:w-full',
                     )}
                 >
                     <div
@@ -150,7 +150,7 @@ export function EditorPage(): JSX.Element {
                     <div
                         className={Spicetify.classnames(
                             styles['sidenav'],
-                            'panel overflow-scroll !p-5',
+                            'panel tw:overflow-scroll tw:p-5',
                         )}
                     >
                         <Sidenav />

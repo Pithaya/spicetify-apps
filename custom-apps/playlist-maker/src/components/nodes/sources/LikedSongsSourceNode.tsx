@@ -1,9 +1,5 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
-import {
-    getAllGenres,
-    setLibraryGenresToCache,
-} from 'custom-apps/playlist-maker/src/db/artist-genres/artist-genres-db';
 import { useMultiSelectValues } from 'custom-apps/playlist-maker/src/hooks/use-multiselect-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -12,7 +8,7 @@ import {
 } from 'custom-apps/playlist-maker/src/models/processors/sources/liked-songs-source-processor';
 import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { type ItemRendererProps } from '../../inputs/MultiSelect';
 import { MultiSelectController } from '../../inputs/MultiSelectController';
@@ -64,18 +60,19 @@ function GenreItemRenderer(
     props: Readonly<ItemRendererProps<GenreItem>>,
 ): JSX.Element {
     return (
-        <div className="flex items-center justify-between gap-2 !px-2 !py-1">
-            <span className="truncate">{props.item.name}</span>
-            {props.isSelected && (
-                <span className="shrink-0">
+        <div className="tw:flex tw:items-center tw:justify-between tw:gap-2 tw:px-2 tw:py-1">
+            <span className="tw:truncate">{props.item.name}</span>
+            {props.isSelected ? (
+                <span className="tw:shrink-0">
                     <SpotifyIcon
                         semanticColor="textBrightAccent"
                         icon="check"
                         iconSize={12}
                     />
                 </span>
+            ) : (
+                <div className="tw:h-[12px] tw:w-[12px]" />
             )}
-            {!props.isSelected && <div className="h-[12px] w-[12px]" />}
         </div>
     );
 }
@@ -91,9 +88,13 @@ export function LikedSongsSourceNode(
         LikedSongsDataSchema,
     );
 
+    // TODO: get genres from track tags (library API)
+
     const [libraryGenres, setLibraryGenres] = useState<GenreItem[]>([]);
     const [libraryGenresLoading, setLibraryGenresLoading] =
         useState<boolean>(true);
+
+    /*
 
     const getSelectedGenres = useCallback(
         (ids: string[]): Promise<GenreItem[]> => {
@@ -114,6 +115,18 @@ export function LikedSongsSourceNode(
         },
         [libraryGenres],
     );
+*/
+
+    const getSelectedGenres = useCallback(
+        (ids: string[]): Promise<GenreItem[]> => {
+            return Promise.resolve([]);
+        },
+        [],
+    );
+
+    const getGenres = useCallback((input: string): Promise<GenreItem[]> => {
+        return Promise.resolve([]);
+    }, []);
 
     const {
         items,
@@ -130,6 +143,7 @@ export function LikedSongsSourceNode(
         },
     );
 
+    /*
     useEffect(() => {
         if (libraryGenresLoading) {
             return;
@@ -156,12 +170,13 @@ export function LikedSongsSourceNode(
 
         void fetchGenres();
     }, []);
+*/
 
     return (
         <Node
             isExecuting={props.data.isExecuting}
             isSelected={props.selected}
-            classname="max-w-80"
+            classname="tw:max-w-80"
         >
             <SourceNodeHeader />
             <NodeContent>

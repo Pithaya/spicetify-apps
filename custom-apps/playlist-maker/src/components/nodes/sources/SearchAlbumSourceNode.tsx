@@ -28,12 +28,12 @@ function AlbumItemRenderer(
     props: Readonly<ItemRendererProps<AlbumItem>>,
 ): JSX.Element {
     return (
-        <div className="flex max-h-[80px] items-stretch gap-2">
-            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
+        <div className="tw:flex tw:max-h-[80px] tw:items-stretch tw:gap-2">
+            <div className="tw:flex tw:h-[60px] tw:w-[60px] tw:shrink-0 tw:items-center tw:justify-center tw:p-2">
                 {props.item.image ? (
                     <img
                         src={props.item.image}
-                        className="rounded-md object-contain"
+                        className="tw:rounded-md tw:object-contain"
                         alt="album"
                     />
                 ) : (
@@ -41,16 +41,18 @@ function AlbumItemRenderer(
                 )}
             </div>
 
-            <div className="flex min-w-0 flex-col items-stretch justify-center">
+            <div className="tw:flex tw:min-w-0 tw:flex-col tw:items-stretch tw:justify-center">
                 <span
                     className={Spicetify.classnames(
-                        'truncate',
-                        props.isSelected ? 'font-bold' : '',
+                        'tw:truncate',
+                        props.isSelected ? 'tw:font-bold' : '',
                     )}
                 >
                     {props.item.name}
                 </span>
-                <span className="truncate text-sm">{props.item.artists}</span>
+                <span className="tw:truncate tw:text-sm">
+                    {props.item.artists}
+                </span>
             </div>
         </div>
     );

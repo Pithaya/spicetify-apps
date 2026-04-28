@@ -4,7 +4,7 @@ import { SettingsModal } from './SettingsModal';
 
 export function SettingsButton(): JSX.Element {
     return (
-        <div className="flex flex-col items-center">
+        <div className="tw:flex tw:flex-col tw:items-center">
             <Spicetify.ReactComponent.TooltipWrapper
                 label="Settings"
                 placement="right"
@@ -15,7 +15,7 @@ export function SettingsButton(): JSX.Element {
                         <Settings
                             size={20}
                             strokeWidth={1.5}
-                            className="text-spice-text"
+                            className="tw:text-spice-text"
                         />
                     )}
                     buttonSize="sm"
@@ -26,7 +26,7 @@ export function SettingsButton(): JSX.Element {
                             isLarge: true,
                         });
                     }}
-                    className="p-1"
+                    className="tw:p-1"
                 ></Spicetify.ReactComponent.ButtonTertiary>
             </Spicetify.ReactComponent.TooltipWrapper>
         </div>

@@ -16,11 +16,13 @@ export function NodeField(props: Readonly<Props>): JSX.Element {
     return (
         <label
             className={Spicetify.classnames(
-                'flex flex-row justify-between gap-5',
-                (props.centerFields ?? false) ? 'items-center' : 'items-start',
+                'tw:flex tw:flex-row tw:justify-between tw:gap-5',
+                (props.centerFields ?? false)
+                    ? 'tw:items-center'
+                    : 'tw:items-start',
             )}
         >
-            <div className="flex items-center gap-1">
+            <div className="tw:flex tw:items-center tw:gap-1">
                 <TextComponent elementType="small">{props.label}</TextComponent>
                 {props.tooltip && (
                     <Spicetify.ReactComponent.TooltipWrapper
@@ -30,13 +32,17 @@ export function NodeField(props: Readonly<Props>): JSX.Element {
                         <CircleHelp
                             size={12}
                             strokeWidth={1.5}
-                            className="cursor-help"
+                            className="tw:cursor-help"
                         />
                     </Spicetify.ReactComponent.TooltipWrapper>
                 )}
             </div>
 
-            <div className={(props.small ?? false) ? 'w-[50px]' : 'w-[200px]'}>
+            <div
+                className={
+                    (props.small ?? false) ? 'tw:w-[50px]' : 'tw:w-[200px]'
+                }
+            >
                 {props.children}
                 <InputError error={props.error} />
             </div>
