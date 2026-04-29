@@ -50,7 +50,9 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
     return (
         <div ref={ref}>
             {visible ? (
-                <Spicetify.ReactComponent.RightClickMenu
+                <Spicetify.ReactComponent.ContextMenu
+                    trigger="right-click"
+                    action="toggle"
                     menu={
                         <MultiTrackMenu
                             tracks={window.localTracksService.getArtistTracks(
@@ -113,7 +115,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                             </div>
                         </div>
                     </div>
-                </Spicetify.ReactComponent.RightClickMenu>
+                </Spicetify.ReactComponent.ContextMenu>
             ) : (
                 placeholder
             )}

@@ -177,7 +177,9 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
             }}
         >
             {visible ? (
-                <Spicetify.ReactComponent.RightClickMenu
+                <Spicetify.ReactComponent.ContextMenu
+                    trigger="right-click"
+                    action="toggle"
                     menu={props.getRowMenu(props.track)}
                 >
                     <div
@@ -397,7 +399,7 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                             </div>
                         </div>
                     </div>
-                </Spicetify.ReactComponent.RightClickMenu>
+                </Spicetify.ReactComponent.ContextMenu>
             ) : (
                 placeholder
             )}
