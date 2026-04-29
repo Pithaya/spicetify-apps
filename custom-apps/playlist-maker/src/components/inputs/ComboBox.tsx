@@ -107,6 +107,7 @@ export function Combobox<T extends TComboboxItem>(
                             <button
                                 aria-label="clear selection"
                                 type="button"
+                                className="tw:bg-transparent tw:border-none"
                                 disabled={props.disabled}
                             >
                                 <X size={16} onClick={props.onClear} />
