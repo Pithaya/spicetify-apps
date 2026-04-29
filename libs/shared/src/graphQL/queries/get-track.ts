@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { CoverArt } from '../types/search/cover-art';
 import type { VisualIdentity } from '../types/search/visual-identity';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type ImageSource = {
     height: number;
@@ -169,7 +169,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function getTrack(params: Params): Promise<GetTrackData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getTrack } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getTrack, parsedParams);
+    return await sendGraphQLQuery(getDefinition('getTrack'), parsedParams);
 }

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
 import type { NotFound } from '../types/shared/not-found';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type GetTrackNameData = {
     trackUnion:
@@ -33,7 +33,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function getTrackName(params: Params): Promise<GetTrackNameData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getTrackName } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getTrackName, parsedParams);
+    return await sendGraphQLQuery(getDefinition('getTrackName'), parsedParams);
 }

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { AudiobookResponseWrapper } from '../types/search/audiobook-response-wrapper';
 import type { SearchPage } from '../types/search/search-page';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchAudiobooksData = {
     searchV2: {
@@ -48,7 +48,8 @@ export async function searchAudiobooks(
 ): Promise<SearchAudiobooksData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchAudiobooks } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchAudiobooks, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('searchAudiobooks'),
+        parsedParams,
+    );
 }

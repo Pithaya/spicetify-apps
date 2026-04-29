@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { CoverArt } from '../types/search/cover-art';
 import type { VisualIdentity } from '../types/search/visual-identity';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type AudioItem = {
     url: string;
@@ -212,7 +212,8 @@ export async function queryShowMetadataV2(
 ): Promise<QueryShowMetadataV2Data> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { queryShowMetadataV2 } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryShowMetadataV2, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('queryShowMetadataV2'),
+        parsedParams,
+    );
 }

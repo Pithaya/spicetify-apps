@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type Artist = {
     __typename: 'Artist';
@@ -448,7 +448,8 @@ export async function queryArtistOverview(
 ): Promise<QueryArtistOverviewData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryArtistOverview, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('queryArtistOverview'),
+        parsedParams,
+    );
 }

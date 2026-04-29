@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { VisualIdentity } from '../types/search/visual-identity';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type Playlist = {
     __typename: 'Playlist';
@@ -152,7 +152,8 @@ export async function fetchPlaylistMetadata(
 ): Promise<FetchPlaylistMetadataData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { fetchPlaylistMetadata } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(fetchPlaylistMetadata, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('fetchPlaylistMetadata'),
+        parsedParams,
+    );
 }

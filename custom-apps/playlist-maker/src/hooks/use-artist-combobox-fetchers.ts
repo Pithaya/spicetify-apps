@@ -1,5 +1,5 @@
 import { queryArtistOverview } from '@shared/graphQL/queries/query-artist-overview';
-import { searchSuggestions } from '@shared/graphQL/queries/search-suggestions';
+import { searchArtists } from '@shared/graphQL/queries/search-artists';
 import { useCallback } from 'react';
 
 export type ArtistItem = {
@@ -24,20 +24,19 @@ export function useArtistComboboxFetchers(
                 return [];
             }
 
-            // TODO: search artists
-            const search = await searchSuggestions({
-                query: input,
+            const search = await searchArtists({
+                searchTerm: input,
                 offset: 0,
                 limit: 10,
-                numberOfTopResults: 5,
+                numberOfTopResults: 0,
+                includeAudiobooks: true,
                 includeAuthors: true,
                 includeEpisodeContentRatingsV2: true,
+                includePreReleases: true,
             });
 
-            const items: ArtistItem[] = search.searchV2.topResultsV2.itemsV2
-                .map((item) => item.item)
-                .filter((item) => item.__typename === 'ArtistResponseWrapper')
-                .map((artist) => ({
+            const items: ArtistItem[] = search.searchV2.artists.items.map(
+                (artist) => ({
                     id: artist.data.uri,
                     uri: artist.data.uri,
                     name: artist.data.profile.name,
@@ -46,7 +45,8 @@ export function useArtistComboboxFetchers(
                         artist.data.visuals.avatarImage.sources.length > 0
                             ? artist.data.visuals.avatarImage.sources[0].url
                             : null,
-                }));
+                }),
+            );
 
             return items;
         },
@@ -58,7 +58,6 @@ export function useArtistComboboxFetchers(
             try {
                 const artist = await queryArtistOverview({
                     uri: artistUri,
-                    locale: Spicetify.Locale.getLocale(),
                 });
 
                 if (artist.artistUnion.__typename === 'NotFound') {

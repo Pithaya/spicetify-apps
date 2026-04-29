@@ -1,4 +1,4 @@
-import { searchSuggestions } from '@shared/graphQL/queries/search-suggestions';
+import { searchPlaylists } from '@shared/graphQL/queries/search-playlists';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useCallback } from 'react';
 
@@ -25,27 +25,27 @@ export function usePlaylistComboboxFetchers(
                 return [];
             }
 
-            // TODO: searchPlaylists
-            const search = await searchSuggestions({
-                query: input,
+            const search = await searchPlaylists({
+                searchTerm: input,
                 offset: 0,
-                limit: 20,
-                numberOfTopResults: 5,
+                limit: 10,
+                numberOfTopResults: 0,
                 includeAuthors: true,
                 includeEpisodeContentRatingsV2: true,
+                includeAudiobooks: true,
+                includePreReleases: true,
             });
 
-            const items: PlaylistItem[] = search.searchV2.topResultsV2.itemsV2
-                .map((item) => item.item)
-                .filter((item) => item.__typename === 'PlaylistResponseWrapper')
-                .map((playlistWrapper) => playlistWrapper.data)
-                .map((playlist) => ({
-                    id: playlist.uri,
-                    uri: playlist.uri,
-                    name: playlist.name,
-                    image: playlist.images.items[0]?.sources[0].url ?? null,
-                    ownerName: playlist.ownerV2.data.name,
-                }));
+            const items: PlaylistItem[] = search.searchV2.playlists.items.map(
+                (playlist) => ({
+                    id: playlist.data.uri,
+                    uri: playlist.data.uri,
+                    name: playlist.data.name,
+                    image:
+                        playlist.data.images.items[0]?.sources[0].url ?? null,
+                    ownerName: playlist.data.ownerV2.data.name,
+                }),
+            );
 
             return items;
         },

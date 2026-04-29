@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type TopTrackItem = {
     track: {
@@ -52,7 +52,8 @@ export async function getArtistNameAndTracks(
 ): Promise<GetArtistNameAndTracksData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getArtistNameAndTracks } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getArtistNameAndTracks, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('getArtistNameAndTracks'),
+        parsedParams,
+    );
 }

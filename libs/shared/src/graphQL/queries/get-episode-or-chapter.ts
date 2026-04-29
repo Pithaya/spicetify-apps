@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { CoverArt } from '../types/search/cover-art';
 import type { VisualIdentity } from '../types/search/visual-identity';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type AudioItem = {
     url: string;
@@ -197,7 +197,8 @@ export async function getEpisodeOrChapter(
 ): Promise<GetEpisodeOrChapterData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getEpisodeOrChapter } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getEpisodeOrChapter, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('getEpisodeOrChapter'),
+        parsedParams,
+    );
 }

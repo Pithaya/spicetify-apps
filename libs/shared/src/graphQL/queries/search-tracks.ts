@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
-import type { TrackResponseWrapper } from '../types/search/track-response-wrapper';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
 import type { SearchPage } from '../types/search/search-page';
+import type { TrackResponseWrapper } from '../types/search/track-response-wrapper';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type SearchTracksItem = {
     item: TrackResponseWrapper;
@@ -51,7 +51,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function searchTracks(params: Params): Promise<SearchTracksData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchTracks } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchTracks, parsedParams);
+    return await sendGraphQLQuery(getDefinition('searchTracks'), parsedParams);
 }

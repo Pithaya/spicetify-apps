@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { SearchItem } from '../types/search/search-item';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type RecentSearchesPage = {
     __typename: 'RecentSearchesPage';
@@ -44,7 +44,8 @@ export async function recentSearches(
 ): Promise<RecentSearchesData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { recentSearches } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(recentSearches, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('recentSearches'),
+        parsedParams,
+    );
 }

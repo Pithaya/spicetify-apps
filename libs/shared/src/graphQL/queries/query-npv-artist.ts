@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CoverArt } from '../types/search/cover-art';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type QueryNpvArtistData = {
     artistUnion: ArtistUnion;
@@ -266,7 +266,8 @@ export async function queryNpvArtist(
 ): Promise<QueryNpvArtistData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { queryNpvArtist } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryNpvArtist, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('queryNpvArtist'),
+        parsedParams,
+    );
 }

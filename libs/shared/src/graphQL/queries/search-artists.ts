@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { ArtistResponseWrapper } from '../types/search/artist-response-wrapper';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
 import type { SearchPage } from '../types/search/search-page';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchArtistsData = {
     searchV2: {
@@ -48,7 +48,5 @@ export async function searchArtists(
 ): Promise<SearchArtistsData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchArtists } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchArtists, parsedParams);
+    return await sendGraphQLQuery(getDefinition('searchArtists'), parsedParams);
 }

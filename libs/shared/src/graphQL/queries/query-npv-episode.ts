@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type QueryNpvEpisodeData = {
     episodeUnionV2: {
@@ -51,7 +51,8 @@ export async function queryNpvEpisode(
 ): Promise<QueryNpvEpisodeData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { queryNpvEpisode } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryNpvEpisode, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('queryNpvEpisode'),
+        parsedParams,
+    );
 }

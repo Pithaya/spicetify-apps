@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
-import type { SearchPage } from '../types/search/search-page';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
 import type { GenreResponseWrapper } from '../types/search/genre-response-wrapper';
+import type { SearchPage } from '../types/search/search-page';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchGenresData = {
     searchV2: {
@@ -46,7 +46,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function searchGenres(params: Params): Promise<SearchGenresData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchGenres } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchGenres, parsedParams);
+    return await sendGraphQLQuery(getDefinition('searchGenres'), parsedParams);
 }

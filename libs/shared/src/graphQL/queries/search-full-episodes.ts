@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { EpisodeResponseWrapper } from '../types/search/episode-response-wrapper';
 import type { SearchPage } from '../types/search/search-page';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchEpisodesData = {
     searchV2: {
@@ -39,7 +39,8 @@ export async function searchFullEpisodes(
 ): Promise<SearchEpisodesData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchFullEpisodes } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchFullEpisodes, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('searchFullEpisodes'),
+        parsedParams,
+    );
 }

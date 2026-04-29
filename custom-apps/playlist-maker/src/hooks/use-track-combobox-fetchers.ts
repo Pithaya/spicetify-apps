@@ -1,5 +1,5 @@
 import { getTrack as getGraphQlTrack } from '@shared/graphQL/queries/get-track';
-import { searchSuggestions } from '@shared/graphQL/queries/search-suggestions';
+import { searchTracks } from '@shared/graphQL/queries/search-tracks';
 import { useCallback } from 'react';
 
 export type TrackItem = {
@@ -26,21 +26,20 @@ export function useTrackComboboxFetchers(
                 return [];
             }
 
-            // TODO: searchTracks
-            const search = await searchSuggestions({
-                query: input,
+            const search = await searchTracks({
+                searchTerm: input,
                 offset: 0,
                 limit: 10,
-                numberOfTopResults: 5,
+                numberOfTopResults: 0,
                 includeAuthors: true,
                 includeEpisodeContentRatingsV2: true,
+                includeAudiobooks: true,
+                includePreReleases: true,
             });
 
-            const items: TrackItem[] = search.searchV2.topResultsV2.itemsV2
-                .map((trackItem) => trackItem.item)
-                .filter((item) => item.__typename === 'TrackResponseWrapper')
-                .map((trackWrapper) => trackWrapper.data)
-                .filter((data) => data.__typename === 'Track')
+            const items: TrackItem[] = search.searchV2.tracksV2.items
+                .map((track) => track.item.data)
+                .filter((track) => track.__typename === 'Track')
                 .map((track) => {
                     return {
                         id: track.uri,

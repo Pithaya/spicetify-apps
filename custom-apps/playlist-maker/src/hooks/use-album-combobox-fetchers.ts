@@ -1,5 +1,5 @@
 import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
-import { searchSuggestions } from '@shared/graphQL/queries/search-suggestions';
+import { searchAlbums } from '@shared/graphQL/queries/search-albums';
 import { useCallback } from 'react';
 
 export type AlbumItem = {
@@ -25,19 +25,19 @@ export function useAlbumComboboxFetchers(
                 return [];
             }
 
-            const search = await searchSuggestions({
-                query: input,
+            const search = await searchAlbums({
+                searchTerm: input,
                 offset: 0,
                 limit: 10,
-                numberOfTopResults: 5,
+                numberOfTopResults: 0,
                 includeAuthors: true,
                 includeEpisodeContentRatingsV2: true,
+                includeAudiobooks: true,
+                includePreReleases: true,
             });
 
-            const items: AlbumItem[] = search.searchV2.topResultsV2.itemsV2
-                .map((item) => item.item)
-                .filter((item) => item.__typename === 'AlbumResponseWrapper')
-                .map((album) => {
+            const items: AlbumItem[] = search.searchV2.albumsV2.items.map(
+                (album) => {
                     return {
                         id: album.data.uri,
                         uri: album.data.uri,
@@ -50,7 +50,8 @@ export function useAlbumComboboxFetchers(
                             .map((artist) => artist.profile.name)
                             .join(', '),
                     };
-                });
+                },
+            );
 
             return items;
         },
@@ -64,7 +65,6 @@ export function useAlbumComboboxFetchers(
                     uri: albumUri,
                     offset: 0,
                     limit: 0,
-                    locale: Spicetify.Locale.getLocale(),
                 });
 
                 if (album.albumUnion.__typename === 'NotFound') {

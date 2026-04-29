@@ -1,3 +1,4 @@
+import { QueryDefinitionsFallback } from '../constants';
 import { type GraphQLResponse } from '../types/shared/graphql-response';
 import { type QueryDefinition } from '../types/shared/query-definition';
 
@@ -21,4 +22,13 @@ export async function sendGraphQLQuery<T>(
     }
 
     return data;
+}
+
+export function getDefinition(query: Spicetify.GraphQL.Query): QueryDefinition {
+    const queryDefinition =
+        // If modules are not yet loaded, some definitions may be undefined.
+        (Spicetify.GraphQL.Definitions[query] as QueryDefinition | undefined) ??
+        QueryDefinitionsFallback[query];
+
+    return queryDefinition;
 }

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type QueryArtistMinimalData = {
     artistUnion:
@@ -42,7 +42,8 @@ export async function queryArtistMinimal(
 ): Promise<QueryArtistMinimalData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { queryArtistMinimal } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryArtistMinimal, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('queryArtistMinimal'),
+        parsedParams,
+    );
 }

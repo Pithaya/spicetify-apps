@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { SearchPage } from '../types/search/search-page';
 import type { UserResponseWrapper } from '../types/search/user-response-wrapper';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchUsersData = {
     searchV2: {
@@ -46,7 +46,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function searchUsers(params: Params): Promise<SearchUsersData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchUsers } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchUsers, parsedParams);
+    return await sendGraphQLQuery(getDefinition('searchUsers'), parsedParams);
 }

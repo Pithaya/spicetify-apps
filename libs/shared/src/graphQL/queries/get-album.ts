@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { NotFound } from '../types/shared/not-found';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type Copyright = {
     items: { text: string; type: string }[];
@@ -167,7 +167,5 @@ export type Params = z.input<typeof ParamsSchema>;
 export async function getAlbum(params: Params): Promise<GetAlbumData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { getAlbum } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getAlbum, parsedParams);
+    return await sendGraphQLQuery(getDefinition('getAlbum'), parsedParams);
 }

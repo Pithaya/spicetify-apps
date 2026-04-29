@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { SearchResultV2 } from '../types/search/search-results-v2';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchTopResultsListData = {
     searchV2: SearchResultV2;
@@ -49,7 +49,8 @@ export async function searchTopResultsList(
 ): Promise<SearchTopResultsListData> {
     const parsedParams = ParamsSchema.parse(params);
 
-    const { searchTopResultsList } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(searchTopResultsList, parsedParams);
+    return await sendGraphQLQuery(
+        getDefinition('searchTopResultsList'),
+        parsedParams,
+    );
 }
