@@ -47,12 +47,12 @@ function ArtistItemRenderer(
     props: Readonly<ItemRendererProps<ArtistItem>>,
 ): JSX.Element {
     return (
-        <div className="tw:flex tw:max-h-[80px] tw:items-stretch tw:gap-2">
-            <div className="tw:flex tw:h-[60px] tw:w-[60px] tw:shrink-0 tw:items-center tw:justify-center tw:p-2">
+        <div className="tw:flex tw:max-h-[80px] tw:items-stretch tw:gap-2 tw:p-2">
+            <div className="tw:flex tw:h-[60px] tw:w-[60px] tw:shrink-0 tw:items-center tw:justify-center">
                 {props.item.image ? (
                     <img
                         src={props.item.image}
-                        className="tw:rounded-full tw:object-contain"
+                        className="tw:max-h-full tw:max-w-full tw:rounded-full tw:object-contain"
                         alt="artist"
                     />
                 ) : (

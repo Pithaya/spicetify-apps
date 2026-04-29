@@ -95,7 +95,7 @@ export function Combobox<T extends TComboboxItem>(
                             },
                         })}
                         placeholder={props.placeholder}
-                        className="tw:w-full tw:truncate tw:p-1.5"
+                        className="tw:w-full tw:truncate tw:p-1.5 tw:bg-spice-tab-active tw:border-none tw:rounded-sm tw:text-spice-text"
                         id="combobox-search"
                         onBlur={() => {
                             props.onBlur();
@@ -115,7 +115,7 @@ export function Combobox<T extends TComboboxItem>(
                     )}
                     <button
                         aria-label="toggle menu"
-                        className="tw:px-2"
+                        className="tw:px-2 tw:bg-transparent tw:border-none"
                         type="button"
                         {...getToggleButtonProps()}
                         disabled={props.disabled}
