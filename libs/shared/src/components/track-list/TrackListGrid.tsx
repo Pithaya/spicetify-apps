@@ -83,11 +83,20 @@ export function TrackListGrid<T extends string>(
         }
     }
 
+    const variableColumnCount = Math.max(0, props.headers.length - 1);
+    const variableColumns = Array.from(
+        { length: variableColumnCount },
+        (_, i) =>
+            `[var${(i + 1).toString()}] minmax(var(--var${(i + 1).toString()}-min-width), var(--var${(i + 1).toString()}-max-width, 2fr))`,
+    ).join(' ');
+    const gridTemplateColumns = `[index] var(--index-column-width, 16px) [first] minmax(var(--first-min-width), var(--first-max-width, 4fr)) ${variableColumns} [last] minmax(var(--last-min-width), var(--last-max-width, 1fr))`;
+
     const style = {
         '--placeholder-image': 'url(/images/tracklist-placeholder.webp)',
         '--placeholder-image-compact':
             'url(/images/tracklist-placeholder-compact.webp)',
         '--row-height': props.displayType === 'compact' ? '32px' : '56px',
+        '--grid-template-columns': gridTemplateColumns,
         '--first-min-width': '180px',
         '--var1-min-width': '120px',
         '--var2-min-width': '120px',
