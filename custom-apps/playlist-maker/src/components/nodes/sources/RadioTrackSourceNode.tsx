@@ -10,13 +10,12 @@ import {
     RadioDataSchema,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/radio-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
+import { TrackItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -40,40 +39,6 @@ const orderItems: Item<RadioData['sortOrder']>[] = [
     { value: 'ASC', label: 'Ascending' },
     { value: 'DESC', label: 'Descending' },
 ];
-
-function TrackItemRenderer(
-    props: Readonly<ItemRendererProps<TrackItem>>,
-): JSX.Element {
-    return (
-        <div className="tw:flex tw:max-h-[80px] tw:items-stretch tw:gap-2">
-            <div className="tw:flex tw:h-[60px] tw:w-[60px] tw:shrink-0 tw:items-center tw:justify-center tw:p-2">
-                {props.item.image ? (
-                    <img
-                        src={props.item.image}
-                        className="tw:rounded-md tw:object-contain"
-                        alt="album"
-                    />
-                ) : (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="tw:flex tw:min-w-0 tw:flex-col tw:items-stretch tw:justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'tw:truncate',
-                        props.isSelected ? 'tw:font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-                <span className="tw:truncate tw:text-sm">
-                    {props.item.album} - {props.item.artists}
-                </span>
-            </div>
-        </div>
-    );
-}
 
 export function RadioTrackSourceNode(
     props: Readonly<NodeProps<RadioData>>,

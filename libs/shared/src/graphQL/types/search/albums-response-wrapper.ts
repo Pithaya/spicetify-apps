@@ -13,7 +13,7 @@ type Album = {
     artists: {
         items: Artist[];
     };
-    coverArt: CoverArt;
+    coverArt: CoverArt | undefined;
     date: {
         year: number;
     };

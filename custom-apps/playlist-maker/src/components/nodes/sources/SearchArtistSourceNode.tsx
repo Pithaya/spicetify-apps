@@ -11,12 +11,11 @@ import {
     type ArtistTrackType,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/artist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { SelectController } from '../../inputs/SelectController';
+import { ArtistItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -42,37 +41,6 @@ const trackTypeItems: Item<ArtistTrackType>[] = [
         value: 'discography',
     },
 ];
-
-function ArtistItemRenderer(
-    props: Readonly<ItemRendererProps<ArtistItem>>,
-): JSX.Element {
-    return (
-        <div className="tw:flex tw:max-h-[80px] tw:items-stretch tw:gap-2 tw:p-2">
-            <div className="tw:flex tw:h-[60px] tw:w-[60px] tw:shrink-0 tw:items-center tw:justify-center">
-                {props.item.image ? (
-                    <img
-                        src={props.item.image}
-                        className="tw:max-h-full tw:max-w-full tw:rounded-full tw:object-contain"
-                        alt="artist"
-                    />
-                ) : (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="tw:flex tw:min-w-0 tw:flex-col tw:items-stretch tw:justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'tw:truncate',
-                        props.isSelected ? 'tw:font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-            </div>
-        </div>
-    );
-}
 
 export function SearchArtistSourceNode(
     props: Readonly<NodeProps<ArtistData>>,

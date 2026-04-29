@@ -37,16 +37,34 @@ export function useAlbumComboboxFetchers(
             });
 
             const items: AlbumItem[] = search.searchV2.albumsV2.items.map(
-                (album) => {
+                (item) => {
+                    if (item.__typename === 'PreReleaseResponseWrapper') {
+                        const content = item.data.preReleaseContent;
+                        return {
+                            id: content.uri,
+                            uri: content.uri,
+                            name: content.name,
+                            image:
+                                content.coverArt &&
+                                content.coverArt.sources.length > 0
+                                    ? content.coverArt.sources[0].url
+                                    : null,
+                            artists: content.artists.items
+                                .map((artist) => artist.data.profile.name)
+                                .join(', '),
+                        };
+                    }
+
                     return {
-                        id: album.data.uri,
-                        uri: album.data.uri,
-                        name: album.data.name,
+                        id: item.data.uri,
+                        uri: item.data.uri,
+                        name: item.data.name,
                         image:
-                            album.data.coverArt.sources.length > 0
-                                ? album.data.coverArt.sources[0].url
+                            item.data.coverArt &&
+                            item.data.coverArt.sources.length > 0
+                                ? item.data.coverArt.sources[0].url
                                 : null,
-                        artists: album.data.artists.items
+                        artists: item.data.artists.items
                             .map((artist) => artist.profile.name)
                             .join(', '),
                     };

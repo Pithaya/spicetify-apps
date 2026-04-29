@@ -5,6 +5,7 @@ import type { EpisodeResponseWrapper } from './episode-response-wrapper';
 import type { GenreResponseWrapper } from './genre-response-wrapper';
 import type { PlaylistResponseWrapper } from './playlist-response-wrapper';
 import type { PodcastResponseWrapper } from './podcast-response-wrapper';
+import type { PreReleaseResponseWrapper } from './pre-release-response-wrapper';
 import type { TrackResponseWrapper } from './track-response-wrapper';
 
 export type SearchItem =
@@ -15,4 +16,5 @@ export type SearchItem =
     | ArtistResponseWrapper
     | PlaylistResponseWrapper
     | EpisodeResponseWrapper
-    | GenreResponseWrapper;
+    | GenreResponseWrapper
+    | PreReleaseResponseWrapper;

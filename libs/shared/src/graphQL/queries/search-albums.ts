@@ -1,13 +1,14 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
 import type { AlbumResponseWrapper } from '../types/search/albums-response-wrapper';
+import type { PreReleaseResponseWrapper } from '../types/search/pre-release-response-wrapper';
 import type { SearchPage } from '../types/search/search-page';
 import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type SearchAlbumsData = {
     searchV2: {
         query: string;
-        albumsV2: SearchPage<AlbumResponseWrapper>;
+        albumsV2: SearchPage<AlbumResponseWrapper | PreReleaseResponseWrapper>;
     };
 };
 
