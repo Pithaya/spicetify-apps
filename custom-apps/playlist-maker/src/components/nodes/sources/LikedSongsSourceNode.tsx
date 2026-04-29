@@ -1,5 +1,6 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
+import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useMultiSelectValues } from 'custom-apps/playlist-maker/src/hooks/use-multiselect-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -8,7 +9,7 @@ import {
 } from 'custom-apps/playlist-maker/src/models/processors/sources/liked-songs-source-processor';
 import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { type ItemRendererProps } from '../../inputs/MultiSelect';
 import { MultiSelectController } from '../../inputs/MultiSelectController';
@@ -88,18 +89,15 @@ export function LikedSongsSourceNode(
         LikedSongsDataSchema,
     );
 
-    // TODO: get genres from track tags (library API)
-
     const [libraryGenres, setLibraryGenres] = useState<GenreItem[]>([]);
     const [libraryGenresLoading, setLibraryGenresLoading] =
         useState<boolean>(true);
 
-    /*
-
     const getSelectedGenres = useCallback(
         (ids: string[]): Promise<GenreItem[]> => {
+            const idSet = new Set(ids);
             return Promise.resolve(
-                libraryGenres.filter((genre) => ids.includes(genre.id)),
+                libraryGenres.filter((genre) => idSet.has(genre.id)),
             );
         },
         [libraryGenres],
@@ -115,18 +113,6 @@ export function LikedSongsSourceNode(
         },
         [libraryGenres],
     );
-*/
-
-    const getSelectedGenres = useCallback(
-        (ids: string[]): Promise<GenreItem[]> => {
-            return Promise.resolve([]);
-        },
-        [],
-    );
-
-    const getGenres = useCallback((input: string): Promise<GenreItem[]> => {
-        return Promise.resolve([]);
-    }, []);
 
     const {
         items,
@@ -143,7 +129,6 @@ export function LikedSongsSourceNode(
         },
     );
 
-    /*
     useEffect(() => {
         if (libraryGenresLoading) {
             return;
@@ -154,23 +139,18 @@ export function LikedSongsSourceNode(
 
     useEffect(() => {
         const fetchGenres = async (): Promise<void> => {
-            await setLibraryGenresToCache();
-            const uniqueGenres = await getAllGenres();
+            const tags = await getPlatform().LibraryAPI.getTracksFilterTags();
 
             setLibraryGenres(
-                Array.from(uniqueGenres)
-                    .sort((a, b) => a.localeCompare(b))
-                    .map((genre) => ({
-                        id: genre,
-                        name: genre,
-                    })),
+                tags
+                    .map((tag) => ({ id: tag.filter, name: tag.name }))
+                    .sort((a, b) => a.name.localeCompare(b.name)),
             );
             setLibraryGenresLoading(false);
         };
 
         void fetchGenres();
     }, []);
-*/
 
     return (
         <Node

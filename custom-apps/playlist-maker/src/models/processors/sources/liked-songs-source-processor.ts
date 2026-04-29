@@ -1,11 +1,9 @@
 import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import {
-    type LibraryAPITrack,
     LibraryAPITrackSortOptionFields,
     LibraryAPITrackSortOptionOrders,
 } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { getGenresByArtists } from 'custom-apps/playlist-maker/src/db/artist-genres/artist-genres-db';
 import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../../types/workflow-track';
@@ -51,65 +49,23 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
         const { offset, filter, sortField, sortOrder, genres } = this.data;
         let limit = this.data.limit;
 
-        if (limit === undefined || genres.length > 0) {
-            // If no limit, make a first call to get the total number of liked songs.
-            // Also get all when we have genres as we will apply the limit after filtering.
-            limit = (await libraryApi.getTracks()).unfilteredTotalLength;
-        }
+        // If no limit, make a first call to get the total number of liked songs.
+        limit ??= (await libraryApi.getTracks()).unfilteredTotalLength;
+
+        const filters = [...(filter ? [filter] : []), ...genres];
 
         const apiResult = await libraryApi.getTracks({
             limit,
             offset,
-            filters: filter ? [filter] : undefined,
+            filters: filters.length > 0 ? filters : undefined,
             sort: {
                 field: sortField,
                 order: sortOrder,
             },
         });
 
-        let tracks = apiResult.items;
-
-        if (genres.length > 0) {
-            tracks = await this.filterTracksByGenres(
-                tracks,
-                new Set(genres),
-                this.data.limit,
-            );
-        }
-
-        return tracks.map((track) =>
+        return apiResult.items.map((track) =>
             mapInternalTrackToWorkflowTrack(track, { source: 'Liked songs' }),
         );
-    }
-
-    private async filterTracksByGenres(
-        tracks: LibraryAPITrack[],
-        genres: Set<string>,
-        limit: number | undefined,
-    ): Promise<LibraryAPITrack[]> {
-        const result = [];
-
-        // Don't keep local tracks as we can't get genres from them
-        const libraryTracks = tracks.filter(
-            (track) => !Spicetify.URI.isLocalTrack(track.uri),
-        );
-
-        const artistGenres = await getGenresByArtists(
-            libraryTracks
-                .flatMap((track) => track.artists)
-                .map((artist) => artist.uri),
-        );
-
-        for (const track of libraryTracks) {
-            const trackGenres = track.artists.flatMap(
-                (artist) => artistGenres.get(artist.uri) ?? [],
-            );
-
-            if (trackGenres.some((trackGenre) => genres.has(trackGenre))) {
-                result.push(track);
-            }
-        }
-
-        return limit !== undefined ? result.slice(0, limit) : result;
     }
 }

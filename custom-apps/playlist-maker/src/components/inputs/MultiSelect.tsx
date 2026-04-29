@@ -41,7 +41,7 @@ function SelectAllItemRenderer(): JSX.Element {
             <div className="tw:flex tw:items-center tw:px-2 tw:py-1">
                 <span>Select all</span>
             </div>
-            <hr className="tw:border-t-1" />
+            <hr className="tw:border-t-1 tw:m-0" />
         </div>
     );
 }
@@ -249,7 +249,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                                 },
                             })}
                             placeholder={props.placeholder}
-                            className="tw:w-full tw:truncate tw:p-1.5"
+                            className="tw:w-full tw:truncate tw:p-1.5 tw:bg-transparent tw:border-none tw:text-spice-text"
                             id="multiselect-search"
                             onBlur={() => {
                                 props.onBlur();
@@ -258,7 +258,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                         />
                         <button
                             aria-label="toggle menu"
-                            className="tw:px-2"
+                            className="tw:px-2 tw:bg-transparent tw:border-none"
                             type="button"
                             {...getToggleButtonProps()}
                             disabled={props.disabled}
@@ -323,6 +323,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                             {props.itemToString(selectedItemForRender)}
                         </span>
                         <button
+                            className="tw:bg-transparent tw:border-none"
                             aria-label="Remove item"
                             onClick={(e) => {
                                 e.stopPropagation();
