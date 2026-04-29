@@ -132,9 +132,9 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
                 buttonSize="sm"
                 style={{
                     padding: 0,
+                    color: 'var(--spice-button-active)',
                 }}
                 onClick={removeFromLikedSongs}
-                semanticColor="essentialBrightAccent"
             ></Spicetify.ReactComponent.ButtonTertiary>
         </Spicetify.ReactComponent.TooltipWrapper>
     );
