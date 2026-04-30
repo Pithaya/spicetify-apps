@@ -237,13 +237,14 @@ export function LikedSongsSourceNode(
                     onItemsSelected={onItemsSelected}
                     inputValue={inputValue}
                     onInputChanged={onInputChanged}
-                    placeholder="Rock, Pop, Hip Hop..."
+                    placeholder="Search"
                     itemRenderer={GenreItemRenderer}
                     itemToString={(item) => item.name}
                     items={items}
                     label={
                         libraryGenresLoading ? 'Genres (loading...)' : 'Genres'
                     }
+                    tooltip="Only tracks matching every selected genre will be returned."
                     onBlur={Noop}
                     selectAllItem={{ id: 'select-all', name: 'Select all' }}
                     unselectAllItem={{

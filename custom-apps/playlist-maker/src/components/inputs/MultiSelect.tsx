@@ -3,7 +3,7 @@ import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent
 import { useOutsideClick } from '@shared/hooks/use-outside-click';
 import { uniqueBy } from '@shared/utils/array-utils';
 import { useCombobox, useMultipleSelection } from 'downshift';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, CircleHelp } from 'lucide-react';
 import React, { useCallback } from 'react';
 
 export type TMultiSelectItem = {
@@ -26,6 +26,7 @@ export type Props<T extends TMultiSelectItem> = {
     unselectAllItem: T;
     selectAllItem: T;
     label: string;
+    tooltip?: string;
     placeholder: string;
     inputValue: string;
     onInputChanged: (inputValue: string) => void;
@@ -226,15 +227,29 @@ export function MultiSelect<T extends TMultiSelectItem>(
         <>
             <div className="tw:relative">
                 <div className="tw:flex tw:flex-col tw:gap-1">
-                    <label
-                        htmlFor="multiselect-search"
-                        className="tw:w-fit"
-                        {...getLabelProps()}
-                    >
-                        <TextComponent elementType="small">
-                            {props.label}
-                        </TextComponent>
-                    </label>
+                    <div className="tw:flex tw:items-center tw:gap-1">
+                        <label
+                            htmlFor="multiselect-search"
+                            className="tw:w-fit"
+                            {...getLabelProps()}
+                        >
+                            <TextComponent elementType="small">
+                                {props.label}
+                            </TextComponent>
+                        </label>
+                        {props.tooltip && (
+                            <Spicetify.ReactComponent.TooltipWrapper
+                                label={props.tooltip}
+                                showDelay={100}
+                            >
+                                <CircleHelp
+                                    size={12}
+                                    strokeWidth={1.5}
+                                    className="tw:cursor-help"
+                                />
+                            </Spicetify.ReactComponent.TooltipWrapper>
+                        )}
+                    </div>
                     <div className="tw:bg-spice-tab-active tw:flex tw:gap-0.5 tw:rounded-sm tw:pe-1">
                         <input
                             {...getInputProps({
