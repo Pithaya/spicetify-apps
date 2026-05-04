@@ -1,20 +1,16 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { useMultiSelectValues } from 'custom-apps/playlist-maker/src/hooks/use-multiselect-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     LikedSongsDataSchema,
     type LikedSongsData,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/liked-songs-source-processor';
-import { Noop } from 'custom-apps/playlist-maker/src/utils/function-utils';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/MultiSelect';
-import { MultiSelectController } from '../../inputs/MultiSelectController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
+import { TagsInput } from '../../inputs/TagsInput';
 import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -52,32 +48,6 @@ const sortOrderItems: Item<LikedSongsData['sortOrder']>[] = [
     },
 ];
 
-type GenreItem = {
-    id: string;
-    name: string;
-};
-
-function GenreItemRenderer(
-    props: Readonly<ItemRendererProps<GenreItem>>,
-): JSX.Element {
-    return (
-        <div className="tw:flex tw:items-center tw:justify-between tw:gap-2 tw:px-2 tw:py-1">
-            <span className="tw:truncate">{props.item.name}</span>
-            {props.isSelected ? (
-                <span className="tw:shrink-0">
-                    <SpotifyIcon
-                        semanticColor="textBrightAccent"
-                        icon="check"
-                        iconSize={12}
-                    />
-                </span>
-            ) : (
-                <div className="tw:h-[12px] tw:w-[12px]" />
-            )}
-        </div>
-    );
-}
-
 export function LikedSongsSourceNode(
     props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
@@ -89,64 +59,19 @@ export function LikedSongsSourceNode(
         LikedSongsDataSchema,
     );
 
-    const [libraryGenres, setLibraryGenres] = useState<GenreItem[]>([]);
-    const [libraryGenresLoading, setLibraryGenresLoading] =
-        useState<boolean>(true);
-
-    const getSelectedGenres = useCallback(
-        (ids: string[]): Promise<GenreItem[]> => {
-            const idSet = new Set(ids);
-            return Promise.resolve(
-                libraryGenres.filter((genre) => idSet.has(genre.id)),
-            );
-        },
-        [libraryGenres],
-    );
-
-    const getGenres = useCallback(
-        (input: string): Promise<GenreItem[]> => {
-            return Promise.resolve(
-                libraryGenres.filter((genre) =>
-                    genre.name.toLowerCase().includes(input.toLowerCase()),
-                ),
-            );
-        },
-        [libraryGenres],
-    );
-
-    const {
-        items,
-        selectedItems,
-        onSelectedIdsChanged,
-        inputValue,
-        onInputChanged,
-        onItemsSelected,
-    } = useMultiSelectValues<GenreItem>(
-        getSelectedGenres,
-        getGenres,
-        (items) => {
-            updateNodeField({ genres: items.map((item) => item.id) });
-        },
-    );
-
-    useEffect(() => {
-        if (libraryGenresLoading) {
-            return;
-        }
-
-        void onSelectedIdsChanged(genres);
-    }, [genres, onSelectedIdsChanged, libraryGenresLoading]);
+    const [libraryGenres, setLibraryGenres] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchGenres = async (): Promise<void> => {
             const tags = await getPlatform().LibraryAPI.getTracksFilterTags();
 
+            const tagFilterPrefix = 'tags contains ';
+
             setLibraryGenres(
                 tags
-                    .map((tag) => ({ id: tag.filter, name: tag.name }))
-                    .sort((a, b) => a.name.localeCompare(b.name)),
+                    .map((tag) => tag.filter.slice(tagFilterPrefix.length))
+                    .sort((a, b) => a.localeCompare(b)),
             );
-            setLibraryGenresLoading(false);
         };
 
         void fetchGenres();
@@ -230,28 +155,15 @@ export function LikedSongsSourceNode(
                     />
                 </NodeField>
 
-                <MultiSelectController
-                    control={control}
-                    name="genres"
-                    selectedItems={selectedItems}
-                    onItemsSelected={onItemsSelected}
-                    inputValue={inputValue}
-                    onInputChanged={onInputChanged}
-                    placeholder="Search"
-                    itemRenderer={GenreItemRenderer}
-                    itemToString={(item) => item.name}
-                    items={items}
-                    label={
-                        libraryGenresLoading ? 'Genres (loading...)' : 'Genres'
-                    }
-                    tooltip="Only tracks matching every selected genre will be returned."
-                    onBlur={Noop}
-                    selectAllItem={{ id: 'select-all', name: 'Select all' }}
-                    unselectAllItem={{
-                        id: 'unselect-all',
-                        name: 'Unselect all',
+                <TagsInput
+                    label="Genres"
+                    placeholder="Type a genre and press Enter"
+                    tooltip="Type a genre and press Enter, or pick one from your library suggestions. Only tracks that match every selected genre will be included. For some examples of genres that may be recognized by Spotify, check out https://www.everynoise.com/everynoise1d.html."
+                    values={genres}
+                    onValuesChange={(newValues) => {
+                        updateNodeField({ genres: newValues });
                     }}
-                    disabled={libraryGenresLoading}
+                    suggestions={libraryGenres}
                 />
             </NodeContent>
             <Handle

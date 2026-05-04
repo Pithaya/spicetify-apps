@@ -39,6 +39,8 @@ export const DEFAULT_LIKED_SONGS_DATA: LikedSongsData = {
     isExecuting: undefined,
 };
 
+const TAG_FILTER_PREFIX = 'tags contains ';
+
 /**
  * Source node that returns liked songs.
  */
@@ -52,7 +54,10 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
         // If no limit, make a first call to get the total number of liked songs.
         limit ??= (await libraryApi.getTracks()).unfilteredTotalLength;
 
-        const filters = [...(filter ? [filter] : []), ...genres];
+        const filters = [
+            ...(filter ? [filter] : []),
+            ...genres.map((genre) => `${TAG_FILTER_PREFIX}${genre}`),
+        ];
 
         const apiResult = await libraryApi.getTracks({
             limit,
