@@ -22,7 +22,7 @@ export function NodeField(props: Readonly<Props>): JSX.Element {
                     : 'tw:items-start',
             )}
         >
-            <div className="tw:flex tw:items-center tw:gap-1">
+            <div className="tw:flex tw:items-center tw:gap-1 tw:shrink-0">
                 <TextComponent elementType="small">{props.label}</TextComponent>
                 {props.tooltip && (
                     <Spicetify.ReactComponent.TooltipWrapper

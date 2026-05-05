@@ -48,6 +48,17 @@ const sortOrderItems: Item<LikedSongsData['sortOrder']>[] = [
     },
 ];
 
+const genresMatchModeItems: Item<LikedSongsData['genresMatchMode']>[] = [
+    {
+        label: 'All',
+        value: 'AND',
+    },
+    {
+        label: 'Any',
+        value: 'OR',
+    },
+];
+
 export function LikedSongsSourceNode(
     props: Readonly<NodeProps<LikedSongsData>>,
 ): JSX.Element {
@@ -160,13 +171,29 @@ export function LikedSongsSourceNode(
                     name="genres"
                     label="Genres"
                     placeholder="Type a genre and press Enter"
-                    tooltip="Type a genre and press Enter, or pick one from your library suggestions. Only tracks that match every selected genre will be included. For some examples of genres that may be recognized by Spotify, check out https://www.everynoise.com/everynoise1d.html."
+                    tooltip="Type a genre and press Enter, or pick one from your library suggestions. For some examples of genres that may be recognized by Spotify, check out https://www.everynoise.com/everynoise1d.html."
                     values={genres}
                     onValuesChange={(newValues) => {
                         updateNodeField({ genres: newValues });
                     }}
                     suggestions={libraryGenres}
                 />
+
+                <NodeField
+                    label="Genres match mode"
+                    tooltip="All: keep only tracks tagged with every selected genre. Any: keep tracks tagged with at least one of the selected genres."
+                    error={errors.genresMatchMode}
+                >
+                    <SelectController
+                        name="genresMatchMode"
+                        control={control}
+                        items={genresMatchModeItems}
+                        label="Genres match mode"
+                        onChange={(value) => {
+                            updateNodeField({ genresMatchMode: value });
+                        }}
+                    />
+                </NodeField>
             </NodeContent>
             <Handle
                 type="source"
