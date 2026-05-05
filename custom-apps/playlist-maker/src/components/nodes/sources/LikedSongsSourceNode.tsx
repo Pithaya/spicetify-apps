@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
-import { TagsInput } from '../../inputs/TagsInput';
+import { TagsInputController } from '../../inputs/TagsInputController';
 import { TextController } from '../../inputs/TextController';
 import { Node } from '../shared/Node';
 import { NodeContent } from '../shared/NodeContent';
@@ -155,7 +155,9 @@ export function LikedSongsSourceNode(
                     />
                 </NodeField>
 
-                <TagsInput
+                <TagsInputController
+                    control={control}
+                    name="genres"
                     label="Genres"
                     placeholder="Type a genre and press Enter"
                     tooltip="Type a genre and press Enter, or pick one from your library suggestions. Only tracks that match every selected genre will be included. For some examples of genres that may be recognized by Spotify, check out https://www.everynoise.com/everynoise1d.html."
