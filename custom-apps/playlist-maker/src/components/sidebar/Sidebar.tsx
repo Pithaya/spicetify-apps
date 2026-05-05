@@ -109,11 +109,6 @@ export function Sidenav(): JSX.Element {
                             tooltip="Get tracks from your local files."
                         />
                         <SidenavItem
-                            label="Top tracks"
-                            nodeType="topTracksSource"
-                            tooltip="Get tracks from your top tracks."
-                        />
-                        <SidenavItem
                             label="Saved playlist"
                             nodeType="libraryPlaylistSource"
                             tooltip="Get tracks from a playlist in your library."
