@@ -1,5 +1,8 @@
-import type { AudioFeatures } from '@shared/api/models/audio-features';
 import { getAudioFeatures } from '@shared/spclient/get-audio-features';
+import {
+    cacheAudioFeatures,
+    getCachedAudioFeatures,
+} from '../db/audio-features/audio-features-db';
 import type { WorkflowTrack } from '../types/workflow-track';
 
 export async function setAudioFeatures(tracks: WorkflowTrack[]): Promise<void> {
@@ -9,11 +12,20 @@ export async function setAudioFeatures(tracks: WorkflowTrack[]): Promise<void> {
     );
 
     for (const track of filteredTracks) {
-        let feature: AudioFeatures | null = null;
-
         try {
-            feature = await getAudioFeatures(track.uri);
+            const cached = await getCachedAudioFeatures(track.uri);
+            if (cached) {
+                track.audioFeatures = cached.features;
+                continue;
+            }
+
+            const feature = await getAudioFeatures(track.uri);
             track.audioFeatures = feature;
+            await cacheAudioFeatures({
+                uri: track.uri,
+                trackName: track.name,
+                features: feature,
+            });
         } catch (error) {
             console.error(
                 `Failed to get audio features for track ${track.uri}:`,
