@@ -90,6 +90,7 @@ export default [
             'sonarjs/void-use': 'off',
             '@typescript-eslint/no-unnecessary-condition': 'warn',
             'sonarjs/jsx-no-leaked-render': 'off',
+            'sonarjs/function-return-type': 'off',
         },
     },
 ];

@@ -24,6 +24,27 @@ export const getCachedAudioFeatures = async (
 };
 
 /**
+ * Get cached audio features entries for a list of track URIs in a single
+ * IndexedDB round-trip.
+ * @param uris The track URIs to look up.
+ * @returns A map of URI to cached entry. Missing URIs are absent from the map.
+ */
+export const getCachedAudioFeaturesByUris = async (
+    uris: string[],
+): Promise<Map<string, CachedAudioFeatures>> => {
+    if (uris.length === 0) {
+        return new Map();
+    }
+
+    const entries = await audioFeaturesDb.audioFeatures
+        .where('uri')
+        .anyOf(uris)
+        .toArray();
+
+    return new Map(entries.map((entry) => [entry.uri, entry]));
+};
+
+/**
  * Insert or update a cached audio features entry.
  * @param entry The entry to cache.
  */
