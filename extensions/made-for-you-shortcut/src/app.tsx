@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
+/* eslint-disable sonarjs/deprecation */
 import { getCategories } from '@shared/api/endpoints/browse/get-categories';
 import type { Category } from '@shared/api/models/category';
 import type { Page } from '@shared/api/models/page';
