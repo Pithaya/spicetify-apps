@@ -1368,10 +1368,9 @@ declare namespace Spicetify {
 	}
 
 	/** React instance to create components */
-	const React: typeof import('react');;
+	const React: typeof import('react');
 	/** React DOM instance to render and mount components */
-	const ReactDOM: typeof import('react-dom') &
-        typeof import('react-dom/client');
+	const ReactDOM: typeof import('react-dom') & typeof import('react-dom/client');
 	/** React DOM Server instance to render components to string */
 	const ReactDOMServer: typeof import('react-dom/server');
 	/** React JSX runtime instance to transform JSX elements */
