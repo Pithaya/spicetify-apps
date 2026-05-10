@@ -30,16 +30,19 @@ async function runSuite(suite: Suite): Promise<void> {
 
 function App(): JSX.Element {
     return (
-        <div className="absolute inset-0">
-            <div className="flex h-[64px] w-full items-center justify-start !p-4">
+        <div className="tw:absolute tw:inset-0">
+            <div className="tw:flex tw:h-[64px] tw:w-full tw:items-center tw:justify-start tw:!p-4">
                 <TextComponent elementType="h1" fontSize="xxx-large">
                     Tests
                 </TextComponent>
             </div>
 
-            <div className="flex flex-col gap-4 !p-4">
+            <div className="tw:flex tw:flex-col tw:gap-4 tw:!p-4">
                 {SUITES.map((suite) => (
-                    <div key={suite.name} className="flex flex-col gap-2">
+                    <div
+                        key={suite.name}
+                        className="tw:flex tw:flex-col tw:gap-2"
+                    >
                         <TextComponent elementType="h2" fontSize="xx-large">
                             {suite.name}
                         </TextComponent>

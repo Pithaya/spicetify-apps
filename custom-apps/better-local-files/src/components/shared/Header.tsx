@@ -101,7 +101,7 @@ export function Header(props: Readonly<Props>): JSX.Element {
                         variant="bass"
                         semanticColor="textBase"
                         elementType="h1"
-                        className="encore-text-headline-large encore-internal-color-text-base whitespace-nowrap"
+                        className="encore-text-headline-large encore-internal-color-text-base tw:whitespace-nowrap"
                         style={{
                             fontSize,
                         }}
