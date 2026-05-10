@@ -111,6 +111,7 @@ export function AlbumsPage(): JSX.Element {
                         setSelectedDisplayType={() => {
                             // TODO: support other display types
                         }}
+                        displayTypeTranslationPrefix="web-player.artist.discography.sort-box.view-"
                     />
                 </div>
             </div>

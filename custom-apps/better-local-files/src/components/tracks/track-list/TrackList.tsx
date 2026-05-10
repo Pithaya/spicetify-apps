@@ -251,6 +251,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                             displayTypes={['list', 'compact']}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType}
+                            displayTypeTranslationPrefix="web-player.your-library-x.sort-and-view-picker."
                         />
                     </div>
                 </div>

@@ -21,6 +21,7 @@ export type Props = {
     displayTypes: DisplayType[];
     selectedDisplayType: DisplayType;
     setSelectedDisplayType: (type: DisplayType) => void;
+    displayTypeTranslationPrefix: string;
 };
 
 export function SortMenu(props: Readonly<Props>): JSX.Element {
@@ -77,7 +78,7 @@ export function SortMenu(props: Readonly<Props>): JSX.Element {
                 >
                     <MenuItemLabel>
                         {getTranslation([
-                            `web-player.your-library-x.sort-and-view-picker.${displayType}`,
+                            `${props.displayTypeTranslationPrefix}${displayType}`,
                         ])}
                     </MenuItemLabel>
                 </Spicetify.ReactComponent.MenuItem>
