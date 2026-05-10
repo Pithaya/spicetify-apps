@@ -66,4 +66,5 @@ export type Platform = {
     BuddyFeedAPI: unknown;
     PanelAP: unknown;
     RequestBuilder: RequestBuilder;
+    username: string;
 };

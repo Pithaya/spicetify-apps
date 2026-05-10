@@ -12,5 +12,12 @@
         "preview": "extensions/romaji-convert/preview.png",
         "main": "extensions/romaji-convert/dist/romaji-convert.js",
         "readme": "extensions/romaji-convert/README.md"
+    },
+    {
+        "name": "\"Made for you\" shortcut",
+        "description": "Add a shortcut to the \"Made for you\" page to the sidebar.",
+        "preview": "extensions/made-for-you-shortcut/preview.png",
+        "main": "extensions/made-for-you-shortcut/dist/made-for-you-shortcut.js",
+        "readme": "extensions/made-for-you-shortcut/README.md"
     }
 ]
