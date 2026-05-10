@@ -146,7 +146,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ hasPendingChanges: false });
     },
     loadWorkflow: (workflow: SavedWorkflow) => {
-        const { x = 0, y = 0, zoom = 1 } = workflow.viewport;
+        const { x, y, zoom } = workflow.viewport;
         get().reactFlowInstance?.setViewport({ x, y, zoom });
         set({
             nodes: workflow.nodes,

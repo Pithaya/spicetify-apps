@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/argument-type */
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useOutsideClick } from '@shared/hooks/use-outside-click';

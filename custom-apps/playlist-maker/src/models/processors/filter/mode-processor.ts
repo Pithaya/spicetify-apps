@@ -32,9 +32,7 @@ export class ModeProcessor extends NodeProcessor<ModeData> {
         await setAudioFeatures(tracksWithoutAudioFeatures);
 
         const filtered = input.filter(
-            (track) =>
-                track.audioFeatures !== undefined &&
-                track.audioFeatures.mode === +this.data.mode,
+            (track) => track.audioFeatures?.mode === +this.data.mode,
         );
 
         return filtered;
