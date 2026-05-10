@@ -83,8 +83,8 @@ export function TextComponent(
         <SpicetifyTextComponent
             {...rest}
             style={{
-                ...style,
                 fontSize,
+                ...style,
                 display: props.paddingBottom ? 'block' : style?.display,
             }}
         >
