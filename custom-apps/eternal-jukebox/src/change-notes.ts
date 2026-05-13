@@ -1,3 +1,3 @@
 export const CHANGE_NOTES = [
-    'Fixed a "No analysis available for this track" error',
+    'Fixed the "Always follow the last branch" condition',
 ];
