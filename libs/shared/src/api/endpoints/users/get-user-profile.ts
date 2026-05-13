@@ -11,13 +11,16 @@ const ParamsSchema = z
 
 export type Params = z.infer<typeof ParamsSchema>;
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getUserProfile(params: Params): Promise<User> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
     const response = await sender
-        .withPath(`/users/${params.id}`)
+        .withPath(`/users/${parsedParams.id}`)
         .withEndpointIdentifier('/users/{id}')
         .send<User>();
 

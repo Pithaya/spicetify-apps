@@ -1,3 +1,4 @@
+import Dexie from 'dexie';
 import type { SavedWorkflow } from '../db/workflows/saved-workflow';
 import { insertLegacyWorkflows } from '../db/workflows/workflow-db';
 
@@ -32,4 +33,9 @@ export async function migrateLegacyWorkflows(): Promise<void> {
 
 export function deleteLegacyArtistGenres(): void {
     Spicetify.LocalStorage.remove(ARTIST_GENRES_KEY);
+}
+
+export async function deleteLegacyArtistGenresDb(): Promise<void> {
+    deleteLegacyArtistGenres();
+    await Dexie.delete(ARTIST_GENRES_KEY);
 }

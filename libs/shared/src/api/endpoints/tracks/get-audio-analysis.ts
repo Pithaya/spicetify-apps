@@ -26,18 +26,21 @@ const getSpAudioData = async (
         | undefined;
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getTrackAudioAnalysis(
     params: Params,
 ): Promise<AudioAnalysis> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const spicetifyAudioData = await getSpAudioData(params.uri);
+    const spicetifyAudioData = await getSpAudioData(parsedParams.uri);
 
     if (spicetifyAudioData) {
         return spicetifyAudioData;
     }
 
-    const id = getId(Spicetify.URI.fromString(params.uri));
+    const id = getId(Spicetify.URI.fromString(parsedParams.uri));
 
     const sender = getWebApiRequestSender();
 

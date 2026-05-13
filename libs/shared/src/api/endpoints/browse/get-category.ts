@@ -11,13 +11,16 @@ const ParamsSchema = z
 
 export type Params = z.infer<typeof ParamsSchema>;
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getCategory(params: Params): Promise<Category> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
     const response = await sender
-        .withPath(`/browse/categories/${params.id}`)
+        .withPath(`/browse/categories/${parsedParams.id}`)
         .withEndpointIdentifier('/browse/categories/{id}')
         .withQueryParameters({
             locale: Spicetify.Locale.getLocale(),

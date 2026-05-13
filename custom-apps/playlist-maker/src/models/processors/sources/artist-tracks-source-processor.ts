@@ -1,5 +1,5 @@
 import { GRAPHQL_MAX_LIMIT } from '@shared/graphQL/constants';
-import { getAlbum, type GetAlbumData } from '@shared/graphQL/queries/get-album';
+import { getAlbum, type Album } from '@shared/graphQL/queries/get-album';
 import { queryAlbumTracks } from '@shared/graphQL/queries/query-album-tracks';
 import {
     queryArtistOverview,
@@ -91,6 +91,10 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
             locale: Spicetify.Locale.getLocale(),
         });
 
+        if (artistOverview.artistUnion.__typename === 'NotFound') {
+            return [];
+        }
+
         // Get popular releases
         const popularReleases =
             artistOverview.artistUnion.discography.popularReleasesAlbums.items;
@@ -105,7 +109,7 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         // Get top tracks
         const topTracks =
             artistOverview.artistUnion.discography.topTracks.items;
-        const topTracksAlbums = new Map<string, GetAlbumData>();
+        const topTracksAlbums = new Map<string, Album>();
         const mappedTopTracks = [];
 
         // Get top tracks saved status
@@ -126,10 +130,16 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
                     locale: Spicetify.Locale.getLocale(),
                 });
 
-                topTracksAlbums.set(albumUri, album);
+                if (album.albumUnion.__typename !== 'NotFound') {
+                    topTracksAlbums.set(albumUri, album.albumUnion);
+                }
             }
 
-            const trackAlbum = topTracksAlbums.get(albumUri)!;
+            const trackAlbum = topTracksAlbums.get(albumUri);
+
+            if (!trackAlbum) {
+                continue;
+            }
 
             mappedTopTracks.push(
                 mapGraphQLTrackToWorkflowTrack(
@@ -139,15 +149,13 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
                     },
                     {
                         uri: albumUri,
-                        name: trackAlbum.albumUnion.name,
+                        name: trackAlbum.name,
                         coverArt: topTrack.track.albumOfTrack.coverArt,
                     },
                     {
                         source: 'Artist',
                         albumData: {
-                            releaseDate: new Date(
-                                trackAlbum.albumUnion.date.isoString,
-                            ),
+                            releaseDate: new Date(trackAlbum.date.isoString),
                         },
                     },
                 ),
@@ -170,6 +178,10 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
             locale: Spicetify.Locale.getLocale(),
         });
 
+        if (artistOverview.artistUnion.__typename === 'NotFound') {
+            return [];
+        }
+
         const latestRelease = artistOverview.artistUnion.discography.latest;
         return await this.getTracksFromRelease(latestRelease);
     }
@@ -186,10 +198,16 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
             locale: Spicetify.Locale.getLocale(),
         });
 
+        if (artistOverview.artistUnion.__typename === 'NotFound') {
+            return [];
+        }
+
         // Get artist albums
-        const albums = artistOverview.artistUnion.discography.albums.items
-            .map((i) => i.releases.items)
-            .flat();
+        const albums =
+            artistOverview.artistUnion.discography.albums.items.flatMap(
+                (i) => i.releases.items,
+            );
+
         const albumTracks = [];
 
         for (const album of albums) {
@@ -198,9 +216,9 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
 
         // Get artist compilations
         const compilations =
-            artistOverview.artistUnion.discography.compilations.items
-                .map((i) => i.releases.items)
-                .flat();
+            artistOverview.artistUnion.discography.compilations.items.flatMap(
+                (i) => i.releases.items,
+            );
         const compilationTracks = [];
 
         for (const compilation of compilations) {
@@ -214,9 +232,11 @@ export class ArtistTracksSourceProcessor extends NodeProcessor<ArtistData> {
         }
 
         // Get artist singles
-        const singles = artistOverview.artistUnion.discography.singles.items
-            .map((i) => i.releases.items)
-            .flat();
+        const singles =
+            artistOverview.artistUnion.discography.singles.items.flatMap(
+                (i) => i.releases.items,
+            );
+
         const singleTracks = [];
 
         for (const single of singles) {

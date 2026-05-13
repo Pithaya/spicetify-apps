@@ -8,15 +8,14 @@ import {
     type PlaylistData,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/playlist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import { CheckboxController } from '../../inputs/CheckboxController';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
 import { TextController } from '../../inputs/TextController';
+import { PlaylistItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeCheckboxField } from '../shared/NodeCheckboxField';
 import { NodeComboField } from '../shared/NodeComboField';
@@ -49,41 +48,6 @@ type PlaylistItem = {
     image: string | null;
     ownerName: string;
 };
-
-function PlaylistItemRenderer(
-    props: Readonly<ItemRendererProps<PlaylistItem>>,
-): JSX.Element {
-    return (
-        <div className="flex max-h-[80px] items-stretch gap-2">
-            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
-                {props.item.image && (
-                    <img
-                        src={props.item.image}
-                        className="rounded-md object-contain"
-                        alt="playlist"
-                    />
-                )}
-                {props.item.image === null && (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="flex min-w-0 flex-col items-stretch justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'truncate',
-                        props.isSelected ? 'font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-                <span className="truncate text-sm">
-                    by {props.item.ownerName}
-                </span>
-            </div>
-        </div>
-    );
-}
 
 export function LibraryPlaylistSourceNode(
     props: Readonly<NodeProps<PlaylistData>>,

@@ -1,5 +1,7 @@
 declare namespace Spicetify {
 	type Icon =
+		| "addToPlaylist"
+		| "addToQueue"
 		| "album"
 		| "artist"
 		| "block"
@@ -13,22 +15,33 @@ declare namespace Spicetify {
 		| "chevron-right"
 		| "chromecast-disconnected"
 		| "clock"
+		| "collapseLibrary"
 		| "collaborative"
 		| "computer"
+		| "connectDevice"
 		| "copy"
+		| "create"
+		| "credits"
 		| "download"
 		| "downloaded"
 		| "edit"
 		| "enhance"
+		| "enterFullScreen"
 		| "exclamation-circle"
+		| "excludeTaste"
+		| "expandLibrary"
 		| "external-link"
 		| "facebook"
 		| "follow"
+		| "friendActivity"
 		| "fullscreen"
 		| "gamepad"
+		| "goToAlbum"
+		| "goToArtist"
 		| "grid-view"
 		| "heart"
 		| "heart-active"
+		| "heartAdd"
 		| "instagram"
 		| "laptop"
 		| "library"
@@ -39,10 +52,13 @@ declare namespace Spicetify {
 		| "lyrics"
 		| "menu"
 		| "minimize"
+		| "miniplayer"
 		| "minus"
 		| "more"
 		| "new-spotify-connect"
+		| "nowPlaying"
 		| "offline"
+		| "openDesktop"
 		| "pause"
 		| "phone"
 		| "play"
@@ -53,15 +69,20 @@ declare namespace Spicetify {
 		| "podcasts"
 		| "projector"
 		| "queue"
+		| "radio"
 		| "repeat"
 		| "repeat-once"
 		| "search"
 		| "search-active"
+		| "share"
 		| "shuffle"
 		| "skip-back"
 		| "skip-back15"
 		| "skip-forward"
 		| "skip-forward15"
+		| "skipBack"
+		| "skipForward"
+		| "smartShuffle"
 		| "soundbetter"
 		| "speaker"
 		| "spotify"
@@ -74,8 +95,10 @@ declare namespace Spicetify {
 		| "volume"
 		| "volume-off"
 		| "volume-one-wave"
+		| "volumeHigh"
 		| "volume-two-wave"
 		| "watch"
+		| "whatsNew"
 		| "x";
 	type Variant =
 		| "bass"
@@ -176,6 +199,7 @@ declare namespace Spicetify {
 		index: PlayerIndex;
 		item: PlayerTrack;
 		shuffle: boolean;
+		smartShuffle: boolean;
 		repeat: number;
 		speed: number;
 		positionAsOfTimestamp: number;
@@ -236,6 +260,17 @@ declare namespace Spicetify {
 		album_disc_count: string;
 		track_player: string;
 		album_title: string;
+		"canvas.artist.avatar": string;
+		"canvas.artist.name": string;
+		"canvas.artist.uri": string;
+		"canvas.canvasUri": string;
+		"canvas.entityUri": string;
+		"canvas.explicit": string;
+		"canvas.fileId": string;
+		"canvas.id": string;
+		"canvas.type": string;
+		"canvas.uploadedBy": string;
+		"canvas.url": string;
 		"collection.can_add": string;
 		image_large_url: string;
 		"actions.skipping_prev_past_track": string;
@@ -255,6 +290,18 @@ declare namespace Spicetify {
 		duration: string;
 		album_track_count: string;
 		popularity: string;
+		associated_video_id: string;
+		video_association: string;
+		video_association_image: string;
+		video_association_image_height: string;
+		video_association_image_height_large: string;
+		video_association_image_height_xxlarge: string;
+		video_association_image_large: string;
+		video_association_image_width: string;
+		video_association_image_width_large: string;
+		video_association_image_width_xxlarge: string;
+		video_association_image_xxlarge: string;
+		[key: string]: string;
 	};
 	type Album = {
 		type: string;
@@ -299,6 +346,12 @@ declare namespace Spicetify {
 	};
 	namespace Player {
 		/**
+		 *
+		 * Contains vast array of internal APIs.
+		 * Please explore in Devtool Console.
+		 */
+		const origin: any;
+		/**
 		 * Register a listener `type` on Spicetify.Player.
 		 *
 		 * On default, `Spicetify.Player` always dispatch:
@@ -335,7 +388,7 @@ declare namespace Spicetify {
 		/**
 		 * An object contains all information about current track and player.
 		 */
-		const data: PlayerState | undefined;
+		const data: PlayerState;
 		/**
 		 * Decrease a small amount of volume.
 		 */
@@ -417,24 +470,6 @@ declare namespace Spicetify {
 		 * @param options
 		 */
 		function playUri(uri: string, context?: any, options?: any): Promise<void>;
-		/**
-		 * Unregister added event listener `songchange`.
-		 * @param type
-		 * @param callback
-		 */
-		function removeEventListener(
-            type: 'songchange',
-            callback: (event?: Event & { data: PlayerState }) => void,
-        ): void;
-		/**
-		 * Unregister added event listener `songchange`.
-		 * @param type
-		 * @param callback
-		 */
-		function removeEventListener(
-            type: 'onplaypause',
-            callback: (event?: Event & { data: PlayerState }) => void,
-        ): void;
 		/**
 		 * Unregister added event listener `type`.
 		 * @param type
@@ -558,6 +593,7 @@ declare namespace Spicetify {
 	 * @param uri Any type of URI that has artwork (playlist, track, album, artist, show, ...)
 	 */
 	function colorExtractor(uri: string): Promise<{
+		DARK_VIBRANT: string;
 		DESATURATED: string;
 		LIGHT_VIBRANT: string;
 		PROMINENT: string;
@@ -773,11 +809,11 @@ declare namespace Spicetify {
 			/**
 			 * Add an item to sub items list
 			 */
-			addItem(item: Item);
+			addItem(item: Item): void;
 			/**
 			 * Remove an item from sub items list
 			 */
-			removeItem(item: Item);
+			removeItem(item: Item): void;
 			/**
 			 * SubMenu is only available in Profile menu when method "register" is called.
 			 */
@@ -1252,37 +1288,31 @@ declare namespace Spicetify {
 
 		// Single context menu item
 		class Item {
-            /**
-             * List of valid icons to use.
-             */
-            static readonly iconList: Icon[];
-            constructor(
-                name: string,
-                onClick: OnClickCallback,
-                shouldAdd?: ShouldAddCallback,
-                icon?: Icon | string,
-                disabled?: boolean,
-            );
-            name: string;
-            icon: Icon | string;
-            disabled: boolean;
-            /**
-             * A function returning boolean determines whether item should be prepended.
-             */
-            shouldAdd: ShouldAddCallback;
-            /**
-             * A function to call when item is clicked
-             */
-            onClick: OnClickCallback;
-            /**
-             * Item is only available in Context Menu when method "register" is called.
-             */
-            register: () => void;
-            /**
-             * Stop Item to be prepended into Context Menu.
-             */
-            deregister: () => void;
-        }
+			/**
+			 * List of valid icons to use.
+			 */
+			static readonly iconList: Icon[];
+			constructor(name: string, onClick: OnClickCallback, shouldAdd?: ShouldAddCallback, icon?: Icon | string, disabled?: boolean);
+			name: string;
+			icon: Icon | string;
+			disabled: boolean;
+			/**
+			 * A function returning boolean determines whether item should be prepended.
+			 */
+			shouldAdd: ShouldAddCallback;
+			/**
+			 * A function to call when item is clicked
+			 */
+			onClick: OnClickCallback;
+			/**
+			 * Item is only available in Context Menu when method "register" is called.
+			 */
+			register: () => void;
+			/**
+			 * Stop Item to be prepended into Context Menu.
+			 */
+			deregister: () => void;
+		}
 
 		/**
 		 * Create a sub menu to contain `Item`s.
@@ -1323,9 +1353,10 @@ declare namespace Spicetify {
 			title: string;
 			/**
 			 * You can specify a string for simple text display
-			 * or a HTML element for interactive config/setting menu
+			 * or a HTML element for interactive config/setting menu,
+			 * or a React JSX element for React-based components
 			 */
-			content: string | Element | JSX.Element;
+			content: string | Element | React.JSX.Element;
 			/**
 			 * Bigger window
 			 */
@@ -1342,6 +1373,8 @@ declare namespace Spicetify {
 	const ReactDOM: typeof import('react-dom') & typeof import('react-dom/client');
 	/** React DOM Server instance to render components to string */
 	const ReactDOMServer: typeof import('react-dom/server');
+	/** React JSX runtime instance to transform JSX elements */
+	const ReactJSX: typeof import('react/jsx-runtime');
 
 	/** Stock React components exposed from Spotify library */
 	namespace ReactComponent {
@@ -1448,7 +1481,7 @@ declare namespace Spicetify {
 			/**
 			 * Label to display in the tooltip
 			 */
-			label: string;
+			label: string | React.ReactNode;
 			/**
 			 * The child element that the tooltip will be attached to
 			 * and will display when hovered over
@@ -1725,13 +1758,13 @@ declare namespace Spicetify {
 			 * Values from the colorSet will be pasted into the CSS.
 			 */
 			UNSAFE_colorSet?: ColorSetBody;
-			onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseEnter?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseLeave?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseDown?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onMouseUp?: (event: MouseEvent<HTMLButtonElement>) => void;
-			onFocus?: (event: FocusEvent<HTMLButtonElement>) => void;
-			onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
+			onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+			onMouseEnter?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+			onMouseLeave?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+			onMouseDown?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+			onMouseUp?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+			onFocus?: (event: React.FocusEvent<HTMLButtonElement>) => void;
+			onBlur?: (event: React.FocusEvent<HTMLButtonElement>) => void;
 		};
 		/**
 		 * Generic context menu provider
@@ -1847,10 +1880,6 @@ declare namespace Spicetify {
 		 * @see Spicetify.ReactComponent.ButtonProps
 		 */
 		const ButtonTertiary: any;
-		/**
-		 * Chip
-		 */
-		const Chip: any;
 	}
 
 	/**
@@ -1858,11 +1887,12 @@ declare namespace Spicetify {
 	 */
 	namespace Topbar {
 		class Button {
-			constructor(label: string, icon: Icon | string, onClick: (self: Button) => void, disabled?: boolean);
+			constructor(label: string, icon: Icon | string, onClick: (self: Button) => void, disabled?: boolean, isRight?: boolean);
 			label: string;
 			icon: string;
 			onClick: (self: Button) => void;
 			disabled: boolean;
+			isRight: boolean;
 			element: HTMLButtonElement;
 			tippy: any;
 		}
@@ -1984,102 +2014,162 @@ declare namespace Spicetify {
 		 * This list is dynamic and may change in the future.
 		 */
 		type Query =
-			| "decorateItemsForEnhance"
-			| "imageURLAndSize"
-			| "imageSources"
-			| "audioItems"
-			| "creator"
-			| "extractedColors"
-			| "extractedColorsAndImageSources"
-			| "fetchExtractedColorAndImageForAlbumEntity"
-			| "fetchExtractedColorAndImageForArtistEntity"
-			| "fetchExtractedColorAndImageForEpisodeEntity"
-			| "fetchExtractedColorAndImageForPlaylistEntity"
-			| "fetchExtractedColorAndImageForPodcastEntity"
-			| "fetchExtractedColorAndImageForTrackEntity"
-			| "fetchExtractedColorForAlbumEntity"
-			| "fetchExtractedColorForArtistEntity"
-			| "fetchExtractedColorForEpisodeEntity"
-			| "fetchExtractedColorForPlaylistEntity"
-			| "fetchExtractedColorForPodcastEntity"
-			| "fetchExtractedColorForTrackEntity"
-			| "getAlbumNameAndTracks"
-			| "getEpisodeName"
-			| "getTrackName"
-			| "queryAlbumTrackUris"
-			| "queryTrackArtists"
-			| "decorateContextEpisodesOrChapters"
-			| "decorateContextTracks"
-			| "fetchTracksForRadioStation"
-			| "decoratePlaylists"
-			| "playlistUser"
-			| "FetchPlaylistMetadata"
-			| "playlistContentsItemTrackArtist"
-			| "playlistContentsItemTrackAlbum"
-			| "playlistContentsItemTrack"
-			| "playlistContentsItemLocalTrack"
-			| "playlistContentsItemEpisodeShow"
-			| "playlistContentsItemEpisode"
-			| "playlistContentsItemResponse"
-			| "playlistContentsItem"
-			| "FetchPlaylistContents"
-			| "episodeTrailerUri"
-			| "podcastEpisode"
-			| "podcastMetadataV2"
-			| "minimalAudiobook"
-			| "audiobookChapter"
-			| "audiobookMetadataV2"
-			| "fetchExtractedColors"
-			| "queryFullscreenMode"
-			| "queryNpvEpisode"
-			| "queryNpvArtist"
-			| "albumTrack"
-			| "getAlbum"
-			| "queryAlbumTracks"
-			| "queryArtistOverview"
-			| "queryArtistAppearsOn"
-			| "discographyAlbum"
-			| "albumMetadataReleases"
-			| "albumMetadata"
-			| "queryArtistDiscographyAlbums"
-			| "queryArtistDiscographySingles"
-			| "queryArtistDiscographyCompilations"
-			| "queryArtistDiscographyAll"
-			| "queryArtistDiscographyOverview"
-			| "artistPlaylist"
-			| "queryArtistPlaylists"
-			| "queryArtistDiscoveredOn"
-			| "queryArtistFeaturing"
-			| "queryArtistRelated"
-			| "queryArtistMinimal"
-			| "searchModalResults"
-			| "queryWhatsNewFeed"
-			| "whatsNewFeedNewItems"
-			| "SetItemsStateInWhatsNewFeed"
-			| "browseImageURLAndSize"
-			| "browseImageSources"
-			| "browseAlbum"
-			| "browseArtist"
-			| "browseEpisode"
-			| "browseChapter"
-			| "browsePlaylist"
-			| "browsePodcast"
-			| "browseAudiobook"
-			| "browseTrack"
-			| "browseUser"
-			| "browseMerch"
-			| "browseArtistConcerts"
-			| "browseContent"
-			| "browseSectionContainer"
-			| "browseClientFeature"
-			| "browseItem"
-			| "browseAll"
-			| "browsePage";
+            | 'fetchExtractedColors'
+            | 'getAlbumNameAndTracks'
+            | 'getEpisodeName'
+            | 'getPodcastOrBookName'
+            | 'getTrackName'
+            | 'queryWhatsNewFeed'
+            | 'whatsNewFeedNewItems'
+            | 'SetItemsStateInWhatsNewFeed'
+            | 'queryAlbumTrackUris'
+            | 'getArtistNameAndTracks'
+            | 'queryTrackArtists'
+            | 'recentSearches'
+            | 'saveRecentSearches'
+            | 'removeRecentSearches'
+            | 'searchSuggestions'
+            | 'queryNpvEpisodeChapters'
+            | 'queryNpvEpisode'
+            | 'npvPageContent'
+            | 'getAlbum'
+            | 'queryAlbumTracks'
+            | 'queryArtistOverview'
+            | 'getVideoTrackAssociatedAlbum'
+            | 'queryArtistAppearsOn'
+            | 'queryArtistDiscographyAlbums'
+            | 'queryArtistDiscographySingles'
+            | 'queryArtistDiscographyCompilations'
+            | 'queryArtistDiscographyAll'
+            | 'queryArtistDiscographyOverview'
+            | 'queryArtistDiscoveredOn'
+            | 'queryArtistFeaturing'
+            | 'queryArtistPlaylists'
+            | 'queryArtistRelated'
+            | 'queryArtistRelatedVideos'
+            | 'queryArtistMinimal'
+            | 'ArtistConcerts'
+            | 'ArtistConcertsPageLocation'
+            | 'concertCount'
+            | 'searchConcertLocations'
+            | 'saveLocation'
+            | 'concertLocationsByLatLon'
+            | 'userLocation'
+            | 'queryNpvArtist'
+            | 'getDynamicColorsByUris'
+            | 'episodeSponsoredContent'
+            | 'getTrack'
+            | 'home'
+            | 'homeSection'
+            | 'homePinnedSections'
+            | 'seoRecommendedTrackPlaylistDesktop'
+            | 'similarAlbumsBasedOnThisTrack'
+            | 'lookupEntity'
+            | 'addComment'
+            | 'addCommentReaction'
+            | 'addCommentReply'
+            | 'deleteComment'
+            | 'deleteCommentReaction'
+            | 'deleteCommentReply'
+            | 'getCommentsForEntity'
+            | 'getReactions'
+            | 'getReplies'
+            | 'assistedCurationSearch'
+            | 'assistedCurationSearchAlbum'
+            | 'assistedCurationSearchArtist'
+            | 'isFollowingUsers'
+            | 'followUsers'
+            | 'unfollowUsers'
+            | 'decorateContextEpisodesOrChapters'
+            | 'decorateContextTracks'
+            | 'createJamSession'
+            | 'deleteJamSession'
+            | 'getJamInfo'
+            | 'jamStatus'
+            | 'joinJamSession'
+            | 'leaveJamSession'
+            | 'removeAllJamMembers'
+            | 'removeJamMember'
+            | 'setDeviceBroadcastStatus'
+            | 'setParticipantVolumeControl'
+            | 'setQueueOnlyMode'
+            | 'getListPlatformListContents'
+            | 'addToPlaylist'
+            | 'removeFromPlaylist'
+            | 'moveItemsInPlaylist'
+            | 'recents'
+            | 'isCurated'
+            | 'applyCurations'
+            | 'applyCurationsV2'
+            | 'editablePlaylists'
+            | 'isCuratedEntities'
+            | 'curateItems'
+            | 'addToLibrary'
+            | 'removeFromLibrary'
+            | 'pinLibraryItem'
+            | 'unpinLibraryItem'
+            | 'libraryV3'
+            | 'areEntitiesInLibrary'
+            | 'fetchLibraryTracks'
+            | 'fetchPlaylist'
+            | 'fetchPlaylistMetadata'
+            | 'fetchPlaylistContents'
+            | 'getLists'
+            | 'getListsMetadata'
+            | 'getListsContents'
+            | 'playlistPermissions'
+            | 'accountAttributes'
+            | 'fetchEntitiesForRecentlyPlayed'
+            | 'queryShowMetadataV2'
+            | 'queryBookChapters'
+            | 'getEpisodeOrChapter'
+            | 'queryPodcastEpisodes'
+            | 'centralisedStatePlayerOptions'
+            | 'smartShuffle'
+            | 'profileAttributes'
+            | 'lookupChildEntities'
+            | 'watchFeedView'
+            | 'watchFeedEntity'
+            | 'queryTrackCreditsModal'
+            | 'fetchExtractedColorAndImageForAlbumEntity'
+            | 'fetchExtractedColorAndImageForArtistEntity'
+            | 'fetchExtractedColorAndImageForEpisodeEntity'
+            | 'fetchExtractedColorAndImageForPlaylistEntity'
+            | 'fetchExtractedColorAndImageForPodcastEntity'
+            | 'fetchExtractedColorAndImageForTrackEntity'
+            | 'fetchExtractedColorForAlbumEntity'
+            | 'fetchExtractedColorForArtistEntity'
+            | 'fetchExtractedColorForEpisodeEntity'
+            | 'fetchExtractedColorForPlaylistEntity'
+            | 'fetchExtractedColorForPodcastEntity'
+            | 'fetchExtractedColorForTrackEntity'
+            | 'showItemsPlayedState'
+            | 'searchModalEntityPage'
+            | 'searchModalResults'
+            | 'trackPreview'
+            | 'canvas'
+            | 'decorateQueuedByUsers'
+            | 'getAudiobooksMetadata'
+            | 'browseAll'
+            | 'searchDesktop'
+            | 'searchAlbums'
+            | 'searchArtists'
+            | 'searchAudiobooks'
+            | 'searchAuthors'
+            | 'searchEpisodes'
+            | 'searchFullEpisodes'
+            | 'searchGenres'
+            | 'searchPlaylists'
+            | 'searchPodcasts'
+            | 'searchTopResultsOnly'
+            | 'searchTopResultsList'
+            | 'searchTracks'
+            | 'searchUsers';
 		/**
 		 * Collection of GraphQL definitions.
 		 */
 		const Definitions: Record<
-            Query | string,
+            Query,
             {
                 name: string;
                 operation: 'query' | 'mutation';
@@ -2124,28 +2214,28 @@ declare namespace Spicetify {
 		 *
 		 */
 		function DragHandler(params: {
-			itemUris?: string[];
-			itemMimeTypes?: (unknown | undefined)[];
-			dragLabelText?: string;
-			contextUri?: string;
-			sectionId?: number;
-			dropOriginUri?: string;
-			itemIds?: unknown;
-		}): {
-			draggable: boolean;
-			onDragStart: (
-				event: React.DragEvent,
-				params?: {
-					itemUris?: string[];
-					itemMimeTypes?: (unknown | undefined)[];
-					dragLabelText?: string;
-					contextUri?: string;
-					sectionId?: number;
-					dropOriginUri?: string;
-					itemIds?: unknown;
-				},
-			) => void;
-		};
+            itemUris?: string[];
+            itemMimeTypes?: (unknown | undefined)[];
+            dragLabelText?: string;
+            contextUri?: string;
+            sectionId?: number;
+            dropOriginUri?: string;
+            itemIds?: unknown;
+        }): {
+            draggable: boolean;
+            onDragStart: (
+                event: React.DragEvent,
+                params?: {
+                    itemUris?: string[];
+                    itemMimeTypes?: (unknown | undefined)[];
+                    dragLabelText?: string;
+                    contextUri?: string;
+                    sectionId?: number;
+                    dropOriginUri?: string;
+                    itemIds?: unknown;
+                },
+            ) => void;
+        };
 
 		/**
 		 * React Hook to use extracted color from GraphQL

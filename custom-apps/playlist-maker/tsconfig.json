@@ -2,7 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./dist",
+        "rootDir": "../..",
         "resolveJsonModule": true
     },
-    "include": ["./src/**/*", "../../libs/shared/src/types/**/*"]
+    "include": [
+        "./src/**/*",
+        "./vitest.config.ts",
+        "./vitest.setup.ts",
+        "../../libs/shared/src/types/**/*"
+    ]
 }

@@ -99,8 +99,11 @@ export function CreatePlaylistModal(): JSX.Element {
                 Save {result.length} tracks to a new playlist
             </TextComponent>
 
-            <fieldset className="flex flex-col gap-2" disabled={isCreating}>
-                <label className="block">
+            <fieldset
+                className="tw:flex tw:flex-col tw:gap-2"
+                disabled={isCreating}
+            >
+                <label className="tw:block">
                     <TextComponent elementType="small" paddingBottom="4px">
                         Playlist name
                     </TextComponent>
@@ -113,7 +116,7 @@ export function CreatePlaylistModal(): JSX.Element {
                 </label>
                 <InputError error={errors.playlistName} />
 
-                <label className="block">
+                <label className="tw:block">
                     <TextComponent elementType="small" paddingBottom="4px">
                         Parent folder
                     </TextComponent>
@@ -129,7 +132,7 @@ export function CreatePlaylistModal(): JSX.Element {
                     />
                 </label>
 
-                <div className="mt-5 flex justify-center">
+                <div className="tw:mt-5 tw:flex tw:justify-center">
                     <Spicetify.ReactComponent.ButtonPrimary
                         disabled={!isValid}
                         buttonSize="sm"

@@ -43,7 +43,7 @@ function SidenavItem(props: Readonly<SidenavItemProps>): JSX.Element {
                             onNodeSelected(props.nodeType);
                         }
                     }}
-                    className="hover:bg-spice-highlight hover:!text-spice-text w-full cursor-grab border-none bg-transparent !py-1 text-start"
+                    className="tw:hover:bg-spice-highlight tw:hover:text-spice-text tw:w-full tw:cursor-grab tw:border-none tw:bg-transparent tw:py-1 tw:text-start"
                 >
                     <TextComponent elementType="span" fontSize="medium">
                         {props.label}
@@ -58,19 +58,19 @@ function SidenavCollapsible(
     props: Readonly<PropsWithChildren<{ label: string }>>,
 ): JSX.Element {
     return (
-        <details className="group">
-            <summary className="flex cursor-pointer list-none items-center gap-1">
+        <details className="tw:group">
+            <summary className="tw:flex tw:cursor-pointer tw:list-none tw:items-center tw:gap-1">
                 <TextComponent
                     elementType="h2"
                     weight="bold"
                     fontSize="medium"
-                    className="inline"
+                    className="tw:inline"
                 >
                     {props.label}
                 </TextComponent>
-                <LucideChevronDown className="transition-transform group-open:rotate-180" />
+                <LucideChevronDown className="tw:transition-transform tw:group-open:rotate-180" />
             </summary>
-            <div className="!mt-2">{props.children}</div>
+            <div className="tw:mt-2">{props.children}</div>
         </details>
     );
 }
@@ -78,18 +78,22 @@ function SidenavCollapsible(
 function SidebarTitle(props: Readonly<{ label: string }>): JSX.Element {
     return (
         <>
-            <TextComponent elementType="h1" fontSize="x-large">
+            <TextComponent
+                elementType="h1"
+                fontSize="x-large"
+                className="tw:font-normal"
+            >
                 {props.label}
             </TextComponent>
-            <hr className="divide-solid opacity-60" />
+            <hr className="tw:divide-solid tw:opacity-60 tw:m-0" />
         </>
     );
 }
 
 export function Sidenav(): JSX.Element {
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-2">
+        <div className="tw:flex tw:flex-col tw:gap-2">
+            <div className="tw:flex tw:flex-col tw:gap-2">
                 <SidebarTitle label="Sources" />
 
                 <SidenavCollapsible label="Library">
@@ -103,11 +107,6 @@ export function Sidenav(): JSX.Element {
                             label="Local files"
                             nodeType="localTracksSource"
                             tooltip="Get tracks from your local files."
-                        />
-                        <SidenavItem
-                            label="Top tracks"
-                            nodeType="topTracksSource"
-                            tooltip="Get tracks from your top tracks."
                         />
                         <SidenavItem
                             label="Saved playlist"
@@ -178,7 +177,7 @@ export function Sidenav(): JSX.Element {
                 </SidenavCollapsible>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="tw:flex tw:flex-col tw:gap-2">
                 <SidebarTitle label="Filters" />
 
                 <SidenavCollapsible label="Track property">
@@ -272,7 +271,7 @@ export function Sidenav(): JSX.Element {
                 </SidenavCollapsible>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="tw:flex tw:flex-col tw:gap-2">
                 <SidebarTitle label="Processing" />
 
                 <ul>
@@ -314,7 +313,7 @@ export function Sidenav(): JSX.Element {
                 </ul>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="tw:flex tw:flex-col tw:gap-2">
                 <SidebarTitle label="Result" />
 
                 <ul>

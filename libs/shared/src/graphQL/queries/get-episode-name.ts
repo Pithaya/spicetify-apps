@@ -1,11 +1,14 @@
 import { z } from 'zod';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import type { NotFound } from '../types/shared/not-found';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type GetEpisodeNameData = {
-    episodeUnionV2: {
-        __typename: 'Episode';
-        name: string;
-    };
+    episodeUnionV2:
+        | {
+              __typename: 'Episode';
+              name: string;
+          }
+        | NotFound;
 };
 
 const ParamsSchema = z
@@ -23,7 +26,7 @@ const ParamsSchema = z
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get the name of an episode.
@@ -33,9 +36,10 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getEpisodeName(
     params: Params,
 ): Promise<GetEpisodeNameData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const { getEpisodeName } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getEpisodeName, params);
+    return await sendGraphQLQuery(
+        getDefinition('getEpisodeName'),
+        parsedParams,
+    );
 }

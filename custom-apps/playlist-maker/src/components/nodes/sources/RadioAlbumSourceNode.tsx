@@ -1,10 +1,8 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
-import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
 import {
-    type AlbumResponseWrapper,
-    type PreReleaseResponseWrapper,
-} from '@shared/graphQL/types/search-desktop-data-albums';
+    type AlbumItem,
+    useAlbumComboboxFetchers,
+} from 'custom-apps/playlist-maker/src/hooks/use-album-combobox-fetchers';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -12,13 +10,12 @@ import {
     RadioDataSchema,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/radio-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
+import { AlbumItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -43,47 +40,6 @@ const orderItems: Item<RadioData['sortOrder']>[] = [
     { value: 'DESC', label: 'Descending' },
 ];
 
-type AlbumItem = {
-    id: string;
-    uri: string;
-    name: string;
-    image: string | null;
-    artists: string;
-};
-
-function AlbumItemRenderer(
-    props: Readonly<ItemRendererProps<AlbumItem>>,
-): JSX.Element {
-    return (
-        <div className="flex max-h-[80px] items-stretch gap-2">
-            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
-                {props.item.image && (
-                    <img
-                        src={props.item.image}
-                        className="rounded-md object-contain"
-                        alt="album"
-                    />
-                )}
-                {props.item.image === null && (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="flex min-w-0 flex-col items-stretch justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'truncate',
-                        props.isSelected ? 'font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-                <span className="truncate text-sm">{props.item.artists}</span>
-            </div>
-        </div>
-    );
-}
-
 export function RadioAlbumSourceNode(
     props: Readonly<NodeProps<RadioData>>,
 ): JSX.Element {
@@ -95,110 +51,12 @@ export function RadioAlbumSourceNode(
         RadioDataSchema,
     );
 
-    const getAlbums = useCallback(
-        async (input: string): Promise<AlbumItem[]> => {
-            if (!input.trim()) {
-                return [];
-            }
+    const onAlbumNotFound = useCallback(() => {
+        updateNodeField({ uri: '' });
+    }, [updateNodeField]);
 
-            const search = await searchDesktop({
-                searchTerm: input,
-                offset: 0,
-                limit: 10,
-                includePreReleases: true,
-                includeArtistHasConcertsField: false,
-                includeAudiobooks: false,
-                includeLocalConcertsField: false,
-                numberOfTopResults: 5,
-            });
-
-            const items: AlbumItem[] = search.searchV2.albumsV2.items.map(
-                (album) => {
-                    const albumIsPrelease = (
-                        album: PreReleaseResponseWrapper | AlbumResponseWrapper,
-                    ): album is PreReleaseResponseWrapper => {
-                        return album.__typename === 'PreReleaseResponseWrapper';
-                    };
-
-                    if (albumIsPrelease(album)) {
-                        return {
-                            id: album.data.uri,
-                            uri: album.data.uri,
-                            name: album.data.preReleaseContent.name,
-                            image:
-                                album.data.preReleaseContent.coverArt.sources
-                                    .length > 0
-                                    ? album.data.preReleaseContent.coverArt
-                                          .sources[0].url
-                                    : null,
-                            artists: album.data.preReleaseContent.artists.items
-                                .map((artist) => artist.data.profile.name)
-                                .join(', '),
-                        };
-                    } else {
-                        return {
-                            id: album.data.uri,
-                            uri: album.data.uri,
-                            name: album.data.name,
-                            image:
-                                album.data.coverArt.sources.length > 0
-                                    ? album.data.coverArt.sources[0].url
-                                    : null,
-                            artists: album.data.artists.items
-                                .map((artist) => artist.profile.name)
-                                .join(', '),
-                        };
-                    }
-                },
-            );
-
-            return items;
-        },
-        [],
-    );
-
-    const getAlbum = useCallback(
-        async (albumUri: string): Promise<AlbumItem | null> => {
-            try {
-                const album = await getGraphQlAlbum({
-                    uri: albumUri,
-                    offset: 0,
-                    limit: 0,
-                    locale: Spicetify.Locale.getLocale(),
-                });
-
-                if (album.albumUnion.__typename === 'NotFound') {
-                    throw new Error('Album not found');
-                }
-
-                const albumItem: AlbumItem = {
-                    id: album.albumUnion.uri,
-                    name: album.albumUnion.name,
-                    uri: album.albumUnion.uri,
-                    image:
-                        album.albumUnion.coverArt.sources.length > 0
-                            ? album.albumUnion.coverArt.sources[0].url
-                            : null,
-                    artists: album.albumUnion.artists.items
-                        .map((artist) => artist.profile.name)
-                        .join(', '),
-                };
-
-                return albumItem;
-            } catch (e) {
-                console.error('Failed to fetch album', e);
-                updateNodeField({ uri: '' });
-
-                return null;
-            }
-        },
-        [updateNodeField],
-    );
-
-    const itemToString = useCallback(
-        (item: AlbumItem): string => item.name,
-        [],
-    );
+    const { getAlbum, getAlbums, itemToString } =
+        useAlbumComboboxFetchers(onAlbumNotFound);
 
     const {
         inputValue,

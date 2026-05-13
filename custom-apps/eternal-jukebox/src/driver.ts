@@ -409,7 +409,10 @@ export class Driver {
         if (
             beat.index === this.songState.graph.lastBranchPoint &&
             this.settings.alwaysFollowLastBranch &&
-            currentPlayTime <= this.settings.maxJukeboxPlayTime
+            (
+                this.settings.maxJukeboxPlayTime <= 0 ||
+                currentPlayTime <= this.settings.maxJukeboxPlayTime
+            )
         ) {
             return true;
         }

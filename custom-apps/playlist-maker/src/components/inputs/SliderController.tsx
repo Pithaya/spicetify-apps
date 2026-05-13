@@ -33,7 +33,7 @@ export function SliderController<T extends RangeForm>(
                     field: { onChange, value, ref },
                     formState: { disabled },
                 }) => (
-                    <div className="flex flex-wrap justify-center">
+                    <div className="tw:flex tw:flex-wrap tw:justify-center">
                         <Range
                             values={[value.min, value.max]}
                             step={step}

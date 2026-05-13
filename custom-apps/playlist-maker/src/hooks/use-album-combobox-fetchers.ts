@@ -1,0 +1,122 @@
+import { getAlbum as getGraphQlAlbum } from '@shared/graphQL/queries/get-album';
+import { searchAlbums } from '@shared/graphQL/queries/search-albums';
+import { useCallback } from 'react';
+
+export type AlbumItem = {
+    id: string;
+    uri: string;
+    name: string;
+    image: string | null;
+    artists: string;
+};
+
+type UseAlbumComboboxFetchersReturn = {
+    getAlbum: (albumUri: string) => Promise<AlbumItem | null>;
+    getAlbums: (input: string) => Promise<AlbumItem[]>;
+    itemToString: (item: AlbumItem) => string;
+};
+
+export function useAlbumComboboxFetchers(
+    onNotFound: () => void,
+): UseAlbumComboboxFetchersReturn {
+    const getAlbums = useCallback(
+        async (input: string): Promise<AlbumItem[]> => {
+            if (!input.trim()) {
+                return [];
+            }
+
+            const search = await searchAlbums({
+                searchTerm: input,
+                offset: 0,
+                limit: 10,
+                numberOfTopResults: 0,
+                includeAuthors: true,
+                includeEpisodeContentRatingsV2: true,
+                includeAudiobooks: true,
+                includePreReleases: true,
+            });
+
+            const items: AlbumItem[] = search.searchV2.albumsV2.items.map(
+                (item) => {
+                    if (item.__typename === 'PreReleaseResponseWrapper') {
+                        const content = item.data.preReleaseContent;
+                        return {
+                            id: content.uri,
+                            uri: content.uri,
+                            name: content.name,
+                            image:
+                                content.coverArt &&
+                                content.coverArt.sources.length > 0
+                                    ? content.coverArt.sources[0].url
+                                    : null,
+                            artists: content.artists.items
+                                .map((artist) => artist.data.profile.name)
+                                .join(', '),
+                        };
+                    }
+
+                    return {
+                        id: item.data.uri,
+                        uri: item.data.uri,
+                        name: item.data.name,
+                        image:
+                            item.data.coverArt &&
+                            item.data.coverArt.sources.length > 0
+                                ? item.data.coverArt.sources[0].url
+                                : null,
+                        artists: item.data.artists.items
+                            .map((artist) => artist.profile.name)
+                            .join(', '),
+                    };
+                },
+            );
+
+            return items;
+        },
+        [],
+    );
+
+    const getAlbum = useCallback(
+        async (albumUri: string): Promise<AlbumItem | null> => {
+            try {
+                const album = await getGraphQlAlbum({
+                    uri: albumUri,
+                    offset: 0,
+                    limit: 0,
+                });
+
+                if (album.albumUnion.__typename === 'NotFound') {
+                    throw new Error('Album not found');
+                }
+
+                const albumItem: AlbumItem = {
+                    id: album.albumUnion.uri,
+                    name: album.albumUnion.name,
+                    uri: album.albumUnion.uri,
+                    image:
+                        album.albumUnion.coverArt.sources.length > 0
+                            ? album.albumUnion.coverArt.sources[0].url
+                            : null,
+                    artists: album.albumUnion.artists.items
+                        .map((artist) => artist.profile.name)
+                        .join(', '),
+                };
+
+                return albumItem;
+            } catch (e) {
+                console.error('Failed to fetch album', e);
+                onNotFound();
+
+                return null;
+            }
+        },
+        [onNotFound],
+    );
+
+    const itemToString = useCallback(
+        (item: AlbumItem): string => item.name,
+        [],
+    );
+
+    return { getAlbums, getAlbum, itemToString };
+}

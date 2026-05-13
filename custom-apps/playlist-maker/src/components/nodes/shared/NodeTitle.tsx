@@ -9,7 +9,7 @@ type Props = {
 
 export function NodeTitle(props: Readonly<Props>): JSX.Element {
     return (
-        <div className="!mb-2 flex items-center gap-2">
+        <div className="tw:mb-2 tw:flex tw:items-center tw:gap-2">
             <TextComponent elementType="p" weight="bold" paddingBottom="0">
                 {props.title}
             </TextComponent>
@@ -21,7 +21,7 @@ export function NodeTitle(props: Readonly<Props>): JSX.Element {
                     <CircleHelp
                         size={14}
                         strokeWidth={1.5}
-                        className="cursor-help"
+                        className="tw:cursor-help"
                     />
                 </Spicetify.ReactComponent.TooltipWrapper>
             )}

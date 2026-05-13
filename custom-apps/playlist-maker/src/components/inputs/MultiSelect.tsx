@@ -1,9 +1,10 @@
+/* eslint-disable sonarjs/argument-type */
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useOutsideClick } from '@shared/hooks/use-outside-click';
 import { uniqueBy } from '@shared/utils/array-utils';
 import { useCombobox, useMultipleSelection } from 'downshift';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, CircleHelp } from 'lucide-react';
 import React, { useCallback } from 'react';
 
 export type TMultiSelectItem = {
@@ -26,6 +27,7 @@ export type Props<T extends TMultiSelectItem> = {
     unselectAllItem: T;
     selectAllItem: T;
     label: string;
+    tooltip?: string;
     placeholder: string;
     inputValue: string;
     onInputChanged: (inputValue: string) => void;
@@ -37,21 +39,21 @@ export type Props<T extends TMultiSelectItem> = {
 
 function SelectAllItemRenderer(): JSX.Element {
     return (
-        <div className="flex flex-col">
-            <div className="flex items-center !px-2 !py-1">
+        <div className="tw:flex tw:flex-col">
+            <div className="tw:flex tw:items-center tw:px-2 tw:py-1">
                 <span>Select all</span>
             </div>
-            <hr className="border-t-1" />
+            <hr className="tw:border-t-1 tw:m-0" />
         </div>
     );
 }
 
 function UnselectAllItemRenderer(): JSX.Element {
     return (
-        <div className="flex flex-col">
-            <div className="flex items-center justify-between gap-2 !px-2 !py-1">
+        <div className="tw:flex tw:flex-col">
+            <div className="tw:flex tw:items-center tw:justify-between tw:gap-2 tw:px-2 tw:py-1">
                 <span>Unselect all</span>
-                <span className="shrink-0">
+                <span className="tw:shrink-0">
                     <SpotifyIcon
                         semanticColor="textBrightAccent"
                         icon="check"
@@ -59,7 +61,7 @@ function UnselectAllItemRenderer(): JSX.Element {
                     />
                 </span>
             </div>
-            <hr className="border-t-1" />
+            <hr className="tw:border-t-1" />
         </div>
     );
 }
@@ -224,18 +226,32 @@ export function MultiSelect<T extends TMultiSelectItem>(
 
     return (
         <>
-            <div className="relative">
-                <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="multiselect-search"
-                        className="w-fit"
-                        {...getLabelProps()}
-                    >
-                        <TextComponent elementType="small">
-                            {props.label}
-                        </TextComponent>
-                    </label>
-                    <div className="bg-spice-tab-active flex gap-0.5 rounded-sm !pe-1">
+            <div className="tw:relative">
+                <div className="tw:flex tw:flex-col tw:gap-1">
+                    <div className="tw:flex tw:items-center tw:gap-1">
+                        <label
+                            htmlFor="multiselect-search"
+                            className="tw:w-fit"
+                            {...getLabelProps()}
+                        >
+                            <TextComponent elementType="small">
+                                {props.label}
+                            </TextComponent>
+                        </label>
+                        {props.tooltip && (
+                            <Spicetify.ReactComponent.TooltipWrapper
+                                label={props.tooltip}
+                                showDelay={100}
+                            >
+                                <CircleHelp
+                                    size={12}
+                                    strokeWidth={1.5}
+                                    className="tw:cursor-help"
+                                />
+                            </Spicetify.ReactComponent.TooltipWrapper>
+                        )}
+                    </div>
+                    <div className="tw:bg-spice-tab-active tw:flex tw:gap-0.5 tw:rounded-sm tw:pe-1">
                         <input
                             {...getInputProps({
                                 ...getDropdownProps({
@@ -249,7 +265,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                                 },
                             })}
                             placeholder={props.placeholder}
-                            className="w-full truncate !p-1.5"
+                            className="tw:w-full tw:truncate tw:p-1.5 tw:bg-transparent tw:border-none tw:text-spice-text"
                             id="multiselect-search"
                             onBlur={() => {
                                 props.onBlur();
@@ -258,7 +274,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                         />
                         <button
                             aria-label="toggle menu"
-                            className="!px-2"
+                            className="tw:px-2 tw:bg-transparent tw:border-none"
                             type="button"
                             {...getToggleButtonProps()}
                             disabled={props.disabled}
@@ -272,8 +288,8 @@ export function MultiSelect<T extends TMultiSelectItem>(
                     </div>
                 </div>
                 <ul
-                    className={`bg-spice-highlight-elevated absolute z-10 !mt-1 max-h-80 w-full overflow-scroll rounded-sm !p-0 ${
-                        !isOpen && !forceOpen ? 'hidden' : ''
+                    className={`tw:bg-spice-highlight-elevated tw:absolute tw:z-10 tw:mt-1 tw:max-h-80 tw:w-full tw:overflow-scroll tw:rounded-sm tw:p-0 ${
+                        !isOpen && !forceOpen ? 'tw:hidden' : ''
                     }`}
                     ref={menuRef}
                     {...getMenuProps()}
@@ -284,9 +300,9 @@ export function MultiSelect<T extends TMultiSelectItem>(
                                 <li
                                     className={Spicetify.classnames(
                                         highlightedIndex === index
-                                            ? 'bg-spice-highlight-elevated-hover'
+                                            ? 'tw:bg-spice-highlight-elevated-hover'
                                             : '',
-                                        'flex flex-col',
+                                        'tw:flex tw:flex-col',
                                     )}
                                     key={item.id}
                                     {...getItemProps({
@@ -300,7 +316,7 @@ export function MultiSelect<T extends TMultiSelectItem>(
                         </>
                     )}
                     {(isOpen || forceOpen) && props.items.length === 0 && (
-                        <div className="flex items-center justify-center !p-2">
+                        <div className="tw:flex tw:items-center tw:justify-center tw:p-2">
                             <TextComponent elementType="span" fontSize="small">
                                 No results
                             </TextComponent>
@@ -308,10 +324,10 @@ export function MultiSelect<T extends TMultiSelectItem>(
                     )}
                 </ul>
             </div>
-            <div className="flex max-h-48 flex-wrap gap-1 overflow-y-scroll">
+            <div className="tw:flex tw:max-h-48 tw:flex-wrap tw:gap-1 tw:overflow-y-scroll">
                 {selectedItems.map((selectedItemForRender, index) => (
                     <span
-                        className="hover:bg-spice-tab-active bg-spice-highlight-elevated flex max-w-72 items-center gap-2 rounded-full !px-2.5"
+                        className="tw:hover:bg-spice-tab-active tw:bg-spice-highlight-elevated tw:flex tw:max-w-72 tw:items-center tw:gap-2 tw:rounded-full tw:px-2.5"
                         key={`selected-item-${index.toFixed()}`}
                         {...getSelectedItemProps({
                             selectedItem: selectedItemForRender,
@@ -319,10 +335,11 @@ export function MultiSelect<T extends TMultiSelectItem>(
                         })}
                         tabIndex={-1}
                     >
-                        <span className="truncate">
+                        <span className="tw:truncate">
                             {props.itemToString(selectedItemForRender)}
                         </span>
                         <button
+                            className="tw:bg-transparent tw:border-none"
                             aria-label="Remove item"
                             onClick={(e) => {
                                 e.stopPropagation();

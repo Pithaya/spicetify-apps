@@ -31,7 +31,7 @@ export function usePlayStatus(): PlayStatus {
     useEffect(() => {
         function handleStatusChange(
             event?: Event & {
-                data: Spicetify.PlayerState;
+                data?: Spicetify.PlayerState;
             },
         ): void {
             const playerState = event?.data;

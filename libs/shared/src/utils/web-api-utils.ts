@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
+/* eslint-disable sonarjs/deprecation */
 import { getAlbum } from '@shared/api/endpoints/albums/get-album';
 import {
     getAlbums,
@@ -36,6 +38,7 @@ import { isNotEmpty } from './array-utils';
 /**
  * Get Spotify catalog information for multiple tracks, albums, artists, playlists, shows, or episodes identified by their Spotify URI.
  * All of the provided URIs must be of the same type.
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
  * @param uriStrings The Spotify URIs.
  * @returns The requested data.
  */

@@ -56,7 +56,6 @@ export class SortProcessor extends NodeProcessor<OrderByData> {
         return Promise.resolve(result);
     }
 
-    // eslint-disable-next-line sonarjs/function-return-type
     private getPropertyValue(
         track: WorkflowTrack,
         property: OrderByData['property'],

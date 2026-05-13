@@ -30,6 +30,8 @@ export type Props = Spicetify.ReactComponent.TextComponentProps & {
     style?: React.CSSProperties;
 };
 
+// TODO: variant and semantic color have no effect?
+
 export function TextComponent(
     props: Readonly<PropsWithChildren<Props>>,
 ): JSX.Element {
@@ -63,6 +65,7 @@ export function TextComponent(
             SpicetifyTextComponent = Spicetify.ReactComponent.TextComponent.p;
             break;
         case 'small':
+            // TODO: Remove this?
             SpicetifyTextComponent =
                 // eslint-disable-next-line @typescript-eslint/no-deprecated
                 Spicetify.ReactComponent.TextComponent.small;
@@ -80,8 +83,8 @@ export function TextComponent(
         <SpicetifyTextComponent
             {...rest}
             style={{
-                ...style,
                 fontSize,
+                ...style,
                 display: props.paddingBottom ? 'block' : style?.display,
             }}
         >

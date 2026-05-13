@@ -39,6 +39,7 @@ export function MultiSelectController<
                     itemToString={props.itemToString}
                     items={props.items}
                     label={props.label}
+                    tooltip={props.tooltip}
                     disabled={props.disabled || disabled}
                     onBlur={props.onBlur}
                     selectAllItem={props.selectAllItem}

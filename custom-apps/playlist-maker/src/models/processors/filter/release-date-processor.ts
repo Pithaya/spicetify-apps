@@ -100,6 +100,10 @@ export class ReleaseDateProcessor extends NodeProcessor<ReleaseDateData> {
 
             const albumData = ReleaseDateProcessor.albumMap.get(albumUri)!;
 
+            if (albumData.albumUnion.__typename === 'NotFound') {
+                continue;
+            }
+
             track.albumData = {
                 releaseDate: new Date(albumData.albumUnion.date.isoString),
             };

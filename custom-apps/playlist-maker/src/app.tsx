@@ -40,10 +40,10 @@ const resultTopBarItem: TopBarItem = {
             data?.resultCount !== undefined && data.resultCount > 0;
 
         return (
-            <div className="flex items-center justify-center gap-2">
+            <div className="tw:flex tw:items-center tw:justify-center tw:gap-2">
                 <TextComponent variant="mestoBold">{item.label}</TextComponent>
                 {showCount && (
-                    <div className="flex items-center rounded-full bg-(--spice-main-elevated) px-2 py-0.5">
+                    <div className="tw:flex tw:items-center tw:rounded-full tw:bg-(--spice-main-elevated) tw:px-2 tw:py-0.5">
                         <TextComponent variant="mestoBold" fontSize="x-small">
                             {data.resultCount}
                         </TextComponent>
@@ -91,7 +91,7 @@ function App(): JSX.Element {
             editorTopBarItem,
             {
                 ...resultTopBarItem,
-                data: { resultCount: result.length } as ResultTopBarItemData,
+                data: { resultCount: result.length },
             },
         ]);
     }, [result]);

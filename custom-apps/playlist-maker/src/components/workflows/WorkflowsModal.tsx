@@ -89,7 +89,7 @@ export function WorkflowsModal(): JSX.Element {
             <input
                 type="text"
                 placeholder="Search"
-                className="mb-4 w-full rounded border border-solid border-(--essential-subdued) px-2 py-1 focus:border-(--essential-base)"
+                className="tw:mb-4 tw:w-full tw:rounded tw:border tw:border-solid tw:border-(--essential-subdued) tw:px-2 tw:py-1 tw:focus:border-(--essential-base)"
                 value={search}
                 onChange={(e) => {
                     onSearchChanged(e.target.value);
@@ -105,9 +105,9 @@ export function WorkflowsModal(): JSX.Element {
                     <>
                         <div
                             key={workflow.id}
-                            className="flex flex-row items-center justify-between"
+                            className="tw:flex tw:flex-row tw:items-center tw:justify-between"
                         >
-                            <div className="flex flex-col gap-1">
+                            <div className="tw:flex tw:flex-col tw:gap-1">
                                 <TextComponent>{workflow.name}</TextComponent>
                                 <TextComponent
                                     fontSize="small"
@@ -140,7 +140,7 @@ export function WorkflowsModal(): JSX.Element {
                                         iconOnly={() => (
                                             <Trash
                                                 size={20}
-                                                className="text-spice-error"
+                                                className="tw:text-spice-error"
                                             />
                                         )}
                                     />
@@ -148,7 +148,7 @@ export function WorkflowsModal(): JSX.Element {
                             </div>
                         </div>
                         {index < savedWorkflows.length - 1 && (
-                            <hr className="my-2 divide-solid opacity-20" />
+                            <hr className="tw:my-2 tw:divide-solid tw:opacity-20" />
                         )}
                     </>
                 );

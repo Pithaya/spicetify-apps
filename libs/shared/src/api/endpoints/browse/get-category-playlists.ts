@@ -20,20 +20,23 @@ const ParamsSchema = z
 
 export type Params = z.infer<typeof ParamsSchema>;
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getPlaylistsForCategory(
     params: Params,
 ): Promise<FeaturedPlaylists> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
     const response = await sender
-        .withPath(`/browse/categories/${params.id}/playlists`)
+        .withPath(`/browse/categories/${parsedParams.id}/playlists`)
         .withEndpointIdentifier('/browse/categories/{id}/playlists')
         .withQueryParameters({
-            category_id: params.id,
-            limit: params.limit?.toString(),
-            offset: params.offset?.toString(),
+            category_id: parsedParams.id,
+            limit: parsedParams.limit?.toString(),
+            offset: parsedParams.offset?.toString(),
         })
         .send<FeaturedPlaylists>();
 

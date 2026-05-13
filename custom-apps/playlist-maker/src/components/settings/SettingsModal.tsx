@@ -7,13 +7,13 @@ import { useDebouncedCallback } from 'use-debounce';
 import {
     clearAll,
     getAllSorted,
-} from '../../db/artist-genres/artist-genres-db';
+} from '../../db/audio-features/audio-features-db';
 
 export function SettingsModal(): JSX.Element {
     const [search, setSearch] = React.useState<string>('');
     const [debouncedSearch, setDebouncedSearch] = React.useState<string>('');
 
-    const artistGenres = useLiveQuery(
+    const cachedFeatures = useLiveQuery(
         async () => await getAllSorted(debouncedSearch),
         [debouncedSearch],
         [],
@@ -31,28 +31,28 @@ export function SettingsModal(): JSX.Element {
     useEffect(() => {
         highlightSearchTerm({
             search: debouncedSearch,
-            selector: '#artist-genres-table tbody',
+            selector: '#audio-features-table tbody',
         });
     }, [debouncedSearch]);
 
     return (
         <>
-            <div className="mb-4 flex flex-row items-center justify-between gap-2">
+            <div className="tw:mb-4 tw:flex tw:flex-row tw:items-center tw:justify-between tw:gap-2">
                 <div>
                     <TextComponent elementType="h1">
-                        Artist genres cache
+                        Audio features cache
                     </TextComponent>
                     <TextComponent
                         elementType="p"
                         fontSize="small"
                         semanticColor="textSubdued"
                     >
-                        Set by the &quot;Liked songs&quot; source node.
+                        Set when audio feature filter nodes run.
                     </TextComponent>
                 </div>
                 <Spicetify.ReactComponent.TooltipWrapper label="Clear cache">
                     <Spicetify.ReactComponent.ButtonSecondary
-                        disabled={artistGenres.length === 0}
+                        disabled={cachedFeatures.length === 0}
                         aria-label="Clear cache"
                         iconOnly={() => <Trash size={14} />}
                         buttonSize="sm"
@@ -64,59 +64,81 @@ export function SettingsModal(): JSX.Element {
             </div>
             <input
                 type="text"
-                placeholder="Search artist"
-                className="mb-4 w-full rounded border border-solid border-(--essential-subdued) px-2 py-1 focus:border-(--essential-base)"
+                placeholder="Search track"
+                className="tw:mb-4 tw:w-full tw:rounded tw:border tw:border-solid tw:border-(--essential-subdued) tw:px-2 tw:py-1 tw:focus:border-(--essential-base)"
                 value={search}
                 onChange={(e) => {
                     onSearchChanged(e.target.value);
                 }}
             />
-            <div className="max-h-80 w-full overflow-scroll">
+            <div className="tw:max-h-80 tw:w-full tw:overflow-auto">
                 <table
-                    id="artist-genres-table"
-                    className="w-full overflow-x-clip border border-solid border-(--essential-subdued)"
+                    id="audio-features-table"
+                    className="tw:w-full tw:overflow-x-clip tw:border tw:border-solid tw:border-(--essential-subdued)"
                 >
                     <thead>
-                        <th className="border border-solid border-(--essential-subdued)">
-                            Artist
+                        <th className="tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            Track
                         </th>
-                        <th className="border border-solid border-(--essential-subdued)">
-                            Genres
+                        <th className="tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            URI
                         </th>
-                        <th className="w-28 border border-solid border-(--essential-subdued)">
-                            Expires
+                        <th className="tw:w-20 tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            Danceability
+                        </th>
+                        <th className="tw:w-20 tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            Energy
+                        </th>
+                        <th className="tw:w-20 tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            Valence
+                        </th>
+                        <th className="tw:w-20 tw:border tw:border-solid tw:border-(--essential-subdued)">
+                            Tempo
                         </th>
                     </thead>
                     <tbody>
-                        {artistGenres.length > 0 ? (
-                            artistGenres.map((artist) => (
+                        {cachedFeatures.length > 0 ? (
+                            cachedFeatures.map((entry) => (
                                 <tr
-                                    key={artist.artistUri}
-                                    className="border-y text-sm"
-                                    data-testid={`artist-${artist.artistUri}`}
+                                    key={entry.uri}
+                                    className="tw:border-y tw:text-sm"
+                                    data-testid={`audio-features-${entry.uri}`}
                                 >
-                                    <td className="p-2 align-middle">
-                                        {artist.artistName}
+                                    <td className="tw:p-2 tw:align-middle">
+                                        {entry.trackName}
                                     </td>
-                                    <td className="border-x p-2 align-middle">
-                                        {artist.genres.join(', ')}
+                                    <td
+                                        className="tw:max-w-40 tw:truncate tw:border-x tw:p-2 tw:align-middle"
+                                        title={entry.uri}
+                                    >
+                                        {entry.uri}
                                     </td>
-                                    <td className="p-2 align-middle">
-                                        {Spicetify.Locale.formatDate(
-                                            artist.expiry,
-                                        )}
+                                    <td className="tw:p-2 tw:text-right tw:align-middle tw:tabular-nums">
+                                        {entry.features.danceability.toFixed(2)}
+                                    </td>
+                                    <td className="tw:border-x tw:p-2 tw:text-right tw:align-middle tw:tabular-nums">
+                                        {entry.features.energy.toFixed(2)}
+                                    </td>
+                                    <td className="tw:p-2 tw:text-right tw:align-middle tw:tabular-nums">
+                                        {entry.features.valence.toFixed(2)}
+                                    </td>
+                                    <td className="tw:border-l tw:p-2 tw:text-right tw:align-middle tw:tabular-nums">
+                                        {entry.features.tempo.toFixed(0)}
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={3} className="py-4 text-center">
+                                <td
+                                    colSpan={6}
+                                    className="tw:py-4 tw:text-center"
+                                >
                                     <TextComponent
                                         elementType="p"
                                         fontSize="small"
                                         semanticColor="textSubdued"
                                     >
-                                        No genres saved.
+                                        No audio features cached.
                                     </TextComponent>
                                 </td>
                             </tr>

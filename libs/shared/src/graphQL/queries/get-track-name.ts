@@ -1,11 +1,14 @@
 import { z } from 'zod';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import type { NotFound } from '../types/shared/not-found';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 export type GetTrackNameData = {
-    trackUnion: {
-        __typename: 'Track';
-        name: string;
-    };
+    trackUnion:
+        | {
+              __typename: 'Track';
+              name: string;
+          }
+        | NotFound;
 };
 
 const ParamsSchema = z
@@ -20,7 +23,7 @@ const ParamsSchema = z
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get the name of a track.
@@ -28,9 +31,7 @@ export type Params = z.infer<typeof ParamsSchema>;
  * @returns The name of the track.
  */
 export async function getTrackName(params: Params): Promise<GetTrackNameData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const { getTrackName } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getTrackName, params);
+    return await sendGraphQLQuery(getDefinition('getTrackName'), parsedParams);
 }

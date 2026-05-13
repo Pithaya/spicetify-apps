@@ -1,5 +1,6 @@
-import { type GraphQLResponse } from '../models/graphql-response';
-import { type QueryDefinition } from '../models/query-definition';
+import { QueryDefinitionsFallback } from '../constants';
+import { type GraphQLResponse } from '../types/shared/graphql-response';
+import { type QueryDefinition } from '../types/shared/query-definition';
 
 function throwWithErrorMessage(
     errors: NonNullable<GraphQLResponse<unknown>['errors']>,
@@ -9,7 +10,7 @@ function throwWithErrorMessage(
 
 export async function sendGraphQLQuery<T>(
     definition: QueryDefinition,
-    variables?: Record<string, string | number | boolean>,
+    variables?: Record<string, string | string[] | number | boolean>,
 ): Promise<T> {
     const { data, errors } = (await Spicetify.GraphQL.Request(
         definition,
@@ -21,4 +22,13 @@ export async function sendGraphQLQuery<T>(
     }
 
     return data;
+}
+
+export function getDefinition(query: Spicetify.GraphQL.Query): QueryDefinition {
+    const queryDefinition =
+        // If modules are not yet loaded, some definitions may be undefined.
+        (Spicetify.GraphQL.Definitions[query] as QueryDefinition | undefined) ??
+        QueryDefinitionsFallback[query];
+
+    return queryDefinition;
 }

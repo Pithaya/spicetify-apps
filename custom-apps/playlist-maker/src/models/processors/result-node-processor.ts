@@ -12,7 +12,7 @@ export abstract class ResultNodeProcessor<
         processors: Record<string, NodeProcessor<BaseNodeData>>,
     ): Promise<WorkflowTrack[]> {
         const inputByHandle = await this.getInputs(processors);
-        return Promise.resolve(inputByHandle['source'] ?? []);
+        return inputByHandle['source'] ?? [];
     }
 
     public async executeResultAction(tracks: WorkflowTrack[]): Promise<void> {
@@ -25,5 +25,5 @@ export abstract class ResultNodeProcessor<
 
     protected abstract executeResultActionInternal(
         tracks: WorkflowTrack[],
-    ): Promise<void> | void;
+    ): Promise<void>;
 }

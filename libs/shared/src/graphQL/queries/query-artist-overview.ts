@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import type { NotFound } from '../types/shared/not-found';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
-type ArtistUnion = {
-    __typename: 'Artist' | 'NotFound';
+export type Artist = {
+    __typename: 'Artist';
     id: string;
-    uri: string;
+    uri: `spotify:artist:${string}`;
     saved: boolean;
     discography: {
         albums: {
@@ -133,7 +134,7 @@ export type TopTrack = {
 type Track = {
     albumOfTrack: AlbumOfTrack;
     artists: {
-        items: Artist[];
+        items: SimpleArtist[];
     };
     associationsV2: {
         totalCount: number;
@@ -159,7 +160,7 @@ type AlbumOfTrack = {
     uri: string;
 };
 
-type Artist = {
+type SimpleArtist = {
     profile: {
         name: string;
     };
@@ -419,7 +420,7 @@ type Video = {
 };
 
 export type QueryArtistOverviewData = {
-    artistUnion: ArtistUnion;
+    artistUnion: Artist | NotFound;
 };
 
 const ParamsSchema = z
@@ -430,12 +431,12 @@ const ParamsSchema = z
             .refine((value) => Spicetify.URI.isArtist(value), {
                 message: 'Invalid artist URI',
             }),
-        locale: z.string().nonempty(),
+        locale: z.string().optional().default(Spicetify.Locale.getLocale()),
     })
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get an artist overview.
@@ -445,9 +446,10 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function queryArtistOverview(
     params: Params,
 ): Promise<QueryArtistOverviewData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(queryArtistOverview, params);
+    return await sendGraphQLQuery(
+        getDefinition('queryArtistOverview'),
+        parsedParams,
+    );
 }

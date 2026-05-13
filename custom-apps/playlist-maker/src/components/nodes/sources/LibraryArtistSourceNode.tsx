@@ -14,12 +14,11 @@ import {
     type ArtistTrackType,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/artist-tracks-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { SelectController } from '../../inputs/SelectController';
+import { ArtistItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -57,38 +56,6 @@ function isContentArtistItem(
     item: GetContentsItem,
 ): item is GetContentsArtistItem {
     return item.type === 'artist';
-}
-
-function ArtistItemRenderer(
-    props: Readonly<ItemRendererProps<ArtistItem>>,
-): JSX.Element {
-    return (
-        <div className="flex max-h-[80px] items-stretch gap-2">
-            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
-                {props.item.image && (
-                    <img
-                        src={props.item.image}
-                        className="rounded-full object-contain"
-                        alt="artist"
-                    />
-                )}
-                {props.item.image === null && (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="flex min-w-0 flex-col items-stretch justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'truncate',
-                        props.isSelected ? 'font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-            </div>
-        </div>
-    );
 }
 
 export function LibraryArtistSourceNode(

@@ -1,60 +1,35 @@
-import { getCategories } from '@shared/api/endpoints/browse/get-categories';
-import type { Category } from '@shared/api/models/category';
-import type { Page } from '@shared/api/models/page';
 import { IconNavLink } from '@shared/components/navbar/IconNavLink';
 import { NavBarLink } from '@shared/components/navbar/NavBarLink';
+import { home } from '@shared/graphQL/queries/home';
 import { waitForElement } from '@shared/utils/dom-utils';
 import { renderElement } from '@shared/utils/react-utils';
-import { waitForSpicetify } from '@shared/utils/spicetify-utils';
-import i18next from 'i18next';
+import { getPlatform, waitForSpicetify } from '@shared/utils/spicetify-utils';
+import { getTranslation } from '@shared/utils/translations.utils';
 import { Crown } from 'lucide-react';
 import React from 'react';
 
 async function main(): Promise<void> {
     await waitForSpicetify();
 
-    // Legacy id, works but navigation link is not shown as active when on page
-    let genreId: string = 'made-for-x-hub';
+    const username = getPlatform().username;
 
-    let result: Page<Category> | null = null;
-    const limit: number = 10;
-    let offset = 0;
+    const { home: homeData } = await home();
 
-    do {
-        result = await getCategories({ limit, offset, locale: 'en_US' });
+    const madeForYouSection = homeData.sectionContainer.sections.items.find(
+        (section) =>
+            section.data.__typename !== 'HomeShortsSectionData' &&
+            section.data.title.transformedLabel.includes(username),
+    );
 
-        const madeForYouCategory = result.items.find(
-            (category) => category.name === 'Made For You',
-        );
+    if (madeForYouSection === undefined) {
+        return;
+    }
 
-        if (madeForYouCategory !== undefined) {
-            genreId = madeForYouCategory.id;
-            break;
-        }
+    const sectionId = madeForYouSection.uri.split(':').pop();
 
-        // Get the next page
-        offset += limit;
-    } while (result.next);
-
-    const locale: typeof Spicetify.Locale = Spicetify.Locale;
-
-    await i18next.init({
-        lng: locale.getLocale(),
-        fallbackLng: 'en',
-        debug: false,
-        resources: {
-            en: {
-                translation: {
-                    forYou: 'Made for you',
-                },
-            },
-            fr: {
-                translation: {
-                    forYou: 'Fait pour vous',
-                },
-            },
-        },
-    });
+    if (sectionId === undefined || sectionId === '') {
+        return;
+    }
 
     // Prevent global changes to the stroke-width distorting the icon
     const styles = `
@@ -92,8 +67,10 @@ async function main(): Promise<void> {
                         className="made-for-you-icon home-active-icon"
                     />
                 }
-                label={i18next.t('forYou')}
-                href={`/genre/${genreId}`}
+                label={getTranslation([
+                    'keyboard.shortcuts.description.madeForYour',
+                ])}
+                href={`/section/${sectionId}`}
             />,
             element,
         );
@@ -114,8 +91,10 @@ async function main(): Promise<void> {
                     />
                 }
                 className="made-for-you-button"
-                label={i18next.t('forYou')}
-                href={`/genre/${genreId}`}
+                label={getTranslation([
+                    'keyboard.shortcuts.description.madeForYour',
+                ])}
+                href={`/section/${sectionId}`}
             />,
             element,
         );

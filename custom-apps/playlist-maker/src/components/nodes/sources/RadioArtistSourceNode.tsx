@@ -1,6 +1,8 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { queryArtistOverview } from '@shared/graphQL/queries/query-artist-overview';
-import { searchDesktop } from '@shared/graphQL/queries/search-desktop';
+import {
+    type ArtistItem,
+    useArtistComboboxFetchers,
+} from 'custom-apps/playlist-maker/src/hooks/use-artist-combobox-fetchers';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
@@ -8,13 +10,12 @@ import {
     RadioDataSchema,
 } from 'custom-apps/playlist-maker/src/models/processors/sources/radio-source-processor';
 import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
-import { Music } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
 import { Handle, type NodeProps, Position } from 'reactflow';
-import { type ItemRendererProps } from '../../inputs/ComboBox';
 import { ComboBoxController } from '../../inputs/ComboBoxController';
 import { NumberController } from '../../inputs/NumberController';
 import { SelectController } from '../../inputs/SelectController';
+import { ArtistItemRenderer } from '../shared/ItemRenderers';
 import { Node } from '../shared/Node';
 import { NodeComboField } from '../shared/NodeComboField';
 import { NodeContent } from '../shared/NodeContent';
@@ -39,45 +40,6 @@ const orderItems: Item<RadioData['sortOrder']>[] = [
     { value: 'DESC', label: 'Descending' },
 ];
 
-type ArtistItem = {
-    id: string;
-    uri: string;
-    name: string;
-    image: string | null;
-};
-
-function ArtistItemRenderer(
-    props: Readonly<ItemRendererProps<ArtistItem>>,
-): JSX.Element {
-    return (
-        <div className="flex max-h-[80px] items-stretch gap-2">
-            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center !p-2">
-                {props.item.image && (
-                    <img
-                        src={props.item.image}
-                        className="rounded-full object-contain"
-                        alt="artist"
-                    />
-                )}
-                {props.item.image === null && (
-                    <Music size={60} strokeWidth={1} />
-                )}
-            </div>
-
-            <div className="flex min-w-0 flex-col items-stretch justify-center">
-                <span
-                    className={Spicetify.classnames(
-                        'truncate',
-                        props.isSelected ? 'font-bold' : '',
-                    )}
-                >
-                    {props.item.name}
-                </span>
-            </div>
-        </div>
-    );
-}
-
 export function RadioArtistSourceNode(
     props: Readonly<NodeProps<RadioData>>,
 ): JSX.Element {
@@ -89,80 +51,12 @@ export function RadioArtistSourceNode(
         RadioDataSchema,
     );
 
-    const getArtists = useCallback(
-        async (input: string): Promise<ArtistItem[]> => {
-            if (!input.trim()) {
-                return [];
-            }
+    const onArtistNotFound = useCallback(() => {
+        updateNodeField({ uri: '' });
+    }, [updateNodeField]);
 
-            const search = await searchDesktop({
-                searchTerm: input,
-                offset: 0,
-                limit: 10,
-                includePreReleases: true,
-                includeArtistHasConcertsField: false,
-                includeAudiobooks: false,
-                includeLocalConcertsField: false,
-                numberOfTopResults: 5,
-            });
-
-            const items: ArtistItem[] = search.searchV2.artists.items.map(
-                (artist) => ({
-                    id: artist.data.uri,
-                    uri: artist.data.uri,
-                    name: artist.data.profile.name,
-                    image:
-                        artist.data.visuals.avatarImage?.sources &&
-                        artist.data.visuals.avatarImage.sources.length > 0
-                            ? artist.data.visuals.avatarImage.sources[0].url
-                            : null,
-                }),
-            );
-
-            return items;
-        },
-        [],
-    );
-
-    const getArtist = useCallback(
-        async (artistUri: string): Promise<ArtistItem | null> => {
-            try {
-                const artist = await queryArtistOverview({
-                    uri: artistUri,
-                    locale: Spicetify.Locale.getLocale(),
-                });
-
-                if (artist.artistUnion.__typename === 'NotFound') {
-                    throw new Error('Artist not found');
-                }
-
-                const artistItem: ArtistItem = {
-                    id: artist.artistUnion.uri,
-                    name: artist.artistUnion.profile.name,
-                    uri: artist.artistUnion.uri,
-                    image:
-                        artist.artistUnion.visuals.avatarImage.sources.length >
-                        0
-                            ? artist.artistUnion.visuals.avatarImage.sources[0]
-                                  .url
-                            : null,
-                };
-
-                return artistItem;
-            } catch (e) {
-                console.error('Failed to fetch artist', e);
-                updateNodeField({ uri: '' });
-
-                return null;
-            }
-        },
-        [updateNodeField],
-    );
-
-    const itemToString = useCallback(
-        (item: ArtistItem): string => item.name,
-        [],
-    );
+    const { getArtist, getArtists, itemToString } =
+        useArtistComboboxFetchers(onArtistNotFound);
 
     const {
         inputValue,

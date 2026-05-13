@@ -1,6 +1,5 @@
 import { SpotifyIcon } from '@shared/components/ui/SpotifyIcon/SpotifyIcon';
 import React from 'react';
-import styles from '../../../css/app.module.scss';
 
 export type Props = {
     label: string;
@@ -13,7 +12,7 @@ export function MoreButton(props: Readonly<Props>): JSX.Element {
             label={props.label}
             showDelay={100}
         >
-            <div className={styles['flex-centered']}>
+            <div className="tw:flex tw:items-center">
                 <Spicetify.ReactComponent.ContextMenu
                     trigger="click"
                     action="toggle"

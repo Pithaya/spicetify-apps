@@ -50,7 +50,9 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
     return (
         <div ref={ref}>
             {visible ? (
-                <Spicetify.ReactComponent.RightClickMenu
+                <Spicetify.ReactComponent.ContextMenu
+                    trigger="right-click"
+                    action="toggle"
                     menu={
                         <MultiTrackMenu
                             tracks={window.localTracksService.getArtistTracks(
@@ -103,7 +105,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                             </div>
                             <div className="main-card-cardMetadata">
                                 <TextComponent
-                                    className={`main-cardHeader-link main-cardHeader-text ${styles['text-full-centered']}`}
+                                    className="main-cardHeader-link main-cardHeader-text tw:text-center tw:w-full tw:line-clamp-2"
                                     variant="balladBold"
                                     semanticColor="textBase"
                                     paddingBottom="4px"
@@ -113,7 +115,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                             </div>
                         </div>
                     </div>
-                </Spicetify.ReactComponent.RightClickMenu>
+                </Spicetify.ReactComponent.ContextMenu>
             ) : (
                 placeholder
             )}

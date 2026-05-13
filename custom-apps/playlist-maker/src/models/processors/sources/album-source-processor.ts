@@ -50,17 +50,23 @@ export class AlbumSourceProcessor extends NodeProcessor<AlbumData> {
             locale: Spicetify.Locale.getLocale(),
         });
 
-        let tracks = album.albumUnion.tracksV2.items.map((item) => item.track);
+        if (album.albumUnion.__typename === 'NotFound') {
+            return [];
+        }
+
+        const albumData = album.albumUnion;
+
+        let tracks = albumData.tracksV2.items.map((item) => item.track);
 
         if (onlyLiked) {
             tracks = tracks.filter((track) => track.saved);
         }
 
         const mappedTracks: WorkflowTrack[] = tracks.map((track) =>
-            mapGraphQLTrackToWorkflowTrack(track, album.albumUnion, {
+            mapGraphQLTrackToWorkflowTrack(track, albumData, {
                 source: 'Album',
                 albumData: {
-                    releaseDate: new Date(album.albumUnion.date.isoString),
+                    releaseDate: new Date(albumData.date.isoString),
                 },
             }),
         );

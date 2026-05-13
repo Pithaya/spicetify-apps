@@ -27,8 +27,11 @@ export type Artists = {
     artists: Artist[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getArtists(params: Params): Promise<Artist[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -36,7 +39,7 @@ export async function getArtists(params: Params): Promise<Artist[]> {
         .withPath(`/artists`)
         .withEndpointIdentifier('/artists')
         .withQueryParameters({
-            ids: params.uris
+            ids: parsedParams.uris
                 .map((uri) => getId(Spicetify.URI.fromString(uri)))
                 .join(','),
         })

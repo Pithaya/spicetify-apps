@@ -5,11 +5,13 @@ import { ResultNodeProcessor } from '../result-node-processor';
 export class AddToResultProcessor extends ResultNodeProcessor<BaseNodeData> {
     protected override executeResultActionInternal(
         tracks: WorkflowTrack[],
-    ): void {
+    ): Promise<void> {
         Spicetify.showNotification(
             `${tracks.length.toFixed()} tracks added to the result tab`,
             false,
             4000,
         );
+
+        return Promise.resolve();
     }
 }

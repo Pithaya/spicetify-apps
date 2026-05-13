@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
+/* eslint-disable sonarjs/deprecation */
 import {
     getCurrentUserTopTracks,
     MAX_TOP_TRACKS_LIMIT,
@@ -30,6 +32,7 @@ export const DEFAULT_TOP_TRACKS_DATA: TopTracksData = {
 
 /**
  * Source node that returns the user's top tracks.
+ * @deprecated The Spotify Web API can no longer be used with the app's session token, so this processor will not work.
  */
 export class TopTracksSourceProcessor extends NodeProcessor<TopTracksData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {

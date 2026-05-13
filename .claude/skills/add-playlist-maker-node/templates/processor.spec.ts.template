@@ -1,0 +1,39 @@
+import { describe, expect, it } from 'vitest';
+{{EXTRA_IMPORTS}}import {
+    createTrack,
+    runProcessor,
+} from '../test-helpers';
+import {
+    DEFAULT_{{UPPER_SNAKE}}_DATA,
+    {{PASCAL}}DataSchema,
+    {{PASCAL}}Processor,
+} from './{{KEBAB}}-processor';
+
+describe('{{PASCAL}}DataSchema', () => {
+    it('accepts the default data', () => {
+        expect(
+            {{PASCAL}}DataSchema.safeParse(DEFAULT_{{UPPER_SNAKE}}_DATA).success,
+        ).toBe(true);
+    });
+
+    // TODO: add at least one rejection case targeting the field(s) you added.
+});
+
+describe('{{PASCAL}}Processor', () => {
+    it('keeps the tracks it should keep', async () => {
+        const processor = new {{PASCAL}}Processor(
+            'node',
+            { {{HANDLE_KEYS}} },
+            DEFAULT_{{UPPER_SNAKE}}_DATA,
+        );
+
+{{ARRANGE}}
+
+        const result = await runProcessor(processor, {
+{{INPUT_BLOCK}}
+        });
+
+        // TODO: assert the expected output for your logic.
+        expect(Array.isArray(result)).toBe(true);
+    });
+});

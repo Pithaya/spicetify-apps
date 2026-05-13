@@ -37,7 +37,7 @@ export function TrackListRowImageTitle(props: Readonly<Props>): JSX.Element {
                 <img
                     loading="eager"
                     src={imageUrl}
-                    className="main-image-image main-trackList-rowImage main-image-loaded rounded"
+                    className="main-image-image main-trackList-rowImage main-image-loaded tw:rounded"
                     width="40"
                     height="40"
                     onError={(e) =>

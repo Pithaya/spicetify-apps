@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { GRAPHQL_MAX_LIMIT } from '../constants';
-import { sendGraphQLQuery } from '../utils/graphql-utils';
+import type { NotFound } from '../types/shared/not-found';
+import { getDefinition, sendGraphQLQuery } from '../utils/graphql-utils';
 
 type Track = {
     uri: string;
@@ -15,14 +16,14 @@ type TracksV2 = {
     items: TrackItem[];
 };
 
-type AlbumUnion = {
+type Album = {
     __typename: 'Album';
     name: string;
     tracksV2: TracksV2;
 };
 
 export type GetAlbumNameAndTracksData = {
-    albumUnion: AlbumUnion;
+    albumUnion: Album | NotFound;
 };
 
 const ParamsSchema = z
@@ -39,7 +40,7 @@ const ParamsSchema = z
     .strict()
     .readonly();
 
-export type Params = z.infer<typeof ParamsSchema>;
+export type Params = z.input<typeof ParamsSchema>;
 
 /**
  * Get the name and tracks of an album.
@@ -49,9 +50,10 @@ export type Params = z.infer<typeof ParamsSchema>;
 export async function getAlbumNameAndTracks(
     params: Params,
 ): Promise<GetAlbumNameAndTracksData> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    const { getAlbumNameAndTracks } = Spicetify.GraphQL.Definitions;
-
-    return await sendGraphQLQuery(getAlbumNameAndTracks, params);
+    return await sendGraphQLQuery(
+        getDefinition('getAlbumNameAndTracks'),
+        parsedParams,
+    );
 }

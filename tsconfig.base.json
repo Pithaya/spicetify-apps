@@ -9,9 +9,9 @@
         "strict": true,
         "skipLibCheck": true,
         "lib": ["ESNext", "DOM"],
-        "baseUrl": ".",
         "paths": {
-            "@shared/*": ["libs/shared/src/*"]
+            "@shared/*": ["./libs/shared/src/*"],
+            "custom-apps/*": ["./custom-apps/*"]
         }
     }
 }

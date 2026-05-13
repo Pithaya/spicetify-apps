@@ -1,0 +1,30 @@
+import { z } from 'zod';
+import { type WorkflowTrack } from '../../../types/workflow-track';
+import { BaseNodeDataSchema } from '../base-node-processor';
+import { NodeProcessor } from '../node-processor';
+
+{{EXTRA_CONSTS}}
+export const {{PASCAL}}DataSchema = z
+    .object({
+{{SCHEMA_FIELDS}}
+    })
+    .merge(BaseNodeDataSchema)
+    .strict();
+
+export type {{PASCAL}}Data = z.infer<typeof {{PASCAL}}DataSchema>;
+
+export const DEFAULT_{{UPPER_SNAKE}}_DATA: {{PASCAL}}Data = {
+{{DEFAULT_FIELDS}}
+    isExecuting: undefined,
+};
+
+export class {{PASCAL}}Processor extends NodeProcessor<{{PASCAL}}Data> {
+    protected override async getResultsInternal(
+        inputByHandle: Record<string, WorkflowTrack[]>,
+    ): Promise<WorkflowTrack[]> {
+{{INPUT_BINDINGS}}
+
+        // TODO: review this logic
+{{BODY}}
+    }
+}

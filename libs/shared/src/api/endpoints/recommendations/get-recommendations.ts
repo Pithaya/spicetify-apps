@@ -105,12 +105,19 @@ export type RecommendationsResponse = {
     tracks: Track[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getRecommendations(
     params: Params,
 ): Promise<RecommendationsResponse> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
-    if (!params.seedArtists && !params.seedGenres && !params.seedTracks) {
+    if (
+        !parsedParams.seedArtists &&
+        !parsedParams.seedGenres &&
+        !parsedParams.seedTracks
+    ) {
         throw new Error(
             'At least one of seed_artists, seed_genres or seed_tracks is required',
         );
@@ -122,52 +129,53 @@ export async function getRecommendations(
         .withPath(`/recommendations`)
         .withEndpointIdentifier('/recommendations')
         .withQueryParameters({
-            limit: params.limit?.toString(),
-            seed_artists: params.seedArtists?.join(','),
-            seed_genres: params.seedGenres?.join(','),
-            seed_tracks: params.seedTracks?.join(','),
-            min_acousticness: params.minAcousticness?.toString(),
-            max_acousticness: params.maxAcousticness?.toString(),
-            target_acousticness: params.targetAcousticness?.toString(),
-            min_danceability: params.minDanceability?.toString(),
-            max_danceability: params.maxDanceability?.toString(),
-            target_danceability: params.targetDanceability?.toString(),
-            min_duration_ms: params.minDurationMs?.toString(),
-            max_duration_ms: params.maxDurationMs?.toString(),
-            target_duration_ms: params.targetDurationMs?.toString(),
-            min_energy: params.minEnergy?.toString(),
-            max_energy: params.maxEnergy?.toString(),
-            target_energy: params.targetEnergy?.toString(),
-            min_instrumentalness: params.minInstrumentalness?.toString(),
-            max_instrumentalness: params.maxInstrumentalness?.toString(),
-            target_instrumentalness: params.targetInstrumentalness?.toString(),
-            min_key: params.minKey?.toString(),
-            max_key: params.maxKey?.toString(),
-            target_key: params.targetKey?.toString(),
-            min_liveness: params.minLiveness?.toString(),
-            max_liveness: params.maxLiveness?.toString(),
-            target_liveness: params.targetLiveness?.toString(),
-            min_loudness: params.minLoudness?.toString(),
-            max_loudness: params.maxLoudness?.toString(),
-            target_loudness: params.targetLoudness?.toString(),
-            min_mode: params.minMode?.toString(),
-            max_mode: params.maxMode?.toString(),
-            target_mode: params.targetMode?.toString(),
-            min_popularity: params.minPopularity?.toString(),
-            max_popularity: params.maxPopularity?.toString(),
-            target_popularity: params.targetPopularity?.toString(),
-            min_speechiness: params.minSpeechiness?.toString(),
-            max_speechiness: params.maxSpeechiness?.toString(),
-            target_speechiness: params.targetSpeechiness?.toString(),
-            min_tempo: params.minTempo?.toString(),
-            max_tempo: params.maxTempo?.toString(),
-            target_tempo: params.targetTempo?.toString(),
-            min_time_signature: params.minTimeSignature?.toString(),
-            max_time_signature: params.maxTimeSignature?.toString(),
-            target_time_signature: params.targetTimeSignature?.toString(),
-            min_valence: params.minValence?.toString(),
-            max_valence: params.maxValence?.toString(),
-            target_valence: params.targetValence?.toString(),
+            limit: parsedParams.limit?.toString(),
+            seed_artists: parsedParams.seedArtists?.join(','),
+            seed_genres: parsedParams.seedGenres?.join(','),
+            seed_tracks: parsedParams.seedTracks?.join(','),
+            min_acousticness: parsedParams.minAcousticness?.toString(),
+            max_acousticness: parsedParams.maxAcousticness?.toString(),
+            target_acousticness: parsedParams.targetAcousticness?.toString(),
+            min_danceability: parsedParams.minDanceability?.toString(),
+            max_danceability: parsedParams.maxDanceability?.toString(),
+            target_danceability: parsedParams.targetDanceability?.toString(),
+            min_duration_ms: parsedParams.minDurationMs?.toString(),
+            max_duration_ms: parsedParams.maxDurationMs?.toString(),
+            target_duration_ms: parsedParams.targetDurationMs?.toString(),
+            min_energy: parsedParams.minEnergy?.toString(),
+            max_energy: parsedParams.maxEnergy?.toString(),
+            target_energy: parsedParams.targetEnergy?.toString(),
+            min_instrumentalness: parsedParams.minInstrumentalness?.toString(),
+            max_instrumentalness: parsedParams.maxInstrumentalness?.toString(),
+            target_instrumentalness:
+                parsedParams.targetInstrumentalness?.toString(),
+            min_key: parsedParams.minKey?.toString(),
+            max_key: parsedParams.maxKey?.toString(),
+            target_key: parsedParams.targetKey?.toString(),
+            min_liveness: parsedParams.minLiveness?.toString(),
+            max_liveness: parsedParams.maxLiveness?.toString(),
+            target_liveness: parsedParams.targetLiveness?.toString(),
+            min_loudness: parsedParams.minLoudness?.toString(),
+            max_loudness: parsedParams.maxLoudness?.toString(),
+            target_loudness: parsedParams.targetLoudness?.toString(),
+            min_mode: parsedParams.minMode?.toString(),
+            max_mode: parsedParams.maxMode?.toString(),
+            target_mode: parsedParams.targetMode?.toString(),
+            min_popularity: parsedParams.minPopularity?.toString(),
+            max_popularity: parsedParams.maxPopularity?.toString(),
+            target_popularity: parsedParams.targetPopularity?.toString(),
+            min_speechiness: parsedParams.minSpeechiness?.toString(),
+            max_speechiness: parsedParams.maxSpeechiness?.toString(),
+            target_speechiness: parsedParams.targetSpeechiness?.toString(),
+            min_tempo: parsedParams.minTempo?.toString(),
+            max_tempo: parsedParams.maxTempo?.toString(),
+            target_tempo: parsedParams.targetTempo?.toString(),
+            min_time_signature: parsedParams.minTimeSignature?.toString(),
+            max_time_signature: parsedParams.maxTimeSignature?.toString(),
+            target_time_signature: parsedParams.targetTimeSignature?.toString(),
+            min_valence: parsedParams.minValence?.toString(),
+            max_valence: parsedParams.maxValence?.toString(),
+            target_valence: parsedParams.targetValence?.toString(),
         })
         .send<RecommendationsResponse>();
 

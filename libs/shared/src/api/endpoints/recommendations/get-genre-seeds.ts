@@ -4,6 +4,9 @@ export type Genres = {
     genres: string[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getGenreSeeds(): Promise<string[]> {
     const sender = getWebApiRequestSender();
 

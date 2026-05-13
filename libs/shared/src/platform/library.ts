@@ -1,5 +1,24 @@
 import type { Image } from './shared';
 
+export type GetTracksParams = {
+    offset?: number;
+    limit?: number;
+    /**
+     * Can be either a search string or a tag filter, for example "tags contains rock".
+     */
+    filters?: string[];
+    uri?: string;
+    sort?: LibraryAPITrackSortOption;
+};
+
+export type GetTracksResponse = {
+    items: LibraryAPITrack[];
+    limit: number;
+    offset: number;
+    totalLength: number;
+    unfilteredTotalLength: number;
+};
+
 export type LibraryAPI = {
     add: (param: { uris: string[]; silent?: boolean }) => Promise<void>;
     remove: (param: { uris: string[]; silent?: boolean }) => Promise<void>;
@@ -15,19 +34,7 @@ export type LibraryAPI = {
 
     getEvents: () => LibraryAPIEventManager;
 
-    getTracks: (params?: {
-        offset?: number;
-        limit?: number;
-        filters?: string[];
-        uri?: string;
-        sort?: LibraryAPITrackSortOption;
-    }) => Promise<{
-        items: LibraryAPITrack[];
-        limit: number;
-        offset: number;
-        totalLength: number;
-        unfilteredTotalLength: number;
-    }>;
+    getTracks: (params?: GetTracksParams) => Promise<GetTracksResponse>;
 
     getContents: (params?: {
         expandedFolders?: unknown[];
@@ -43,6 +50,8 @@ export type LibraryAPI = {
         includePreReleases?: boolean;
         includeYourEpisodes?: boolean;
     }) => Promise<GetContentsResponse>;
+
+    getTracksFilterTags: () => Promise<LibraryFilterTag[]>;
 };
 
 export type LibraryAPIEventType = 'operation_complete';
@@ -301,4 +310,17 @@ export type GetContentsResponse = {
     tagPlaylist: unknown;
     totalLength: number;
     unfilteredLength: number;
+};
+
+export type LibraryFilterTag = {
+    /**
+     * Localized name of the filter.
+     * @example "Rock", "Pop", "Upbeat".
+     */
+    name: string;
+    /**
+     * Filter for this tag, in the format "tags contains {tag_name}".
+     * @example "tags contains jazz".
+     */
+    filter: string;
 };

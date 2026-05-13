@@ -1,0 +1,35 @@
+import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
+import {
+    {{PASCAL}}DataSchema,
+    type {{PASCAL}}Data,
+} from 'custom-apps/playlist-maker/src/models/processors/processing/{{KEBAB}}-processor';
+import { getDefaultValueForNodeType } from 'custom-apps/playlist-maker/src/utils/node-utils';
+import React from 'react';
+import { Handle, Position, type NodeProps } from 'reactflow';
+{{CONTROLLER_IMPORT}}
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { ProcessingNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
+
+export function {{PASCAL}}Node(
+    props: Readonly<NodeProps<{{PASCAL}}Data>>,
+): JSX.Element {
+    const { control, updateNodeField, errors } = useNodeForm<{{PASCAL}}Data>(
+        props.id,
+        props.data,
+        getDefaultValueForNodeType('{{CAMEL}}'),
+        {{PASCAL}}DataSchema,
+    );
+
+    return (
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <ProcessingNodeHeader />
+            <NodeContent>
+                <NodeTitle title="{{TITLE}}" tooltip="{{TOOLTIP}}" />
+{{CONTROLLER_JSX}}
+            </NodeContent>
+{{HANDLES}}
+        </Node>
+    );
+}

@@ -27,8 +27,11 @@ export type Tracks = {
     tracks: Track[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getTracks(params: Params): Promise<Track[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -36,7 +39,7 @@ export async function getTracks(params: Params): Promise<Track[]> {
         .withPath(`/tracks`)
         .withEndpointIdentifier('/tracks')
         .withQueryParameters({
-            ids: params.uris
+            ids: parsedParams.uris
                 .map((uri) => getId(Spicetify.URI.fromString(uri)))
                 .join(','),
         })

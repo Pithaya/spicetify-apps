@@ -106,6 +106,7 @@ import {
 } from '../processors/sources/recommended-playlist-tracks-source-processor';
 import {
     type TopTracksData,
+    // eslint-disable-next-line sonarjs/deprecation
     TopTracksSourceProcessor,
 } from '../processors/sources/top-tracks-source-processor';
 
@@ -125,6 +126,8 @@ export const nodeProcessorFactory: Record<
     searchPlaylistSource: (node: Node<PlaylistData>, _incomers) =>
         new PlaylistSourceProcessor(node.id, { source: [] }, node.data),
     topTracksSource: (node: Node<TopTracksData>, _incomers) =>
+        // Keep the node for backward compatibility
+        // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
         new TopTracksSourceProcessor(node.id, { source: [] }, node.data),
     libraryAlbumSource: (node: Node<AlbumData>, _incomers) =>
         new AlbumSourceProcessor(node.id, { source: [] }, node.data),

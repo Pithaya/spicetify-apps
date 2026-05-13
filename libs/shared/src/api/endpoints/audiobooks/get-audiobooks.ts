@@ -21,10 +21,13 @@ export type Audiobooks = {
     audiobooks: (Audiobook | null)[];
 };
 
+/**
+ * @deprecated The Spotify Web API can no longer be used with the app's session token.
+ */
 export async function getAudiobooks(
     params: Params,
 ): Promise<(Audiobook | null)[]> {
-    ParamsSchema.parse(params);
+    const parsedParams = ParamsSchema.parse(params);
 
     const sender = getWebApiRequestSender();
 
@@ -32,7 +35,7 @@ export async function getAudiobooks(
         .withPath(`/audiobooks`)
         .withEndpointIdentifier('/audiobooks')
         .withQueryParameters({
-            ids: params.uris
+            ids: parsedParams.uris
                 .map((uri) => getId(Spicetify.URI.fromString(uri)))
                 .join(','),
         })

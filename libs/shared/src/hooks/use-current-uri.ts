@@ -8,10 +8,10 @@ export function useCurrentPlayerTrackUri(): string | undefined {
     useEffect(() => {
         function handleSongChange(
             event?: Event & {
-                data: Spicetify.PlayerState;
+                data?: Spicetify.PlayerState;
             },
         ): void {
-            setPlayingTrackUri(event?.data.item.uri ?? '');
+            setPlayingTrackUri(event?.data?.item.uri ?? '');
         }
 
         Spicetify.Player.addEventListener('songchange', handleSongChange);

@@ -1,16 +1,20 @@
 import { PLATFORM_API_MAX_LIMIT } from '@shared/platform/constants';
 import {
-    type LibraryAPITrack,
     LibraryAPITrackSortOptionFields,
     LibraryAPITrackSortOptionOrders,
+    type GetTracksParams,
+    type LibraryAPI,
+    type LibraryAPITrack,
 } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { getGenresByArtists } from 'custom-apps/playlist-maker/src/db/artist-genres/artist-genres-db';
 import { mapInternalTrackToWorkflowTrack } from 'custom-apps/playlist-maker/src/utils/mapping-utils';
 import { z } from 'zod';
 import { type WorkflowTrack } from '../../../types/workflow-track';
 import { BaseNodeDataSchema } from '../base-node-processor';
 import { NodeProcessor } from '../node-processor';
+
+export const GenresMatchModes = ['AND', 'OR'] as const;
+export type GenresMatchMode = (typeof GenresMatchModes)[number];
 
 export const LikedSongsDataSchema = z
     .object({
@@ -25,6 +29,7 @@ export const LikedSongsDataSchema = z
         sortField: z.enum(LibraryAPITrackSortOptionFields),
         sortOrder: z.enum(LibraryAPITrackSortOptionOrders),
         genres: z.array(z.string()),
+        genresMatchMode: z.enum(GenresMatchModes),
     })
     .merge(BaseNodeDataSchema)
     .strict();
@@ -38,8 +43,11 @@ export const DEFAULT_LIKED_SONGS_DATA: LikedSongsData = {
     sortField: 'ADDED_AT',
     sortOrder: 'DESC',
     genres: [],
+    genresMatchMode: 'OR',
     isExecuting: undefined,
 };
+
+const TAG_FILTER_PREFIX = 'tags contains ';
 
 /**
  * Source node that returns liked songs.
@@ -48,68 +56,97 @@ export class LikedSongsSourceProcessor extends NodeProcessor<LikedSongsData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
         const libraryApi = getPlatform().LibraryAPI;
 
-        const { offset, filter, sortField, sortOrder, genres } = this.data;
+        const {
+            offset,
+            filter,
+            sortField,
+            sortOrder,
+            genres,
+            genresMatchMode,
+        } = this.data;
+
         let limit = this.data.limit;
 
-        if (limit === undefined || genres.length > 0) {
-            // If no limit, make a first call to get the total number of liked songs.
-            // Also get all when we have genres as we will apply the limit after filtering.
-            limit = (await libraryApi.getTracks()).unfilteredTotalLength;
-        }
+        // If no limit, make a first call to get the total number of liked songs.
+        limit ??= (await libraryApi.getTracks()).unfilteredTotalLength;
 
-        const apiResult = await libraryApi.getTracks({
+        const sort = {
+            field: sortField,
+            order: sortOrder,
+        };
+
+        const baseFilters = filter ? [filter] : [];
+
+        const params: GetTracksParams = {
             limit,
             offset,
-            filters: filter ? [filter] : undefined,
-            sort: {
-                field: sortField,
-                order: sortOrder,
-            },
-        });
+            filters: baseFilters,
+            sort,
+        };
 
-        let tracks = apiResult.items;
-
-        if (genres.length > 0) {
-            tracks = await this.filterTracksByGenres(
-                tracks,
-                new Set(genres),
-                this.data.limit,
-            );
-        }
+        const tracks =
+            genresMatchMode === 'OR' && genres.length > 1
+                ? await this.getTracksWithAnyGenre(libraryApi, params, genres)
+                : await this.getTracksWithAllGenres(libraryApi, params, genres);
 
         return tracks.map((track) =>
             mapInternalTrackToWorkflowTrack(track, { source: 'Liked songs' }),
         );
     }
 
-    private async filterTracksByGenres(
-        tracks: LibraryAPITrack[],
-        genres: Set<string>,
-        limit: number | undefined,
+    private async getTracksWithAnyGenre(
+        libraryApi: LibraryAPI,
+        params: GetTracksParams,
+        genres: string[],
     ): Promise<LibraryAPITrack[]> {
-        const result = [];
-
-        // Don't keep local tracks as we can't get genres from them
-        const libraryTracks = tracks.filter(
-            (track) => !Spicetify.URI.isLocalTrack(track.uri),
+        const perGenreResults = await Promise.all(
+            genres.map((genre) =>
+                libraryApi.getTracks({
+                    limit: params.limit,
+                    offset: params.offset,
+                    filters: [
+                        ...(params.filters ?? []),
+                        `${TAG_FILTER_PREFIX}${genre}`,
+                    ],
+                    sort: params.sort,
+                }),
+            ),
         );
 
-        const artistGenres = await getGenresByArtists(
-            libraryTracks
-                .flatMap((track) => track.artists)
-                .map((artist) => artist.uri),
-        );
+        const seen = new Set<string>();
+        const merged: LibraryAPITrack[] = [];
 
-        for (const track of libraryTracks) {
-            const trackGenres = track.artists.flatMap(
-                (artist) => artistGenres.get(artist.uri) ?? [],
-            );
+        for (const result of perGenreResults) {
+            for (const track of result.items) {
+                if (seen.has(track.uri)) {
+                    continue;
+                }
 
-            if (trackGenres.some((trackGenre) => genres.has(trackGenre))) {
-                result.push(track);
+                seen.add(track.uri);
+                merged.push(track);
             }
         }
 
-        return limit !== undefined ? result.slice(0, limit) : result;
+        return merged;
+    }
+
+    private async getTracksWithAllGenres(
+        libraryApi: LibraryAPI,
+        params: GetTracksParams,
+        genres: string[],
+    ): Promise<LibraryAPITrack[]> {
+        const filters = [
+            ...(params.filters ?? []),
+            ...genres.map((genre) => `${TAG_FILTER_PREFIX}${genre}`),
+        ];
+
+        const apiResult = await libraryApi.getTracks({
+            limit: params.limit,
+            offset: params.offset,
+            filters: filters.length > 0 ? filters : undefined,
+            sort: params.sort,
+        });
+
+        return apiResult.items;
     }
 }

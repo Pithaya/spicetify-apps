@@ -74,20 +74,3 @@
     gap: 8px;
     justify-content: flex-end;
 }
-
-.flex-centered {
-    display: flex;
-    align-items: center;
-}
-
-.limit-lines-2 {
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    overflow: hidden;
-}
-
-.text-full-centered {
-    text-align: center;
-    width: 100%;
-}

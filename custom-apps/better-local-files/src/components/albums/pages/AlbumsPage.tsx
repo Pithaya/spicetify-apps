@@ -15,6 +15,28 @@ import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import { AlbumCard } from '../cards/AlbumCard';
 
+function filterAlbums(albums: Album[], search: string): Album[] {
+    if (search === '') {
+        return albums;
+    }
+
+    return albums.filter(
+        (a) =>
+            a.name.toLowerCase().includes(search.toLowerCase()) ||
+            a.artists.some((a) =>
+                a.name.toLowerCase().includes(search.toLowerCase()),
+            ),
+    );
+}
+
+function toggleOrder(order: SortOrder): SortOrder {
+    return order === 'ascending' ? 'descending' : 'ascending';
+}
+
+function playAlbum(album: Album): void {
+    void playContext(album.getTracks().map((t) => t.localTrack));
+}
+
 export function AlbumsPage(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -29,20 +51,6 @@ export function AlbumsPage(): JSX.Element {
     const albums = Array.from(window.localTracksService.getAlbums()).map(
         ([_, value]) => value,
     );
-
-    function filterAlbums(albums: Album[], search: string): Album[] {
-        if (search === '') {
-            return albums;
-        }
-
-        return albums.filter(
-            (a) =>
-                a.name.toLowerCase().includes(search.toLowerCase()) ||
-                a.artists.some((a) =>
-                    a.name.toLowerCase().includes(search.toLowerCase()),
-                ),
-        );
-    }
 
     const filteredAlbums = useMemo(
         () => filterAlbums(albums, debouncedSearch),
@@ -68,10 +76,6 @@ export function AlbumsPage(): JSX.Element {
         [filteredAlbums, selectedSortOption],
     );
 
-    function toggleOrder(order: SortOrder): SortOrder {
-        return order === 'ascending' ? 'descending' : 'ascending';
-    }
-
     function handleSortOptionChange(
         headerKey: HeaderKey<LibraryHeaders>,
     ): void {
@@ -82,10 +86,6 @@ export function AlbumsPage(): JSX.Element {
                     ? toggleOrder(previous.order)
                     : 'ascending',
         }));
-    }
-
-    function playAlbum(album: Album): void {
-        void playContext(album.getTracks().map((t) => t.localTrack));
     }
 
     return (
@@ -111,6 +111,7 @@ export function AlbumsPage(): JSX.Element {
                         setSelectedDisplayType={() => {
                             // TODO: support other display types
                         }}
+                        displayTypeTranslationPrefix="web-player.artist.discography.sort-box.view-"
                     />
                 </div>
             </div>
