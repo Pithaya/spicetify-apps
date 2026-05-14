@@ -355,6 +355,7 @@ export function TrackList(): JSX.Element {
                         }}
                     />
                 )}
+                searchTerm={debouncedSearch}
             />
 
             <div

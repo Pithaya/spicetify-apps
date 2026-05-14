@@ -4,7 +4,9 @@
 
 @source "../../../../libs/shared/src/components";
 
-::highlight(search) {
-    background-color: var(--spice-notification);
-    color: var(--spice-text);
+#better-local-files {
+    ::highlight(search) {
+        background-color: var(--spice-notification);
+        color: var(--spice-text);
+    }
 }

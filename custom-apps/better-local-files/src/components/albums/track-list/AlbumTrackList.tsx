@@ -115,6 +115,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                         }}
                     />
                 )}
+                searchTerm={''}
             ></TrackListGrid>
         </>
     );

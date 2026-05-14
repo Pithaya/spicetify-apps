@@ -11,5 +11,8 @@
         "compare-versions": "^6.1.0",
         "lucide-react": "^0.292.0",
         "zod": "^3.24.1"
+    },
+    "dependencies": {
+        "highlight-search-term": "^1.0.3"
     }
 }

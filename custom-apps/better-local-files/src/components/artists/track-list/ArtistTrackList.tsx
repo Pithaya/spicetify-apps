@@ -103,6 +103,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                         }}
                     />
                 )}
+                searchTerm={''}
             ></TrackListGrid>
         </>
     );

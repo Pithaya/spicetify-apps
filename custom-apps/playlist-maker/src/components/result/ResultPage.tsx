@@ -204,6 +204,7 @@ export function ResultPage(): JSX.Element {
                                 }}
                             />
                         )}
+                        searchTerm={''}
                     />
                 </div>
             </div>

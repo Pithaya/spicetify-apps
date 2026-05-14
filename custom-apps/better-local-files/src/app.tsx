@@ -127,7 +127,10 @@ function App(): JSX.Element {
 
     return (
         <>
-            <div className={styles['full-size-container']}>
+            <div
+                id="better-local-files"
+                className={styles['full-size-container']}
+            >
                 {isLoading ? (
                     <div
                         className={`${styles['center-container']} ${styles.padded}`}

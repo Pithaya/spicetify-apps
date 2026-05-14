@@ -22,6 +22,7 @@ export type Props<T extends string> = {
     getRowContent: (track: ITrack) => JSX.Element[];
     displayType: DisplayType;
     getRowMenu: (track: ITrack) => JSX.Element;
+    searchTerm: string;
 } & TrackListHeaderProps<T>;
 
 /**
@@ -137,6 +138,7 @@ export function TrackListGrid<T extends string>(
                                 activeTrackUri === track.uri &&
                                 playStatus === PlayStatus.Playing
                             }
+                            searchTerm={props.searchTerm}
                             onClick={(e) => {
                                 handleClick(e, track);
                             }}
@@ -170,6 +172,7 @@ export function TrackListGrid<T extends string>(
                                             activeTrackUri === track.uri &&
                                             playStatus === PlayStatus.Playing
                                         }
+                                        searchTerm={props.searchTerm}
                                         onClick={(e) => {
                                             handleClick(e, track);
                                         }}

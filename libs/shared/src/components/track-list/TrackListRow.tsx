@@ -5,6 +5,7 @@ import { useIsInLibrary } from '@shared/hooks/use-is-in-library';
 import type { LibraryAPIOperationCompleteEvent } from '@shared/platform/library';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
+import { highlightSearchTerm } from 'highlight-search-term';
 import React, {
     Children,
     type MouseEventHandler,
@@ -42,6 +43,7 @@ export type Props = {
     };
     displayType: DisplayType;
     getRowMenu: (track: ITrack) => JSX.Element;
+    searchTerm: string;
 };
 
 /**
@@ -164,6 +166,13 @@ export function TrackListRow(props: PropsWithChildren<Props>): JSX.Element {
             libraryButton = emptyButton;
             break;
     }
+
+    useEffect(() => {
+        highlightSearchTerm({
+            search: props.searchTerm,
+            selector: '.main-trackList-trackListRow',
+        });
+    }, [visible, props.searchTerm]);
 
     // TODO: Set the correct aria-rowindex
     // TODO: Remove element hidden when '!props.track.isPlayable' when the disabled css class is available
