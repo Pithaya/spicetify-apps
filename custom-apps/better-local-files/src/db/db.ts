@@ -112,11 +112,17 @@ export type QueryTracksOptions = {
     search: string;
     sortKey: HeaderKey<LibraryHeaders>;
     sortOrder: SortOrder;
+    offset?: number;
+    limit?: number;
 };
 
-export const queryTracks = async (
-    opts: QueryTracksOptions,
-): Promise<CachedTrack[]> => {
+/**
+ * Builds the Dexie collection for the tracks query (ordered + filtered).
+ * Shared by `queryTracks`, `queryTrackUris`, and `queryTracksCount`.
+ */
+const buildTracksCollection = (
+    opts: Omit<QueryTracksOptions, 'offset' | 'limit'>,
+) => {
     const indexField = trackSortIndex[opts.sortKey] ?? 'nameLower';
 
     let tracksCollection = db.tracks.orderBy(indexField);
@@ -134,7 +140,52 @@ export const queryTracks = async (
         );
     }
 
-    return tracksCollection.toArray();
+    return tracksCollection;
+};
+
+export const queryTracks = async (
+    opts: QueryTracksOptions,
+): Promise<CachedTrack[]> => {
+    let trackCollection = buildTracksCollection(opts);
+
+    if (opts.offset !== undefined && opts.offset > 0) {
+        trackCollection = trackCollection.offset(opts.offset);
+    }
+    if (opts.limit !== undefined) {
+        trackCollection = trackCollection.limit(opts.limit);
+    }
+
+    return trackCollection.toArray();
+};
+
+/**
+ * Returns the URIs of all tracks matching `opts` (ignoring offset/limit), in
+ * the same sort order. Used to build the playback context for the Play button
+ * and for per-row play actions, so the user can play "all matching tracks"
+ * even while infinite scroll has only loaded a page of them.
+ */
+export const queryTrackUris = async (
+    opts: Omit<QueryTracksOptions, 'offset' | 'limit'>,
+): Promise<string[]> => {
+    return buildTracksCollection(opts).primaryKeys();
+};
+
+/**
+ * Returns the total number of tracks matching the search filter.
+ * Used by infinite scroll to know when all pages have been loaded.
+ */
+export const queryTracksCount = async (
+    opts: Pick<QueryTracksOptions, 'search'>,
+): Promise<number> => {
+    if (opts.search === '') {
+        return db.tracks.count();
+    }
+
+    return buildTracksCollection({
+        search: opts.search,
+        sortKey: 'title',
+        sortOrder: 'ascending',
+    }).count();
 };
 
 export type QueryAlbumsOptions = {

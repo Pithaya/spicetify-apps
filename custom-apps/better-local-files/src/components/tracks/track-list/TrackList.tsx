@@ -14,15 +14,20 @@ import { TrackListRowImageTitle } from '@shared/components/track-list/TrackListR
 import { RowMenu } from '@shared/components/track-list/TrackListRowMenu';
 import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
+import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { getTranslation } from '@shared/utils/translations.utils';
 import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import { queryTracks } from 'custom-apps/better-local-files/src/db/db';
+import {
+    queryTrackUris,
+    queryTracks,
+    queryTracksCount,
+} from 'custom-apps/better-local-files/src/db/db';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import { useLiveQuery } from 'dexie-react-hooks';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { playContext, playTrack } from '../../../utils/player.utils';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
@@ -35,6 +40,8 @@ import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 
 // FIXME: Changing to compact display when tracks are sorted by title causes "DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
 
+const PAGE_SIZE = 100;
+
 function toggleOrder(order: SortOrder): SortOrder {
     return order === 'ascending' ? 'descending' : 'ascending';
 }
@@ -43,6 +50,11 @@ function toggleOrder(order: SortOrder): SortOrder {
  * Contains the filtering, ordering, and play logic for the local tracks list.
  * The query against IndexedDB is driven by the search input and the sort option
  * so that filtering and sorting happen at the Dexie level instead of in memory.
+ *
+ * The grid renders every row to the DOM (no virtualization), so the list is
+ * paginated: only `loadedCount` tracks are queried/rendered at a time, and a
+ * sentinel below the grid bumps `loadedCount` whenever the user scrolls it
+ * into view. Play actions still target the full filtered list.
  */
 export function TrackList(): JSX.Element {
     const [search, setSearch] = useState('');
@@ -81,16 +93,67 @@ export function TrackList(): JSX.Element {
     const [selectedDisplayType, setSelectedDisplayType] =
         useState<DisplayType>('list');
 
+    const [loadedCount, setLoadedCount] = useState(PAGE_SIZE);
+
+    // Reset pagination when the filter or sort changes.
+    useEffect(() => {
+        setLoadedCount(PAGE_SIZE);
+    }, [debouncedSearch, selectedSortOption.key, selectedSortOption.order]);
+
     const tracks = useLiveQuery(
         () =>
             queryTracks({
                 search: debouncedSearch,
                 sortKey: selectedSortOption.key,
                 sortOrder: selectedSortOption.order,
+                limit: loadedCount,
             }),
-        [debouncedSearch, selectedSortOption.key, selectedSortOption.order],
+        [
+            debouncedSearch,
+            selectedSortOption.key,
+            selectedSortOption.order,
+            loadedCount,
+        ],
         [],
     );
+
+    const totalCount = useLiveQuery(
+        () => queryTracksCount({ search: debouncedSearch }),
+        [debouncedSearch],
+        0,
+    );
+
+    const hasMore = tracks.length < totalCount;
+
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const sentinelVisible = useIntersectionObserver(sentinelRef);
+
+    useEffect(() => {
+        // Only request the next page once the current one is fully loaded
+        // (tracks.length === loadedCount) — prevents a runaway loop while the
+        // previous query is still in flight.
+        if (sentinelVisible && hasMore && tracks.length === loadedCount) {
+            setLoadedCount((c) => c + PAGE_SIZE);
+        }
+    }, [sentinelVisible, hasMore, tracks.length, loadedCount]);
+
+    async function playAll(): Promise<void> {
+        const uris = await queryTrackUris({
+            search: debouncedSearch,
+            sortKey: selectedSortOption.key,
+            sortOrder: selectedSortOption.order,
+        });
+        await playContext(uris);
+    }
+
+    async function playRow(trackUri: string): Promise<void> {
+        const uris = await queryTrackUris({
+            search: debouncedSearch,
+            sortKey: selectedSortOption.key,
+            sortOrder: selectedSortOption.order,
+        });
+        await playTrack(trackUri, uris);
+    }
 
     const headers = useMemo<
         TrackListHeaderOption<HeaderKey<LibraryHeaders>>[]
@@ -184,7 +247,7 @@ export function TrackList(): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                void playContext(tracks.map((t) => t.uri));
+                                void playAll();
                             }}
                         />
                     </div>
@@ -217,10 +280,7 @@ export function TrackList(): JSX.Element {
                 gridLabel={getTranslation(['local-files'])}
                 useTrackNumber={false}
                 onPlayTrack={(uri) => {
-                    void playTrack(
-                        uri,
-                        tracks.map((t) => t.uri),
-                    );
+                    void playRow(uri);
                 }}
                 headers={headers}
                 onHeaderClicked={(key) => {
@@ -295,6 +355,12 @@ export function TrackList(): JSX.Element {
                         }}
                     />
                 )}
+            />
+
+            <div
+                ref={sentinelRef}
+                aria-hidden="true"
+                style={{ height: '1px' }}
             />
         </>
     );
