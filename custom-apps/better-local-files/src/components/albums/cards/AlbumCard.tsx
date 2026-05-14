@@ -7,13 +7,15 @@ import {
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
 import type { CachedAlbum } from 'custom-apps/better-local-files/src/models/cached-album';
-import React, { useMemo, useRef } from 'react';
+import { highlightSearchTerm } from 'highlight-search-term';
+import React, { useEffect, useMemo, useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { navigateTo } from '../../../utils/history.utils';
 
 export type Props = {
     album: CachedAlbum;
     onPlayClicked: (a: CachedAlbum) => void;
+    searchTerm: string;
 };
 
 export function AlbumCard(props: Readonly<Props>): JSX.Element {
@@ -145,6 +147,13 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
             </div>
         </div>
     );
+
+    useEffect(() => {
+        highlightSearchTerm({
+            search: props.searchTerm,
+            selector: '#album-grid .main-card-card',
+        });
+    }, [visible, props.searchTerm]);
 
     return (
         <div ref={ref}>

@@ -6,13 +6,15 @@ import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/const
 import { getArtistTrackUris } from 'custom-apps/better-local-files/src/db/db';
 import type { CachedArtist } from 'custom-apps/better-local-files/src/models/cached-artist';
 import { useLiveQuery } from 'dexie-react-hooks';
-import React, { useRef } from 'react';
+import { highlightSearchTerm } from 'highlight-search-term';
+import React, { useEffect, useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { navigateTo } from '../../../utils/history.utils';
 
 export type Props = {
     artist: CachedArtist;
     onPlayClicked: (a: CachedArtist) => void;
+    searchTerm: string;
 };
 
 export function ArtistCard(props: Readonly<Props>): JSX.Element {
@@ -59,6 +61,13 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
             </svg>
         </div>
     );
+
+    useEffect(() => {
+        highlightSearchTerm({
+            search: props.searchTerm,
+            selector: '#artist-grid .main-card-card',
+        });
+    }, [visible, props.searchTerm]);
 
     return (
         <div ref={ref}>

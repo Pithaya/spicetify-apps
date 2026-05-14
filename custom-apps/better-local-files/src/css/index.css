@@ -3,3 +3,8 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) important;
 
 @source "../../../../libs/shared/src/components";
+
+::highlight(search) {
+    background-color: var(--spice-notification);
+    color: var(--spice-text);
+}

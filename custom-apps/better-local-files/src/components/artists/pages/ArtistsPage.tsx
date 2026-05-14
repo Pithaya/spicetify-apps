@@ -96,6 +96,7 @@ export function ArtistsPage(): JSX.Element {
             </div>
 
             <div
+                id="artist-grid"
                 className={`${styles['card-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
                 {artists.map((a) => (
@@ -105,6 +106,7 @@ export function ArtistsPage(): JSX.Element {
                         onPlayClicked={(artist) => {
                             void playArtist(artist);
                         }}
+                        searchTerm={debouncedSearch}
                     />
                 ))}
             </div>

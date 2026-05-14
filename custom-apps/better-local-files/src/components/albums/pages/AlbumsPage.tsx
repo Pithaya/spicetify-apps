@@ -90,6 +90,7 @@ export function AlbumsPage(): JSX.Element {
             </div>
 
             <div
+                id="album-grid"
                 className={`${styles['card-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
                 {albums.map((a) => (
@@ -97,6 +98,7 @@ export function AlbumsPage(): JSX.Element {
                         key={a.uri}
                         album={a}
                         onPlayClicked={playAlbum}
+                        searchTerm={debouncedSearch}
                     />
                 ))}
             </div>
