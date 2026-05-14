@@ -32,6 +32,12 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
         [],
     );
 
+    const dragHandler = Spicetify.ReactHook.DragHandler({
+        itemUris: trackUris,
+        dragLabelText: props.artist.name,
+        contextUri: props.artist.uri,
+    });
+
     const placeholder = <div style={{ height: '260px' }}></div>;
     const imageFallback = (
         <div
@@ -79,12 +85,18 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                 >
                     <div
                         tabIndex={0}
+                        draggable
                         className={`${styles['main-card-card']} main-card-card`}
                         onClick={() => {
                             navigateTo(ARTIST_ROUTE, props.artist.uri);
                         }}
+                        onDragStart={(e) => {
+                            if (dragHandler.draggable) {
+                                dragHandler.onDragStart(e);
+                            }
+                        }}
                     >
-                        <div draggable="true" className="main-card-draggable">
+                        <div className="main-card-draggable">
                             <div className="main-card-imageContainer main-card-imageContainerOld">
                                 <div className="main-cardImage-imageWrapper main-cardImage-circular">
                                     {props.artist.image !== '' ? (
