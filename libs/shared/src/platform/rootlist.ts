@@ -55,14 +55,7 @@ export type RootlistFolder = Folder & {
 };
 
 export type RootlistAPI = {
-    getContents: (params?: {
-        folderUri?: string;
-        sort?: 'name' | 'addedAt';
-        filter?: string;
-        offset?: number;
-        limit?: number;
-        flatten?: boolean;
-    }) => Promise<RootlistFolder>;
+    getContents: () => Promise<RootlistFolder>;
     createPlaylist: (
         name: string,
         opts: {

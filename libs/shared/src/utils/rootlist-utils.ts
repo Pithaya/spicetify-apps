@@ -5,10 +5,6 @@ function isFolder(item: Folder | Playlist): item is Folder {
     return item.type === 'folder';
 }
 
-function isPlaylist(item: Folder | Playlist): item is Playlist {
-    return item.type === 'playlist';
-}
-
 export async function getRootlistFolders(): Promise<Folder[]> {
     const rootlistAPI = getPlatform().RootlistAPI;
 
@@ -26,11 +22,19 @@ export async function getRootlistPlaylists(
 ): Promise<Playlist[]> {
     const rootlistAPI = getPlatform().RootlistAPI;
 
-    const rootlistFolder = await rootlistAPI.getContents({
-        flatten: true,
-        filter,
-    });
+    const rootlistFolder = await rootlistAPI.getContents();
 
-    const playlists: Playlist[] = rootlistFolder.items.filter(isPlaylist);
+    const flattenItems = (items: (Playlist | Folder)[]): Playlist[] =>
+        items.flatMap((i) => (isFolder(i) ? flattenItems(i.items) : [i]));
+
+    let playlists: Playlist[] = flattenItems(rootlistFolder.items);
+
+    if (filter !== undefined && filter !== '') {
+        const filterLower = filter.toLowerCase();
+        playlists = playlists.filter((p) =>
+            p.name.toLowerCase().includes(filterLower),
+        );
+    }
+
     return playlists;
 }
