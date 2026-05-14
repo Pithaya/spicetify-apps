@@ -7,7 +7,7 @@ import { getArtistTrackUris } from 'custom-apps/better-local-files/src/db/db';
 import type { CachedArtist } from 'custom-apps/better-local-files/src/models/cached-artist';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { highlightSearchTerm } from 'highlight-search-term';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { navigateTo } from '../../../utils/history.utils';
 
@@ -20,15 +20,21 @@ export type Props = {
 export function ArtistCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
+    const [hasBeenVisible, setHasBeenVisible] = useState(false);
 
-    // Fetch the artist's track URIs only when the card becomes visible, so we
-    // don't issue a query for every off-screen artist on page load.
+    useEffect(() => {
+        if (visible) {
+            setHasBeenVisible(true);
+        }
+    }, [visible]);
+
+    // Fetch the artist's track URIs once the card first becomes visible
     const trackUris = useLiveQuery(
         () =>
-            visible
+            hasBeenVisible
                 ? getArtistTrackUris(props.artist.uri)
                 : Promise.resolve([]),
-        [visible, props.artist.uri],
+        [hasBeenVisible, props.artist.uri],
         [],
     );
 

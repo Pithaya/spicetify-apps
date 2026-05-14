@@ -1,4 +1,3 @@
-import type { LocalTrack } from '@shared/platform/local-files';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getImageUrlFromAlbum } from '@shared/utils/track.utils';
 import { addAlbums, addArtists, addTracks, clearDatabase } from '../db/db';
@@ -112,22 +111,7 @@ const processLocalTracks = async (
     artists: Map<string, CachedArtist>,
     albums: Map<string, Album>,
 ): Promise<void> => {
-    let localTracks = await getPlatform().LocalFilesAPI.getTracks();
-
-    // TODO: Test for a large amount of tracks, remove this
-    localTracks = localTracks.flatMap((t) => {
-        const copies: LocalTrack[] = [];
-
-        for (let i = 0; i < 30; i++) {
-            copies.push({
-                ...t,
-                uri: `${t.uri}?copy=${i.toFixed()}`,
-                name: `${t.name} Copy ${i.toFixed()}`,
-            });
-        }
-
-        return copies;
-    });
+    const localTracks = await getPlatform().LocalFilesAPI.getTracks();
 
     console.log(`Processing ${localTracks.length.toFixed()} local tracks`);
 
