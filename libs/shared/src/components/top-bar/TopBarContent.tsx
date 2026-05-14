@@ -8,6 +8,7 @@ export type Props = {
     items: TopBarItem[];
     activeItem: TopBarItem;
     onItemClicked: (item: TopBarItem) => void;
+    moreMenu?: JSX.Element;
 };
 
 export function TopBarContent(props: Readonly<Props>): JSX.Element {
@@ -38,6 +39,7 @@ export function TopBarContent(props: Readonly<Props>): JSX.Element {
             items={props.items}
             activeItem={props.activeItem}
             onItemClicked={props.onItemClicked}
+            moreMenu={props.moreMenu}
         />
     );
 }

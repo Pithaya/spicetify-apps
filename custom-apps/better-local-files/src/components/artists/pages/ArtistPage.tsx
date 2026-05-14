@@ -1,14 +1,15 @@
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
 import { ARTISTS_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import { db, getArtistTracks } from 'custom-apps/better-local-files/src/db/db';
+import type { CachedArtist } from 'custom-apps/better-local-files/src/models/cached-artist';
+import { useLiveQuery } from 'dexie-react-hooks';
 import React from 'react';
-import { navigateTo } from '../../../utils/history.utils';
 import { Header, HeaderImage } from '../../shared/Header';
 import { ArtistTrackList } from '../track-list/ArtistTrackList';
 
 type Props = {
-    artist: Artist;
+    artist: CachedArtist;
 };
 
 function ArtistHeader(props: Readonly<Props>): JSX.Element {
@@ -27,21 +28,34 @@ export function ArtistPage(): JSX.Element {
 
     const artistUri = state.uri ?? null;
 
+    const artist = useLiveQuery(async () => {
+        if (artistUri === null) {
+            return undefined;
+        }
+
+        return db.artists.get(artistUri);
+    }, [artistUri]);
+
+    const artistTracks = useLiveQuery(
+        async () => {
+            if (artistUri === null) {
+                return [];
+            }
+
+            return getArtistTracks(artistUri);
+        },
+        [artistUri],
+        [],
+    );
+
     if (artistUri === null) {
         history.replace(ARTISTS_ROUTE);
         return <></>;
     }
 
-    const artists = window.localTracksService.getArtists();
-
-    if (!artists.has(artistUri)) {
-        navigateTo(ARTISTS_ROUTE);
+    if (artist === undefined) {
         return <></>;
     }
-
-    const artist = artists.get(artistUri)!;
-
-    const artistTracks = window.localTracksService.getArtistTracks(artist.uri);
 
     return (
         <>

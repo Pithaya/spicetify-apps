@@ -3,19 +3,18 @@ import { addToQueuePath } from '@shared/icons/icons';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 import { getTranslation } from '@shared/utils/translations.utils';
 import React from 'react';
-import { type ITrack } from '../track-list/models/interfaces';
 import { Menu } from './Menu';
 import { PlaylistSelectionMenu } from './PlaylistSelectionMenu';
 import { SubmenuItem } from './SubmenuItem';
 
 export type Props = {
-    tracks: ITrack[];
+    tracksUri: string[];
 };
 
 export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
     async function addToQueue(): Promise<void> {
         await getPlatform().PlayerAPI.addToQueue(
-            props.tracks.map((t) => ({ uri: t.uri })),
+            props.tracksUri.map((uri) => ({ uri })),
         );
     }
 
@@ -23,11 +22,7 @@ export function MultiTrackMenu(props: Readonly<Props>): JSX.Element {
         <Menu>
             <SubmenuItem
                 label={getTranslation(['contextmenu.add-to-playlist'])}
-                submenu={
-                    <PlaylistSelectionMenu
-                        tracksUri={props.tracks.map((t) => t.uri)}
-                    />
-                }
+                submenu={<PlaylistSelectionMenu tracksUri={props.tracksUri} />}
                 leadingIcon={<SpotifyIcon icon="plus2px" iconSize={16} />}
             />
 

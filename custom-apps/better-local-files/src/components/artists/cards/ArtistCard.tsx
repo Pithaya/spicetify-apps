@@ -3,19 +3,32 @@ import { PlayButton } from '@shared/components/ui/PlayButton';
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { useIntersectionObserver } from '@shared/hooks/use-intersection-observer';
 import { ARTIST_ROUTE } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
+import { getArtistTrackUris } from 'custom-apps/better-local-files/src/db/db';
+import type { CachedArtist } from 'custom-apps/better-local-files/src/models/cached-artist';
+import { useLiveQuery } from 'dexie-react-hooks';
 import React, { useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { navigateTo } from '../../../utils/history.utils';
 
 export type Props = {
-    artist: Artist;
-    onPlayClicked: (a: Artist) => void;
+    artist: CachedArtist;
+    onPlayClicked: (a: CachedArtist) => void;
 };
 
 export function ArtistCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
+
+    // Fetch the artist's track URIs only when the card becomes visible, so we
+    // don't issue a query for every off-screen artist on page load.
+    const trackUris = useLiveQuery(
+        () =>
+            visible
+                ? getArtistTrackUris(props.artist.uri)
+                : Promise.resolve([]),
+        [visible, props.artist.uri],
+        [],
+    );
 
     const placeholder = <div style={{ height: '260px' }}></div>;
     const imageFallback = (
@@ -53,13 +66,7 @@ export function ArtistCard(props: Readonly<Props>): JSX.Element {
                 <Spicetify.ReactComponent.ContextMenu
                     trigger="right-click"
                     action="toggle"
-                    menu={
-                        <MultiTrackMenu
-                            tracks={window.localTracksService.getArtistTracks(
-                                props.artist.uri,
-                            )}
-                        />
-                    }
+                    menu={<MultiTrackMenu tracksUri={trackUris} />}
                 >
                     <div
                         tabIndex={0}

@@ -1,9 +1,11 @@
+import { Menu } from '@shared/components/menus/Menu';
 import { TopBarContent } from '@shared/components/top-bar/TopBarContent';
 import { LoadingIcon } from '@shared/icons/Loading';
 import { getPlatform } from '@shared/utils/spicetify-utils';
-import { useObservableEagerState } from 'observable-hooks';
+import { FolderSync, FolderX } from 'lucide-react';
 import React, { useEffect } from 'react';
 import whatsNew from 'spcr-whats-new';
+import { useShallow } from 'zustand/react/shallow';
 import { version } from '../package.json';
 import { CHANGE_NOTES } from './change-notes';
 import { AlbumPage } from './components/albums/pages/AlbumPage';
@@ -21,37 +23,46 @@ import {
 } from './constants/constants';
 import styles from './css/app.module.scss';
 import './css/tailwind.css';
+import useAppStore from './stores/store';
 
 function App(): JSX.Element {
-    const isReady = useObservableEagerState(window.localTracksService.isReady$);
-
-    const processedAlbums: number = useObservableEagerState(
-        window.localTracksService.processedAlbums$,
+    const {
+        processedAlbums,
+        totalAlbums,
+        initCache,
+        isLoading,
+        rebuildCache,
+        clearCache,
+    } = useAppStore(
+        useShallow((state) => ({
+            processedAlbums: state.processedAlbums,
+            totalAlbums: state.totalAlbums,
+            initCache: state.initCache,
+            isLoading: state.isLoading,
+            rebuildCache: state.rebuildCache,
+            clearCache: state.clearCache,
+        })),
     );
-
-    const albumCount: number = useObservableEagerState(
-        window.localTracksService.albumCount$,
-    );
-
-    async function init(): Promise<void> {
-        await window.localTracksService.init();
-
-        await whatsNew('better-local-files', version, {
-            title: `New in v${version}`,
-            content: (
-                <p>
-                    <ul>
-                        {CHANGE_NOTES.map((value) => {
-                            return <li key={value}>{value}</li>;
-                        })}
-                    </ul>
-                </p>
-            ),
-            isLarge: true,
-        });
-    }
 
     useEffect(() => {
+        const init = async (): Promise<void> => {
+            await initCache();
+
+            await whatsNew('better-local-files', version, {
+                title: `New in v${version}`,
+                content: (
+                    <p>
+                        <ul>
+                            {CHANGE_NOTES.map((value) => {
+                                return <li key={value}>{value}</li>;
+                            })}
+                        </ul>
+                    </p>
+                ),
+                isLarge: true,
+            });
+        };
+
         void init();
     }, []);
 
@@ -84,21 +95,40 @@ function App(): JSX.Element {
         '.main-topBar-topbarContentWrapper',
     );
 
-    const showTracksProgress = albumCount === 0;
-    const showAlbumsProgress = albumCount > 0;
+    const showTracksProgress = processedAlbums === 0;
+    const showAlbumsProgress = processedAlbums > 0;
 
-    // TODO: localize progress labels ?
+    const moreMenu = (
+        <Menu>
+            <Spicetify.ReactComponent.MenuItem
+                onClick={() => {
+                    void rebuildCache();
+                }}
+                disabled={isLoading}
+            >
+                <div className="tw:flex tw:items-center tw:gap-2">
+                    <FolderSync size={16} strokeWidth={1.5} />
+                    <span>Rebuild local tracks cache</span>
+                </div>
+            </Spicetify.ReactComponent.MenuItem>
+            <Spicetify.ReactComponent.MenuItem
+                onClick={() => {
+                    void clearCache();
+                }}
+                disabled={isLoading}
+            >
+                <div className="tw:flex tw:items-center tw:gap-2">
+                    <FolderX size={16} strokeWidth={1.5} />
+                    <span>Clear local tracks cache</span>
+                </div>
+            </Spicetify.ReactComponent.MenuItem>
+        </Menu>
+    );
 
     return (
         <>
             <div className={styles['full-size-container']}>
-                {isReady ? (
-                    <div
-                        className={`${styles['stretch-container']} ${styles.padded}`}
-                    >
-                        {currentPage}
-                    </div>
-                ) : (
+                {isLoading ? (
                     <div
                         className={`${styles['center-container']} ${styles.padded}`}
                     >
@@ -106,9 +136,15 @@ function App(): JSX.Element {
                         {showTracksProgress && <p>Processing tracks...</p>}
                         {showAlbumsProgress && (
                             <p>
-                                {`Processing album ${processedAlbums.toFixed()} of ${albumCount.toFixed()}...`}
+                                {`Processing album ${processedAlbums.toFixed()} of ${totalAlbums.toFixed()}...`}
                             </p>
                         )}
+                    </div>
+                ) : (
+                    <div
+                        className={`${styles['stretch-container']} ${styles.padded}`}
+                    >
+                        {currentPage}
                     </div>
                 )}
             </div>
@@ -124,6 +160,7 @@ function App(): JSX.Element {
                                 i.href.startsWith(location.pathname),
                             ) ?? topBarItems[0]
                         }
+                        moreMenu={moreMenu}
                     />,
                     topBarContainer,
                 )}

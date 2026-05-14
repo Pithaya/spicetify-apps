@@ -14,16 +14,16 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Artist } from 'custom-apps/better-local-files/src/models/artist';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { CachedArtist } from 'custom-apps/better-local-files/src/models/cached-artist';
+import type { CachedTrack } from 'custom-apps/better-local-files/src/models/cached-track';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import React from 'react';
 import { playContext, playTrack } from '../../../utils/player.utils';
 import { MoreButton } from '../../shared/buttons/MoreButton';
 
 export type Props = {
-    artist: Artist;
-    tracks: Track[];
+    artist: CachedArtist;
+    tracks: CachedTrack[];
 };
 
 export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
@@ -38,6 +38,8 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
         },
     ];
 
+    const trackUris = props.tracks.map((t) => t.uri);
+
     return (
         <>
             <div className="main-actionBar-ActionBar contentSpacing">
@@ -46,9 +48,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                void playContext(
-                                    props.tracks.map((t) => t.localTrack),
-                                );
+                                void playContext(trackUris);
                             }}
                         />
                     </div>
@@ -58,7 +58,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                             ['more.label.context'],
                             props.artist.name,
                         )}
-                        menu={<MultiTrackMenu tracks={props.tracks} />}
+                        menu={<MultiTrackMenu tracksUri={trackUris} />}
                     />
                 </div>
             </div>
@@ -69,10 +69,7 @@ export function ArtistTrackList(props: Readonly<Props>): JSX.Element {
                 gridLabel={props.artist.name}
                 useTrackNumber={false}
                 onPlayTrack={(uri) => {
-                    void playTrack(
-                        uri,
-                        props.tracks.map((t) => t.localTrack),
-                    );
+                    void playTrack(uri, trackUris);
                 }}
                 headers={headers}
                 getRowContent={(track) => {

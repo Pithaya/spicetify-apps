@@ -6,21 +6,27 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
-import React, { useRef } from 'react';
+import type { CachedAlbum } from 'custom-apps/better-local-files/src/models/cached-album';
+import React, { useMemo, useRef } from 'react';
 import styles from '../../../css/app.module.scss';
 import { navigateTo } from '../../../utils/history.utils';
 
 export type Props = {
-    album: Album;
-    onPlayClicked: (a: Album) => void;
+    album: CachedAlbum;
+    onPlayClicked: (a: CachedAlbum) => void;
 };
 
 export function AlbumCard(props: Readonly<Props>): JSX.Element {
     const ref = useRef<HTMLDivElement>(null);
     const visible = useIntersectionObserver(ref);
+
+    const trackUris = useMemo(
+        () => Object.values(props.album.discs).flat(),
+        [props.album.discs],
+    );
+
     const dragHandler = Spicetify.ReactHook.DragHandler({
-        itemUris: props.album.getTracks().map((t) => t.uri),
+        itemUris: trackUris,
         dragLabelText: props.album.name,
         contextUri: props.album.uri,
     });
@@ -146,7 +152,7 @@ export function AlbumCard(props: Readonly<Props>): JSX.Element {
                 <Spicetify.ReactComponent.ContextMenu
                     trigger="right-click"
                     action="toggle"
-                    menu={<MultiTrackMenu tracks={props.album.getTracks()} />}
+                    menu={<MultiTrackMenu tracksUri={trackUris} />}
                 >
                     {card}
                 </Spicetify.ReactComponent.ContextMenu>

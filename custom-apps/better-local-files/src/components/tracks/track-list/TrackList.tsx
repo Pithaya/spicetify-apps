@@ -19,18 +19,14 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
+import { queryTracks } from 'custom-apps/better-local-files/src/db/db';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
-import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
+import { useLiveQuery } from 'dexie-react-hooks';
 import React, { useMemo, useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { playContext, playTrack } from '../../../utils/player.utils';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
-
-export type Props = {
-    tracks: Track[];
-};
 
 // TODO: Get / store global view mode
 // Spicetify.Platform.LocalStorageAPI.items[Spicetify.Platform.LocalStorageAPI.createNamespacedKey("view-mode")]
@@ -39,10 +35,16 @@ export type Props = {
 
 // FIXME: Changing to compact display when tracks are sorted by title causes "DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
 
+function toggleOrder(order: SortOrder): SortOrder {
+    return order === 'ascending' ? 'descending' : 'ascending';
+}
+
 /**
- * Contains the filtering, ordering, and play logic for a list of tracks.
+ * Contains the filtering, ordering, and play logic for the local tracks list.
+ * The query against IndexedDB is driven by the search input and the sort option
+ * so that filtering and sorting happen at the Dexie level instead of in memory.
  */
-export function TrackList(props: Readonly<Props>): JSX.Element {
+export function TrackList(): JSX.Element {
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -79,107 +81,61 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
     const [selectedDisplayType, setSelectedDisplayType] =
         useState<DisplayType>('list');
 
-    const headers: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [];
-
-    if (selectedDisplayType === 'list') {
-        // First header can be artist or title
-        headers.push(
-            selectedSortOption.key === 'artist'
-                ? {
-                      key: 'artist',
-                      label: getTranslation(['artist']),
-                  }
-                : {
-                      key: 'title',
-                      label: getTranslation(['tracklist.header.title']),
-                  },
-        );
-    } else {
-        headers.push(
-            {
-                key: 'title',
-                label: getTranslation(['tracklist.header.title']),
-            },
-            {
-                key: 'artist',
-                label: getTranslation(['artist']),
-            },
-        );
-    }
-
-    headers.push(
-        {
-            key: 'album',
-            label: getTranslation(['tracklist.header.album']),
-        },
-        {
-            key: 'date',
-            label: getTranslation(['tracklist.header.date-added']),
-        },
+    const tracks = useLiveQuery(
+        () =>
+            queryTracks({
+                search: debouncedSearch,
+                sortKey: selectedSortOption.key,
+                sortOrder: selectedSortOption.order,
+            }),
+        [debouncedSearch, selectedSortOption.key, selectedSortOption.order],
+        [],
     );
 
-    function filterTracks(tracks: Track[], search: string): Track[] {
-        if (search === '') {
-            return tracks;
+    const headers = useMemo<
+        TrackListHeaderOption<HeaderKey<LibraryHeaders>>[]
+    >(() => {
+        const result: TrackListHeaderOption<HeaderKey<LibraryHeaders>>[] = [];
+
+        if (selectedDisplayType === 'list') {
+            // First header can be artist or title
+            result.push(
+                selectedSortOption.key === 'artist'
+                    ? {
+                          key: 'artist',
+                          label: getTranslation(['artist']),
+                      }
+                    : {
+                          key: 'title',
+                          label: getTranslation(['tracklist.header.title']),
+                      },
+            );
+        } else {
+            result.push(
+                {
+                    key: 'title',
+                    label: getTranslation(['tracklist.header.title']),
+                },
+                {
+                    key: 'artist',
+                    label: getTranslation(['artist']),
+                },
+            );
         }
 
-        return tracks.filter(
-            (t) =>
-                t.name.toLowerCase().includes(search.toLowerCase()) ||
-                t.album.name.toLowerCase().includes(search.toLowerCase()) ||
-                t.artists.some((a) =>
-                    a.name.toLowerCase().includes(search.toLowerCase()),
-                ),
+        result.push(
+            {
+                key: 'album',
+                label: getTranslation(['tracklist.header.album']),
+            },
+            {
+                key: 'date',
+                label: getTranslation(['tracklist.header.date-added']),
+            },
         );
-    }
 
-    function orderTracks(
-        tracks: Track[],
-        option: SelectedSortOption<LibraryHeaders>,
-    ): Track[] {
-        switch (option.key) {
-            case 'date':
-                return tracks.sort((x, y) =>
-                    sort(x.addedAt, y.addedAt, option.order),
-                );
-            case 'title':
-                return tracks.sort((x, y) =>
-                    sort(x.name, y.name, option.order),
-                );
-            case 'artist':
-                return tracks.sort((x, y) =>
-                    sort(
-                        x.artists.map((a) => a.name).join(', '),
-                        y.artists.map((a) => a.name).join(', '),
-                        option.order,
-                    ),
-                );
-            case 'album':
-                return tracks.sort((x, y) =>
-                    sort(x.album.name, y.album.name, option.order),
-                );
-            case 'duration':
-                return tracks.sort((x, y) =>
-                    sort(x.duration, y.duration, option.order),
-                );
-            default:
-                return tracks;
-        }
-    }
-
-    const filteredTracks = useMemo(
-        () => filterTracks(props.tracks, debouncedSearch),
-        [props.tracks, debouncedSearch],
-    );
-
-    const orderedTracks = useMemo(
-        () => [...orderTracks(filteredTracks, selectedSortOption)],
-        [filteredTracks, selectedSortOption],
-    );
-
-    function toggleOrder(order: SortOrder): SortOrder {
-        return order === 'ascending' ? 'descending' : 'ascending';
-    }
+        return result;
+    }, [selectedDisplayType, selectedSortOption]);
 
     function handleSortOptionChange(
         headerKey: HeaderKey<LibraryHeaders>,
@@ -228,9 +184,7 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                void playContext(
-                                    orderedTracks.map((t) => t.localTrack),
-                                );
+                                void playContext(tracks.map((t) => t.uri));
                             }}
                         />
                     </div>
@@ -258,14 +212,14 @@ export function TrackList(props: Readonly<Props>): JSX.Element {
             </div>
 
             <TrackListGrid
-                tracks={orderedTracks}
+                tracks={tracks}
                 subtracks={[]}
                 gridLabel={getTranslation(['local-files'])}
                 useTrackNumber={false}
                 onPlayTrack={(uri) => {
                     void playTrack(
                         uri,
-                        orderedTracks.map((t) => t.localTrack),
+                        tracks.map((t) => t.uri),
                     );
                 }}
                 headers={headers}

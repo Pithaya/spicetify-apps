@@ -1,6 +1,9 @@
-import type { IAlbum } from '@shared/components/track-list/models/interfaces';
-import type { Artist } from './artist';
-import type { Track } from './track';
+import type {
+    IAlbum,
+    IAlbumImage,
+    IArtist,
+} from '@shared/components/track-list/models/interfaces';
+import type { CachedTrack } from './cached-track';
 
 /**
  * A processed local Album.
@@ -9,12 +12,17 @@ export class Album implements IAlbum {
     /**
      * List of artists for this album.
      */
-    public readonly artists: Artist[];
+    public readonly artists: IArtist[];
 
     /**
      * List of tracks for each disc.
      */
-    public readonly discs: Map<number, Track[]>;
+    public readonly discs: Map<number, CachedTrack[]>;
+
+    /**
+     * Images for this album.
+     */
+    public readonly images: IAlbumImage[];
 
     /**
      * Create a new instance of the Album class.
@@ -26,22 +34,18 @@ export class Album implements IAlbum {
         public readonly uri: string,
         public readonly name: string,
         public readonly image: string,
-        public readonly images: IAlbum['images'],
     ) {
         this.artists = [];
-        this.discs = new Map<number, Track[]>();
+        this.discs = new Map<number, CachedTrack[]>();
+        this.images = [{ url: image }];
     }
 
     /**
      * Get a list of all tracks for this album.
      * @returns The list of tracks.
      */
-    public getTracks(): Track[] {
-        const result: Track[] = [];
-
-        this.discs.forEach((tracks) => result.push(...tracks));
-
-        return result;
+    public getTracks(): CachedTrack[] {
+        return [...this.discs.values()].flat();
     }
 
     /**

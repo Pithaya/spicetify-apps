@@ -14,7 +14,7 @@ import {
     ALBUM_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Track } from 'custom-apps/better-local-files/src/models/track';
+import type { CachedTrack } from 'custom-apps/better-local-files/src/models/cached-track';
 import { navigateTo } from 'custom-apps/better-local-files/src/utils/history.utils';
 import React from 'react';
 import { playContext, playTrack } from '../../../utils/player.utils';
@@ -23,14 +23,18 @@ import { DiscDivider } from './DiscDivider';
 
 export type Props = {
     albumName: string;
-    discs: Map<number, Track[]>;
+    discs: Map<number, CachedTrack[]>;
 };
 
 export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
-    const tracks: Track[] = [];
+    const tracks: CachedTrack[] = [];
     const subTracks: SubTracksList[] = [];
 
-    const orderedTracks: Track[] = Array.from(props.discs.values()).flat();
+    const orderedTracks: CachedTrack[] = Array.from(
+        props.discs.values(),
+    ).flat();
+
+    const trackUris = orderedTracks.map((t) => t.uri);
 
     if (props.discs.size === 1) {
         // Only one disc
@@ -63,9 +67,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                         <PlayButton
                             size="lg"
                             onClick={() => {
-                                void playContext(
-                                    orderedTracks.map((t) => t.localTrack),
-                                );
+                                void playContext(trackUris);
                             }}
                         />
                     </div>
@@ -73,9 +75,9 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                     <MoreButton
                         label={getTranslation(
                             ['more.label.context'],
-                            orderedTracks[0].album.name,
+                            props.albumName,
                         )}
-                        menu={<MultiTrackMenu tracks={orderedTracks} />}
+                        menu={<MultiTrackMenu tracksUri={trackUris} />}
                     />
                 </div>
             </div>
@@ -86,10 +88,7 @@ export function AlbumTrackList(props: Readonly<Props>): JSX.Element {
                 gridLabel={props.albumName}
                 useTrackNumber={true}
                 onPlayTrack={(uri) => {
-                    void playTrack(
-                        uri,
-                        orderedTracks.map((t) => t.localTrack),
-                    );
+                    void playTrack(uri, trackUris);
                 }}
                 headers={headers}
                 getRowContent={(track) => {

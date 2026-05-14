@@ -1,5 +1,7 @@
 import { TextComponent } from '@shared/components/ui/TextComponent/TextComponent';
 import { getTranslation } from '@shared/utils/translations.utils';
+import { db } from 'custom-apps/better-local-files/src/db/db';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { Folder } from 'lucide-react';
 import React from 'react';
 import styles from '../../../css/app.module.scss';
@@ -7,7 +9,7 @@ import { Header } from '../../shared/Header';
 import { TrackList } from '../track-list/TrackList';
 
 export function TracksPage(): JSX.Element {
-    const tracks = Array.from(window.localTracksService.getTracks().values());
+    const totalTracks = useLiveQuery(() => db.tracks.count(), [], 0);
 
     return (
         <>
@@ -41,16 +43,16 @@ export function TracksPage(): JSX.Element {
                             {getTranslation(
                                 [
                                     'tracklist-header.songs-counter',
-                                    tracks.length === 1 ? 'one' : 'other',
+                                    totalTracks === 1 ? 'one' : 'other',
                                 ],
-                                tracks.length.toFixed(),
+                                totalTracks.toFixed(),
                             )}
                         </TextComponent>
                     </>
                 }
             />
 
-            <TrackList tracks={tracks} />
+            <TrackList />
         </>
     );
 }

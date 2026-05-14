@@ -8,20 +8,33 @@ import {
     ALBUMS_ROUTE,
     ARTIST_ROUTE,
 } from 'custom-apps/better-local-files/src/constants/constants';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import { db } from 'custom-apps/better-local-files/src/db/db';
+import type { CachedAlbum } from 'custom-apps/better-local-files/src/models/cached-album';
+import type { CachedTrack } from 'custom-apps/better-local-files/src/models/cached-track';
+import { useLiveQuery } from 'dexie-react-hooks';
 import React from 'react';
 import { navigateTo } from '../../../utils/history.utils';
 import { Header, HeaderImage } from '../../shared/Header';
 import { AlbumTrackList } from '../track-list/AlbumTrackList';
 
-type Props = {
-    album: Album;
+type AlbumViewData = {
+    album: CachedAlbum;
+    discs: Map<number, CachedTrack[]>;
+    totalTracks: number;
+    totalDuration: number;
 };
 
-function AlbumHeader(props: Readonly<Props>): JSX.Element {
+type AlbumHeaderProps = {
+    album: CachedAlbum;
+    image: string;
+    totalTracks: number;
+    totalDuration: number;
+};
+
+function AlbumHeader(props: Readonly<AlbumHeaderProps>): JSX.Element {
     return (
         <Header
-            image={<HeaderImage imageSrc={props.album.image} />}
+            image={<HeaderImage imageSrc={props.image} />}
             subtitle={getTranslation(['album'])}
             title={props.album.name}
             metadata={
@@ -50,10 +63,9 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                                     ? [elem]
                                     : [
                                           ...accu,
-                                          <span
-                                              key={index}
-                                              className="main-entityHeader-divider"
-                                          ></span>,
+                                          <span className="tw:mx-1" key={index}>
+                                              •
+                                          </span>,
                                           elem,
                                       ];
                             },
@@ -66,18 +78,16 @@ function AlbumHeader(props: Readonly<Props>): JSX.Element {
                         {getTranslation(
                             [
                                 'tracklist-header.songs-counter',
-                                props.album.getTracks().length === 1
-                                    ? 'one'
-                                    : 'other',
+                                props.totalTracks === 1 ? 'one' : 'other',
                             ],
-                            props.album.getTracks().length.toFixed(),
+                            props.totalTracks.toFixed(),
                         )}
                     </TextComponent>
                     <TextComponent
                         variant="mesto"
                         className="main-entityHeader-metaDataText"
                     >
-                        {getTranslatedDuration(props.album.getDuration())}
+                        {getTranslatedDuration(props.totalDuration)}
                     </TextComponent>
                 </>
             }
@@ -91,24 +101,62 @@ export function AlbumPage(): JSX.Element {
 
     const albumUri = state.uri ?? null;
 
+    const view = useLiveQuery(async (): Promise<AlbumViewData | null> => {
+        if (albumUri === null) {
+            return null;
+        }
+
+        const album = await db.albums.get(albumUri);
+        if (album === undefined) {
+            return null;
+        }
+
+        const allUris = Object.values(album.discs).flat();
+        const tracks = await db.tracks.where('uri').anyOf(allUris).toArray();
+        const tracksByUri = new Map<string, CachedTrack>(
+            tracks.map((r) => [r.uri, r]),
+        );
+
+        const discs = new Map<number, CachedTrack[]>();
+        let totalDuration = 0;
+        for (const [discNumberStr, trackUris] of Object.entries(album.discs)) {
+            const tracks: CachedTrack[] = [];
+            for (const uri of trackUris) {
+                const track = tracksByUri.get(uri);
+                if (track !== undefined) {
+                    tracks.push(track);
+                    totalDuration += track.duration;
+                }
+            }
+            discs.set(Number(discNumberStr), tracks);
+        }
+
+        return {
+            album,
+            discs,
+            totalTracks: tracks.length,
+            totalDuration,
+        };
+    }, [albumUri]);
+
     if (albumUri === null) {
         history.replace(ALBUMS_ROUTE);
         return <></>;
     }
 
-    const albums = window.localTracksService.getAlbums();
-
-    if (!albums.has(albumUri)) {
-        navigateTo(ALBUMS_ROUTE);
+    if (view === undefined || view === null) {
         return <></>;
     }
 
-    const album = albums.get(albumUri)!;
-
     return (
         <>
-            <AlbumHeader album={album} />
-            <AlbumTrackList albumName={album.name} discs={album.discs} />
+            <AlbumHeader
+                album={view.album}
+                image={view.album.image}
+                totalTracks={view.totalTracks}
+                totalDuration={view.totalDuration}
+            />
+            <AlbumTrackList albumName={view.album.name} discs={view.discs} />
         </>
     );
 }

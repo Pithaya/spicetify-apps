@@ -1,4 +1,3 @@
-import { type LocalTrack } from '@shared/platform/local-files';
 import { getPlatform } from '@shared/utils/spicetify-utils';
 
 /**
@@ -9,16 +8,17 @@ import { getPlatform } from '@shared/utils/spicetify-utils';
  */
 export async function playTrack(
     trackUri: string,
-    context: LocalTrack[],
+    context: string[],
 ): Promise<void> {
-    if (context.length === 0 || !context.some((t) => t.uri === trackUri)) {
+    // eslint-disable-next-line sonarjs/argument-type
+    if (context.length === 0 || !context.includes(trackUri)) {
         return;
     }
 
     await getPlatform().PlayerAPI.play(
         {
             uri: 'spotify:internal:local-files',
-            pages: [{ items: context }],
+            pages: [{ items: context.map((uri) => ({ uri })) }],
         },
         {},
         {
@@ -31,9 +31,9 @@ export async function playTrack(
 
 /**
  * Play a list of tracks as a context.
- * @param context A list of tracks to play.
+ * @param context A list of track URIs to play.
  */
-export async function playContext(context: LocalTrack[]): Promise<void> {
+export async function playContext(context: string[]): Promise<void> {
     if (context.length === 0) {
         return;
     }
@@ -41,7 +41,7 @@ export async function playContext(context: LocalTrack[]): Promise<void> {
     await getPlatform().PlayerAPI.play(
         {
             uri: 'spotify:internal:local-files',
-            pages: [{ items: context }],
+            pages: [{ items: context.map((uri) => ({ uri })) }],
         },
         {},
         {},

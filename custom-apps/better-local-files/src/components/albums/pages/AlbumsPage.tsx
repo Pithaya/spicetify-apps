@@ -6,35 +6,22 @@ import type {
     SortOrder,
 } from '@shared/components/track-list/models/sort-option';
 import { getTranslation } from '@shared/utils/translations.utils';
-import type { Album } from 'custom-apps/better-local-files/src/models/album';
+import { queryAlbums } from 'custom-apps/better-local-files/src/db/db';
+import type { CachedAlbum } from 'custom-apps/better-local-files/src/models/cached-album';
 import { playContext } from 'custom-apps/better-local-files/src/utils/player.utils';
-import { sort } from 'custom-apps/better-local-files/src/utils/sort.utils';
-import React, { useMemo, useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import React, { useState } from 'react';
 import styles from '../../../css/app.module.scss';
 import { SearchInput } from '../../shared/filters/SearchInput/SearchInput';
 import { SortMenu } from '../../shared/filters/SortMenu/SortMenu';
 import { AlbumCard } from '../cards/AlbumCard';
 
-function filterAlbums(albums: Album[], search: string): Album[] {
-    if (search === '') {
-        return albums;
-    }
-
-    return albums.filter(
-        (a) =>
-            a.name.toLowerCase().includes(search.toLowerCase()) ||
-            a.artists.some((a) =>
-                a.name.toLowerCase().includes(search.toLowerCase()),
-            ),
-    );
-}
-
 function toggleOrder(order: SortOrder): SortOrder {
     return order === 'ascending' ? 'descending' : 'ascending';
 }
 
-function playAlbum(album: Album): void {
-    void playContext(album.getTracks().map((t) => t.localTrack));
+function playAlbum(album: CachedAlbum): void {
+    void playContext(Object.values(album.discs).flat());
 }
 
 export function AlbumsPage(): JSX.Element {
@@ -48,32 +35,18 @@ export function AlbumsPage(): JSX.Element {
         },
     ];
 
-    const albums = Array.from(window.localTracksService.getAlbums()).map(
-        ([_, value]) => value,
-    );
-
-    const filteredAlbums = useMemo(
-        () => filterAlbums(albums, debouncedSearch),
-        [albums, debouncedSearch],
-    );
-
     const [selectedSortOption, setSelectedSortOption] = useState<
         SelectedSortOption<LibraryHeaders>
     >({ ...sortOptions[0], order: 'ascending' });
 
-    function orderAlbums(
-        albums: Album[],
-        option: SelectedSortOption<LibraryHeaders>,
-    ): Album[] {
-        if (option.key === 'title') {
-            return albums.sort((x, y) => sort(x.name, y.name, option.order));
-        }
-        return albums;
-    }
-
-    const orderedAlbums = useMemo(
-        () => [...orderAlbums(filteredAlbums, selectedSortOption)],
-        [filteredAlbums, selectedSortOption],
+    const albums = useLiveQuery(
+        () =>
+            queryAlbums({
+                search: debouncedSearch,
+                sortOrder: selectedSortOption.order,
+            }),
+        [debouncedSearch, selectedSortOption.order],
+        [],
     );
 
     function handleSortOptionChange(
@@ -119,7 +92,7 @@ export function AlbumsPage(): JSX.Element {
             <div
                 className={`${styles['card-grid']} main-gridContainer-gridContainer main-gridContainer-fixedWidth`}
             >
-                {orderedAlbums.map((a) => (
+                {albums.map((a) => (
                     <AlbumCard
                         key={a.uri}
                         album={a}

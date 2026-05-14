@@ -3,6 +3,7 @@ import { type IAlbum } from '@shared/components/track-list/models/interfaces';
 /**
  * Get the image url from an album.
  * Return an empty string if there is are no images.
+ * Note: for albums of local files, even if multiple images are present, the array will only contain one image.
  * @param album The album.
  * @returns The image url.
  */
