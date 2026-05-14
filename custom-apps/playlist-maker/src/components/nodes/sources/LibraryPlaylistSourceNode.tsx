@@ -1,7 +1,6 @@
 import type { Item } from '@shared/components/inputs/Select/Select';
-import { getRootlistPlaylists } from '@shared/utils/rootlist-utils';
-import { getPlatform } from '@shared/utils/spicetify-utils';
 import { useComboboxValues } from 'custom-apps/playlist-maker/src/hooks/use-combobox-values';
+import { useLibraryPlaylistComboboxFetchers } from 'custom-apps/playlist-maker/src/hooks/use-library-playlist-combobox-fetchers';
 import { useNodeForm } from 'custom-apps/playlist-maker/src/hooks/use-node-form';
 import {
     PlaylistDataSchema,
@@ -61,77 +60,12 @@ export function LibraryPlaylistSourceNode(
         PlaylistDataSchema,
     );
 
-    const getPlaylists = useCallback(
-        async (input: string): Promise<PlaylistItem[]> => {
-            const userAPI = getPlatform().UserAPI;
-            const user = await userAPI.getUser();
+    const onPlaylistNotFound = useCallback(() => {
+        updateNodeField({ playlistUri: '' });
+    }, [updateNodeField]);
 
-            let playlists = await getRootlistPlaylists(input);
-
-            playlists = playlists.filter((p) => p.name !== '');
-
-            if (onlyMyPlaylists) {
-                playlists = playlists.filter((p) => p.owner.uri === user.uri);
-            }
-
-            playlists = playlists.toSorted((a, b) =>
-                a.name.localeCompare(b.name),
-            );
-
-            const items = playlists.map((p) => ({
-                id: p.uri,
-                name: p.name,
-                uri: p.uri,
-                image:
-                    p.images.length > 0
-                        ? (p.images.find((i) => i.label === 'small')?.url ??
-                          p.images[0].url)
-                        : null,
-                ownerName: p.owner.displayName,
-            }));
-
-            return items;
-        },
-        [onlyMyPlaylists],
-    );
-
-    const getPlaylist = useCallback(
-        async (playlistUri: string): Promise<PlaylistItem | null> => {
-            const playlistApi = getPlatform().PlaylistAPI;
-
-            try {
-                const playlist = await playlistApi.getPlaylist(
-                    playlistUri,
-                    {},
-                    {},
-                );
-
-                const playlistItem: PlaylistItem = {
-                    id: playlist.metadata.uri,
-                    name: playlist.metadata.name,
-                    uri: playlist.metadata.uri,
-                    image:
-                        playlist.metadata.images.length > 0
-                            ? playlist.metadata.images[0].url
-                            : null,
-                    ownerName: playlist.metadata.owner.displayName,
-                };
-
-                return playlistItem;
-            } catch (e) {
-                console.error('Failed to fetch playlist', e);
-                updateNodeField({ playlistUri: '' });
-
-                return null;
-            }
-        },
-        [updateNodeField],
-    );
-
-    const itemToString = useCallback(
-        (item: PlaylistItem): string => item.name,
-        [],
-    );
+    const { getPlaylist, getPlaylists, itemToString } =
+        useLibraryPlaylistComboboxFetchers(onlyMyPlaylists, onPlaylistNotFound);
 
     const {
         inputValue,
