@@ -1,0 +1,60 @@
+{{EXTRA_TYPE_IMPORTS}}
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { runProcessor } from '../test-helpers';
+import {
+    DEFAULT_{{UPPER_SNAKE}}_DATA,
+    type {{PASCAL}}Data,
+    {{PASCAL}}DataSchema,
+    {{PASCAL}}SourceProcessor,
+} from './{{KEBAB}}-processor';
+
+{{MOCKS}}
+
+function buildData(
+    overrides: Partial<{{PASCAL}}Data> = {},
+): {{PASCAL}}Data {
+    return {
+        ...DEFAULT_{{UPPER_SNAKE}}_DATA,
+        ...overrides,
+    };
+}
+
+beforeEach(() => {
+    {{RESET_MOCKS}}
+});
+
+describe('{{PASCAL}}DataSchema', () => {
+    it('accepts the default data', () => {
+        expect(
+            {{PASCAL}}DataSchema.safeParse(DEFAULT_{{UPPER_SNAKE}}_DATA).success,
+        ).toBe(true);
+    });
+
+    it('rejects an unknown property (strict)', () => {
+        expect(
+            {{PASCAL}}DataSchema.safeParse({
+                ...DEFAULT_{{UPPER_SNAKE}}_DATA,
+                unknown: 'value',
+            }).success,
+        ).toBe(false);
+    });
+
+    // TODO: add at least one rejection case per validated field.
+});
+
+describe('{{PASCAL}}SourceProcessor', () => {
+    it('returns the expected tracks', async () => {
+        {{ARRANGE}}
+
+        const processor = new {{PASCAL}}SourceProcessor(
+            'node',
+            {},
+            buildData(),
+        );
+
+        const result = await runProcessor(processor, {});
+
+        // TODO: assert on params forwarded and on the mapping output.
+        expect(Array.isArray(result)).toBe(true);
+    });
+});
