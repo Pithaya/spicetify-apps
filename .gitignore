@@ -1,4 +1,4 @@
 node_modules
 custom-apps/*/dist
 .claude/settings.local.json
-debug
+tmp
