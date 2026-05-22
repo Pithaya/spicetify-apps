@@ -101,6 +101,10 @@ import {
     RadioSourceProcessor,
 } from '../processors/sources/radio-source-processor';
 import {
+    type RecentlyPlayedTracksData,
+    RecentlyPlayedTracksSourceProcessor,
+} from '../processors/sources/recently-played-tracks-source-processor';
+import {
     type RecommendedPlaylistTracksData,
     RecommendedPlaylistTracksSourceProcessor,
 } from '../processors/sources/recommended-playlist-tracks-source-processor';
@@ -316,6 +320,15 @@ export const nodeProcessorFactory: Record<
         new RecommendedPlaylistTracksSourceProcessor(
             node.id,
             { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
+    recentlyPlayedTracksSource: (
+        node: Node<RecentlyPlayedTracksData>,
+        _incomers,
+    ) =>
+        new RecentlyPlayedTracksSourceProcessor(
+            node.id,
+            { source: [] },
             node.data,
         ),
     isSaved: (node: Node<IsSavedData>, incomers) =>

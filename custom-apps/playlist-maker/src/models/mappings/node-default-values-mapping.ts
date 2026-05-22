@@ -24,6 +24,7 @@ import { DEFAULT_LIKED_SONGS_DATA } from '../processors/sources/liked-songs-sour
 import { DEFAULT_LOCAL_TRACKS_DATA } from '../processors/sources/local-tracks-source-processor';
 import { DEFAULT_PLAYLIST_DATA } from '../processors/sources/playlist-tracks-source-processor';
 import { DEFAULT_RADIO_DATA } from '../processors/sources/radio-source-processor';
+import { DEFAULT_RECENTLY_PLAYED_TRACKS_DATA } from '../processors/sources/recently-played-tracks-source-processor';
 import { DEFAULT_RECOMMENDED_PLAYLIST_TRACKS_DATA } from '../processors/sources/recommended-playlist-tracks-source-processor';
 import { DEFAULT_TOP_TRACKS_DATA } from '../processors/sources/top-tracks-source-processor';
 
@@ -69,6 +70,9 @@ export const nodeDefaultValuesFactory: Record<
     isExplicit: () => ({ ...DEFAULT_IS_EXPLICIT_DATA }),
     recommendedPlaylistTracksSource: () => ({
         ...DEFAULT_RECOMMENDED_PLAYLIST_TRACKS_DATA,
+    }),
+    recentlyPlayedTracksSource: () => ({
+        ...DEFAULT_RECENTLY_PLAYED_TRACKS_DATA,
     }),
     isSaved: () => ({ ...DEFAULT_IS_SAVED_DATA }),
 };

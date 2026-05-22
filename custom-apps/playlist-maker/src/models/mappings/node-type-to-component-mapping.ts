@@ -32,6 +32,7 @@ import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTrack
 import { RadioAlbumSourceNode } from '../../components/nodes/sources/RadioAlbumSourceNode';
 import { RadioArtistSourceNode } from '../../components/nodes/sources/RadioArtistSourceNode';
 import { RadioTrackSourceNode } from '../../components/nodes/sources/RadioTrackSourceNode';
+import { RecentlyPlayedTracksSourceNode } from '../../components/nodes/sources/RecentlyPlayedTracksSourceNode';
 import { RecommendedPlaylistTracksSourceNode } from '../../components/nodes/sources/RecommendedPlaylistTracksSourceNode';
 import { SearchAlbumSourceNode } from '../../components/nodes/sources/SearchAlbumSourceNode';
 import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArtistSourceNode';
@@ -82,5 +83,6 @@ export const nodeTypeToComponentMapping: Record<
     subset: SubsetNode,
     isExplicit: IsExplicitNode,
     recommendedPlaylistTracksSource: RecommendedPlaylistTracksSourceNode,
+    recentlyPlayedTracksSource: RecentlyPlayedTracksSourceNode,
     isSaved: IsSavedNode,
 };

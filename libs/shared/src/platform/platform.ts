@@ -1,5 +1,6 @@
 // Last updated: March 2023
 
+import type { AssistedCurationAPI } from './assisted-curation';
 import type { AuthorizationAPI } from './authorization';
 import type { ClipboardAPI } from './clipboard';
 import type { History } from './history';
@@ -25,6 +26,7 @@ export type Platform = {
     AdManagers: unknown;
     RemoteConfiguration: unknown;
     ActionStoreAPI: unknown;
+    AssistedCurationAPI: AssistedCurationAPI;
     AuthorizationAPI: AuthorizationAPI;
     ClipboardAPI: ClipboardAPI;
     ConnectAPI: unknown;

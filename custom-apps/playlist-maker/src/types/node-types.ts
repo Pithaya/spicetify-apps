@@ -11,7 +11,8 @@ type SourceNodeType =
     | 'radioAlbumSource'
     | 'radioArtistSource'
     | 'radioTrackSource'
-    | 'recommendedPlaylistTracksSource';
+    | 'recommendedPlaylistTracksSource'
+    | 'recentlyPlayedTracksSource';
 
 type FilterNodeType =
     | 'isPlayable'

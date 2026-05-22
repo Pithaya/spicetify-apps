@@ -123,6 +123,11 @@ export function Sidenav(): JSX.Element {
                             nodeType="libraryArtistSource"
                             tooltip="Get tracks from an artist in your library."
                         />
+                        <SidenavItem
+                            label="Recently played"
+                            nodeType="recentlyPlayedTracksSource"
+                            tooltip="Get tracks from your recently played history."
+                        />
                     </ul>
                 </SidenavCollapsible>
 
