@@ -85,6 +85,10 @@ import {
     ArtistTracksSourceProcessor,
 } from '../processors/sources/artist-tracks-source-processor';
 import {
+    type LibraryTrackData,
+    LibraryTrackSourceProcessor,
+} from '../processors/sources/library-track-source-processor';
+import {
     type LikedSongsData,
     LikedSongsSourceProcessor,
 } from '../processors/sources/liked-songs-source-processor';
@@ -343,4 +347,6 @@ export const nodeProcessorFactory: Record<
         ),
     searchTrackSource: (node: Node<SearchTrackData>, _incomers) =>
         new SearchTrackSourceProcessor(node.id, { source: [] }, node.data),
+    libraryTrackSource: (node: Node<LibraryTrackData>, _incomers) =>
+        new LibraryTrackSourceProcessor(node.id, { source: [] }, node.data),
 };

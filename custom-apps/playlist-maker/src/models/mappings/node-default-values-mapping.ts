@@ -20,6 +20,7 @@ import { DEFAULT_SUBSET_DATA } from '../processors/processing/subset-processor';
 import { DEFAULT_ADD_TO_PLAYLIST_DATA } from '../processors/results/add-to-playlist-processor';
 import { DEFAULT_ALBUM_DATA } from '../processors/sources/album-source-processor';
 import { DEFAULT_ARTIST_DATA } from '../processors/sources/artist-tracks-source-processor';
+import { DEFAULT_LIBRARY_TRACK_DATA } from '../processors/sources/library-track-source-processor';
 import { DEFAULT_LIKED_SONGS_DATA } from '../processors/sources/liked-songs-source-processor';
 import { DEFAULT_LOCAL_TRACKS_DATA } from '../processors/sources/local-tracks-source-processor';
 import { DEFAULT_PLAYLIST_DATA } from '../processors/sources/playlist-tracks-source-processor';
@@ -77,4 +78,5 @@ export const nodeDefaultValuesFactory: Record<
     }),
     isSaved: () => ({ ...DEFAULT_IS_SAVED_DATA }),
     searchTrackSource: () => ({ ...DEFAULT_SEARCH_TRACK_DATA }),
+    libraryTrackSource: () => ({ ...DEFAULT_LIBRARY_TRACK_DATA }),
 };

@@ -27,6 +27,7 @@ import { AddToResultNode } from '../../components/nodes/result/AddToResultNode';
 import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
 import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryArtistSourceNode';
 import { LibraryPlaylistSourceNode } from '../../components/nodes/sources/LibraryPlaylistSourceNode';
+import { LibraryTrackSourceNode } from '../../components/nodes/sources/LibraryTrackSourceNode';
 import { LikedSongsSourceNode } from '../../components/nodes/sources/LikedSongsSourceNode';
 import { LocalTracksSourceNode } from '../../components/nodes/sources/LocalTracksSourceNode';
 import { RadioAlbumSourceNode } from '../../components/nodes/sources/RadioAlbumSourceNode';
@@ -87,4 +88,5 @@ export const nodeTypeToComponentMapping: Record<
     recentlyPlayedTracksSource: RecentlyPlayedTracksSourceNode,
     isSaved: IsSavedNode,
     searchTrackSource: SearchTrackSourceNode,
+    libraryTrackSource: LibraryTrackSourceNode,
 };

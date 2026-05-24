@@ -13,7 +13,8 @@ type SourceNodeType =
     | 'radioArtistSource'
     | 'radioTrackSource'
     | 'recommendedPlaylistTracksSource'
-    | 'recentlyPlayedTracksSource';
+    | 'recentlyPlayedTracksSource'
+    | 'libraryTrackSource';
 
 type FilterNodeType =
     | 'isPlayable'
