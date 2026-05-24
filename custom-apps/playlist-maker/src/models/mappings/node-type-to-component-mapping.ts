@@ -18,6 +18,7 @@ import { ValenceNode } from '../../components/nodes/filter/ValenceNode';
 import { DeduplicateNode } from '../../components/nodes/processing/DeduplicateNode';
 import { DifferenceNode } from '../../components/nodes/processing/DifferenceNode';
 import { IntersectionNode } from '../../components/nodes/processing/IntersectionNode';
+import { ReverseNode } from '../../components/nodes/processing/ReverseNode';
 import { ShuffleNode } from '../../components/nodes/processing/ShuffleNode';
 import { SortProcessorNode } from '../../components/nodes/processing/SortProcessorNode';
 import { SubsetNode } from '../../components/nodes/processing/SubsetNode';
@@ -91,4 +92,5 @@ export const nodeTypeToComponentMapping: Record<
     searchTrackSource: SearchTrackSourceNode,
     libraryTrackSource: LibraryTrackSourceNode,
     addToQueue: AddToQueueNode,
+    reverse: ReverseNode,
 };

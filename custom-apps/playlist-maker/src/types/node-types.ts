@@ -40,7 +40,8 @@ type ProcessingNodeType =
     | 'intersection'
     | 'difference'
     | 'substract'
-    | 'subset';
+    | 'subset'
+    | 'reverse';
 
 // Note: keeping 'result' for 'addToResult' for backward compatibility of saved workflows
 export const ResultNodes = ['result', 'addToPlaylist', 'addToQueue'] as const;

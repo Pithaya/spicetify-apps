@@ -325,6 +325,11 @@ export function Sidenav(): JSX.Element {
                         nodeType="subset"
                         tooltip="Keep only the specified number of tracks."
                     />
+                    <SidenavItem
+                        label="Reverse"
+                        nodeType="reverse"
+                        tooltip="Reverse the order of the tracks."
+                    />
                 </ul>
             </div>
 

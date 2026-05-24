@@ -66,6 +66,7 @@ import type { NodeProcessor } from '../processors/node-processor';
 import { DeduplicateProcessor } from '../processors/processing/deduplicate-processor';
 import { DifferenceProcessor } from '../processors/processing/difference-processor';
 import { IntersectionProcessor } from '../processors/processing/intersection-processor';
+import { ReverseProcessor } from '../processors/processing/reverse-processor';
 import { ShuffleProcessor } from '../processors/processing/shuffle-processor';
 import {
     type OrderByData,
@@ -349,4 +350,10 @@ export const nodeProcessorFactory: Record<
         new SearchTrackSourceProcessor(node.id, { source: [] }, node.data),
     libraryTrackSource: (node: Node<LibraryTrackData>, _incomers) =>
         new LibraryTrackSourceProcessor(node.id, { source: [] }, node.data),
+    reverse: (node: Node<BaseNodeData>, incomers) =>
+        new ReverseProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
 };

@@ -80,4 +80,5 @@ export const nodeDefaultValuesFactory: Record<
     searchTrackSource: () => ({ ...DEFAULT_SEARCH_TRACK_DATA }),
     libraryTrackSource: () => ({ ...DEFAULT_LIBRARY_TRACK_DATA }),
     addToQueue: () => ({ ...DEFAULT_BASE_NODE_DATA }),
+    reverse: () => ({ ...DEFAULT_BASE_NODE_DATA }),
 };
