@@ -4,6 +4,12 @@ Each preset tells you what to plug into the `{{SCHEMA_FIELDS}}`, `{{DEFAULT_FIEL
 
 A Filter/Processing node with a single input always uses `inputByHandle['source']`, so `{{HANDLE_KEYS}}` = `source: []` and `{{TEST_INPUT}}` = `source: [track({ ... })]`.
 
+## UX rule for scalar inputs
+
+`NumberController` and `TextController` translate an empty input to `undefined`. If the schema requires a value, clearing the field produces a `NaN` / required-error, the form's `defaultValues` is re-applied via `useNodeForm`, and the user sees the default jump back into the field — which feels broken.
+
+Default to `.optional()` with `undefined` defaults for any scalar number/text field. Apply fallback values inside the processor body (`this.data.foo ?? DEFAULT_FOO`) rather than baking them into the schema. Only require the field when the node is meaningless without it (e.g. a URI input on a single-resource source). Slider-driven `range-*` presets and `boolean-flag` are unaffected — those controllers always produce a valid value.
+
 ## range-0-to-1
 
 Reference: `filter/energy-processor.ts` + `filter/EnergyNode.tsx`.

@@ -53,7 +53,7 @@ Ask the following questions using `AskUserQuestion`, one at a time. Do not batch
 ### 6. Parameter shape
 - Header: `Parameters`
 - Options (full details in `references/data-sources.md`):
-  - `limit-offset` — `{ limit: number; offset: number }`. Ask whether each is required or optional, and for default values.
+  - `limit-offset` — `{ limit?: number; offset?: number }`. **Default both to `optional` with `undefined` default** unless the underlying API genuinely cannot synthesize a value (see UX note in `references/data-sources.md`). Ask the user for the fallback values the processor should apply at call time (e.g. `limit ?? 50`).
   - `uri-and-limit` — `{ uri: string (Spicetify.URI validated); limit?: number }`. Ask which URI kind (`isTrack | isAlbum | isArtist | isPlaylistV1OrV2`).
   - `none` — no extra fields beyond `BaseNodeDataSchema`.
   - `custom` — emit `TODO` markers.

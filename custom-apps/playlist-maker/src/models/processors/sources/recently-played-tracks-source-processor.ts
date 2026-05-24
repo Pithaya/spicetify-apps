@@ -13,8 +13,8 @@ import { NodeProcessor } from '../node-processor';
 
 export const RecentlyPlayedTracksDataSchema = z
     .object({
-        limit: z.number().nonnegative().int(),
-        offset: z.number().nonnegative().int(),
+        limit: z.number().nonnegative().int().optional(),
+        offset: z.number().nonnegative().int().optional(),
     })
     .merge(BaseNodeDataSchema)
     .strict();
@@ -24,8 +24,8 @@ export type RecentlyPlayedTracksData = z.infer<
 >;
 
 export const DEFAULT_RECENTLY_PLAYED_TRACKS_DATA: RecentlyPlayedTracksData = {
-    limit: 50,
-    offset: 0,
+    limit: undefined,
+    offset: undefined,
     isExecuting: undefined,
 };
 
@@ -34,7 +34,8 @@ export const DEFAULT_RECENTLY_PLAYED_TRACKS_DATA: RecentlyPlayedTracksData = {
  */
 export class RecentlyPlayedTracksSourceProcessor extends NodeProcessor<RecentlyPlayedTracksData> {
     protected override async getResultsInternal(): Promise<WorkflowTrack[]> {
-        const { limit, offset } = this.data;
+        const limit = this.data.limit ?? 50;
+        const offset = this.data.offset ?? 0;
 
         const uris =
             await getPlatform().AssistedCurationAPI.getRecentlyPlayedTracks({

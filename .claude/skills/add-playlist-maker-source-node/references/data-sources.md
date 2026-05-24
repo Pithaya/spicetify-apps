@@ -147,20 +147,33 @@ For the `{{SCHEMA_FIELDS}}` and `{{DEFAULT_FIELDS}}` placeholders.
 
 ## limit-offset
 
-**`{{SCHEMA_FIELDS}}`**
-```ts
-        limit: z.number().positive().int(),
-        offset: z.number().nonnegative().int(),
-```
-(or `.optional()` on either if the user picked optional in the follow-up question — match `PLATFORM_API_MAX_LIMIT` from `@shared/platform/constants` as the upper bound if the API has one).
+**UX rule — prefer `.optional()` with `undefined` defaults.** `NumberController` and `TextController` translate an empty input to `undefined`. If the schema requires a value, clearing the field produces a `NaN` / required-error, the form's `defaultValues` is re-applied via `useNodeForm`, and the user sees the default jump back into the field — which feels broken. Make scalar inputs optional and apply fallback values inside `getResultsInternal` instead. Reference: `liked-songs-source-processor.ts` (limit/offset optional, fallback at call site) vs the pre-fix `recently-played-tracks-source-processor.ts` (required → UX bug).
 
-**`{{DEFAULT_FIELDS}}`** (example values: ask the user for defaults)
+Only require the field when the underlying API truly cannot supply a sensible fallback (rare for limit/offset).
+
+**`{{SCHEMA_FIELDS}}`** (default — both optional)
 ```ts
-    limit: 50,
-    offset: 0,
+        limit: z.number().nonnegative().int().optional(),
+        offset: z.number().nonnegative().int().optional(),
+```
+Add `.max(PLATFORM_API_MAX_LIMIT)` (from `@shared/platform/constants`) to `limit` if the API has a hard upper bound.
+
+**`{{DEFAULT_FIELDS}}`**
+```ts
+    limit: undefined,
+    offset: undefined,
 ```
 
-**Component fields** — two `<NodeField>` blocks with `<NumberController>`. Remember `placeholder` is required.
+**Processor body** — export the fallback constants alongside `DEFAULT_..._DATA` and resolve them at call time:
+```ts
+export const DEFAULT_{{UPPER_SNAKE}}_LIMIT = 50;
+export const DEFAULT_{{UPPER_SNAKE}}_OFFSET = 0;
+// ...
+const limit = this.data.limit ?? DEFAULT_{{UPPER_SNAKE}}_LIMIT;
+const offset = this.data.offset ?? DEFAULT_{{UPPER_SNAKE}}_OFFSET;
+```
+
+**Component fields** — two `<NodeField>` blocks with `<NumberController>`. Use the fallback value as the `placeholder` string (e.g. `placeholder="50"`) so the user can see what the empty field will resolve to. `placeholder` is required on `NumberController`.
 
 ## uri-and-limit
 

@@ -94,6 +94,16 @@ describe('RecentlyPlayedTracksDataSchema', () => {
         ).toBe(false);
     });
 
+    it('accepts undefined limit and offset', () => {
+        expect(
+            RecentlyPlayedTracksDataSchema.safeParse({
+                ...DEFAULT_RECENTLY_PLAYED_TRACKS_DATA,
+                limit: undefined,
+                offset: undefined,
+            }).success,
+        ).toBe(true);
+    });
+
     it('rejects a negative offset', () => {
         expect(
             RecentlyPlayedTracksDataSchema.safeParse({
@@ -148,6 +158,23 @@ describe('RecentlyPlayedTracksSourceProcessor', () => {
 
         expect(result).toEqual([]);
         expect(decorateContextTracksMock).not.toHaveBeenCalled();
+    });
+
+    it('falls back to default limit and offset when both are undefined', async () => {
+        getRecentlyPlayedTracksMock.mockResolvedValueOnce([]);
+
+        const processor = new RecentlyPlayedTracksSourceProcessor(
+            'node',
+            {},
+            buildData({ limit: undefined, offset: undefined }),
+        );
+
+        await runProcessor(processor, {});
+
+        expect(getRecentlyPlayedTracksMock).toHaveBeenCalledWith({
+            limit: 50,
+            offset: 0,
+        });
     });
 
     it('forwards limit and offset to the AssistedCurationAPI, then forwards the URIs to decorateContextTracks', async () => {
