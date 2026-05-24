@@ -37,6 +37,7 @@ import { RecommendedPlaylistTracksSourceNode } from '../../components/nodes/sour
 import { SearchAlbumSourceNode } from '../../components/nodes/sources/SearchAlbumSourceNode';
 import { SearchArtistSourceNode } from '../../components/nodes/sources/SearchArtistSourceNode';
 import { SearchPlaylistSourceNode } from '../../components/nodes/sources/SearchPlaylistSourceNode';
+import { SearchTrackSourceNode } from '../../components/nodes/sources/SearchTrackSourceNode';
 import { TopTracksSourceNode } from '../../components/nodes/sources/TopTracksSourceNode';
 import { type CustomNodeType } from '../../types/node-types';
 
@@ -85,4 +86,5 @@ export const nodeTypeToComponentMapping: Record<
     recommendedPlaylistTracksSource: RecommendedPlaylistTracksSourceNode,
     recentlyPlayedTracksSource: RecentlyPlayedTracksSourceNode,
     isSaved: IsSavedNode,
+    searchTrackSource: SearchTrackSourceNode,
 };

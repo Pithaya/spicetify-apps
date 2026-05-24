@@ -39,4 +39,11 @@ vi.mock('./src/utils/track-utils', () => ({
  */
 vi.stubGlobal('Spicetify', {
     Locale: { getLocale: () => 'en' },
+    URI: {
+        isTrack: (value: string) => value.startsWith('spotify:track:'),
+        isAlbum: (value: string) => value.startsWith('spotify:album:'),
+        isArtist: (value: string) => value.startsWith('spotify:artist:'),
+        isPlaylistV1OrV2: (value: string) =>
+            value.startsWith('spotify:playlist:'),
+    },
 });

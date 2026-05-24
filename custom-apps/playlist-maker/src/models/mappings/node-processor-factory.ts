@@ -109,6 +109,10 @@ import {
     RecommendedPlaylistTracksSourceProcessor,
 } from '../processors/sources/recommended-playlist-tracks-source-processor';
 import {
+    type SearchTrackData,
+    SearchTrackSourceProcessor,
+} from '../processors/sources/search-track-source-processor';
+import {
     type TopTracksData,
     // eslint-disable-next-line sonarjs/deprecation
     TopTracksSourceProcessor,
@@ -337,4 +341,6 @@ export const nodeProcessorFactory: Record<
             { source: incomers.map((node) => node.id) },
             node.data,
         ),
+    searchTrackSource: (node: Node<SearchTrackData>, _incomers) =>
+        new SearchTrackSourceProcessor(node.id, { source: [] }, node.data),
 };

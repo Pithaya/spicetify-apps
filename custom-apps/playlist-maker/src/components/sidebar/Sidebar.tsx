@@ -148,6 +148,11 @@ export function Sidenav(): JSX.Element {
                             nodeType="searchAlbumSource"
                             tooltip="Get tracks from an album."
                         />
+                        <SidenavItem
+                            label="Track"
+                            nodeType="searchTrackSource"
+                            tooltip="Get a single track."
+                        />
                     </ul>
                 </SidenavCollapsible>
 

@@ -8,6 +8,7 @@ type SourceNodeType =
     | 'searchAlbumSource'
     | 'libraryArtistSource'
     | 'searchArtistSource'
+    | 'searchTrackSource'
     | 'radioAlbumSource'
     | 'radioArtistSource'
     | 'radioTrackSource'

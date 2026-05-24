@@ -89,7 +89,7 @@ export function SearchArtistSourceNode(
             <NodeContent>
                 <NodeTitle
                     title="Artist"
-                    tooltip="Search for an artist using Spotify's search. You can use advanced search tags sush as 'genre:' or 'year:'."
+                    tooltip="Search for an artist using Spotify's search. You can use advanced search tags such as 'genre:' or 'year:'."
                 />
 
                 <NodeComboField error={errors.uri}>

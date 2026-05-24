@@ -26,6 +26,7 @@ import { DEFAULT_PLAYLIST_DATA } from '../processors/sources/playlist-tracks-sou
 import { DEFAULT_RADIO_DATA } from '../processors/sources/radio-source-processor';
 import { DEFAULT_RECENTLY_PLAYED_TRACKS_DATA } from '../processors/sources/recently-played-tracks-source-processor';
 import { DEFAULT_RECOMMENDED_PLAYLIST_TRACKS_DATA } from '../processors/sources/recommended-playlist-tracks-source-processor';
+import { DEFAULT_SEARCH_TRACK_DATA } from '../processors/sources/search-track-source-processor';
 import { DEFAULT_TOP_TRACKS_DATA } from '../processors/sources/top-tracks-source-processor';
 
 // Note: undefined is used instead of null so that empty form values will not be persisted in storage.
@@ -75,4 +76,5 @@ export const nodeDefaultValuesFactory: Record<
         ...DEFAULT_RECENTLY_PLAYED_TRACKS_DATA,
     }),
     isSaved: () => ({ ...DEFAULT_IS_SAVED_DATA }),
+    searchTrackSource: () => ({ ...DEFAULT_SEARCH_TRACK_DATA }),
 };
