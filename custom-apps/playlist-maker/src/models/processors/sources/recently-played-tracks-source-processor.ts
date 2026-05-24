@@ -13,7 +13,7 @@ import { NodeProcessor } from '../node-processor';
 
 export const RecentlyPlayedTracksDataSchema = z
     .object({
-        limit: z.number().positive().int(),
+        limit: z.number().nonnegative().int(),
         offset: z.number().nonnegative().int(),
     })
     .merge(BaseNodeDataSchema)

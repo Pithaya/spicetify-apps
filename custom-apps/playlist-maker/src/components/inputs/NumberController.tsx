@@ -38,10 +38,13 @@ export function NumberController<T extends FieldValues>(
             }) => (
                 <input
                     className={Spicetify.classnames(
-                        'tw:bg-spice-tab-active tw:text-spice-text tw:w-full tw:rounded-sm tw:p-1 tw:px-2.5',
+                        'tw:bg-spice-tab-active tw:w-full tw:rounded-sm tw:p-1 tw:px-2.5',
                         invalid
                             ? 'tw:border-spice-error tw:border-1 tw:border-solid'
                             : 'tw:border-0 tw:border-none',
+                        disabled
+                            ? 'tw:text-spice-subtext'
+                            : 'tw:text-spice-text',
                     )}
                     type="number"
                     placeholder={props.placeholder}

@@ -219,6 +219,7 @@ export function TagsInput(props: Readonly<TagsInputProps>): JSX.Element {
                                 onClick={() => {
                                     removeValue(index);
                                 }}
+                                disabled={disabled}
                             >
                                 <SpotifyIcon icon="x" iconSize={12} />
                             </button>

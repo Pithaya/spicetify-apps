@@ -103,13 +103,13 @@ describe('RecentlyPlayedTracksDataSchema', () => {
         ).toBe(false);
     });
 
-    it('rejects a zero or negative limit', () => {
+    it('rejects a negative limit', () => {
         expect(
             RecentlyPlayedTracksDataSchema.safeParse({
                 ...DEFAULT_RECENTLY_PLAYED_TRACKS_DATA,
                 limit: 0,
             }).success,
-        ).toBe(false);
+        ).toBe(true);
         expect(
             RecentlyPlayedTracksDataSchema.safeParse({
                 ...DEFAULT_RECENTLY_PLAYED_TRACKS_DATA,

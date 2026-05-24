@@ -265,7 +265,12 @@ export function MultiSelect<T extends TMultiSelectItem>(
                                 },
                             })}
                             placeholder={props.placeholder}
-                            className="tw:w-full tw:truncate tw:p-1.5 tw:bg-transparent tw:border-none tw:text-spice-text"
+                            className={Spicetify.classnames(
+                                'tw:w-full tw:truncate tw:p-1.5 tw:bg-transparent tw:border-none',
+                                (props.disabled ?? false)
+                                    ? 'tw:text-spice-subtext'
+                                    : 'tw:text-spice-text',
+                            )}
                             id="multiselect-search"
                             onBlur={() => {
                                 props.onBlur();
