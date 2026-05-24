@@ -6,6 +6,7 @@ import {
     type AddToPlaylistData,
     AddToPlaylistProcessor,
 } from '../processors/results/add-to-playlist-processor';
+import { AddToQueueProcessor } from '../processors/results/add-to-queue-processor';
 import { AddToResultProcessor } from '../processors/results/add-to-result-processor';
 
 /**
@@ -27,6 +28,12 @@ export const resultNodeProcessorFactory: Record<
         ),
     addToPlaylist: (node: Node<AddToPlaylistData>, incomers, _edges) =>
         new AddToPlaylistProcessor(
+            node.id,
+            { source: incomers.map((node) => node.id) },
+            node.data,
+        ),
+    addToQueue: (node: Node<BaseNodeData>, incomers, _edges) =>
+        new AddToQueueProcessor(
             node.id,
             { source: incomers.map((node) => node.id) },
             node.data,

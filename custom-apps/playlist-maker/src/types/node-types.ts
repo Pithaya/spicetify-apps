@@ -43,7 +43,7 @@ type ProcessingNodeType =
     | 'subset';
 
 // Note: keeping 'result' for 'addToResult' for backward compatibility of saved workflows
-export const ResultNodes = ['result', 'addToPlaylist'] as const;
+export const ResultNodes = ['result', 'addToPlaylist', 'addToQueue'] as const;
 
 export type ResultNodeType = (typeof ResultNodes)[number];
 

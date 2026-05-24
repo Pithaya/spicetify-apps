@@ -79,4 +79,5 @@ export const nodeDefaultValuesFactory: Record<
     isSaved: () => ({ ...DEFAULT_IS_SAVED_DATA }),
     searchTrackSource: () => ({ ...DEFAULT_SEARCH_TRACK_DATA }),
     libraryTrackSource: () => ({ ...DEFAULT_LIBRARY_TRACK_DATA }),
+    addToQueue: () => ({ ...DEFAULT_BASE_NODE_DATA }),
 };

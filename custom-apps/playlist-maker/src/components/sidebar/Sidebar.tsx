@@ -342,6 +342,11 @@ export function Sidenav(): JSX.Element {
                         nodeType="addToPlaylist"
                         tooltip="Output the result to an existing playlist."
                     />
+                    <SidenavItem
+                        label="Add to queue"
+                        nodeType="addToQueue"
+                        tooltip="Add the tracks to the playback queue."
+                    />
                 </ul>
             </div>
         </div>

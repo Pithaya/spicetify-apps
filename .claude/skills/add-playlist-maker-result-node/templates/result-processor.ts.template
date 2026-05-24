@@ -1,0 +1,15 @@
+{{IMPORTS}}
+
+{{SCHEMA_BLOCK}}
+
+/**
+ * Result node that {{RESULT_DESCRIPTION}}.
+ */
+export class {{PASCAL}}Processor extends ResultNodeProcessor<{{DATA_TYPE}}> {
+    protected override async executeResultActionInternal(
+        tracks: WorkflowTrack[],
+    ): Promise<void> {
+        // TODO: review this logic
+{{BODY}}
+    }
+}

@@ -23,6 +23,7 @@ import { SortProcessorNode } from '../../components/nodes/processing/SortProcess
 import { SubsetNode } from '../../components/nodes/processing/SubsetNode';
 import { SubstractNode } from '../../components/nodes/processing/SubstractNode';
 import { AddToPlaylistNode } from '../../components/nodes/result/AddToPlaylistNode';
+import { AddToQueueNode } from '../../components/nodes/result/AddToQueueNode';
 import { AddToResultNode } from '../../components/nodes/result/AddToResultNode';
 import { LibraryAlbumSourceNode } from '../../components/nodes/sources/LibraryAlbumSourceNode';
 import { LibraryArtistSourceNode } from '../../components/nodes/sources/LibraryArtistSourceNode';
@@ -89,4 +90,5 @@ export const nodeTypeToComponentMapping: Record<
     isSaved: IsSavedNode,
     searchTrackSource: SearchTrackSourceNode,
     libraryTrackSource: LibraryTrackSourceNode,
+    addToQueue: AddToQueueNode,
 };

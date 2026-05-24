@@ -1,0 +1,31 @@
+{{IMPORTS}}
+import React from 'react';
+import { Handle, type NodeProps, Position } from 'reactflow';
+import { Node } from '../shared/Node';
+import { NodeContent } from '../shared/NodeContent';
+import { ResultNodeHeader } from '../shared/NodeHeader';
+import { NodeTitle } from '../shared/NodeTitle';
+
+export function {{PASCAL}}Node(
+    props: Readonly<NodeProps<{{DATA_TYPE}}>>,
+): JSX.Element {
+{{FORM_BLOCK}}
+    return (
+        <Node isExecuting={props.data.isExecuting} isSelected={props.selected}>
+            <ResultNodeHeader />
+
+            <NodeContent>
+                <NodeTitle
+                    title="{{TITLE}}"
+                    tooltip="{{TOOLTIP}}"
+                />
+{{FIELDS_JSX}}
+            </NodeContent>
+            <Handle
+                type="target"
+                position={Position.Left}
+                style={{ top: '42px' }}
+            />
+        </Node>
+    );
+}
