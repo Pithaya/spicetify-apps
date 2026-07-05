@@ -5,10 +5,14 @@ import { Remixer } from '../helpers/remixer';
 import type { JukeboxSettings } from './jukebox-settings.js';
 import { JukeboxSongState } from './jukebox-song-state';
 
-import { getTrackAudioAnalysis } from '@shared/api/endpoints/tracks/get-audio-analysis';
 import type { AudioAnalysis } from '@shared/api/models/audio-analysis';
+import { searchTracks } from '@shared/graphQL/queries/search-tracks';
 import { Driver } from '../driver';
 import { SettingsService } from '../services/settings-service';
+
+const ALTERNATE_TRACK_SEARCH_LIMIT = 20;
+const MAX_ALTERNATE_TRACKS_TO_PROBE = 8;
+const MAX_DURATION_DIFFERENCE_MS = 1_500;
 
 export type StatsChangedEvent = {
     beatsPlayed: number;
@@ -154,15 +158,11 @@ export class Jukebox {
             return;
         }
 
-        let analysis: AudioAnalysis | null = null;
+        let analysis = await this.fetchUsableAnalysis(uri);
 
-        try {
-            analysis = await getTrackAudioAnalysis({ uri });
-        } catch {
-            // Do nothing
-        }
+        analysis ??= await this.findAlternateTrackAnalysis(currentTrack);
 
-        if (analysis === null || analysis.beats.length === 0) {
+        if (analysis === null) {
             this.disableWithError('No analysis available for this track.');
             return;
         }
@@ -199,6 +199,142 @@ export class Jukebox {
             }),
         );
         this.driver.start();
+    }
+
+    /**
+     * Fetch analysis while accounting for Spicetify returning HTTP error
+     * objects as successful values.
+     */
+    private async fetchUsableAnalysis(
+        uri: string,
+    ): Promise<AudioAnalysis | null> {
+        try {
+            const analysis: unknown = await Spicetify.getAudioData(uri);
+
+            if (this.isUsableAnalysis(analysis)) {
+                return analysis;
+            }
+        } catch {
+            // Try an equivalent catalog entry below.
+        }
+
+        return null;
+    }
+
+    /**
+     * Spotify sometimes replaces a track with a new catalog ID without
+     * copying its audio analysis. Find another release of the same recording
+     * and use its analysis when the title, artist, and duration all match.
+     */
+    private async findAlternateTrackAnalysis(
+        currentTrack: Spicetify.PlayerTrack,
+    ): Promise<AudioAnalysis | null> {
+        const artistName =
+            currentTrack.artists?.[0]?.name ??
+            currentTrack.metadata.artist_name ??
+            currentTrack.metadata['canvas.artist.name'];
+
+        if (!artistName) {
+            return null;
+        }
+
+        const escapeSearchValue = (value: string): string =>
+            value.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+
+        try {
+            const result = await searchTracks({
+                searchTerm: `track:"${escapeSearchValue(currentTrack.name)}" artist:"${escapeSearchValue(artistName)}"`,
+                offset: 0,
+                limit: ALTERNATE_TRACK_SEARCH_LIMIT,
+                numberOfTopResults: 0,
+                includePreReleases: true,
+            });
+
+            const normalizedTitle = this.normalizeText(currentTrack.name);
+            const normalizedArtist = this.normalizeText(artistName);
+            const currentDuration = currentTrack.duration.milliseconds;
+
+            const candidates = result.searchV2.tracksV2.items
+                .map((item) => item.item.data)
+                .filter((track) => track.__typename === 'Track')
+                .filter((track) => track.uri !== currentTrack.uri)
+                .filter(
+                    (track) =>
+                        this.normalizeText(track.name) === normalizedTitle &&
+                        track.artists.items.some(
+                            (artist) =>
+                                this.normalizeText(artist.profile.name) ===
+                                normalizedArtist,
+                        ),
+                )
+                .filter(
+                    (track) =>
+                        Math.abs(
+                            track.duration.totalMilliseconds - currentDuration,
+                        ) <= MAX_DURATION_DIFFERENCE_MS,
+                )
+                .sort(
+                    (left, right) =>
+                        Math.abs(
+                            left.duration.totalMilliseconds - currentDuration,
+                        ) -
+                        Math.abs(
+                            right.duration.totalMilliseconds - currentDuration,
+                        ),
+                )
+                .slice(0, MAX_ALTERNATE_TRACKS_TO_PROBE);
+
+            for (const candidate of candidates) {
+                const analysis = await this.fetchUsableAnalysis(candidate.uri);
+
+                if (
+                    analysis !== null &&
+                    Math.abs(
+                        analysis.track.duration * 1_000 - currentDuration,
+                    ) <= MAX_DURATION_DIFFERENCE_MS
+                ) {
+                    Spicetify.showNotification(
+                        'Using analysis from an equivalent Spotify release.',
+                    );
+                    return analysis;
+                }
+            }
+        } catch (error) {
+            console.error(
+                '[Eternal Jukebox] Failed to find alternate track analysis',
+                error,
+            );
+        }
+
+        return null;
+    }
+
+    private normalizeText(value: string): string {
+        return value
+            .normalize('NFKD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLocaleLowerCase()
+            .replace(/[^a-z0-9]+/g, ' ')
+            .trim();
+    }
+
+    private isUsableAnalysis(value: unknown): value is AudioAnalysis {
+        if (typeof value !== 'object' || value === null) {
+            return false;
+        }
+
+        const analysis = value as Partial<AudioAnalysis>;
+
+        return (
+            analysis.track !== undefined &&
+            Array.isArray(analysis.bars) &&
+            Array.isArray(analysis.beats) &&
+            analysis.beats.length > 0 &&
+            Array.isArray(analysis.sections) &&
+            Array.isArray(analysis.segments) &&
+            analysis.segments.length > 0 &&
+            Array.isArray(analysis.tatums)
+        );
     }
 
     private disableWithError(error: string): void {
